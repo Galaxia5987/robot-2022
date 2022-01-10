@@ -1,4 +1,6 @@
-robot-template-2022
+robot-2022
+
+This the robot code for 2022 frc game Rapid React!
 
 This repo utilizes the new WPILib libraries, a few things have changed including the CTRE classes, simulations, and frc characterization.
 To see the full list click [here](https://docs.wpilib.org/en/stable/docs/yearly-overview/yearly-changelog.html).
