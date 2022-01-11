@@ -14,4 +14,8 @@ public final class Ports {
         public static final int XBOX = 0;
     }
 
+    public static class Intake {
+        public static int MOTOR_PORT = 0;
+        public static boolean MOTOR_INVERTED = false;
+    }
 }

@@ -7,4 +7,7 @@ public final class Constants {
         public static final double POWER = 0.5; // [%]
     }
 
+    public static class Intake {
+        public static final double POWER = 0.5;
+    }
 }
