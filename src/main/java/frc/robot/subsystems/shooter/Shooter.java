@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.UnitModel;
 import frc.robot.utils.Utils;
 
+import java.util.Objects;
+
 import static frc.robot.Constants.LOOP_PERIOD;
 import static frc.robot.Constants.Shooter.*;
 import static frc.robot.Ports.Shooter.*;
@@ -30,40 +32,21 @@ public class Shooter extends SubsystemBase {
     private Shooter() {
         main_motor.setInverted(MAIN_INVERTED);
         main_motor.setSensorPhase(MAIN_SENSOR_PHASE);
-//        linearSystemLoop = configStateSpaceKaKv();
-        linearSystemLoop = stateSpaceConfigInertia();
+        linearSystemLoop = configStateSpace("Inertia");
     }
 
     public static Shooter getINSTANCE() {
         return INSTANCE;
     }
 
-    private LinearSystemLoop<N1, N1, N1> configStateSpaceKaKv() {
-        LinearSystem<N1, N1, N1> flywheel_plant = new LinearSystem<>(
-                A_KaKv, B_KaKv, C_KaKv, D_KaKv);
-
-        LinearQuadraticRegulator<N1, N1, N1> quadraticRegulator = new LinearQuadraticRegulator<>(
-                flywheel_plant,
-                VecBuilder.fill(MODEL_TOLERANCE),
-                VecBuilder.fill(SENSOR_TOLERANCE),
-                LOOP_PERIOD);
-
-        KalmanFilter<N1, N1, N1> kalmanFilter = new KalmanFilter<>(
-                Nat.N1(), Nat.N1(),
-                flywheel_plant,
-                Matrix.mat(Nat.N1(), Nat.N1()).fill(MODEL_TOLERANCE),
-                Matrix.mat(Nat.N1(), Nat.N1()).fill(SENSOR_TOLERANCE),
-                LOOP_PERIOD);
-
-        return new LinearSystemLoop<>(
-                flywheel_plant,
-                quadraticRegulator,
-                kalmanFilter,
-                NOMINAL_VOLTAGE, LOOP_PERIOD);
-    }
-
-    private LinearSystemLoop<N1, N1, N1> stateSpaceConfigInertia() {
-        LinearSystem<N1, N1, N1> flywheel_plant = LinearSystemId.createFlywheelSystem(motor, J, GEAR_RATIO);
+    private LinearSystemLoop<N1, N1, N1> configStateSpace(String stateSpaceType) {
+        LinearSystem<N1, N1, N1> flywheel_plant;
+        if(stateSpaceType.equals("KaKv"))
+            flywheel_plant = new LinearSystem<>(A_KaKv, B_KaKv, C_KaKv, D_KaKv);
+        else if(stateSpaceType.equals("Inertia"))
+            flywheel_plant = LinearSystemId.createFlywheelSystem(motor, J, GEAR_RATIO);
+        else
+            return null;
 
         LinearQuadraticRegulator<N1, N1, N1> quadraticRegulator = new LinearQuadraticRegulator<>(
                 flywheel_plant,
