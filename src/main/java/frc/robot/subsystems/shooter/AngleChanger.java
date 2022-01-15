@@ -7,21 +7,21 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Ports.Shooter.SOLENOID;
 
 public class AngleChanger extends SubsystemBase {
-    private final Solenoid angle_changer = new Solenoid(PneumaticsModuleType.CTREPCM, SOLENOID);
     private static final AngleChanger INSTANCE = new AngleChanger();
+    private final Solenoid angle_changer = new Solenoid(PneumaticsModuleType.CTREPCM, SOLENOID);
 
     public AngleChanger() {
     }
 
-    public void changeAngle(){
+    public static AngleChanger getINSTANCE() {
+        return INSTANCE;
+    }
+
+    public void changeAngle() {
         angle_changer.set(!angle_changer.get());
     }
 
-    public boolean getActive(){
+    public boolean getActive() {
         return angle_changer.get();
-    }
-
-    public static AngleChanger getINSTANCE(){
-        return INSTANCE;
     }
 }

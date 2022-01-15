@@ -46,7 +46,7 @@ public final class Constants {
         public static final double GEAR_RATIO = 1;
     }
 
-    public static  class AngleChanger {
+    public static class AngleChanger {
         public static final double ACTIVE_ANGLE = 55;
         public static final double INACTIVE_ANGLE = 70;
     }
