@@ -1,40 +1,19 @@
 package frc.robot.subsystems.shooter.commands;
 
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.shooter.Shooter;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
-public class Shoot extends CommandBase {
-    private final Shooter shooter = Shooter.getINSTANCE();
-    private final Timer timer = new Timer();
-    private final double requiredVelocity;
-    private double currentTime;
-    private double lastTime = 0;
+public class Shoot extends SequentialCommandGroup {
+    private final double required_velocity;
 
-    public Shoot(double requiredVelocity) {
-        this.requiredVelocity = requiredVelocity;
-        addRequirements(shooter);
-    }
+    public Shoot(double required_velocity) {
+        this.required_velocity = required_velocity;
 
-    @Override
-    public void initialize() {
-        timer.start();
-    }
-
-    @Override
-    public void execute() {
-        currentTime = timer.get();
-        shooter.setVelocity(requiredVelocity, currentTime - lastTime);
-        lastTime = currentTime;
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        shooter.terminate();
-    }
-
-    @Override
-    public boolean isFinished() {
-        return super.isFinished();
+        /*
+        Once the rest of the robot is operational, another command will
+        be added to feed the balls to the shooter.
+         */
+        addCommands(
+                new PrepareShooter(required_velocity)
+        );
     }
 }
