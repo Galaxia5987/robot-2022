@@ -4,9 +4,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.subsystems.shooter.AngleChanger;
+import frc.robot.subsystems.shooter.Hood;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.commands.AngleChangerDefaultCommand;
+import frc.robot.subsystems.shooter.commands.HoodDefaultCommand;
 import frc.robot.subsystems.shooter.commands.Shoot;
 import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
@@ -16,7 +16,7 @@ public class RobotContainer {
     private final XboxController xbox = new XboxController(Ports.Controls.XBOX);
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final Trigger rt = new Trigger(() -> xbox.getRightTriggerAxis() > 0);
-    private final AngleChanger angleChanger = AngleChanger.getINSTANCE();
+    private final Hood hood = Hood.getINSTANCE();
     private final Shooter shooter = Shooter.getINSTANCE();
 
     /**
@@ -35,7 +35,7 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        angleChanger.setDefaultCommand(new AngleChangerDefaultCommand(a::get));
+        hood.setDefaultCommand(new HoodDefaultCommand(a::get));
     }
 
     private void configureButtonBindings() {

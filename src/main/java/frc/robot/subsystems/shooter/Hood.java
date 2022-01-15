@@ -6,14 +6,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Ports.Shooter.SOLENOID;
 
-public class AngleChanger extends SubsystemBase {
-    private static final AngleChanger INSTANCE = new AngleChanger();
+public class Hood extends SubsystemBase {
+    private static final Hood INSTANCE = new Hood();
     private final Solenoid angleChanger = new Solenoid(PneumaticsModuleType.CTREPCM, SOLENOID);
 
-    public AngleChanger() {
+    public Hood() {
     }
 
-    public static AngleChanger getINSTANCE() {
+    public static Hood getINSTANCE() {
         return INSTANCE;
     }
 

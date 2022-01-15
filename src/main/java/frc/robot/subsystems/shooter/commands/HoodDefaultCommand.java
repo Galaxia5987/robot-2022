@@ -1,19 +1,19 @@
 package frc.robot.subsystems.shooter.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.shooter.AngleChanger;
+import frc.robot.subsystems.shooter.Hood;
 
 import java.util.function.Supplier;
 
-public class AngleChangerDefaultCommand extends CommandBase {
-    private final AngleChanger angleChanger = AngleChanger.getINSTANCE();
+public class HoodDefaultCommand extends CommandBase {
+    private final Hood hood = Hood.getINSTANCE();
     private final Supplier<Boolean> mode_supplier;
     private boolean input;
     private boolean lastInput;
 
-    public AngleChangerDefaultCommand(Supplier<Boolean> mode_supplier) {
+    public HoodDefaultCommand(Supplier<Boolean> mode_supplier) {
         this.mode_supplier = mode_supplier;
-        addRequirements(angleChanger);
+        addRequirements(hood);
     }
 
     @Override
@@ -24,7 +24,7 @@ public class AngleChangerDefaultCommand extends CommandBase {
     public void execute() {
         input = mode_supplier.get();
         if (input && !lastInput) {
-            angleChanger.changeAngle();
+            hood.changeAngle();
         }
         lastInput = input;
     }
