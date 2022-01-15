@@ -8,7 +8,7 @@ import static frc.robot.Ports.Shooter.SOLENOID;
 
 public class AngleChanger extends SubsystemBase {
     private static final AngleChanger INSTANCE = new AngleChanger();
-    private final Solenoid angle_changer = new Solenoid(PneumaticsModuleType.CTREPCM, SOLENOID);
+    private final Solenoid angleChanger = new Solenoid(PneumaticsModuleType.CTREPCM, SOLENOID);
 
     public AngleChanger() {
     }
@@ -18,10 +18,10 @@ public class AngleChanger extends SubsystemBase {
     }
 
     public void changeAngle() {
-        angle_changer.set(!angle_changer.get());
+        angleChanger.set(!angleChanger.get());
     }
 
     public boolean getActive() {
-        return angle_changer.get();
+        return angleChanger.get();
     }
 }

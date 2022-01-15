@@ -23,13 +23,13 @@ import static frc.robot.Ports.Shooter.*;
 public class Shooter extends SubsystemBase {
     private static final Shooter INSTANCE = new Shooter();
     private final UnitModel unitModel = new UnitModel(TICKS_PER_METER);
-    private final WPI_TalonFX main_motor = new WPI_TalonFX(MAIN_MOTOR);
+    private final WPI_TalonFX mainMotor = new WPI_TalonFX(MAIN_MOTOR);
     private final LinearSystemLoop<N1, N1, N1> linearSystemLoop;
     private final DCMotor motor = DCMotor.getFalcon500(1);
 
     private Shooter() {
-        main_motor.setInverted(MAIN_INVERTED);
-        main_motor.setSensorPhase(MAIN_SENSOR_PHASE);
+        mainMotor.setInverted(MAIN_INVERTED);
+        mainMotor.setSensorPhase(MAIN_SENSOR_PHASE);
         linearSystemLoop = configStateSpace("Inertia");
     }
 
@@ -67,7 +67,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public double getVelocity() {
-        return unitModel.toUnits(main_motor.getSelectedSensorVelocity());
+        return unitModel.toUnits(mainMotor.getSelectedSensorVelocity());
     }
 
     public void setVelocity(double velocity, double timeInterval) {
@@ -77,10 +77,10 @@ public class Shooter extends SubsystemBase {
         linearSystemLoop.correct(VecBuilder.fill(getVelocity()));
         linearSystemLoop.predict(timeInterval);
 
-        main_motor.set(ControlMode.PercentOutput, linearSystemLoop.getU(0) / NOMINAL_VOLTAGE);
+        mainMotor.set(ControlMode.PercentOutput, linearSystemLoop.getU(0) / NOMINAL_VOLTAGE);
     }
 
     public void terminate() {
-        main_motor.set(ControlMode.PercentOutput, 0);
+        mainMotor.set(ControlMode.PercentOutput, 0);
     }
 }
