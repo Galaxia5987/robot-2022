@@ -1,17 +1,19 @@
 package frc.robot.subsystems.shooter.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.shooter.AngleChanger;
+
+import java.util.function.Supplier;
 
 public class AngleChangerDefaultCommand extends CommandBase {
     private final AngleChanger angleChanger = AngleChanger.getINSTANCE();
-    private JoystickButton y;
+    private final Supplier<Boolean> mode_supplier;
     private boolean input;
     private boolean lastInput;
 
-    public AngleChangerDefaultCommand(JoystickButton y) {
-        this.y = y;
+    public AngleChangerDefaultCommand(Supplier<Boolean> mode_supplier) {
+        this.mode_supplier = mode_supplier;
+        addRequirements(angleChanger);
     }
 
     @Override
@@ -20,8 +22,8 @@ public class AngleChangerDefaultCommand extends CommandBase {
 
     @Override
     public void execute() {
-        input = y.get();
-        if(input && !lastInput){
+        input = mode_supplier.get();
+        if (input && !lastInput) {
             angleChanger.changeAngle();
         }
         lastInput = input;
