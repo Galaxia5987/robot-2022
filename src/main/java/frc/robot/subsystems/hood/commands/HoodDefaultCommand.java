@@ -1,18 +1,18 @@
-package frc.robot.subsystems.shooter.commands;
+package frc.robot.subsystems.hood.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.shooter.Hood;
+import frc.robot.subsystems.hood.Hood;
 
 import java.util.function.Supplier;
 
 public class HoodDefaultCommand extends CommandBase {
     private final Hood hood = Hood.getINSTANCE();
-    private final Supplier<Boolean> mode_supplier;
+    private final Supplier<Boolean> modeSupplier;
     private boolean input;
     private boolean lastInput;
 
-    public HoodDefaultCommand(Supplier<Boolean> mode_supplier) {
-        this.mode_supplier = mode_supplier;
+    public HoodDefaultCommand(Supplier<Boolean> modeSupplier) {
+        this.modeSupplier = modeSupplier;
         addRequirements(hood);
     }
 
@@ -22,7 +22,7 @@ public class HoodDefaultCommand extends CommandBase {
 
     @Override
     public void execute() {
-        input = mode_supplier.get();
+        input = modeSupplier.get();
         if (input && !lastInput) {
             hood.changeAngle();
         }

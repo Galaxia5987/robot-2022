@@ -4,9 +4,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.subsystems.shooter.Hood;
+import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.commands.HoodDefaultCommand;
+import frc.robot.subsystems.hood.commands.HoodDefaultCommand;
 import frc.robot.subsystems.shooter.commands.Shoot;
 import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
@@ -17,7 +17,7 @@ public class RobotContainer {
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final Trigger rt = new Trigger(() -> xbox.getRightTriggerAxis() > 0);
     private final Hood hood = Hood.getINSTANCE();
-    private final Shooter shooter = Shooter.getINSTANCE();
+    private final Shooter shooter = Shooter.getInstance();
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.

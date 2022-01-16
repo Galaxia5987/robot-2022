@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.shooter.Shooter;
 
 public class PrepareShooter extends CommandBase {
-    private final Shooter shooter = Shooter.getINSTANCE();
+    private final Shooter shooter = Shooter.getInstance();
     private final Timer timer = new Timer();
     private final double requiredVelocity;
     private double currentTime;

@@ -33,7 +33,7 @@ public class Shooter extends SubsystemBase {
         linearSystemLoop = configStateSpace("Inertia");
     }
 
-    public static Shooter getINSTANCE() {
+    public static Shooter getInstance() {
         return INSTANCE;
     }
 
@@ -71,7 +71,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setVelocity(double velocity, double timeInterval) {
-        velocity = Utils.deadband(velocity, 0.1);
+        velocity = Utils.deadband(velocity, WPI_TalonFX.kDefaultSafetyExpiration);
 
         linearSystemLoop.setNextR(VecBuilder.fill(velocity));
         linearSystemLoop.correct(VecBuilder.fill(getVelocity()));
