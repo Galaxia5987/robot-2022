@@ -5,18 +5,18 @@ import frc.robot.Constants;
 import frc.robot.subsystems.intake.Intake;
 
 /**
- * default intake command just sucks ball
+ * Default intake command just sucks ball.
  */
-public class DefaultIntake extends CommandBase {
+public class BasicIntakeCommand extends CommandBase {
     private final Intake intake;
 
-    public DefaultIntake(Intake intake) {
+    public BasicIntakeCommand(Intake intake) {
         this.intake = intake;
         addRequirements(intake);
     }
 
     /**
-     * set intake motor to an already decided default power
+     * Set intake motor to an already decided default power.
      */
     @Override
     public void initialize() {
@@ -30,12 +30,11 @@ public class DefaultIntake extends CommandBase {
     }
 
     /**
-     * set intake motor power to 0 stopping it
+     * Set intake motor power to 0% stopping it.
      */
     @Override
     public void end(boolean interrupted) {
         intake.setPower(0);
-        intake.closeSolenoid();
     }
 
 

@@ -7,7 +7,7 @@ import frc.robot.subsystems.intake.Intake;
 import java.util.function.BooleanSupplier;
 
 /**
- * default intake but only sucks alliance colored balls
+ * Default intake but only sucks alliance colored balls.
  */
 public class IntakeByVision extends CommandBase {
     private final Intake intake;
@@ -26,7 +26,7 @@ public class IntakeByVision extends CommandBase {
     }
 
     /**
-     * if ball is alliance color, ball will be sucked
+     * If ball is alliance color, ball will be sucked.
      */
     @Override
     public void execute() {
@@ -42,12 +42,11 @@ public class IntakeByVision extends CommandBase {
     }
 
     /**
-     * stops motor
+     * Stops motor.
      */
     @Override
     public void end(boolean interrupted) {
         intake.setPower(0);
-        intake.closeSolenoid();
     }
 
 }

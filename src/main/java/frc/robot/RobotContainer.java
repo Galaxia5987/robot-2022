@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.example.ExampleSubsystem;
 import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.intake.commands.DefaultIntake;
+import frc.robot.subsystems.intake.commands.BasicIntakeCommand;
 import frc.robot.subsystems.intake.commands.IntakeByRobotSpeed;
 import frc.robot.subsystems.intake.commands.IntakeByVision;
 import frc.robot.valuetuner.ValueTuner;
@@ -40,7 +40,7 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        a.whileHeld(new DefaultIntake(intake));
+        a.whileHeld(new BasicIntakeCommand(intake));
         b.whileHeld(new IntakeByRobotSpeed(intake, () -> 0.5));
         x.whileHeld(new IntakeByVision(intake, () -> true));
         y.whenPressed(intake::toggleSolenoid);

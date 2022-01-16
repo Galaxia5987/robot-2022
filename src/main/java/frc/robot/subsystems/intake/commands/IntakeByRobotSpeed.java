@@ -8,15 +8,15 @@ import frc.robot.subsystems.intake.Intake;
 import java.util.function.DoubleSupplier;
 
 /**
- * default intake but sucks ball according to robot speed
+ * Default intake but sucks ball according to robot speed.
  */
 public class IntakeByRobotSpeed extends CommandBase {
     private final Intake intake;
-    private final DoubleSupplier speed;
+    private final DoubleSupplier robotSpeedMeterPerSecond;
 
     public IntakeByRobotSpeed(Intake intake, DoubleSupplier speed) {
         this.intake = intake;
-        this.speed = speed;
+        this.robotSpeedMeterPerSecond = speed;
         addRequirements(intake);
     }
 
@@ -26,11 +26,11 @@ public class IntakeByRobotSpeed extends CommandBase {
     }
 
     /**
-     * sets intake motor to the power calculated by multiplying robot speed by power to speed ratio
+     * Sets intake motor to the power calculated by multiplying robot speed by power to speed ratio.
      */
     @Override
     public void execute() {
-        intake.setPower(speed.getAsDouble() * Constants.Intake.POWER_SPEED_RATIO);
+        intake.setPower(robotSpeedMeterPerSecond.getAsDouble() * Constants.Intake.POWER_SPEED_RATIO);
     }
 
     @Override
@@ -39,11 +39,10 @@ public class IntakeByRobotSpeed extends CommandBase {
     }
 
     /**
-     * stops intake motor
+     * Stops intake motor.
      */
     @Override
     public void end(boolean interrupted) {
         intake.setPower(0);
-        intake.closeSolenoid();
     }
 }
