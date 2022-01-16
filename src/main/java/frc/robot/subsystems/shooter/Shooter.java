@@ -10,9 +10,16 @@ import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.simulation.BatterySim;
+import edu.wpi.first.wpilibj.simulation.EncoderSim;
+import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.subsystems.UnitModel;
 import frc.robot.utils.Utils;
 
@@ -25,8 +32,12 @@ public class Shooter extends SubsystemBase {
     private final UnitModel unitModel = new UnitModel(TICKS_PER_REVOLUTION);
     private final WPI_TalonFX mainMotor = new WPI_TalonFX(MAIN_MOTOR);
     private final LinearSystemLoop<N1, N1, N1> linearSystemLoop;
+    private final Encoder encoder = new Encoder(0, 0);
+    private final EncoderSim encoderSim = new EncoderSim(encoder);
     private double currentTime = 0;
     private double lastTime = 0;
+
+    private FlywheelSim flywheelSim;
 
     /**
      * Constructor.
@@ -66,6 +77,11 @@ public class Shooter extends SubsystemBase {
             flywheel_plant = new LinearSystem<>(A_KaKv, B_KaKv, C_KaKv, D_KaKv);
         else
             flywheel_plant = LinearSystemId.createFlywheelSystem(motor, J, GEAR_RATIO);
+
+        if (Robot.isSimulation()) {
+            flywheelSim = new FlywheelSim(flywheel_plant, motor, GEAR_RATIO);
+            encoder.setDistancePerPulse(TICKS_PER_REVOLUTION);
+        }
 
         LinearQuadraticRegulator<N1, N1, N1> quadraticRegulator = new LinearQuadraticRegulator<>(
                 flywheel_plant,
@@ -132,4 +148,13 @@ public class Shooter extends SubsystemBase {
         lastTime = currentTime;
         currentTime = Timer.getFPGATimestamp();
     }
+
+    @Override
+    public void simulationPeriodic() {
+        flywheelSim.setInputVoltage(mainMotor.get() * RobotController.getBatteryVoltage());
+        flywheelSim.update(LOOP_PERIOD);
+        encoderSim.setRate(flywheelSim.getAngularVelocityRPM());
+        RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(flywheelSim.getCurrentDrawAmps()));
+    }
+
 }

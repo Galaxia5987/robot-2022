@@ -36,7 +36,7 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         /*
-        Currently, the shooting is at 20 meters per second. This will be changed once
+        Currently, the shooting is at 4 meters. This will be changed once
         the vision becomes available for use.
          */
         rt.whileActiveContinuous(new Shoot(shooter, () -> 4));
