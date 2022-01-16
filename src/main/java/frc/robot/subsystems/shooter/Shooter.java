@@ -91,7 +91,7 @@ public class Shooter extends SubsystemBase {
     /**
      * Gets the velocity of the motor.
      *
-     * @return the velocity of the motor. [r/s]
+     * @return the velocity of the motor. [rps]
      */
     public double getVelocity() {
         return unitModel.toVelocity(mainMotor.getSelectedSensorVelocity());
