@@ -79,8 +79,8 @@ public class Shooter extends SubsystemBase {
         KalmanFilter<N1, N1, N1> kalmanFilter = new KalmanFilter<>(
                 Nat.N1(), Nat.N1(),
                 flywheel_plant,
-                Matrix.mat(Nat.N1(), Nat.N1()).fill(MODEL_TOLERANCE),
-                Matrix.mat(Nat.N1(), Nat.N1()).fill(SENSOR_TOLERANCE),
+                VecBuilder.fill(MODEL_TOLERANCE),
+                VecBuilder.fill(SENSOR_TOLERANCE),
                 LOOP_PERIOD);
 
         return new LinearSystemLoop<>(

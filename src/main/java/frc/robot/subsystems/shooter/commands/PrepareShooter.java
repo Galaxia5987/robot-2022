@@ -11,7 +11,7 @@ public class PrepareShooter extends CommandBase {
      * Constructor.
      *
      * @param shooter          is the shooter subsystem.
-     * @param velocitySetpoint is the setpoint for the shooter wheel. [r/s]
+     * @param velocitySetpoint is the setpoint for the shooter wheel. [rps]
      */
     public PrepareShooter(Shooter shooter, double velocitySetpoint) {
         this.shooter = shooter;
