@@ -5,25 +5,30 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Climber.Climber;
 
 public class JoystickClimb extends CommandBase {
-    private final Climber climber
+    private final Climber climber;
+
+    public JoystickClimb(Climber climber) {
+        this.climber = climber;
+        addRequirements(climber);
+    }
 
     @Override
     public void initialize() {
-        super.initialize();
+
     }
 
     @Override
     public void execute() {
-        super.execute();
+
     }
 
     @Override
     public boolean isFinished() {
-        return super.isFinished();
+        return false;
     }
 
     @Override
     public void end(boolean interrupted) {
-        super.end(interrupted);
+
     }
 }
