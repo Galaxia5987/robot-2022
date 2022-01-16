@@ -33,6 +33,9 @@ public class Shooter extends SubsystemBase {
     private double currentTime = 0;
     private double lastTime = 0;
 
+    /**
+     * Constructor.
+     */
     private Shooter() {
         mainMotor.setInverted(IS_MAIN_INVERTED);
         mainMotor.setSensorPhase(MAIN_SENSOR_PHASE);
@@ -40,10 +43,22 @@ public class Shooter extends SubsystemBase {
         linearSystemLoop = configStateSpace("Moment of inertia based");
     }
 
+    /**
+     * Gets the single instance of the shooter.
+     *
+     * @return shooter instance.
+     */
     public static Shooter getInstance() {
         return INSTANCE;
     }
 
+    /**
+     * State space configuration function. Note that there are 2 different configurations.
+     *
+     * @param stateSpaceType is the configuration for the state space.
+     *                       Either "Moment of inertia based" or "Voltage equation based".
+     * @return the linear system loop (based on the type).
+     */
     private LinearSystemLoop<N1, N1, N1> configStateSpace(String stateSpaceType) {
         LinearSystem<N1, N1, N1> flywheel_plant;
         if (stateSpaceType.equals("Voltage equation based"))
@@ -73,10 +88,20 @@ public class Shooter extends SubsystemBase {
                 NOMINAL_VOLTAGE, LOOP_PERIOD);
     }
 
+    /**
+     * Gets the velocity of the motor.
+     *
+     * @return the velocity of the motor. [r/s]
+     */
     public double getVelocity() {
         return unitModel.toUnits(mainMotor.getSelectedSensorVelocity());
     }
 
+    /**
+     * Sets the velocity of the motor.
+     *
+     * @param velocity is the velocity setpoint. [r/s]
+     */
     public void setVelocity(double velocity) {
         linearSystemLoop.setNextR(VecBuilder.fill(velocity));
         linearSystemLoop.correct(VecBuilder.fill(getVelocity()));
@@ -85,6 +110,9 @@ public class Shooter extends SubsystemBase {
         mainMotor.setVoltage(Utils.clamp(linearSystemLoop.getU(0), -NOMINAL_VOLTAGE, NOMINAL_VOLTAGE));
     }
 
+    /**
+     * Terminates the movement of the wheel.
+     */
     public void terminate() {
         mainMotor.set(ControlMode.PercentOutput, 0);
     }
