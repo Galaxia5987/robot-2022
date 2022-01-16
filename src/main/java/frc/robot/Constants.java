@@ -42,9 +42,4 @@ public final class Constants {
         public static final double J = 0.00032; // Moment of inertia for state space. [kg*m^2]
         public static final double GEAR_RATIO = 1; // Gear ratio for encoder (placeholder).
     }
-
-    public static class AngleChanger {
-        public static final double ACTIVE_ANGLE = 55; // Angle of the shooter when the angle changer is active (placeholder). [deg]
-        public static final double INACTIVE_ANGLE = 70; // Angle of the shooter when the angle changer is inactive (placeholder). [deg]
-    }
 }
