@@ -21,7 +21,7 @@ public final class Constants {
         public static final double Cd = 0.4; // Drag coefficient of the ball.
         public static final double AIR_DENSITY = 1.225; // Average density of air. [kg/m^3]
 
-        public static final int TICKS_PER_REVOLUTION = 2048; // Ticks per revolution of the shooter motor. [tick/c]
+        public static final int TICKS_PER_REVOLUTION = 2048; // Ticks per revolution of the shooter motor. [tick]
 
         public static final double Ka = 1; // Acceleration state space coefficient (placeholder).
         public static final double Kv = 1; // Velocity state space coefficient (placeholder).
@@ -38,5 +38,6 @@ public final class Constants {
 
         public static final double J = 0.00032; // Moment of inertia for state space. [kg*m^2]
         public static final double GEAR_RATIO = 1; // Gear ratio for encoder (placeholder).
+        public static final double NEUTRAL_DEADBAND = 0.1;
     }
 }

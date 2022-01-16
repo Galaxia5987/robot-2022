@@ -39,7 +39,7 @@ public class RobotContainer {
         Currently, the shooting is at 20 meters per second. This will be changed once
         the vision becomes available for use.
          */
-        rt.whileActiveOnce(new Shoot(shooter, 20));
+        rt.whileActiveContinuous(new Shoot(shooter, 20));
     }
 
 

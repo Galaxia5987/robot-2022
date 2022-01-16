@@ -17,19 +17,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.UnitModel;
 import frc.robot.utils.Utils;
-import org.apache.commons.lang.NullArgumentException;
 
-import static frc.robot.Constants.LOOP_PERIOD;
-import static frc.robot.Constants.NOMINAL_VOLTAGE;
+import static frc.robot.Constants.*;
 import static frc.robot.Constants.Shooter.*;
 import static frc.robot.Ports.Shooter.*;
 
 public class Shooter extends SubsystemBase {
-    private static final Shooter INSTANCE = new Shooter();
+    private static Shooter INSTANCE;
     private final UnitModel unitModel = new UnitModel(TICKS_PER_REVOLUTION);
     private final WPI_TalonFX mainMotor = new WPI_TalonFX(MAIN_MOTOR);
     private final LinearSystemLoop<N1, N1, N1> linearSystemLoop;
-    private final DCMotor motor = DCMotor.getFalcon500(1);
     private double currentTime = 0;
     private double lastTime = 0;
 
@@ -39,8 +36,8 @@ public class Shooter extends SubsystemBase {
     private Shooter() {
         mainMotor.setInverted(IS_MAIN_INVERTED);
         mainMotor.setSensorPhase(MAIN_SENSOR_PHASE);
-        mainMotor.configNeutralDeadband(0.1, Constants.TALON_TIMEOUT);
-        linearSystemLoop = configStateSpace("Moment of inertia based");
+        mainMotor.configNeutralDeadband(NEUTRAL_DEADBAND, Constants.TALON_TIMEOUT);
+        linearSystemLoop = configStateSpace(true);
     }
 
     /**
@@ -49,30 +46,35 @@ public class Shooter extends SubsystemBase {
      * @return shooter instance.
      */
     public static Shooter getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new Shooter();
+        }
         return INSTANCE;
     }
 
     /**
      * State space configuration function. Note that there are 2 different configurations.
      *
-     * @param stateSpaceType is the configuration for the state space.
-     *                       Either "Moment of inertia based" or "Voltage equation based".
+     * @param isIneritaBased is the configuration for the state space.
+     *                       If the value is true, the state space is based off of an inertia model.
+     *                       Otherwise, the state space is based off of a voltage equation model.
      * @return the linear system loop (based on the type).
      */
-    private LinearSystemLoop<N1, N1, N1> configStateSpace(String stateSpaceType) {
+    private LinearSystemLoop<N1, N1, N1> configStateSpace(boolean isIneritaBased) {
+        final DCMotor motor = DCMotor.getFalcon500(1);
+
         LinearSystem<N1, N1, N1> flywheel_plant;
-        if (stateSpaceType.equals("Voltage equation based"))
+        if (!isIneritaBased)
             flywheel_plant = new LinearSystem<>(A_KaKv, B_KaKv, C_KaKv, D_KaKv);
-        else if (stateSpaceType.equals("Moment of inertia based"))
-            flywheel_plant = LinearSystemId.createFlywheelSystem(motor, J, GEAR_RATIO);
         else
-            throw new NullArgumentException("State space type");
+            flywheel_plant = LinearSystemId.createFlywheelSystem(motor, J, GEAR_RATIO);
 
         LinearQuadraticRegulator<N1, N1, N1> quadraticRegulator = new LinearQuadraticRegulator<>(
                 flywheel_plant,
                 VecBuilder.fill(MODEL_TOLERANCE),
                 VecBuilder.fill(SENSOR_TOLERANCE),
                 LOOP_PERIOD);
+        quadraticRegulator.latencyCompensate(flywheel_plant, LOOP_PERIOD, TALON_TIMEOUT / 1000.0);
 
         KalmanFilter<N1, N1, N1> kalmanFilter = new KalmanFilter<>(
                 Nat.N1(), Nat.N1(),
@@ -91,7 +93,7 @@ public class Shooter extends SubsystemBase {
     /**
      * Gets the velocity of the motor.
      *
-     * @return the velocity of the motor. [r/s]
+     * @return the velocity of the motor. [rps]
      */
     public double getVelocity() {
         return unitModel.toVelocity(mainMotor.getSelectedSensorVelocity());
@@ -100,7 +102,7 @@ public class Shooter extends SubsystemBase {
     /**
      * Sets the velocity of the motor.
      *
-     * @param velocity is the velocity setpoint. [r/s]
+     * @param velocity is the velocity setpoint. [rps]
      */
     public void setVelocity(double velocity) {
         linearSystemLoop.setNextR(VecBuilder.fill(velocity));
@@ -114,7 +116,7 @@ public class Shooter extends SubsystemBase {
      * Terminates the movement of the wheel.
      */
     public void terminate() {
-        mainMotor.set(ControlMode.PercentOutput, 0);
+        mainMotor.stopMotor();
     }
 
     @Override
