@@ -111,6 +111,16 @@ public class Shooter extends SubsystemBase {
     }
 
     /**
+     * Calculates the velocity setpoint according to the distance from the target.
+     *
+     * @param distance is the distance from the target. [m]
+     * @return 15. [rps]
+     */
+    public static double getSetpointVelocity(double distance) {
+        return 15;
+    }
+
+    /**
      * Terminates the movement of the wheel.
      */
     public void terminate() {

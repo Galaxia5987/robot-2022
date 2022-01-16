@@ -11,17 +11,7 @@ public class Shoot extends SequentialCommandGroup {
         be added to feed the balls to the shooter.
          */
         addCommands(
-                new PrepareShooter(shooter, getSetpointVelocity(distance))
+                new PrepareShooter(shooter, Shooter.getSetpointVelocity(distance))
         );
-    }
-
-    /**
-     * Calculates the velocity setpoint according to the distance from the target.
-     *
-     * @param distance is the distance from the target. [m]
-     * @return 15. [rps]
-     */
-    private double getSetpointVelocity(double distance) {
-        return 15;
     }
 }
