@@ -16,7 +16,7 @@ public class Utils {
     }
 
     /**
-     * @param input the joystick input
+     * @param input     the joystick input
      * @param threshold the joystick deadband threshold
      * @return the updated value after the deadband
      */
@@ -26,4 +26,8 @@ public class Utils {
         return (input - (Math.signum(input) * threshold)) / (1 - threshold);
     }
 
+
+    public static double clamp(double val, double min, double max) {
+        return Math.min(Math.max(val, min), max);
+    }
 }

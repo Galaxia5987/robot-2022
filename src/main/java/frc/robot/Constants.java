@@ -11,7 +11,9 @@ public final class Constants {
     public static final double g = 9.80665; // Gravity acceleration constant. [m/s^2]
     public static final double UPPER_TARGET_HEIGHT = 2.64; // Height of upper target. [m]
     public static final double PEBZNER_HEIGHT = 4.8; // Height of pebzner auditorium. [m]
-    public static final int TALON_TIMEOUT = 10; // Waiting period for configurations [ms].
+    public static final int TALON_TIMEOUT = 10; // Waiting period for configurations. [ms]
+    public static final double NOMINAL_VOLTAGE = 12.0; // Nominal voltage. [V]
+
 
     public static class Shooter {
         public static final double BALL_RADIUS = 0.12; // radius of the ball. [m]
@@ -20,11 +22,7 @@ public final class Constants {
         public static final double Cd = 0.4; // Drag coefficient of the ball.
         public static final double AIR_DENSITY = 1.225; // Average density of air. [kg/m^3]
 
-        public static final double NOMINAL_VOLTAGE = 12.0; // Nominal voltage. [V]
-        public static final double WHEEL_RADIUS = 1; // Radius of the flywheel. [m]
         public static final int TICKS_PER_REVOLUTION = 2048; // Ticks per revolution of the shooter motor. [tick/c]
-        public static final double TICKS_PER_METER = Math.pow(WHEEL_RADIUS, 2) * Math.PI
-                / TICKS_PER_REVOLUTION; // Ticks per meter of the shooter flywheel. [tick/m]
 
         public static final double Ka = 1; // Acceleration state space coefficient (placeholder).
         public static final double Kv = 1; // Velocity state space coefficient (placeholder).

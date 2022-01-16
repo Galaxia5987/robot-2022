@@ -12,25 +12,31 @@ import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.UnitModel;
 import frc.robot.utils.Utils;
 import org.apache.commons.lang.NullArgumentException;
 
 import static frc.robot.Constants.LOOP_PERIOD;
+import static frc.robot.Constants.NOMINAL_VOLTAGE;
 import static frc.robot.Constants.Shooter.*;
 import static frc.robot.Ports.Shooter.*;
 
 public class Shooter extends SubsystemBase {
     private static final Shooter INSTANCE = new Shooter();
-    private final UnitModel unitModel = new UnitModel(TICKS_PER_METER);
+    private final UnitModel unitModel = new UnitModel(TICKS_PER_REVOLUTION);
     private final WPI_TalonFX mainMotor = new WPI_TalonFX(MAIN_MOTOR);
     private final LinearSystemLoop<N1, N1, N1> linearSystemLoop;
     private final DCMotor motor = DCMotor.getFalcon500(1);
+    private double currentTime = 0;
+    private double lastTime = 0;
 
     private Shooter() {
-        mainMotor.setInverted(MAIN_INVERTED);
+        mainMotor.setInverted(IS_MAIN_INVERTED);
         mainMotor.setSensorPhase(MAIN_SENSOR_PHASE);
+        mainMotor.configNeutralDeadband(0.1, Constants.TALON_TIMEOUT);
         linearSystemLoop = configStateSpace("Moment of inertia based");
     }
 
@@ -71,17 +77,21 @@ public class Shooter extends SubsystemBase {
         return unitModel.toUnits(mainMotor.getSelectedSensorVelocity());
     }
 
-    public void setVelocity(double velocity, double timeInterval) {
-        velocity = Utils.deadband(velocity, WPI_TalonFX.kDefaultSafetyExpiration);
-
+    public void setVelocity(double velocity) {
         linearSystemLoop.setNextR(VecBuilder.fill(velocity));
         linearSystemLoop.correct(VecBuilder.fill(getVelocity()));
-        linearSystemLoop.predict(timeInterval);
+        linearSystemLoop.predict(currentTime - lastTime);
 
-        mainMotor.set(ControlMode.PercentOutput, linearSystemLoop.getU(0) / NOMINAL_VOLTAGE);
+        mainMotor.setVoltage(Utils.clamp(linearSystemLoop.getU(0), -NOMINAL_VOLTAGE, NOMINAL_VOLTAGE));
     }
 
     public void terminate() {
         mainMotor.set(ControlMode.PercentOutput, 0);
+    }
+
+    @Override
+    public void periodic() {
+        lastTime = currentTime;
+        currentTime = Timer.getFPGATimestamp();
     }
 }
