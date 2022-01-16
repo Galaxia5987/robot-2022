@@ -12,7 +12,7 @@ import java.util.function.DoubleSupplier;
  */
 public class IntakeByRobotSpeed extends CommandBase {
     private final Intake intake;
-    private DoubleSupplier speed;
+    private final DoubleSupplier speed;
 
     public IntakeByRobotSpeed(Intake intake, DoubleSupplier speed) {
         this.intake = intake;
@@ -33,6 +33,11 @@ public class IntakeByRobotSpeed extends CommandBase {
         intake.setPower(speed.getAsDouble() * Constants.Intake.POWER_SPEED_RATIO);
     }
 
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
+
     /**
      * stops intake motor
      */
@@ -40,10 +45,5 @@ public class IntakeByRobotSpeed extends CommandBase {
     public void end(boolean interrupted) {
         intake.setPower(0);
         intake.closeSolenoid();
-    }
-
-    @Override
-    public boolean isFinished() {
-        return super.isFinished();
     }
 }

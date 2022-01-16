@@ -10,11 +10,11 @@ import frc.robot.Ports;
 
 public class Intake extends SubsystemBase {
     public static Intake INSTANCE;
-    private final WPI_TalonSRX motor = new WPI_TalonSRX(Ports.Intake.MOTOR_PORT);
-    private final Solenoid solenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Intake.SOLENOID_PORT);
+    private final WPI_TalonSRX motor = new WPI_TalonSRX(Ports.Intake.MOTOR);
+    private final Solenoid solenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Intake.SOLENOID);
 
     public Intake() {
-        motor.setInverted(Ports.Intake.MOTOR_INVERTED);
+        motor.setInverted(Ports.Intake.IS_INVERTED);
     }
 
 
@@ -43,14 +43,14 @@ public class Intake extends SubsystemBase {
      * open intake solenoid
      */
     public void openSolenoid() {
-        solenoid.set(Constants.Intake.SOLENOID_OPEN);
+        solenoid.set(Constants.Intake.IS_SOLENOID_INVERTED);
     }
 
     /**
      * close intake solenoid
      */
     public void closeSolenoid() {
-        solenoid.set(Constants.Intake.SOLENOID_CLOSE);
+        solenoid.set(!Constants.Intake.IS_SOLENOID_INVERTED);
     }
 
     /**

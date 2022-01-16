@@ -10,8 +10,8 @@ import java.util.function.BooleanSupplier;
  * default intake but only sucks alliance colored balls
  */
 public class IntakeByVision extends CommandBase {
-    Intake intake;
-    BooleanSupplier isAllianceColor;
+    private final Intake intake;
+    private final BooleanSupplier isAllianceColor;
 
     public IntakeByVision(Intake intake, BooleanSupplier isAllianceColor) {
         this.intake = intake;
@@ -36,6 +36,11 @@ public class IntakeByVision extends CommandBase {
             intake.setPower(0);
     }
 
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
+
     /**
      * stops motor
      */
@@ -45,8 +50,4 @@ public class IntakeByVision extends CommandBase {
         intake.closeSolenoid();
     }
 
-    @Override
-    public boolean isFinished() {
-        return super.isFinished();
-    }
 }

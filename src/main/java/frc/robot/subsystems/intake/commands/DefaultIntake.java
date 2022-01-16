@@ -24,6 +24,11 @@ public class DefaultIntake extends CommandBase {
         intake.openSolenoid();
     }
 
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
+
     /**
      * set intake motor power to 0 stopping it
      */
@@ -33,8 +38,5 @@ public class DefaultIntake extends CommandBase {
         intake.closeSolenoid();
     }
 
-    @Override
-    public boolean isFinished() {
-        return false;
-    }
+
 }
