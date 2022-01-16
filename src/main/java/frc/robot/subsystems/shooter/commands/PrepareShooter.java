@@ -3,9 +3,11 @@ package frc.robot.subsystems.shooter.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.shooter.Shooter;
 
+import java.util.function.DoubleSupplier;
+
 public class PrepareShooter extends CommandBase {
     private final Shooter shooter;
-    private final double velocitySetpoint;
+    private final DoubleSupplier velocitySetpoint;
 
     /**
      * Constructor.
@@ -13,7 +15,7 @@ public class PrepareShooter extends CommandBase {
      * @param shooter          is the shooter subsystem.
      * @param velocitySetpoint is the setpoint for the shooter wheel. [rps]
      */
-    public PrepareShooter(Shooter shooter, double velocitySetpoint) {
+    public PrepareShooter(Shooter shooter, DoubleSupplier velocitySetpoint) {
         this.shooter = shooter;
         this.velocitySetpoint = velocitySetpoint;
         addRequirements(shooter);
@@ -21,7 +23,7 @@ public class PrepareShooter extends CommandBase {
 
     @Override
     public void execute() {
-        shooter.setVelocity(velocitySetpoint);
+        shooter.setVelocity(velocitySetpoint.getAsDouble());
     }
 
     @Override
