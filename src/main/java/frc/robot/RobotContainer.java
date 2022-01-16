@@ -5,9 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.hood.Hood;
-import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.hood.commands.HoodDefaultCommand;
-import frc.robot.subsystems.shooter.commands.Shoot;
 import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
 
@@ -17,7 +15,6 @@ public class RobotContainer {
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final Trigger rt = new Trigger(() -> xbox.getRightTriggerAxis() > 0);
     private final Hood hood = Hood.getINSTANCE();
-    private final Shooter shooter = Shooter.getInstance();
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -43,7 +40,6 @@ public class RobotContainer {
         Currently, the shooting is at 20 meters per second. This will be changed once
         the vision becomes available for use.
          */
-        rt.whileActiveOnce(new Shoot(20));
     }
 
 
