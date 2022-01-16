@@ -14,4 +14,8 @@ public final class Ports {
         public static final int XBOX = 0;
     }
 
+    public static class Climber {
+        public static final int MOTOR_LEFT = 0;
+        public static final int MOTOR_RIGHT = 0;
+    }
 }
