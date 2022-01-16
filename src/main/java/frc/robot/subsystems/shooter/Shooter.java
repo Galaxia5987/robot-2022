@@ -15,6 +15,7 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.UnitModel;
 import frc.robot.utils.Utils;
+import org.apache.commons.lang.NullArgumentException;
 
 import static frc.robot.Constants.LOOP_PERIOD;
 import static frc.robot.Constants.Shooter.*;
@@ -30,7 +31,7 @@ public class Shooter extends SubsystemBase {
     private Shooter() {
         mainMotor.setInverted(MAIN_INVERTED);
         mainMotor.setSensorPhase(MAIN_SENSOR_PHASE);
-        linearSystemLoop = configStateSpace("Inertia");
+        linearSystemLoop = configStateSpace("Moment of inertia based");
     }
 
     public static Shooter getInstance() {
@@ -39,12 +40,12 @@ public class Shooter extends SubsystemBase {
 
     private LinearSystemLoop<N1, N1, N1> configStateSpace(String stateSpaceType) {
         LinearSystem<N1, N1, N1> flywheel_plant;
-        if (stateSpaceType.equals("KaKv"))
+        if (stateSpaceType.equals("Voltage equation based"))
             flywheel_plant = new LinearSystem<>(A_KaKv, B_KaKv, C_KaKv, D_KaKv);
-        else if (stateSpaceType.equals("Inertia"))
+        else if (stateSpaceType.equals("Moment of inertia based"))
             flywheel_plant = LinearSystemId.createFlywheelSystem(motor, J, GEAR_RATIO);
         else
-            return null;
+            throw new NullArgumentException("State space type");
 
         LinearQuadraticRegulator<N1, N1, N1> quadraticRegulator = new LinearQuadraticRegulator<>(
                 flywheel_plant,
