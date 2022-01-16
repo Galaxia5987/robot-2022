@@ -17,5 +17,6 @@ public final class Ports {
     public static class Intake {
         public static int MOTOR_PORT = 0;
         public static boolean MOTOR_INVERTED = false;
+        public static int SOLENOID_PORT = 0;
     }
 }
