@@ -32,7 +32,7 @@ public final class Constants {
         public static final double MODEL_TOLERANCE = 1e-6; // Model tolerance for state space.
         public static final double SENSOR_TOLERANCE = 1e-6; // Sensor tolerance for state space.
 
-        public static final double J = 0.00032; // Moment of inertia for state space. [kg*m^2]
+        public static final double J = 0.00218; // Moment of inertia for state space. [kg*m^2]
         public static final double GEAR_RATIO = 1; // Gear ratio for encoder (placeholder).
         public static final double NEUTRAL_DEADBAND = 0.1;
 
