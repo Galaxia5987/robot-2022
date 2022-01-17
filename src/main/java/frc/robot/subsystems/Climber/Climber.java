@@ -1,20 +1,19 @@
 package frc.robot.subsystems.Climber;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FollowerType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
 import frc.robot.subsystems.UnitModel;
-import frc.robot.subsystems.example.ExampleSubsystem;
 
 public class Climber extends SubsystemBase {
+    private static Climber INSTANCE = null;
     private final WPI_TalonFX motorLeft = new WPI_TalonFX(Ports.Climber.MOTOR_LEFT);
     private final WPI_TalonFX motorRight = new WPI_TalonFX(Ports.Climber.MOTOR_RIGHT);
     private final UnitModel unitModelVelocity = new UnitModel(Constants.Climber.VELOCITY_TICKS_PER_UNIT);
     private final UnitModel unitModelDegree = new UnitModel(Constants.Climber.TICKS_PER_DEGREE);
-    private static Climber INSTANCE = null;
-
 
     public Climber() {
         motorLeft.getSelectedSensorPosition();

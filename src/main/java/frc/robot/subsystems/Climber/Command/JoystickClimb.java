@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Climber.Climber;
 import frc.robot.utils.Utils;
-import jdk.jshell.execution.Util;
 
 import java.util.function.DoubleSupplier;
 
@@ -21,7 +20,7 @@ public class JoystickClimb extends CommandBase {
     @Override
     public void execute() {
         double drive = supplier.getAsDouble() * Constants.Climber.MAX_VELOCITY;
-        Utils.deadband(drive, Constants.Climber.THRESHOLD);
+        climber.setVelocity(Utils.deadband(drive, Constants.Climber.THRESHOLD));
     }
 
     @Override
