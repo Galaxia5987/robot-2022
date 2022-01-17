@@ -16,7 +16,8 @@ public final class Constants {
 
 
     public static class Shooter {
-        public static final int TICKS_PER_REVOLUTION = 2048; // Ticks per revolution of the shooter motor. [tick]
+        public static final double TICKS_PER_RADIAN = 2048 / (2 * Math.PI); // Ticks per revolution of the shooter motor. [tick]
+        public static final double WHEEL_RADIUS = 0.1016;
 
         public static final double Ka = 1; // Acceleration state space coefficient (placeholder).
         public static final double Kv = 1; // Velocity state space coefficient (placeholder).
