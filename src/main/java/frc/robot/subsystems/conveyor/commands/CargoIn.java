@@ -3,7 +3,7 @@ package frc.robot.subsystems.conveyor.commands;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Ports;
-import frc.robot.subsystems.conveyor.Constants;
+import frc.robot.Constants;
 import frc.robot.subsystems.conveyor.Conveyor;
 
 public class CargoIn extends CommandBase {

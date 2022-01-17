@@ -4,7 +4,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Ports;
-import frc.robot.subsystems.conveyor.Constants;
+import frc.robot.Constants;
 import frc.robot.subsystems.conveyor.Conveyor;
 
 public class CargoOut extends CommandBase {
@@ -15,7 +15,6 @@ public class CargoOut extends CommandBase {
     public CargoOut(Conveyor conveyor) {
         this.conveyor = conveyor;
         addRequirements(conveyor);
-        DriverStation.getAlliance().equals(DriverStation.Alliance)
     }
 
     @Override
