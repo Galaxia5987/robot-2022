@@ -1,16 +1,16 @@
-package frc.robot.subsystems.conveyor.Command;
+package frc.robot.subsystems.conveyor.commands;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Ports;
-import frc.robot.subsystems.example.Conveyor;
+import frc.robot.subsystems.example.Deez_Nuts;
 
 public class ConveyorDefaultCommand extends CommandBase {
-    private final Conveyor ConveyorDefaultCommand;
+    private final Deez_Nuts ConveyorDefaultCommand;
     private final WPI_TalonSRX motor = new WPI_TalonSRX(Ports.Conveyor.AUX);
     private frc.robot.subsystems.conveyor.Conveyor.AllianceColor color;
 
-    public ConveyorDefaultCommand(Conveyor ConveyorDefaultCommand) {
+    public ConveyorDefaultCommand(Deez_Nuts ConveyorDefaultCommand) {
         this.ConveyorDefaultCommand = ConveyorDefaultCommand;
         addRequirements(ConveyorDefaultCommand);
     }

@@ -1,19 +1,19 @@
 package frc.robot.subsystems.example.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.example.Conveyor;
+import frc.robot.subsystems.example.Deez_Nuts;
 
 public class ExampleCommand extends CommandBase {
-    private final Conveyor exampleSubsystem;
+    private final Deez_Nuts exampleSubsystem;
 
-    public ExampleCommand(Conveyor exampleSubsystem) {
+    public ExampleCommand(Deez_Nuts exampleSubsystem) {
         this.exampleSubsystem = exampleSubsystem;
         addRequirements(exampleSubsystem);
     }
 
     @Override
     public void initialize() {
-        exampleSubsystem.setPower(Constants.ExampleSubsystem.POWER);
+        exampleSubsystem.setPower(0);
     }
 
     @Override

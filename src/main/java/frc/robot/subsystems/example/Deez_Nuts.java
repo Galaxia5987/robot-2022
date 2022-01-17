@@ -6,13 +6,13 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Ports;
 
-public class Conveyor extends SubsystemBase {
-    private static Conveyor INSTANCE = null;
+public class Deez_Nuts extends SubsystemBase {
+    private static Deez_Nuts INSTANCE = null;
     // create fields here
     private final WPI_TalonFX main = new WPI_TalonFX(Ports.Conveyor.MAIN);
     private final WPI_TalonSRX aux = new WPI_TalonSRX(Ports.Conveyor.AUX);
 
-    private Conveyor() {
+    private Deez_Nuts() {
         // motor and sensor inversions
         main.setInverted(Ports.Conveyor.IS_MAIN_INVERTED);
         aux.setInverted(Ports.Conveyor.IS_AUX_INVERTED);
@@ -28,9 +28,9 @@ public class Conveyor extends SubsystemBase {
      *
      * @return the subsystem instance
      */
-    public static Conveyor getInstance() {
+    public static Deez_Nuts getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new Conveyor();
+            INSTANCE = new Deez_Nuts();
         }
         return INSTANCE;
     }

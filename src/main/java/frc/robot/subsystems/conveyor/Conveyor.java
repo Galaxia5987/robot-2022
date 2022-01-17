@@ -6,7 +6,6 @@ import frc.robot.Ports;
 
 import java.util.Deque;
 import java.util.LinkedList;
-import java.util.Queue;
 
 public class Conveyor extends SubsystemBase {
     private static Conveyor INSTANCE = null;
@@ -32,15 +31,20 @@ public class Conveyor extends SubsystemBase {
         return INSTANCE;
     }
 
-    public void setpower(double power) {
-        motor.set(power);
-    }
-
     public static AllianceColor GetcolorIntake() {
         return AllianceColor.RED;
     }
+
     public static AllianceColor GetcolorShooter() {
         return AllianceColor.RED;
+    }
+
+    public int getCargoCount() {
+        return cargoCount;
+    }
+
+    public void setPower(double power) {
+        motor.set(power);
     }
 
 //    public boolean Iscargoalliencecolor() {
@@ -52,6 +56,31 @@ public class Conveyor extends SubsystemBase {
     }
 
 
+    @Override
+    public void periodic() {
+        var colorShooter = GetcolorShooter();
+        var colorIntake = GetcolorIntake();
+        if (colorShooter != AllianceColor.OTHER) {
+            if (motor.getMotorOutputPercent() > 0) {
+                cargoCount--;
+                position.removeFirst();
+            } else if (motor.getMotorOutputPercent() < 0) {
+                cargoCount++;
+                position.addFirst(colorShooter.label);
+            }
+
+        }
+        if (colorIntake != AllianceColor.OTHER) {
+            if (motor.getMotorOutputPercent() < 0) {
+                cargoCount--;
+                position.removeLast();
+            } else if (motor.getMotorOutputPercent() > 0) {
+                cargoCount++;
+                position.add(colorIntake.label);
+            }
+        }
+    }
+
     public enum AllianceColor {
         RED("red"),
         BLUE("blue"),
@@ -62,37 +91,6 @@ public class Conveyor extends SubsystemBase {
 
         private AllianceColor(String label) {
             this.label = label;
-        }
-    }
-
-    public int getCargoCount() {
-        return cargoCount;
-    }
-
-    @Override
-    public void periodic() {
-        var colorShooter = GetcolorShooter();
-        var colorIntake = GetcolorIntake();
-        if (colorShooter != AllianceColor.OTHER) {
-            if (motor.getMotorOutputPercent() > 0) {
-                cargoCount--;
-                position.removeFirst();
-            }
-            else if (motor.getMotorOutputPercent() < 0) {
-                cargoCount++;
-                position.addFirst(colorShooter.label);
-            }
-
-        }
-        if (colorIntake != AllianceColor.OTHER) {
-            if (motor.getMotorOutputPercent() < 0) {
-                cargoCount--;
-                position.removeLast();
-            }
-            else if (motor.getMotorOutputPercent() > 0){
-                cargoCount++;
-                position.add(colorIntake.label);
-            }
         }
     }
 }
