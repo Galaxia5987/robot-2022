@@ -1,8 +1,6 @@
 package frc.robot.subsystems.shooter;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import edu.wpi.first.hal.SimDevice;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.LinearQuadraticRegulator;
@@ -20,7 +18,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.UnitModel;
 import frc.robot.utils.Utils;
 
@@ -30,7 +27,7 @@ import static frc.robot.Ports.Shooter.*;
 
 public class Shooter extends SubsystemBase {
     private static Shooter INSTANCE;
-    private final UnitModel unitModel = new UnitModel(TICKS_PER_REVOLUTION);
+    private final UnitModel unitModel = new UnitModel(TICKS_PER_RADIAN);
     private final WPI_TalonFX mainMotor = new WPI_TalonFX(MAIN_MOTOR);
     private final LinearSystemLoop<N1, N1, N1> linearSystemLoop;
     private final Encoder encoder = new Encoder(0, 1);
@@ -110,7 +107,7 @@ public class Shooter extends SubsystemBase {
     /**
      * Gets the velocity of the motor.
      *
-     * @return the velocity of the motor. [rps]
+     * @return the velocity of the motor. [rad/s]
      */
     public double getVelocity() {
         if (Robot.isSimulation()) {
@@ -122,7 +119,7 @@ public class Shooter extends SubsystemBase {
     /**
      * Sets the velocity of the motor.
      *
-     * @param velocity is the velocity setpoint. [rps]
+     * @param velocity is the velocity setpoint. [rad/s]
      */
     public void setVelocity(double velocity) {
         linearSystemLoop.setNextR(VecBuilder.fill(velocity));
@@ -136,10 +133,10 @@ public class Shooter extends SubsystemBase {
      * Calculates the velocity setpoint according to the distance from the target.
      *
      * @param distance is the distance from the target. [m]
-     * @return 15. [rps]
+     * @return 15. [rad/s]
      */
     public static double getSetpointVelocity(double distance) {
-        return 100 * distance;
+        return 15 * distance;
     }
 
     /**
