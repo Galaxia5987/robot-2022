@@ -1,6 +1,8 @@
 package frc.robot.subsystems.shooter;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import edu.wpi.first.hal.SimDevice;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.LinearQuadraticRegulator;
@@ -13,13 +15,12 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.simulation.BatterySim;
-import edu.wpi.first.wpilibj.simulation.EncoderSim;
-import edu.wpi.first.wpilibj.simulation.FlywheelSim;
-import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import edu.wpi.first.wpilibj.simulation.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.UnitModel;
 import frc.robot.utils.Utils;
 
@@ -32,7 +33,7 @@ public class Shooter extends SubsystemBase {
     private final UnitModel unitModel = new UnitModel(TICKS_PER_REVOLUTION);
     private final WPI_TalonFX mainMotor = new WPI_TalonFX(MAIN_MOTOR);
     private final LinearSystemLoop<N1, N1, N1> linearSystemLoop;
-    private final Encoder encoder = new Encoder(0, 0);
+    private final Encoder encoder = new Encoder(0, 1);
     private final EncoderSim encoderSim = new EncoderSim(encoder);
     private double currentTime = 0;
     private double lastTime = 0;
@@ -82,7 +83,7 @@ public class Shooter extends SubsystemBase {
 
         if (Robot.isSimulation()) {
             flywheelSim = new FlywheelSim(flywheel_plant, motor, GEAR_RATIO);
-            encoder.setDistancePerPulse(TICKS_PER_REVOLUTION);
+            encoder.setDistancePerPulse(2 * Math.PI);
         }
 
         LinearQuadraticRegulator<N1, N1, N1> quadraticRegulator = new LinearQuadraticRegulator<>(
@@ -112,6 +113,9 @@ public class Shooter extends SubsystemBase {
      * @return the velocity of the motor. [rps]
      */
     public double getVelocity() {
+        if (Robot.isSimulation()) {
+            return encoder.getRate();
+        }
         return unitModel.toVelocity(mainMotor.getSelectedSensorVelocity());
     }
 
@@ -135,7 +139,7 @@ public class Shooter extends SubsystemBase {
      * @return 15. [rps]
      */
     public static double getSetpointVelocity(double distance) {
-        return 15;
+        return 100 * distance;
     }
 
     /**
@@ -153,10 +157,12 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void simulationPeriodic() {
+        SmartDashboard.putNumber("power", mainMotor.get());
         flywheelSim.setInputVoltage(mainMotor.get() * RobotController.getBatteryVoltage());
         flywheelSim.update(LOOP_PERIOD);
-        encoderSim.setRate(flywheelSim.getAngularVelocityRPM());
+        encoderSim.setRate(flywheelSim.getAngularVelocityRadPerSec());
         RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(flywheelSim.getCurrentDrawAmps()));
+        SmartDashboard.putNumber("velocity", flywheelSim.getAngularVelocityRadPerSec());
     }
 
 }

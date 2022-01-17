@@ -32,6 +32,7 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
+        shooter.setDefaultCommand(new Shoot(shooter, xbox::getLeftY));
     }
 
     private void configureButtonBindings() {
@@ -39,7 +40,7 @@ public class RobotContainer {
         Currently, the shooting is at 4 meters. This will be changed once
         the vision becomes available for use.
          */
-        rt.whileActiveContinuous(new Shoot(shooter, () -> 4));
+//        rt.whileActiveContinuous(new Shoot(shooter, () -> 4));
     }
 
 

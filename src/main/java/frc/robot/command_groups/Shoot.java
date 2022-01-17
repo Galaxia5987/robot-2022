@@ -1,5 +1,6 @@
 package frc.robot.command_groups;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.FeedToShooter;
@@ -20,14 +21,14 @@ public class Shoot extends SequentialCommandGroup {
         be added to feed the balls to the shooter.
          */
         addCommands(
-                new PrepareShooter(shooter, () -> Shooter.getSetpointVelocity(distance.getAsDouble()))
+                new PrepareShooter(shooter, () -> Shooter.getSetpointVelocity(-distance.getAsDouble()))
         );
     }
 
-    @Override
-    public void execute() {
-        if(shooter.getVelocity() == Shooter.getSetpointVelocity(distance.getAsDouble())){
-            new FeedToShooter();
-        }
-    }
+//    @Override
+//    public void execute() {
+//        if(shooter.getVelocity() == Shooter.getSetpointVelocity(distance.getAsDouble())){
+//            new FeedToShooter();
+//        }
+//    }
 }
