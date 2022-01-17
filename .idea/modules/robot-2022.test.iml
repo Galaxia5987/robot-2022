@@ -59,5 +59,4 @@
     <orderEntry type="library" name="Gradle: org.eclipse.jetty:jetty-util:9.4.12.v20180830" level="project" />
     <orderEntry type="library" name="Gradle: org.eclipse.jetty:jetty-client:9.4.12.v20180830" level="project" />
   </component>
-  <component name="TestModuleProperties" production-module="robot-2022.main" />
 </module>

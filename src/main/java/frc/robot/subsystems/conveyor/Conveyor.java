@@ -86,9 +86,10 @@ public class Conveyor extends SubsystemBase {
         switch (alliance) {
             case Red:
                 System.out.println("RED");
+                break;
             case Blue:
                 System.out.println("Blue");
-
+                break;
         }
         return "bruh";
     }
