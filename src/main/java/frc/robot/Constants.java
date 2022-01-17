@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
@@ -39,5 +40,7 @@ public final class Constants {
         public static final double J = 0.00032; // Moment of inertia for state space. [kg*m^2]
         public static final double GEAR_RATIO = 1; // Gear ratio for encoder (placeholder).
         public static final double NEUTRAL_DEADBAND = 0.1;
+
+        public static final TalonFXConfiguration CONFIGURATION = new TalonFXConfiguration();
     }
 }

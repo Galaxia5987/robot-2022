@@ -32,6 +32,8 @@ public class Shooter extends SubsystemBase {
      * Constructor.
      */
     private Shooter() {
+        CONFIGURATION.enableOptimizations = true;
+        mainMotor.configAllSettings(CONFIGURATION);
         mainMotor.setInverted(IS_MAIN_INVERTED);
         mainMotor.setSensorPhase(MAIN_SENSOR_PHASE);
         mainMotor.configNeutralDeadband(NEUTRAL_DEADBAND, Constants.TALON_TIMEOUT);
