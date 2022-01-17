@@ -2,6 +2,7 @@ package frc.robot.command_groups;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.commands.FeedToShooter;
 import frc.robot.subsystems.shooter.commands.PrepareShooter;
 import frc.robot.subsystems.shooter.commands.FeedToShooter;
 
