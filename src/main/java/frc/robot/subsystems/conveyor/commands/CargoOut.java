@@ -10,7 +10,7 @@ import frc.robot.subsystems.conveyor.Conveyor;
 public class CargoOut extends CommandBase {
     private final Conveyor conveyor;
     private final WPI_TalonSRX motor = new WPI_TalonSRX(Ports.Conveyor.AUX);
-    private frc.robot.subsystems.conveyor.Conveyor.AllianceColor color;
+//    private frc.robot.subsystems.conveyor.Conveyor.AllianceColor color;
 
     public CargoOut(Conveyor conveyor) {
         this.conveyor = conveyor;
@@ -30,6 +30,7 @@ public class CargoOut extends CommandBase {
     // leave me alone
     @Override
     public boolean isFinished() {
+        return true;
     }
 
     @Override

@@ -8,7 +8,7 @@ import frc.robot.subsystems.example.Deez_Nuts;
 public class ConveyorDefaultCommand extends CommandBase {
     private final Deez_Nuts ConveyorDefaultCommand;
     private final WPI_TalonSRX motor = new WPI_TalonSRX(Ports.Conveyor.AUX);
-    private frc.robot.subsystems.conveyor.Conveyor.AllianceColor color;
+//    private frc.robot.subsystems.conveyor.Conveyor.AllianceColor color;
 
     public ConveyorDefaultCommand(Deez_Nuts ConveyorDefaultCommand) {
         this.ConveyorDefaultCommand = ConveyorDefaultCommand;

@@ -9,7 +9,6 @@ import frc.robot.subsystems.conveyor.Conveyor;
 public class CargoIn extends CommandBase {
     private final Conveyor conveyor;
     private final WPI_TalonSRX motor = new WPI_TalonSRX(Ports.Conveyor.AUX);
-    private frc.robot.subsystems.conveyor.Conveyor.AllianceColor color;
 
     public CargoIn(Conveyor conveyor) {
         this.conveyor = conveyor;

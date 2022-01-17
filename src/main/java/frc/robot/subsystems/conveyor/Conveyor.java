@@ -67,7 +67,7 @@ public class Conveyor extends SubsystemBase {
                 position.removeFirst();
             } else if (motor.getMotorOutputPercent() < 0) {
                 cargoCount++;
-                position.addFirst(colorShooter.label);
+//                position.addFirst(colorShooter.label);
             }
 
         }
@@ -77,13 +77,20 @@ public class Conveyor extends SubsystemBase {
                 position.removeLast();
             } else if (motor.getMotorOutputPercent() > 0) {
                 cargoCount++;
-                position.add(colorIntake.label);
+//                position.add(colorIntake.label);
             }
         }
     }
 
-    private String enumToString(DriverStation.Alliance){
-        
+    private String enumToString(DriverStation.Alliance alliance) {
+        switch (alliance) {
+            case Red:
+                System.out.println("RED");
+            case Blue:
+                System.out.println("Blue");
+
+        }
+        return "bruh";
     }
 
 }
