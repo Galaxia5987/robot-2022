@@ -1,15 +1,15 @@
-package frc.robot.subsystems.Climber.Command;
+package frc.robot.subsystems.climber.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.Climber.Climber;
+import frc.robot.subsystems.climber.Climber;
 import frc.robot.utils.Utils;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 /**
- * parameters: Climber climber, BooleanSupplier stop, DoubleSupplier joystickOutput.
+ * parameters: Climber the climber, BooleanSupplier stop, DoubleSupplier joystickOutput.
  * This command let the driver control the climb movement by moving Xbox joystick.
  */
 
