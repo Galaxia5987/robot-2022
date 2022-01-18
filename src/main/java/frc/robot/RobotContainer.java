@@ -33,7 +33,7 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        climber.setDefaultCommand(new JoystickClimb(climber, xbox:: getYButtonPressed, xbox :: getLeftY));
+        climber.setDefaultCommand(new JoystickClimb(climber, xbox::getYButtonPressed, xbox::getLeftY));
     }
 
     private void configureButtonBindings() {

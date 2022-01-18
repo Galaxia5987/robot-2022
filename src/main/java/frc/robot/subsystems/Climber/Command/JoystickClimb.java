@@ -10,17 +10,17 @@ import java.util.function.DoubleSupplier;
 
 /**
  * parameters: Climber climber, BooleanSupplier stop, DoubleSupplier joystickOutput.
- * this command let the driver control the climb movement by moving xbox joystick.
+ * This command let the driver control the climb movement by moving Xbox joystick.
  */
 
 public class JoystickClimb extends CommandBase {
     private final Climber climber;
-    private final BooleanSupplier stop;
+    private final BooleanSupplier isFinished;
     private final DoubleSupplier joystickOutput;
 
-    public JoystickClimb(Climber climber, BooleanSupplier stop, DoubleSupplier joystickOutput) {
+    public JoystickClimb(Climber climber, BooleanSupplier isFinished, DoubleSupplier joystickOutput) {
         this.climber = climber;
-        this.stop = stop;
+        this.isFinished = isFinished;
         this.joystickOutput = joystickOutput;
 
         addRequirements(climber);
@@ -34,7 +34,7 @@ public class JoystickClimb extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return stop.getAsBoolean();
+        return isFinished.getAsBoolean();
     }
 
     @Override

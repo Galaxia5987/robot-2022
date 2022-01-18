@@ -20,5 +20,12 @@ public final class Ports {
     public static class Climber {
         public static final int LEFT = 0;
         public static final int RIGHT = 0;
+
+        public static final boolean LEFT_SENSOR_PHASE = true;
+        public static final boolean IS_LEFT_INVERTED = true;
+
+        public static final boolean RIGHT_SENSOR_PHASE = true;
+        public static final boolean IS_RIGHT_INVERTED = true;
+
     }
 }

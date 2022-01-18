@@ -26,12 +26,8 @@ public final class Constants {
         public static final int TICKS_PER_METER = 0;
         public static final int TICKS_PER_DEGREE = 0;
 
-        public static final int MAX_VELOCITY = 4;
+        public static final int MAX_VELOCITY = 4; //[m/s]
 
-        public static final double THRESHOLD = 0.05;
-
-        public static final boolean SENSOR_PHASE = true;
-
-        public static final boolean IS_INVERTED = true;
+        public static final double THRESHOLD = 0.05; //[cm]
     }
 }
