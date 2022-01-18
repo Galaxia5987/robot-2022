@@ -10,9 +10,9 @@ import frc.robot.subsystems.UnitModel;
 
 public class Climber extends SubsystemBase {
     private static Climber INSTANCE = null;
-    private final WPI_TalonFX motorLeft = new WPI_TalonFX(Ports.Climber.MOTOR_LEFT);
-    private final WPI_TalonFX motorRight = new WPI_TalonFX(Ports.Climber.MOTOR_RIGHT);
-    private final UnitModel unitModelVelocity = new UnitModel(Constants.Climber.VELOCITY_TICKS_PER_UNIT);
+    private final WPI_TalonFX motorLeft = new WPI_TalonFX(Ports.Climber.LEFT);
+    private final WPI_TalonFX motorRight = new WPI_TalonFX(Ports.Climber.RIGHT);
+    private final UnitModel unitModelVelocity = new UnitModel(Constants.Climber.TICKS_PER_METER);
     private final UnitModel unitModelDegree = new UnitModel(Constants.Climber.TICKS_PER_DEGREE);
 
     public Climber() {
@@ -20,23 +20,59 @@ public class Climber extends SubsystemBase {
          Set the left motor on Brake mode.
          */
         motorLeft.setNeutralMode(NeutralMode.Brake);
+
         /*
-         config PID for left motor.
+         sets the phase of the sensor
          */
-        motorLeft.config_kP(0, Constants.Climber.P_LEFT_MOTOR);
-        motorLeft.config_kI(0, Constants.Climber.I_LEFT_MOTOR);
-        motorLeft.config_kD(0, Constants.Climber.D_LEFT_MOTOR);
+        motorLeft.setSensorPhase(Constants.Climber.SENSOR_PHASE);
+
+        /*
+         checking is motor inverted.
+         */
+        motorLeft.setInverted(Constants.Climber.IS_INVERTED);
+
+        /*
+         config PID velocity for left motor.
+         */
+        motorLeft.config_kP(0, Constants.Climber.P_LEFT_VELOCITY);
+        motorLeft.config_kI(0, Constants.Climber.I_LEFT_VELOCITY);
+        motorLeft.config_kD(0, Constants.Climber.D_LEFT_VELOCITY);
+
+        /*
+         config PID position for left motor.
+         */
+        motorRight.config_kP(0, Constants.Climber.P_LEFT_POSITION);
+        motorRight.config_kI(0, Constants.Climber.I_LEFT_POSITION);
+        motorRight.config_kD(0, Constants.Climber.D_LEFT_POSITION);
 
         /*
          set the right motor on Brake mode.
          */
         motorRight.setNeutralMode(NeutralMode.Brake);
+
         /*
-         config PID for right motor.
+        sets the phase of the sensor
          */
-        motorRight.config_kP(0, Constants.Climber.P_RIGHT_MOTOR);
-        motorRight.config_kI(0, Constants.Climber.I_RIGHT_MOTOR);
-        motorRight.config_kD(0, Constants.Climber.D_RIGHT_MOTOR);
+        motorLeft.setSensorPhase(Constants.Climber.SENSOR_PHASE);
+
+        /*
+         checking is motor inverted.
+         */
+        motorLeft.setInverted(Constants.Climber.IS_INVERTED);
+
+        /*
+         config PID velocity for right motor.
+         */
+        motorRight.config_kP(0, Constants.Climber.P_RIGHT_VELOCITY);
+        motorRight.config_kI(0, Constants.Climber.I_RIGHT_VELOCITY);
+        motorRight.config_kD(0, Constants.Climber.D_RIGHT_VELOCITY);
+
+        /*
+         config PID position for right motor.
+         */
+        motorRight.config_kP(0, Constants.Climber.P_RIGHT_POSITION);
+        motorRight.config_kI(0, Constants.Climber.I_RIGHT_POSITION);
+        motorRight.config_kD(0, Constants.Climber.D_RIGHT_POSITION);
     }
 
     /**
@@ -79,6 +115,13 @@ public class Climber extends SubsystemBase {
     }
 
     /**
+     * @param rightPosition the position of the right.
+     */
+    public void setPositionRight(double rightPosition) {
+        motorRight.set(ControlMode.Position, unitModelDegree.toTicks(rightPosition));
+    }
+
+    /**
      * @return get the left motor position.
      */
     public double getPositionLeft() {
@@ -86,17 +129,10 @@ public class Climber extends SubsystemBase {
     }
 
     /**
-     * @param rightPosition the position of the right.
-     */
-    public void setPositionRight(double rightPosition) {
-        motorRight.set(ControlMode.Position, unitModelDegree.toTicks100ms(rightPosition));
-    }
-
-    /**
      * @param leftPosition the position of the left.
      */
     public void setPositionLeft(double leftPosition) {
-        motorLeft.set(ControlMode.Position, unitModelDegree.toTicks100ms(leftPosition));
+        motorLeft.set(ControlMode.Position, unitModelDegree.toTicks(leftPosition));
     }
 
     /**

@@ -18,7 +18,7 @@ public final class Ports {
      left motor's data, right motor's data.
      */
     public static class Climber {
-        public static final int MOTOR_LEFT = 0;
-        public static final int MOTOR_RIGHT = 0;
+        public static final int LEFT = 0;
+        public static final int RIGHT = 0;
     }
 }
