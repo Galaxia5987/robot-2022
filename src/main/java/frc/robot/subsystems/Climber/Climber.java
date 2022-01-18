@@ -12,7 +12,7 @@ public class Climber extends SubsystemBase {
     private static Climber INSTANCE = null;
     private final WPI_TalonFX leftMotor = new WPI_TalonFX(Ports.Climber.LEFT);
     private final WPI_TalonFX rightMotor = new WPI_TalonFX(Ports.Climber.RIGHT);
-    private final UnitModel unitModelPosition = new UnitModel(Constants.Climber.TICKS_PER_METER);
+    private final UnitModel positionUnitModel = new UnitModel(Constants.Climber.TICKS_PER_METER);
     private final UnitModel unitModelDegree = new UnitModel(Constants.Climber.TICKS_PER_DEGREE);
 
     public Climber() {
@@ -91,22 +91,23 @@ public class Climber extends SubsystemBase {
      * @return get the right motor velocity.
      */
     public double getRightVelocity() {
-        return unitModelPosition.toVelocity(rightMotor.getSelectedSensorVelocity());
+        return positionUnitModel.toVelocity(rightMotor.getSelectedSensorVelocity());
     }
 
     /**
      * @return get the left motor velocity.
      */
     public double getLeftVelocity() {
-        return unitModelPosition.toVelocity(leftMotor.getSelectedSensorVelocity());
+        return positionUnitModel.toVelocity(leftMotor.getSelectedSensorVelocity());
     }
 
     /**
      * @param velocity the velocity of the right & left.
      */
     public void setVelocity(double velocity) {
-        rightMotor.set(ControlMode.Velocity, unitModelPosition.toTicks(velocity));
-        leftMotor.set(ControlMode.Velocity, unitModelPosition.toTicks(velocity));
+        int tick100ms = positionUnitModel.toTicks100ms(velocity);
+        rightMotor.set(ControlMode.Velocity, tick100ms);
+        leftMotor.set(ControlMode.Velocity, tick100ms);
     }
 
     /**
