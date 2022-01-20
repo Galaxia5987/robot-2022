@@ -74,7 +74,7 @@ public class Shooter extends SubsystemBase {
 
         LinearSystem<N1, N1, N1> flywheel_plant;
         if (!isIneritaBased)
-            flywheel_plant = new LinearSystem<>(A_KaKv, B_KaKv, C_KaKv, D_KaKv);
+            flywheel_plant = LinearSystemId.identifyVelocitySystem(Kv, Ka);
         else
             flywheel_plant = LinearSystemId.createFlywheelSystem(motor, J, GEAR_RATIO);
 
