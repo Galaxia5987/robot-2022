@@ -1,12 +1,12 @@
 package frc.robot.command_groups;
 
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.PrepareShooter;
 
 import java.util.function.DoubleSupplier;
 
-public class Shoot extends SequentialCommandGroup {
+public class Shoot extends ParallelCommandGroup {
     private Shooter shooter;
     private DoubleSupplier distance;
 
@@ -21,11 +21,4 @@ public class Shoot extends SequentialCommandGroup {
                 new PrepareShooter(shooter, () -> shooter.getSetpointVelocity(distance.getAsDouble()))
         );
     }
-
-//    @Override
-//    public void execute() {
-//        if(shooter.getVelocity() == Shooter.getSetpointVelocity(distance.getAsDouble())){
-//            new FeedToShooter();
-//        }
-//    }
 }
