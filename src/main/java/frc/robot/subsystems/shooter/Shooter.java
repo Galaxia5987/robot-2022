@@ -37,7 +37,12 @@ public class Shooter extends SubsystemBase {
 
     private FlywheelSim flywheelSim;
 
+    /**
+     * Constructor.
+     */
     private Shooter() {
+        CONFIGURATION.enableOptimizations = true;
+        mainMotor.configAllSettings(CONFIGURATION);
         mainMotor.setInverted(IS_MAIN_INVERTED);
         mainMotor.setSensorPhase(MAIN_SENSOR_PHASE);
         mainMotor.configNeutralDeadband(NEUTRAL_DEADBAND, Constants.TALON_TIMEOUT);
@@ -114,7 +119,7 @@ public class Shooter extends SubsystemBase {
     /**
      * Sets the velocity of the motor.
      *
-     * @param velocity is the velocity set point. [rps]
+     * @param velocity is the velocity setpoint. [rps]
      */
     public void setVelocity(double velocity) {
         linearSystemLoop.setNextR(VecBuilder.fill(velocity));
@@ -125,7 +130,7 @@ public class Shooter extends SubsystemBase {
     }
 
     /**
-     * Calculates the velocity set point according to the distance from the target.
+     * Calculates the velocity setpoint according to the distance from the target.
      *
      * @param distance is the distance from the target. [m]
      * @return 15. [rps]
@@ -152,9 +157,9 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putNumber("power", mainMotor.get());
         flywheelSim.setInputVoltage(mainMotor.get() * RobotController.getBatteryVoltage());
         flywheelSim.update(LOOP_PERIOD);
-        encoderSim.setRate(flywheelSim.getAngularVelocityRPM() / 60.0);
+        encoderSim.setRate(flywheelSim.getAngularVelocityRadPerSec() / (2 * Math.PI));
         RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(flywheelSim.getCurrentDrawAmps()));
-        SmartDashboard.putNumber("velocity", flywheelSim.getAngularVelocityRPM() / 60.0);
+        SmartDashboard.putNumber("velocity", flywheelSim.getAngularVelocityRadPerSec() / (2 * Math.PI));
     }
 
 }
