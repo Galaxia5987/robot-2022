@@ -87,54 +87,34 @@ public class Climber extends SubsystemBase {
     }
 
     /**
-     * @return get the right motor velocity.
+     * @return get motors velocity.
      */
-    public double getRightVelocity() {
+    public double getVelocity() {
         return unitModel.toVelocity(rightMotor.getSelectedSensorVelocity());
-    }
-
-    /**
-     * @return get the left motor velocity.
-     */
-    public double getLeftVelocity() {
-        return unitModel.toVelocity(leftMotor.getSelectedSensorVelocity());
     }
 
     /**
      * @param velocity the velocity of the right & left.
      */
+
     public void setVelocity(double velocity) {
-        int tick100ms = unitModel.toTicks100ms(velocity);
-        rightMotor.set(ControlMode.Velocity, tick100ms);
-        leftMotor.set(ControlMode.Velocity, tick100ms);
+        int ticks100ms = unitModel.toTicks100ms(velocity);
+        rightMotor.set(ControlMode.Velocity, ticks100ms);
+        leftMotor.set(ControlMode.Velocity, ticks100ms);
     }
 
     /**
-     * @return get the right motor position.
+     * @return get motors position.
      */
-    public double getPositionRight() {
+    public double getPosition() {
         return unitModel.toUnits(rightMotor.getSelectedSensorPosition());
     }
 
     /**
-     * @param rightPosition the position of the right.
+     * @param position the position of the motors.
      */
-    public void setPositionRight(double rightPosition) {
-        rightMotor.set(ControlMode.Position, unitModel.toTicks(rightPosition));
-    }
-
-    /**
-     * @return get the left motor position.
-     */
-    public double getPositionLeft() {
-        return unitModel.toUnits(leftMotor.getSelectedSensorPosition());
-    }
-
-    /**
-     * @param leftPosition the position of the left.
-     */
-    public void setPositionLeft(double leftPosition) {
-        leftMotor.set(ControlMode.Position, unitModel.toTicks(leftPosition));
+    public void setPosition(double position) {
+        rightMotor.set(ControlMode.Position, unitModel.toTicks(position));
     }
 
     /**
