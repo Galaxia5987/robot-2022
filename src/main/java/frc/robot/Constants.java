@@ -23,12 +23,13 @@ public final class Constants {
         public static final double I_RIGHT_POSITION = 0;
         public static final double D_RIGHT_POSITION = 0;
 
-        public static final int TICKS_PER_METER = 0;
-        public static final int TICKS_PER_DEGREE = 0;
+
 
         public static final int MAX_VELOCITY = 4; //[m/s]
 
-        public static final int TICKS_PER_RAD = 0;
+        public static final int GEAR_RATIO = 620;
+
+        public static final double TICKS_PER_RAD = 2048 * GEAR_RATIO / (2 * Math.PI);;
 
         public static final double THRESHOLD = 0.05; //[cm]
     }
