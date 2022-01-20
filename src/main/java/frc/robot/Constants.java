@@ -1,10 +1,6 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-import edu.wpi.first.math.MatBuilder;
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.Nat;
-import edu.wpi.first.math.numbers.N1;
 
 public final class Constants {
     public static final double LOOP_PERIOD = 0.02; // loop period. [s]
