@@ -52,7 +52,7 @@ public class Climber extends SubsystemBase {
         rightMotor.setNeutralMode(NeutralMode.Brake);
 
         /*
-        sets the phase of the sensor
+        sets the phase of the sensor.
          */
         rightMotor.setSensorPhase(Ports.Climber.RIGHT_SENSOR_PHASE);
 
