@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.simulation.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Robot;
 import frc.robot.subsystems.UnitModel;
 import frc.robot.utils.Utils;
 
@@ -27,7 +26,7 @@ import static frc.robot.Ports.Shooter.*;
 
 public class Shooter extends SubsystemBase {
     private static Shooter INSTANCE;
-    private final UnitModel unitModel = new UnitModel(TICKS_PER_RADIAN);
+    private final UnitModel unitModel = new UnitModel(TICKS_PER_ROTATION);
     private final WPI_TalonFX mainMotor = new WPI_TalonFX(MAIN_MOTOR);
     private final LinearSystemLoop<N1, N1, N1> linearSystemLoop;
     private final Encoder encoder = new Encoder(0, 1);
@@ -41,7 +40,6 @@ public class Shooter extends SubsystemBase {
      * Constructor.
      */
     private Shooter() {
-        CONFIGURATION.enableOptimizations = true;
         mainMotor.configAllSettings(CONFIGURATION);
         mainMotor.setInverted(IS_MAIN_INVERTED);
         mainMotor.setSensorPhase(MAIN_SENSOR_PHASE);
@@ -74,7 +72,7 @@ public class Shooter extends SubsystemBase {
 
         LinearSystem<N1, N1, N1> flywheel_plant;
         if (!isIneritaBased)
-            flywheel_plant = new LinearSystem<>(A_KaKv, B_KaKv, C_KaKv, D_KaKv);
+            flywheel_plant = LinearSystemId.identifyVelocitySystem(Kv, Ka);
         else
             flywheel_plant = LinearSystemId.createFlywheelSystem(motor, J, GEAR_RATIO);
 
@@ -135,7 +133,7 @@ public class Shooter extends SubsystemBase {
      * @param distance is the distance from the target. [m]
      * @return 15. [rad/s]
      */
-    public static double getSetpointVelocity(double distance) {
+    public double getSetpointVelocity(double distance) {
         return 15 * distance;
     }
 

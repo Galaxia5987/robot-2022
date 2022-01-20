@@ -20,14 +20,6 @@ public final class Constants {
         public static final double WHEEL_RADIUS = 0.1016;
         public static final double Ka = 1; // Acceleration state space coefficient (placeholder).
         public static final double Kv = 1; // Velocity state space coefficient (placeholder).
-        public static final Matrix<N1, N1> A_KaKv = new MatBuilder<>(Nat.N1(), Nat.N1()).fill(
-                -Kv / Ka); // Linear system A value for Ka and Kv state space.
-        public static final Matrix<N1, N1> B_KaKv = new MatBuilder<>(Nat.N1(), Nat.N1()).fill(
-                1 / Ka); // Linear system B value for Ka and Kv state space.
-        public static final Matrix<N1, N1> C_KaKv = new MatBuilder<>(Nat.N1(), Nat.N1()).fill(
-                1); // Linear system C value for Ka and Kv state space.
-        public static final Matrix<N1, N1> D_KaKv = new MatBuilder<>(Nat.N1(), Nat.N1()).fill(
-                0); // Linear system D value for Ka and Kv state space.
         public static final double MODEL_TOLERANCE = 1e-6; // Model tolerance for state space.
         public static final double SENSOR_TOLERANCE = 1e-6; // Sensor tolerance for state space.
 
@@ -36,5 +28,9 @@ public final class Constants {
         public static final double NEUTRAL_DEADBAND = 0.1;
 
         public static final TalonFXConfiguration CONFIGURATION = new TalonFXConfiguration();
+    }
+
+    public class Control {
+        public static final double TRIGGER_DEADBAND = 0.4;
     }
 }
