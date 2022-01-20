@@ -28,6 +28,8 @@ public final class Constants {
 
         public static final int MAX_VELOCITY = 4; //[m/s]
 
+        public static final int TICKS_PER_RAD = 0;
+
         public static final double THRESHOLD = 0.05; //[cm]
     }
 }

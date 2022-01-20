@@ -13,7 +13,7 @@ public class Climber extends SubsystemBase {
     private static Climber INSTANCE = null;
     private final WPI_TalonFX leftMotor = new WPI_TalonFX(Ports.Climber.LEFT);
     private final WPI_TalonFX rightMotor = new WPI_TalonFX(Ports.Climber.RIGHT);
-    private final UnitModel positionUnitModel = new UnitModel(Constants.Climber.TICKS_PER_METER);
+    private final UnitModel positionUnitModel = new UnitModel(Constants.Climber.TICKS_PER_RAD);
     private final UnitModel unitModelDegree = new UnitModel(Constants.Climber.TICKS_PER_DEGREE);
 
     public Climber() {
