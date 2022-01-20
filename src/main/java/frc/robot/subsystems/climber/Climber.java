@@ -14,17 +14,16 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
-import frc.robot.Robot;
 import frc.robot.subsystems.UnitModel;
 
 public class Climber extends SubsystemBase {
     private static Climber INSTANCE = null;
     private final WPI_TalonFX leftMotor = new WPI_TalonFX(Ports.Climber.LEFT);
     private final WPI_TalonFX rightMotor = new WPI_TalonFX(Ports.Climber.RIGHT);
-    private final UnitModel unitModel = new UnitModel(Constants.Climber.TICKS_PER_RAD);
     private EncoderSim encoderSim;
     private MechanismLigament2d m_line;
     private MechanismLigament2d m_wrist;
+    private final UnitModel unitModel = new UnitModel(Constants.Climber.TICKS_PER_RAD);
 
 
     public Climber() {
@@ -65,7 +64,7 @@ public class Climber extends SubsystemBase {
         rightMotor.setNeutralMode(NeutralMode.Brake);
 
         /*
-        sets the phase of the sensor
+        sets the phase of the sensor.
          */
         rightMotor.setSensorPhase(Ports.Climber.RIGHT_SENSOR_PHASE);
 
@@ -120,9 +119,9 @@ public class Climber extends SubsystemBase {
 
     // TODO: add units
     /**
-     * @return get the right motor velocity.
+     * @return get motors velocity.
      */
-    public double getRightVelocity() {
+    public double getVelocity() {
         return unitModel.toVelocity(rightMotor.getSelectedSensorVelocity());
     }
 
@@ -141,6 +140,7 @@ public class Climber extends SubsystemBase {
     /**
      * @param velocity the velocity of the right & left.
      */
+
     public void setVelocity(double velocity) {
         if (Robot.isSimulation()) {
             encoderSim.setRate(velocity);
@@ -152,36 +152,21 @@ public class Climber extends SubsystemBase {
 
     // TODO: add units
     /**
-     * @return get the right motor position.
+     * @return get motors position.
      */
-    public double getPositionRight() {
+    public double getPosition() {
         return unitModel.toUnits(rightMotor.getSelectedSensorPosition());
     }
 
     // TODO: add units
     /**
-     * @param rightPosition the position of the right.
+     * @param position the position of the motors.
      */
-    public void setPositionRight(double rightPosition) {
-        rightMotor.set(ControlMode.Position, unitModel.toTicks(rightPosition));
+    public void setPosition(double position) {
+        rightMotor.set(ControlMode.Position, unitModel.toTicks(position));
     }
 
     // TODO: add units
-    /**
-     * @return get the left motor position.
-     */
-    public double getPositionLeft() {
-        return unitModel.toUnits(leftMotor.getSelectedSensorPosition());
-    }
-
-    // TODO: add units
-    /**
-     * @param leftPosition the position of the left.
-     */
-    public void setPositionLeft(double leftPosition) {
-        leftMotor.set(ControlMode.Position, unitModel.toTicks(leftPosition));
-    }
-
     /**
      * set the velocity 0.
      * stop both motors in the place they were.
