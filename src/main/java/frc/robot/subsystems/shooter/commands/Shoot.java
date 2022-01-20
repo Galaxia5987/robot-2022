@@ -5,7 +5,7 @@ import frc.robot.subsystems.shooter.Shooter;
 
 import java.util.function.DoubleSupplier;
 
-public class PrepareShooter extends CommandBase {
+public class Shoot extends CommandBase {
     private final Shooter shooter;
     private final DoubleSupplier velocitySetpoint;
 
@@ -15,7 +15,7 @@ public class PrepareShooter extends CommandBase {
      * @param shooter          is the shooter subsystem.
      * @param velocitySetpoint is the setpoint for the shooter wheel. [rps]
      */
-    public PrepareShooter(Shooter shooter, DoubleSupplier velocitySetpoint) {
+    public Shoot(Shooter shooter, DoubleSupplier velocitySetpoint) {
         this.shooter = shooter;
         this.velocitySetpoint = velocitySetpoint;
         addRequirements(shooter);

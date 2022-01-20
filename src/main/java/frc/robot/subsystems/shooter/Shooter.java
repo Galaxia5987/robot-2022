@@ -28,11 +28,7 @@ public class Shooter extends SubsystemBase {
     private double currentTime = 0;
     private double lastTime = 0;
 
-    /**
-     * Constructor.
-     */
     private Shooter() {
-        motor.configAllSettings(CONFIGURATION);
         motor.setInverted(IS_INVERTED);
         motor.setSensorPhase(SENSOR_PHASE);
         motor.configNeutralDeadband(NEUTRAL_DEADBAND, Constants.TALON_TIMEOUT);
