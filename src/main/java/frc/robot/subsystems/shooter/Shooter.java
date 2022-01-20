@@ -80,7 +80,7 @@ public class Shooter extends SubsystemBase {
 
         if (Robot.isSimulation()) {
             flywheelSim = new FlywheelSim(flywheel_plant, motor, GEAR_RATIO);
-            encoder.setDistancePerPulse(2 * Math.PI);
+            encoder.setDistancePerPulse(2 * Math.PI * WHEEL_RADIUS);
         }
 
         LinearQuadraticRegulator<N1, N1, N1> quadraticRegulator = new LinearQuadraticRegulator<>(
@@ -107,11 +107,11 @@ public class Shooter extends SubsystemBase {
     /**
      * Gets the velocity of the motor.
      *
-     * @return the velocity of the motor. [rad/s]
+     * @return the velocity of the motor. [rps]
      */
     public double getVelocity() {
         if (Robot.isSimulation()) {
-            return encoder.getRate();
+            return encoder.getRate() / (2 * Math.PI * WHEEL_RADIUS);
         }
         return unitModel.toVelocity(mainMotor.getSelectedSensorVelocity());
     }
@@ -119,7 +119,7 @@ public class Shooter extends SubsystemBase {
     /**
      * Sets the velocity of the motor.
      *
-     * @param velocity is the velocity setpoint. [rad/s]
+     * @param velocity is the velocity setpoint. [rps]
      */
     public void setVelocity(double velocity) {
         linearSystemLoop.setNextR(VecBuilder.fill(velocity));
@@ -133,7 +133,7 @@ public class Shooter extends SubsystemBase {
      * Calculates the velocity setpoint according to the distance from the target.
      *
      * @param distance is the distance from the target. [m]
-     * @return 15. [rad/s]
+     * @return 15. [rps]
      */
     public static double getSetpointVelocity(double distance) {
         return 15 * distance;
@@ -157,9 +157,9 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putNumber("power", mainMotor.get());
         flywheelSim.setInputVoltage(mainMotor.get() * RobotController.getBatteryVoltage());
         flywheelSim.update(LOOP_PERIOD);
-        encoderSim.setRate(flywheelSim.getAngularVelocityRadPerSec());
+        encoderSim.setRate(flywheelSim.getAngularVelocityRadPerSec() / (2 * Math.PI));
         RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(flywheelSim.getCurrentDrawAmps()));
-        SmartDashboard.putNumber("velocity", flywheelSim.getAngularVelocityRadPerSec());
+        SmartDashboard.putNumber("velocity", flywheelSim.getAngularVelocityRadPerSec() / (2 * Math.PI));
     }
 
 }
