@@ -11,6 +11,7 @@ public final class Ports {
     }
 
     public static class Controls {
+        public static final int JOYSTICK = 0;
         public static final int XBOX = 0;
     }
 
