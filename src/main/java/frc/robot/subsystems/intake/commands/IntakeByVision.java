@@ -7,15 +7,17 @@ import frc.robot.subsystems.intake.Intake;
 import java.util.function.BooleanSupplier;
 
 /**
- * Default intake but only sucks alliance colored balls.
+ * Intakes only Cargo colored as the robot's alliance color.
  */
 public class IntakeByVision extends CommandBase {
     private final Intake intake;
     private final BooleanSupplier isAllianceColor;
+    private final double power;
 
-    public IntakeByVision(Intake intake, BooleanSupplier isAllianceColor) {
+    public IntakeByVision(Intake intake, BooleanSupplier isAllianceColor, double power) {
         this.intake = intake;
         this.isAllianceColor = isAllianceColor;
+        this.power = Constants.Intake.POWER;
         addRequirements(intake);
 
     }
@@ -31,14 +33,12 @@ public class IntakeByVision extends CommandBase {
     @Override
     public void execute() {
         if (isAllianceColor.getAsBoolean())
-            intake.setPower(Constants.Intake.POWER);
-        else
-            intake.setPower(0);
+            intake.setPower(power);
     }
 
     @Override
     public boolean isFinished() {
-        return false;
+        return super.isFinished();
     }
 
     /**

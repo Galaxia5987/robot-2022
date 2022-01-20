@@ -8,7 +8,7 @@ import frc.robot.subsystems.intake.Intake;
 import java.util.function.DoubleSupplier;
 
 /**
- * Default intake but sucks ball according to robot speed.
+ * intakes balls according to robot speed.
  */
 public class IntakeByRobotSpeed extends CommandBase {
     private final Intake intake;
@@ -31,11 +31,6 @@ public class IntakeByRobotSpeed extends CommandBase {
     @Override
     public void execute() {
         intake.setPower(robotSpeedMeterPerSecond.getAsDouble() * Constants.Intake.POWER_SPEED_RATIO);
-    }
-
-    @Override
-    public boolean isFinished() {
-        return false;
     }
 
     /**

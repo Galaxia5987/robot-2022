@@ -5,21 +5,22 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Ports;
 
 public class Intake extends SubsystemBase {
     private static Intake INSTANCE;
     private final WPI_TalonSRX motor = new WPI_TalonSRX(Ports.Intake.MOTOR);
-    private final Solenoid solenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Intake.SOLENOID);
+    private final Solenoid retractor = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Intake.SOLENOID);
 
     private Intake() {
-        motor.setInverted(Ports.Intake.IS_INVERTED);
+        motor.setInverted(Ports.Intake.IS_MOTOR_INVERTED);
+        motor.enableVoltageCompensation(true);
+
     }
 
 
     /**
-     * Lazy instantiation.
+     * creates an instance of the intake
      *
      * @return the subsystem instance.
      */
@@ -40,23 +41,34 @@ public class Intake extends SubsystemBase {
     }
 
     /**
-     * Open intake solenoid.
+     * Open intake retractor.
      */
     public void openSolenoid() {
-        solenoid.set(Constants.Intake.IS_SOLENOID_INVERTED);
+        retractor.set(SolenoidState.OPEN.value);
     }
 
     /**
-     * Close intake solenoid.
+     * Close intake retractor.
      */
     public void closeSolenoid() {
-        solenoid.set(!Constants.Intake.IS_SOLENOID_INVERTED);
+        retractor.set(SolenoidState.CLOSED.value);
     }
 
     /**
-     * Toggles intake solenoid.
+     * Toggles intake retractor.
      */
     public void toggleSolenoid() {
-        solenoid.toggle();
+        retractor.toggle();
+    }
+
+    public enum SolenoidState {
+        OPEN(true),
+        CLOSED(false);
+
+        public final boolean value;
+
+        SolenoidState(boolean value) {
+            this.value = value;
+        }
     }
 }
