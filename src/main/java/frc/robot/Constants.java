@@ -30,7 +30,7 @@ public final class Constants {
         public static final TalonFXConfiguration CONFIGURATION = new TalonFXConfiguration();
     }
 
-    public class Control {
+    public static class Control {
         public static final double TRIGGER_DEADBAND = 0.4;
     }
 }
