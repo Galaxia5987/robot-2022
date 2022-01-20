@@ -50,16 +50,16 @@ public class Shooter extends SubsystemBase {
     /**
      * State space configuration function. Note that there are 2 different configurations.
      *
-     * @param isIneritaBased is the configuration for the state space.
+     * @param isInertiaBased is the configuration for the state space.
      *                       If the value is true, the state space is based off of an inertia model.
      *                       Otherwise, the state space is based off of a voltage equation model.
      * @return the linear system loop (based on the type).
      */
-    private LinearSystemLoop<N1, N1, N1> configStateSpace(boolean isIneritaBased) {
+    private LinearSystemLoop<N1, N1, N1> configStateSpace(boolean isInertiaBased) {
         final DCMotor motor = DCMotor.getFalcon500(1);
 
         LinearSystem<N1, N1, N1> flywheel_plant;
-        if (!isIneritaBased)
+        if (!isInertiaBased)
             flywheel_plant = LinearSystemId.identifyVelocitySystem(Kv, Ka);
         else
             flywheel_plant = LinearSystemId.createFlywheelSystem(motor, J, GEAR_RATIO);
