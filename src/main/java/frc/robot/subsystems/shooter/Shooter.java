@@ -23,7 +23,7 @@ import static frc.robot.Ports.Shooter.*;
 public class Shooter extends SubsystemBase {
     private static Shooter INSTANCE;
     private final UnitModel unitModel = new UnitModel(TICKS_PER_REVOLUTION);
-    private final WPI_TalonFX mainMotor = new WPI_TalonFX(MAIN_MOTOR);
+    private final WPI_TalonFX motor = new WPI_TalonFX(MOTOR);
     private final LinearSystemLoop<N1, N1, N1> linearSystemLoop;
     private double currentTime = 0;
     private double lastTime = 0;
@@ -32,10 +32,10 @@ public class Shooter extends SubsystemBase {
      * Constructor.
      */
     private Shooter() {
-        mainMotor.configAllSettings(CONFIGURATION);
-        mainMotor.setInverted(IS_MAIN_INVERTED);
-        mainMotor.setSensorPhase(MAIN_SENSOR_PHASE);
-        mainMotor.configNeutralDeadband(NEUTRAL_DEADBAND, Constants.TALON_TIMEOUT);
+        motor.configAllSettings(CONFIGURATION);
+        motor.setInverted(IS_INVERTED);
+        motor.setSensorPhase(SENSOR_PHASE);
+        motor.configNeutralDeadband(NEUTRAL_DEADBAND, Constants.TALON_TIMEOUT);
         linearSystemLoop = configStateSpace(true);
     }
 
@@ -92,30 +92,30 @@ public class Shooter extends SubsystemBase {
     /**
      * Gets the velocity of the motor.
      *
-     * @return the velocity of the motor. [rad/s]
+     * @return the velocity of the motor. [rps]
      */
     public double getVelocity() {
-        return unitModel.toVelocity(mainMotor.getSelectedSensorVelocity());
+        return unitModel.toVelocity(motor.getSelectedSensorVelocity());
     }
 
     /**
      * Sets the velocity of the motor.
      *
-     * @param velocity is the velocity setpoint. [rad/s]
+     * @param velocity is the velocity setpoint. [rps]
      */
     public void setVelocity(double velocity) {
         linearSystemLoop.setNextR(VecBuilder.fill(velocity));
         linearSystemLoop.correct(VecBuilder.fill(getVelocity()));
         linearSystemLoop.predict(currentTime - lastTime);
 
-        mainMotor.setVoltage(Utils.clamp(linearSystemLoop.getU(0), -NOMINAL_VOLTAGE, NOMINAL_VOLTAGE));
+        motor.setVoltage(Utils.clamp(linearSystemLoop.getU(0), -NOMINAL_VOLTAGE, NOMINAL_VOLTAGE));
     }
 
     /**
      * Calculates the velocity setpoint according to the distance from the target.
      *
      * @param distance is the distance from the target. [m]
-     * @return 15. [rad/s]
+     * @return 15. [rps]
      */
     public double getSetpointVelocity(double distance) {
         return 15 * distance;
@@ -125,7 +125,7 @@ public class Shooter extends SubsystemBase {
      * Terminates the movement of the wheel.
      */
     public void terminate() {
-        mainMotor.stopMotor();
+        motor.stopMotor();
     }
 
     @Override
