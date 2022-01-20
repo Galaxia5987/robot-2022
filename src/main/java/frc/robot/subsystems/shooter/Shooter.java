@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.simulation.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.subsystems.UnitModel;
 import frc.robot.utils.Utils;
 
@@ -26,7 +27,7 @@ import static frc.robot.Ports.Shooter.*;
 
 public class Shooter extends SubsystemBase {
     private static Shooter INSTANCE;
-    private final UnitModel unitModel = new UnitModel(TICKS_PER_ROTATION);
+    private final UnitModel unitModel = new UnitModel(TICKS_PER_REVOLUTION);
     private final WPI_TalonFX mainMotor = new WPI_TalonFX(MAIN_MOTOR);
     private final LinearSystemLoop<N1, N1, N1> linearSystemLoop;
     private final Encoder encoder = new Encoder(0, 1);
