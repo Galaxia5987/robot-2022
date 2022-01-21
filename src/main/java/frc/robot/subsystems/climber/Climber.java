@@ -3,8 +3,17 @@ package frc.robot.subsystems.climber;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -14,19 +23,64 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
+import frc.robot.Robot;
 import frc.robot.subsystems.UnitModel;
 
+
 public class Climber extends SubsystemBase {
+
     private static Climber INSTANCE = null;
+
     private final WPI_TalonFX leftMotor = new WPI_TalonFX(Ports.Climber.LEFT);
     private final WPI_TalonFX rightMotor = new WPI_TalonFX(Ports.Climber.RIGHT);
-    private EncoderSim encoderSim;
-    private MechanismLigament2d m_line;
-    private MechanismLigament2d m_wrist;
+
     private final UnitModel unitModel = new UnitModel(Constants.Climber.TICKS_PER_RAD);
+
+    private final ArmFeedforward feedforward = new ArmFeedforward(0, 0, 0, 0);
+    private final PIDController m_controller = new PIDController(1.5, 0, 0);
+
+    private final Encoder m_encoder = new Encoder(Ports.Climber.ENCODER_A_CHANNEL, Ports.Climber.ENCODER_B_CHANNEL);
+    private final DCMotor m_armGearbox = DCMotor.getFalcon500(2);
+
+    private final SingleJointedArmSim m_armSim =
+            new SingleJointedArmSim(
+                    m_armGearbox,
+                    Constants.Climber.GEAR_RATIO,
+                    SingleJointedArmSim.estimateMOI(Constants.Climber.ARM_LENGTH, Constants.Climber.ARM_MASS),
+                    Constants.Climber.ARM_LENGTH,
+                    Units.degreesToRadians(-75),
+                    Units.degreesToRadians(255),
+                    Constants.Climber.ARM_MASS,
+                    true,
+                    VecBuilder.fill(Constants.Climber.ARM_ENCODER_DIST_PER_PULSE)
+            );
+
+    private final EncoderSim m_encoderSim = new EncoderSim(m_encoder);
+
+    private final Mechanism2d m_mech2d = new Mechanism2d(60, 60);
+    private final MechanismRoot2d m_armPivot = m_mech2d.getRoot("ArmPivot", 30, 30);
+    private final MechanismLigament2d m_armTower =
+            m_armPivot.append(new MechanismLigament2d("ArmTower", 30, -90));
+
+    private final MechanismLigament2d m_arm =
+            m_armPivot.append(
+                    new MechanismLigament2d(
+                            "Arm",
+                            30,
+                            Units.radiansToDegrees(m_armSim.getAngleRads()),
+                            6,
+                            new Color8Bit(Color.kYellow)));
 
 
     public Climber() {
+        if (Robot.isSimulation()) {
+            SmartDashboard.putData("Arm sim", m_mech2d);
+            m_encoder.setDistancePerPulse(Constants.Climber.ARM_ENCODER_DIST_PER_PULSE);
+            m_armTower.setColor(new Color8Bit(Color.kBlue));
+        }
+
+
+        leftMotor.follow(rightMotor);
 
         /*
          Set the left motor on Brake mode.
@@ -49,7 +103,6 @@ public class Climber extends SubsystemBase {
         leftMotor.config_kP(0, Constants.Climber.P_VELOCITY);
         leftMotor.config_kI(0, Constants.Climber.I_VELOCITY);
         leftMotor.config_kD(0, Constants.Climber.D_VELOCITY);
-
 
         /*
          config PID position for left motor.
@@ -87,25 +140,8 @@ public class Climber extends SubsystemBase {
         rightMotor.config_kI(1, Constants.Climber.I_POSITION);
         rightMotor.config_kD(1, Constants.Climber.D_POSITION);
 
-        if (Robot.isSimulation()) {
-            Encoder encoder = new Encoder(0, 1);
-            encoder.setDistancePerPulse(2 * Math.PI);
-            encoderSim = new EncoderSim(encoder);
-            Mechanism2d mech = new Mechanism2d(3, 3);
-            // the mechanism root node
-            MechanismRoot2d root = mech.getRoot("climber", 2, 0);
-
-            // MechanismLigament2d objects represent each "section"/"stage" of the mechanism, and are based
-            // off the root node or another ligament object
-            m_line = root.append(new MechanismLigament2d("elevator", 1, 90));
-            m_wrist =
-                    m_line.append(
-                            new MechanismLigament2d("wrist", 0.5, 90, 6, new Color8Bit(Color.kPurple)));
-
-            // post the mechanism to the dashboard
-            SmartDashboard.putData("Mech2d", mech);
-        }
     }
+
 
     /**
      * @return the object Climber.
@@ -118,39 +154,35 @@ public class Climber extends SubsystemBase {
     }
 
     // TODO: add units
+
     /**
      * @return get motors velocity.
      */
     public double getVelocity() {
-        return unitModel.toVelocity(rightMotor.getSelectedSensorVelocity());
-    }
-
-    // TODO: add units
-    /**
-     * @return get the left motor velocity.
-     */
-    public double getLeftVelocity() {
         if (Robot.isSimulation()) {
-            return encoderSim.getRate();
+            return m_encoderSim.getRate();
         }
         return unitModel.toVelocity(leftMotor.getSelectedSensorVelocity());
     }
 
     // TODO: add units
+
     /**
      * @param velocity the velocity of the right & left.
      */
 
     public void setVelocity(double velocity) {
         if (Robot.isSimulation()) {
-            encoderSim.setRate(velocity);
+            double volts = m_controller.calculate(getVelocity(), velocity);
+            rightMotor.setVoltage(volts + feedforward.calculate(0, 0));
+        } else {
+            int tick100ms = unitModel.toTicks100ms(velocity);
+            rightMotor.set(ControlMode.Velocity, tick100ms);
         }
-        int tick100ms = unitModel.toTicks100ms(velocity);
-        rightMotor.set(ControlMode.Velocity, tick100ms);
-        leftMotor.set(ControlMode.Velocity, tick100ms);
     }
 
     // TODO: add units
+
     /**
      * @return get motors position.
      */
@@ -159,6 +191,7 @@ public class Climber extends SubsystemBase {
     }
 
     // TODO: add units
+
     /**
      * @param position the position of the motors.
      */
@@ -167,18 +200,27 @@ public class Climber extends SubsystemBase {
     }
 
     // TODO: add units
+
     /**
-     * set the velocity 0.
      * stop both motors in the place they were.
      */
     public void stop() {
-        leftMotor.stopMotor();
         rightMotor.stopMotor();
     }
 
     @Override
     public void simulationPeriodic() {
-        SmartDashboard.putNumber("Jdam", getLeftVelocity());
-        m_wrist.setAngle(m_wrist.getAngle() + getLeftVelocity() * 0.02);
+        m_armSim.setInput(rightMotor.get() * RobotController.getBatteryVoltage());
+
+        m_armSim.update(0.02);
+
+        m_encoderSim.setDistance(m_armSim.getAngleRads());
+        RoboRioSim.setVInVoltage(
+                BatterySim.calculateDefaultBatteryLoadedVoltage(m_armSim.getCurrentDrawAmps()));
+        m_encoderSim.setRate(m_armSim.getVelocityRadPerSec());
+        m_arm.setAngle(Units.radiansToDegrees(m_armSim.getAngleRads()));
+
+        System.out.println(getVelocity());
     }
 }
+

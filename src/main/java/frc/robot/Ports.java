@@ -28,5 +28,10 @@ public final class Ports {
         public static final boolean RIGHT_SENSOR_PHASE = true;
         public static final boolean IS_RIGHT_INVERTED = true;
 
+        public static final int JOYSTICK_PORT = 0;
+
+        public static final int ENCODER_A_CHANNEL = 0;
+        public static final int ENCODER_B_CHANNEL = 1;
+
     }
 }
