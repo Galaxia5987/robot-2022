@@ -7,6 +7,7 @@ import frc.robot.Ports;
 
 import java.util.Deque;
 import java.util.LinkedList;
+import com.revrobotics.ColorSensorV3;
 
 public class Conveyor extends SubsystemBase {
     private static Conveyor INSTANCE = null;
@@ -14,6 +15,7 @@ public class Conveyor extends SubsystemBase {
     private DriverStation.Alliance color;
     private int cargoCount;
     private Deque<String> position = new LinkedList<>();
+    private ColorSensorV3
 
     private Conveyor() {
         motor.setInverted(Ports.Conveyor.IS_MAIN_INVERTED);

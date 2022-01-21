@@ -19,7 +19,7 @@ public class CargoOut extends CommandBase {
 
     @Override
     public void initialize() {
-        conveyor.setPower(-Constants.POWER);
+//        if ();
     }
 
     @Override
