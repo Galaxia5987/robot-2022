@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.utils.PhotonVisionModule;
 import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
 
@@ -10,6 +11,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
     private final XboxController xbox = new XboxController(Ports.Controls.XBOX);
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
+    private final PhotonVisionModule visionModule = new PhotonVisionModule("photonvision");
 
 
     /**
@@ -28,7 +30,6 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-
     }
 
     private void configureButtonBindings() {
