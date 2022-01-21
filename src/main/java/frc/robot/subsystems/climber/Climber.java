@@ -208,6 +208,9 @@ public class Climber extends SubsystemBase {
         rightMotor.stopMotor();
     }
 
+    /**
+     * Add periodic for the simulation.
+     */
     @Override
     public void simulationPeriodic() {
         m_armSim.setInput(rightMotor.get() * RobotController.getBatteryVoltage());
@@ -219,8 +222,6 @@ public class Climber extends SubsystemBase {
                 BatterySim.calculateDefaultBatteryLoadedVoltage(m_armSim.getCurrentDrawAmps()));
         m_encoderSim.setRate(m_armSim.getVelocityRadPerSec());
         m_arm.setAngle(Units.radiansToDegrees(m_armSim.getAngleRads()));
-
-        System.out.println(getVelocity());
     }
 }
 
