@@ -23,8 +23,8 @@ public final class Constants {
         public static final double Kv = 1; // Velocity state space coefficient (placeholder).
         public static final double MODEL_TOLERANCE = 10; // Model tolerance for state space.
         public static final double SENSOR_TOLERANCE = 0.1; // Sensor tolerance for state space.
-        public static final double VELOCITY_TOLERANCE = 0.15;
-        public static final double COST_LQR = 55;
+        public static final double VELOCITY_TOLERANCE = 0.15; // Velocity tolerance for state space.
+        public static final double COST_LQR = 55; // Cost lqr for state space.
 
         public static final double J = 0.00218; // Moment of inertia for state space. [kg*m^2]
         public static final double GEAR_RATIO = 1; // Gear ratio for encoder (placeholder).
