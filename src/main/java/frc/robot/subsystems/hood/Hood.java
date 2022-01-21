@@ -1,5 +1,6 @@
 package frc.robot.subsystems.hood;
 
+import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -11,6 +12,16 @@ public class Hood extends SubsystemBase {
     private final Solenoid angleChanger = new Solenoid(PneumaticsModuleType.CTREPCM, SOLENOID);
 
     public Hood() {
+    }
+
+    public enum Mode {
+        ShortDistance(true),
+        LongDistance(false);
+        public final boolean value;
+
+        Mode(boolean value) {
+            this.value = value;
+        }
     }
 
     /**
@@ -45,6 +56,10 @@ public class Hood extends SubsystemBase {
         if (!angleChanger.get()) {
             angleChanger.toggle();
         }
+    }
+
+    public void setSolenoid(Mode mode){
+        angleChanger.set(mode.value);
     }
 
     /**

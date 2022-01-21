@@ -36,8 +36,8 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        a.whenPressed(new InstantCommand(hood::open, hood));
-        b.whenPressed(new InstantCommand(hood::close, hood));
+        a.whenPressed(new InstantCommand(() -> hood.setSolenoid(Hood.Mode.ShortDistance), hood));
+        b.whenPressed(new InstantCommand(() -> hood.setSolenoid(Hood.Mode.LongDistance), hood));
     }
 
 

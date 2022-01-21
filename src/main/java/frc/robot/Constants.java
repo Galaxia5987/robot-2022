@@ -9,7 +9,7 @@ public final class Constants {
     public static final int TALON_TIMEOUT = 10; // Waiting period for configurations [ms].
 
     public static class Hood {
-        public static final double ACTIVE_ANGLE = 55; // Angle of the shooter when the angle changer is active (placeholder). [deg]
-        public static final double INACTIVE_ANGLE = 70; // Angle of the shooter when the angle changer is inactive (placeholder). [deg]
+        public static final double CLOSED_ANGLE = 55; // Angle for longer distance (placeholder). [deg]
+        public static final double OPEN_ANGLE = 70; // Angle for shorter distance (placeholder). [deg]
     }
 }
