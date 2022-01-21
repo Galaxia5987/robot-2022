@@ -8,7 +8,7 @@ public final class Constants {
     public static final double PEBZNER_HEIGHT = 4.8; // Height of pebzner auditorium. [m]
     public static final int TALON_TIMEOUT = 10; // Waiting period for configurations [ms].
 
-    public static class AngleChanger {
+    public static class Hood {
         public static final double ACTIVE_ANGLE = 55; // Angle of the shooter when the angle changer is active (placeholder). [deg]
         public static final double INACTIVE_ANGLE = 70; // Angle of the shooter when the angle changer is inactive (placeholder). [deg]
     }

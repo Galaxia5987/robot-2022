@@ -2,10 +2,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.hood.Hood;
-import frc.robot.subsystems.hood.commands.HoodDefaultCommand;
 import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
 
@@ -13,8 +13,9 @@ public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final XboxController xbox = new XboxController(Ports.Controls.XBOX);
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
+    private final JoystickButton b = new JoystickButton(xbox, XboxController.Button.kB.value);
     private final Trigger rt = new Trigger(() -> xbox.getRightTriggerAxis() > 0);
-    private final Hood hood = Hood.getINSTANCE();
+    private final Hood hood = Hood.getInstance();
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -32,7 +33,6 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        hood.setDefaultCommand(new HoodDefaultCommand(a::get));
     }
 
     private void configureButtonBindings() {
@@ -40,6 +40,8 @@ public class RobotContainer {
         Currently, the shooting is at 20 meters per second. This will be changed once
         the vision becomes available for use.
          */
+        a.whenPressed(new InstantCommand(hood::open, hood));
+        b.whenPressed(new InstantCommand(hood::close, hood));
     }
 
 
