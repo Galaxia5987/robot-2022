@@ -19,11 +19,12 @@ public class CargoOut extends CommandBase {
 
     @Override
     public void initialize() {
-//        if ();
+        if (conveyor.getColorPosition(true) == conveyor.dr)
     }
 
     @Override
     public void execute() {
+
 
     }
 

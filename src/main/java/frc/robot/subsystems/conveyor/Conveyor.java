@@ -1,7 +1,12 @@
 package frc.robot.subsystems.conveyor;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.revrobotics.ColorMatch;
+import com.revrobotics.ColorMatchResult;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Ports;
 
@@ -14,12 +19,16 @@ public class Conveyor extends SubsystemBase {
     private final WPI_TalonSRX motor = new WPI_TalonSRX(Ports.Conveyor.AUX);
     private DriverStation.Alliance color;
     private int cargoCount;
-    private Deque<String> position = new LinkedList<>();
-    private ColorSensorV3
+    private final Deque<String> position = new LinkedList<>();
+    private final ColorSensorV3 colorSensorIntake = new ColorSensorV3(I2C.Port.kMXP);
+    private final ColorSensorV3 colorSensorShooter = new ColorSensorV3(I2C.Port.kOnboard);
+    ColorMatch match = new ColorMatch();
 
     private Conveyor() {
         motor.setInverted(Ports.Conveyor.IS_MAIN_INVERTED);
         setColor(DriverStation.Alliance.Red); // TODO: get from the driver station
+        match.addColorMatch(Color.kRed); // red
+        match.addColorMatch(Color.kBlue); // blue
     }
 
     /**
@@ -34,12 +43,34 @@ public class Conveyor extends SubsystemBase {
         return INSTANCE;
     }
 
-    public static DriverStation.Alliance GetcolorIntake() {
-        return DriverStation.Alliance.Red;
+    public DriverStation.Alliance GetcolorIntake() {
+        Color color = colorSensorIntake.getColor();
+        System.out.println(color.red + " Red " + color.blue + " Blue " + color.green + " Green ");
+        ColorMatchResult result = match.matchClosestColor(color);
+        Color resultColor = result.color;
+
+        if (resultColor == Color.kRed) {
+            return DriverStation.Alliance.Red;
+        } else if (resultColor == Color.kBlue) {
+            return DriverStation.Alliance.Blue;
+        } else {
+            return DriverStation.Alliance.Invalid;
+        }
     }
 
-    public static DriverStation.Alliance GetcolorShooter() {
-        return DriverStation.Alliance.Red;
+    public DriverStation.Alliance GetcolorShooter() {
+        Color color = colorSensorShooter.getColor();
+        System.out.println(color.red + " Red " + color.blue + " Blue " + color.green + " Green ");
+        ColorMatchResult result = match.matchClosestColor(color);
+        Color resultColor = result.color;
+
+        if (resultColor == Color.kRed) {
+            return DriverStation.Alliance.Red;
+        } else if (resultColor == Color.kBlue) {
+            return DriverStation.Alliance.Blue;
+        } else {
+            return DriverStation.Alliance.Invalid;
+        }
     }
 
     public int getCargoCount() {
@@ -58,6 +89,12 @@ public class Conveyor extends SubsystemBase {
         color = fmsColor;
     }
 
+    public DriverStation.Alliance getColorPosition(boolean first) {
+        if (first) {
+            return DriverStation.Alliance.valueOf(position.getFirst());
+        }
+        return DriverStation.Alliance.valueOf(position.getLast());
+    }
 
     @Override
     public void periodic() {
@@ -69,7 +106,7 @@ public class Conveyor extends SubsystemBase {
                 position.removeFirst();
             } else if (motor.getMotorOutputPercent() < 0) {
                 cargoCount++;
-//                position.addFirst(colorShooter.label);
+                position.addFirst(enumToString(colorShooter));
             }
 
         }
@@ -79,21 +116,13 @@ public class Conveyor extends SubsystemBase {
                 position.removeLast();
             } else if (motor.getMotorOutputPercent() > 0) {
                 cargoCount++;
-//                position.add(colorIntake.label);
+                position.add(enumToString(colorIntake));
             }
         }
     }
 
     private String enumToString(DriverStation.Alliance alliance) {
-        switch (alliance) {
-            case Red:
-                System.out.println("RED");
-                break;
-            case Blue:
-                System.out.println("Blue");
-                break;
-        }
-        return "bruh";
+        return alliance.name();
     }
 
 }
