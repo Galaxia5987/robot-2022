@@ -2,7 +2,7 @@ package frc.robot;
 
 public final class Ports {
     public static class Hood {
-        public static final int SOLENOID = 0;
+        public static final int SOLENOID = 0; // Hood solenoid port.
     }
 
     public static class Controls {

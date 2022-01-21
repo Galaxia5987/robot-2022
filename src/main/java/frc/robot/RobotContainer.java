@@ -36,10 +36,6 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        /*
-        Currently, the shooting is at 20 meters per second. This will be changed once
-        the vision becomes available for use.
-         */
         a.whenPressed(new InstantCommand(hood::open, hood));
         b.whenPressed(new InstantCommand(hood::close, hood));
     }
