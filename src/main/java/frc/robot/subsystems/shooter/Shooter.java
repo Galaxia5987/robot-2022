@@ -85,8 +85,8 @@ public class Shooter extends SubsystemBase {
 
         LinearQuadraticRegulator<N1, N1, N1> quadraticRegulator = new LinearQuadraticRegulator<>(
                 flywheel_plant,
-                VecBuilder.fill(MODEL_TOLERANCE),
-                VecBuilder.fill(SENSOR_TOLERANCE),
+                VecBuilder.fill(VELOCITY_TOLERANCE),
+                VecBuilder.fill(COST_LQR),
                 LOOP_PERIOD);
         quadraticRegulator.latencyCompensate(flywheel_plant, LOOP_PERIOD, TALON_TIMEOUT / 1000.0);
 
@@ -136,7 +136,8 @@ public class Shooter extends SubsystemBase {
      * @return 15. [rad/s]
      */
     public static double getSetpointVelocity(double distance) {
-        return 15 * distance;
+//        return 15 * distance;
+        return 15;
     }
 
     /**
