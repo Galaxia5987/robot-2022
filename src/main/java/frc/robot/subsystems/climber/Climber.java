@@ -36,8 +36,9 @@ public class Climber extends SubsystemBase {
 
     private final UnitModel unitModel = new UnitModel(Constants.Climber.TICKS_PER_RAD);
 
-    private final ArmFeedforward feedforward = new ArmFeedforward(0, 0, 0, 0);
-    private final PIDController m_controller = new PIDController(1.5, 0, 0);
+    private final ArmFeedforward feedforward = new ArmFeedforward(Constants.Climber.F_FORWARD_S, Constants.Climber.F_FORWARD_COS, Constants.Climber.F_FORWARD_V, Constants.Climber.F_FORWARD_A);
+
+    private final PIDController m_controller = new PIDController(Constants.Climber.P_VELOCITY, Constants.Climber.I_VELOCITY, Constants.Climber.D_VELOCITY);
 
     private final Encoder m_encoder = new Encoder(Ports.Climber.ENCODER_A_CHANNEL, Ports.Climber.ENCODER_B_CHANNEL);
     private final DCMotor m_armGearbox = DCMotor.getFalcon500(2);
@@ -48,8 +49,8 @@ public class Climber extends SubsystemBase {
                     Constants.Climber.GEAR_RATIO,
                     SingleJointedArmSim.estimateMOI(Constants.Climber.ARM_LENGTH, Constants.Climber.ARM_MASS),
                     Constants.Climber.ARM_LENGTH,
-                    Units.degreesToRadians(-75),
-                    Units.degreesToRadians(255),
+                    Units.degreesToRadians(Constants.Climber.MIN_ANGLE),
+                    Units.degreesToRadians(Constants.Climber.MAX_ANGLE),
                     Constants.Climber.ARM_MASS,
                     true,
                     VecBuilder.fill(Constants.Climber.ARM_ENCODER_DIST_PER_PULSE)
@@ -105,13 +106,6 @@ public class Climber extends SubsystemBase {
         leftMotor.config_kD(0, Constants.Climber.D_VELOCITY);
 
         /*
-         config PID position for left motor.
-         */
-        leftMotor.config_kP(1, Constants.Climber.P_POSITION);
-        leftMotor.config_kI(1, Constants.Climber.I_POSITION);
-        leftMotor.config_kD(1, Constants.Climber.D_POSITION);
-
-        /*
          set the right motor on Brake mode.
          */
         rightMotor.setNeutralMode(NeutralMode.Brake);
@@ -133,13 +127,7 @@ public class Climber extends SubsystemBase {
         rightMotor.config_kI(0, Constants.Climber.I_VELOCITY);
         rightMotor.config_kD(0, Constants.Climber.D_VELOCITY);
 
-        /*
-         config PID position for right motor.
-         */
-        rightMotor.config_kP(1, Constants.Climber.P_POSITION);
-        rightMotor.config_kI(1, Constants.Climber.I_POSITION);
-        rightMotor.config_kD(1, Constants.Climber.D_POSITION);
-
+        rightMotor.setSafetyEnabled(true);
     }
 
 
@@ -181,25 +169,20 @@ public class Climber extends SubsystemBase {
         }
     }
 
-    // TODO: add units
-
     /**
-     * @return get motors position.
+     * @return get motors position. [ticks/rad}
      */
     public double getPosition() {
         return unitModel.toUnits(rightMotor.getSelectedSensorPosition());
     }
-
-    // TODO: add units
-
+    
     /**
-     * @param position the position of the motors.
+     * @param position the position of the motors. [ticks]
      */
     public void setPosition(double position) {
-        rightMotor.set(ControlMode.Position, unitModel.toTicks(position));
+        rightMotor.set(ControlMode.MotionMagic, unitModel.toTicks(position));
     }
 
-    // TODO: add units
 
     /**
      * stop both motors in the place they were.
@@ -224,4 +207,3 @@ public class Climber extends SubsystemBase {
         m_arm.setAngle(Units.radiansToDegrees(m_armSim.getAngleRads()));
     }
 }
-

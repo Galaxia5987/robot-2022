@@ -30,6 +30,9 @@ public final class Ports {
 
         public static final int JOYSTICK_PORT = 0;
 
+        /*
+         Used only for simulation.
+         */
         public static final int ENCODER_A_CHANNEL = 0;
         public static final int ENCODER_B_CHANNEL = 1;
 
