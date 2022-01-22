@@ -14,6 +14,7 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.SimPhotonCamera;
 import org.photonvision.SimVisionSystem;
+import org.photonvision.targeting.PhotonPipelineResult;
 
 import java.util.Optional;
 import java.util.OptionalDouble;
@@ -22,20 +23,20 @@ import static frc.robot.Constants.Vision.*;
 
 public class PhotonVisionModule extends SubsystemBase {
     private final PhotonCamera camera;
+    private final SimPhotonCamera simCamera;
     private final SimVisionSystem simVisionSystem;
+    private final SimulateDrivetrain simulateDrivetrain;
 
-    public PhotonVisionModule(String cameraName) {
+    public PhotonVisionModule(String cameraName, Optional<SimulateDrivetrain> simulateDrivetrain) {
+        this.simulateDrivetrain = simulateDrivetrain.get();
         if (Robot.isSimulation()) {
-            camera = new SimPhotonCamera(cameraName);
-            simVisionSystem = new SimVisionSystem(
-                    cameraName,
-                    DIAG_FOV, Math.toDegrees(CAMERA_PITCH),
-                    CAMERA_TO_ROBOT, CAMERA_HEIGHT,
-                    LED_RANGE, CAM_RESOLUTION_WIDTH, CAM_RESOLUTION_HEIGHT,
-                    MIN_TARGET_AREA);
+            camera = null;
+            simCamera = new SimPhotonCamera("photonvision");
+            simVisionSystem = new SimVisionSystem(cameraName, DIAG_FOV, Math.toDegrees(CAMERA_PITCH), CAMERA_TO_ROBOT, CAMERA_HEIGHT, LED_RANGE, CAM_RESOLUTION_WIDTH, CAM_RESOLUTION_HEIGHT, MIN_TARGET_AREA);
             simVisionSystem.addSimVisionTarget(HUB);
         } else {
             camera = new PhotonCamera(cameraName);
+            simCamera = null;
             simVisionSystem = null;
         }
     }
@@ -57,12 +58,7 @@ public class PhotonVisionModule extends SubsystemBase {
     public OptionalDouble getDistance() {
         var results = camera.getLatestResult();
         if (results.hasTargets()) {
-            return OptionalDouble.of(PhotonUtils.calculateDistanceToTargetMeters(
-                    Constants.Vision.CAMERA_HEIGHT,
-                    Constants.Vision.TARGET_HEIGHT_FROM_GROUND,
-                    Constants.Vision.CAMERA_PITCH,
-                    Math.toRadians(results.getBestTarget().getPitch())
-            ));
+            return OptionalDouble.of(PhotonUtils.calculateDistanceToTargetMeters(Constants.Vision.CAMERA_HEIGHT, Constants.Vision.TARGET_HEIGHT_FROM_GROUND, Constants.Vision.CAMERA_PITCH, Math.toRadians(results.getBestTarget().getPitch())));
         }
         return OptionalDouble.empty();
     }
@@ -75,14 +71,8 @@ public class PhotonVisionModule extends SubsystemBase {
     public Optional<Translation2d> estimateCameraTranslationToTarget() {
         var results = camera.getLatestResult();
         if (results.hasTargets()) {
-            double distance = PhotonUtils.calculateDistanceToTargetMeters(
-                    Constants.Vision.CAMERA_HEIGHT,
-                    Constants.Vision.TARGET_HEIGHT_FROM_GROUND,
-                    Constants.Vision.CAMERA_PITCH,
-                    Math.toRadians(results.getBestTarget().getPitch())
-            );
-            return Optional.of(PhotonUtils.estimateCameraToTargetTranslation(
-                    distance, Rotation2d.fromDegrees(-results.getBestTarget().getYaw())));
+            double distance = PhotonUtils.calculateDistanceToTargetMeters(Constants.Vision.CAMERA_HEIGHT, Constants.Vision.TARGET_HEIGHT_FROM_GROUND, Constants.Vision.CAMERA_PITCH, Math.toRadians(results.getBestTarget().getPitch()));
+            return Optional.of(PhotonUtils.estimateCameraToTargetTranslation(distance, Rotation2d.fromDegrees(-results.getBestTarget().getYaw())));
         }
         return Optional.empty();
     }
@@ -93,7 +83,12 @@ public class PhotonVisionModule extends SubsystemBase {
      * @return the estimated pose and the time of detection.
      */
     public Optional<VisionEstimationData> estimatePose() {
-        var res = camera.getLatestResult();
+        PhotonPipelineResult res;
+        if (Robot.isSimulation()) {
+            res = simCamera.getLatestResult();
+        } else {
+            res = camera.getLatestResult();
+        }
         if (res.hasTargets()) {
             double imageCaptureTime = Timer.getFPGATimestamp() - res.getLatencyMillis() / 1000.0;
             Transform2d camToTargetTrans = res.getBestTarget().getCameraToTarget();
@@ -105,11 +100,9 @@ public class PhotonVisionModule extends SubsystemBase {
 
     @Override
     public void simulationPeriodic() {
-        Optional<VisionEstimationData> robotPose = estimatePose();
-        SmartDashboard.putBoolean("isPresent", robotPose.isPresent());
-        robotPose.ifPresent(visionEstimationData -> {
-                    simVisionSystem.processFrame(visionEstimationData.estimatedPose());
-                    SmartDashboard.putNumber("pose x", visionEstimationData.estimatedPose().getX());
-                    SmartDashboard.putNumber("pose y", visionEstimationData.estimatedPose().getY());});
+        Pose2d robotPose = simulateDrivetrain.getPose();
+        simVisionSystem.processFrame(robotPose);
+        SmartDashboard.putNumber("pose x", robotPose.getX());
+        SmartDashboard.putNumber("pose y", robotPose.getY());
     }
 }

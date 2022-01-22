@@ -1,23 +1,34 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.PerpetualCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.utils.PhotonVisionModule;
+import frc.robot.utils.SimulateDrivetrain;
+import frc.robot.utils.commands.SimulateDrivetrainDefaultCommand;
 import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
 
+import java.util.Optional;
+
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-    private final XboxController xbox = new XboxController(Ports.Controls.XBOX);
+    private final XboxController xbox = new XboxController(0);
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
-    private final PhotonVisionModule visionModule = new PhotonVisionModule("photonvision");
-
+    private final SimulateDrivetrain simulateDrivetrain = new SimulateDrivetrain();
+    private final PhotonVisionModule visionModule;
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+        if(Robot.isSimulation()){
+            visionModule = new PhotonVisionModule("photonvision", Optional.of(simulateDrivetrain));
+        } else {
+            visionModule = new PhotonVisionModule("photonvision", Optional.empty());
+        }
         // Configure the button bindings and default commands
         configureDefaultCommands();
 
@@ -30,10 +41,11 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
+        simulateDrivetrain.setDefaultCommand(new SimulateDrivetrainDefaultCommand(
+                xbox, simulateDrivetrain));
     }
 
     private void configureButtonBindings() {
-
     }
 
 

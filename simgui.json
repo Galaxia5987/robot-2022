@@ -2,8 +2,35 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/LiveWindow/Ungrouped/Scheduler": "Scheduler"
+      "/LiveWindow/PhotonVisionModule": "Subsystem",
+      "/LiveWindow/SimulateDrivetrain": "Subsystem",
+      "/LiveWindow/Ungrouped/AnalogGyro[1]": "Gyro",
+      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/SmartDashboard/Field": "Field2d"
+    },
+    "windows": {
+      "/LiveWindow/PhotonVisionModule": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Field": {
+        "window": {
+          "visible": true
+        }
+      }
     }
+  },
+  "NetworkTables": {
+    "LiveWindow": {
+      "PhotonVisionModule": {
+        "open": true
+      },
+      "open": true
+    }
+  },
+  "NetworkTables View": {
+    "visible": false
   },
   "Plot": {
     "Plot <0>": {
@@ -11,7 +38,10 @@
         {
           "height": 419
         }
-      ]
+      ],
+      "window": {
+        "visible": false
+      }
     }
   }
 }
