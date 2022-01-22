@@ -4,17 +4,17 @@
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/PhotonVisionModule": "Subsystem",
       "/LiveWindow/SimulateDrivetrain": "Subsystem",
-      "/LiveWindow/Ungrouped/AnalogGyro[1]": "Gyro",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
-      "/SmartDashboard/Field": "Field2d"
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Target": "Field2d"
     },
     "windows": {
-      "/LiveWindow/PhotonVisionModule": {
+      "/SmartDashboard/Field": {
         "window": {
           "visible": true
         }
       },
-      "/SmartDashboard/Field": {
+      "/SmartDashboard/Target": {
         "window": {
           "visible": true
         }
@@ -22,25 +22,12 @@
     }
   },
   "NetworkTables": {
-    "LiveWindow": {
-      "PhotonVisionModule": {
-        "open": true
-      },
+    "SmartDashboard": {
       "open": true
-    }
-  },
-  "NetworkTables View": {
-    "visible": false
-  },
-  "Plot": {
-    "Plot <0>": {
-      "plots": [
-        {
-          "height": 419
-        }
-      ],
-      "window": {
-        "visible": false
+    },
+    "photonvision": {
+      "photonvision": {
+        "open": true
       }
     }
   }

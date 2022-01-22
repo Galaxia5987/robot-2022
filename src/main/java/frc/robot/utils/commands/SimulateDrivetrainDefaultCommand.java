@@ -3,6 +3,7 @@ package frc.robot.utils.commands;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.utils.SimulateDrivetrain;
+import frc.robot.utils.Utils;
 
 public class SimulateDrivetrainDefaultCommand extends CommandBase {
     private final XboxController xbox;
@@ -17,6 +18,7 @@ public class SimulateDrivetrainDefaultCommand extends CommandBase {
 
     @Override
     public void execute() {
-        simulateDrivetrain.set(-xbox.getLeftY(), xbox.getRightX());
+        simulateDrivetrain.set(Utils.deadband(-xbox.getLeftY(), 0.1),
+                Utils.deadband(xbox.getRightX(), 0.1));
     }
 }

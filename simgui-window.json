@@ -11,20 +11,15 @@
     }
   },
   "Window": {
-    "###/LiveWindow/PhotonVisionModule": {
-      "Collapsed": "0",
-      "Pos": "267,285",
-      "Size": "209,110"
-    },
-    "###/LiveWindow/SimulateDrivetrain": {
-      "Collapsed": "0",
-      "Pos": "60,60",
-      "Size": "392,110"
-    },
     "###/SmartDashboard/Field": {
       "Collapsed": "0",
-      "Pos": "410,-46",
-      "Size": "1116,677"
+      "Pos": "612,-46",
+      "Size": "870,631"
+    },
+    "###/SmartDashboard/Target": {
+      "Collapsed": "0",
+      "Pos": "612,-32",
+      "Size": "887,616"
     },
     "###FMS": {
       "Collapsed": "0",
@@ -36,25 +31,15 @@
       "Pos": "353,647",
       "Size": "1156,316"
     },
-    "###Keyboard 0 Settings": {
-      "Collapsed": "0",
-      "Pos": "300,521",
-      "Size": "300,560"
-    },
     "###NetworkTables": {
       "Collapsed": "0",
-      "Pos": "330,330",
-      "Size": "1125,277"
+      "Pos": "446,612",
+      "Size": "1125,335"
     },
     "###Other Devices": {
       "Collapsed": "0",
       "Pos": "1537,30",
       "Size": "375,1042"
-    },
-    "###Plot <0>": {
-      "Collapsed": "0",
-      "Pos": "488,52",
-      "Size": "786,493"
     },
     "###System Joysticks": {
       "Collapsed": "0",

@@ -5,7 +5,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -28,12 +27,12 @@ public class PhotonVisionModule extends SubsystemBase {
     private final SimulateDrivetrain simulateDrivetrain;
 
     public PhotonVisionModule(String cameraName, Optional<SimulateDrivetrain> simulateDrivetrain) {
-        this.simulateDrivetrain = simulateDrivetrain.get();
+        this.simulateDrivetrain = simulateDrivetrain.orElse(null);
         if (Robot.isSimulation()) {
             camera = null;
             simCamera = new SimPhotonCamera("photonvision");
-            simVisionSystem = new SimVisionSystem(cameraName, DIAG_FOV, Math.toDegrees(CAMERA_PITCH), CAMERA_TO_ROBOT, CAMERA_HEIGHT, LED_RANGE, CAM_RESOLUTION_WIDTH, CAM_RESOLUTION_HEIGHT, MIN_TARGET_AREA);
-            simVisionSystem.addSimVisionTarget(HUB);
+            simVisionSystem = new SimVisionSystem(cameraName, DIAG_FOV, CAMERA_PITCH, CAMERA_TO_ROBOT, CAMERA_HEIGHT, LED_RANGE, CAM_RESOLUTION_WIDTH, CAM_RESOLUTION_HEIGHT, MIN_TARGET_AREA);
+            simVisionSystem.addSimVisionTarget(SIM_TARGET_HUB);
         } else {
             camera = new PhotonCamera(cameraName);
             simCamera = null;
@@ -47,6 +46,9 @@ public class PhotonVisionModule extends SubsystemBase {
      * @return whether we have a target.
      */
     public boolean hasTargets() {
+        if (Robot.isSimulation()) {
+            return simCamera.getLatestResult().hasTargets();
+        }
         return camera.getLatestResult().hasTargets();
     }
 
@@ -58,7 +60,7 @@ public class PhotonVisionModule extends SubsystemBase {
     public OptionalDouble getDistance() {
         var results = camera.getLatestResult();
         if (results.hasTargets()) {
-            return OptionalDouble.of(PhotonUtils.calculateDistanceToTargetMeters(Constants.Vision.CAMERA_HEIGHT, Constants.Vision.TARGET_HEIGHT_FROM_GROUND, Constants.Vision.CAMERA_PITCH, Math.toRadians(results.getBestTarget().getPitch())));
+            return OptionalDouble.of(PhotonUtils.calculateDistanceToTargetMeters(Constants.Vision.CAMERA_HEIGHT, Constants.Vision.TARGET_HEIGHT_FROM_GROUND, Math.toRadians(CAMERA_PITCH), Math.toRadians(results.getBestTarget().getPitch())));
         }
         return OptionalDouble.empty();
     }
@@ -69,9 +71,14 @@ public class PhotonVisionModule extends SubsystemBase {
      * @return the translation relative to the target.
      */
     public Optional<Translation2d> estimateCameraTranslationToTarget() {
-        var results = camera.getLatestResult();
+        PhotonPipelineResult results;
+        if (Robot.isSimulation()) {
+            results = simCamera.getLatestResult();
+        } else {
+            results = camera.getLatestResult();
+        }
         if (results.hasTargets()) {
-            double distance = PhotonUtils.calculateDistanceToTargetMeters(Constants.Vision.CAMERA_HEIGHT, Constants.Vision.TARGET_HEIGHT_FROM_GROUND, Constants.Vision.CAMERA_PITCH, Math.toRadians(results.getBestTarget().getPitch()));
+            double distance = PhotonUtils.calculateDistanceToTargetMeters(Constants.Vision.CAMERA_HEIGHT, Constants.Vision.TARGET_HEIGHT_FROM_GROUND, Math.toRadians(CAMERA_PITCH), Math.toRadians(results.getBestTarget().getPitch()));
             return Optional.of(PhotonUtils.estimateCameraToTargetTranslation(distance, Rotation2d.fromDegrees(-results.getBestTarget().getYaw())));
         }
         return Optional.empty();
@@ -102,6 +109,12 @@ public class PhotonVisionModule extends SubsystemBase {
     public void simulationPeriodic() {
         Pose2d robotPose = simulateDrivetrain.getPose();
         simVisionSystem.processFrame(robotPose);
+        Optional<Translation2d> toTarget = estimateCameraTranslationToTarget();
+        if (toTarget.isPresent()) {
+            SmartDashboard.putNumber("to target x", toTarget.get().getX());
+            SmartDashboard.putNumber("to target y", toTarget.get().getY());
+        }
+        SmartDashboard.putBoolean("hasTarget", hasTargets());
         SmartDashboard.putNumber("pose x", robotPose.getX());
         SmartDashboard.putNumber("pose y", robotPose.getY());
     }

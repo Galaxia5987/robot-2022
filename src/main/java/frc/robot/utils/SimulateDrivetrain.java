@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import static frc.robot.Constants.Vision.HUB_POSE;
+
 public class SimulateDrivetrain extends SubsystemBase {
     private final EncoderSim leftEncoderSim;
     private final EncoderSim rightEncoderSim;
@@ -21,9 +23,10 @@ public class SimulateDrivetrain extends SubsystemBase {
             60,
             0.04,
             0.59,
-            VecBuilder.fill(0.001, 0.001, 0.001, 0.1, 0.1, 0.005, 0.005)
-    );
+            VecBuilder.fill(0.001, 0.001, 0.001, 0.1, 0.1, 0.005, 0.005));
+
     private final Field2d field = new Field2d();
+    private final Field2d target = new Field2d();
 
     public SimulateDrivetrain() {
         Encoder leftEncoder = new Encoder(0, 1);
@@ -36,8 +39,15 @@ public class SimulateDrivetrain extends SubsystemBase {
         rightEncoderSim = new EncoderSim(rightEncoder);
     }
 
-    public void set(double forward, double rotation){
-        rotation *= 0.1;
+    /**
+     * Sets the values of movement for the simulated drivetrain.
+     *
+     * @param forward  is the forward output. [%]
+     * @param rotation is the rotation output. [%]
+     */
+    public void set(double forward, double rotation) {
+        rotation *= 0.3;
+        forward *= 0.7;
 
         double outputR = forward - rotation;
         double outputL = forward + rotation;
@@ -46,7 +56,12 @@ public class SimulateDrivetrain extends SubsystemBase {
         rightEncoderSim.setRate(outputR * Math.PI);
     }
 
-    public Pose2d getPose(){
+    /**
+     * Gets the pose of the simulated drivetrain.
+     *
+     * @return the pose of the simulated drivetrain.
+     */
+    public Pose2d getPose() {
         return driveSim.getPose();
     }
 
@@ -57,5 +72,7 @@ public class SimulateDrivetrain extends SubsystemBase {
         driveSim.update(0.02);
         SmartDashboard.putData("Field", field);
         field.setRobotPose(driveSim.getPose());
+        SmartDashboard.putData("Target", target);
+        target.setRobotPose(HUB_POSE);
     }
 }
