@@ -22,8 +22,6 @@ public final class Constants {
         public static final double J = 0.00218; // Moment of inertia for state space. [kg*m^2]
         public static final double GEAR_RATIO = 1; // Gear ratio for encoder.
         public static final double NEUTRAL_DEADBAND = 0.1; // [%]
-
-        public static final TalonFXConfiguration CONFIGURATION = new TalonFXConfiguration();
     }
 
     public static class Control {
