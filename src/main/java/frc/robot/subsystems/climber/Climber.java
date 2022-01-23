@@ -8,8 +8,7 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
@@ -33,6 +32,7 @@ public class Climber extends SubsystemBase {
 
     private final WPI_TalonFX leftMotor = new WPI_TalonFX(Ports.Climber.LEFT);
     private final WPI_TalonFX rightMotor = new WPI_TalonFX(Ports.Climber.RIGHT);
+    private final Solenoid stopper = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Climber.STOPPER);
 
     private final UnitModel unitModel = new UnitModel(Constants.Climber.TICKS_PER_RAD);
 
@@ -126,8 +126,6 @@ public class Climber extends SubsystemBase {
         rightMotor.config_kP(0, Constants.Climber.P_VELOCITY);
         rightMotor.config_kI(0, Constants.Climber.I_VELOCITY);
         rightMotor.config_kD(0, Constants.Climber.D_VELOCITY);
-
-        rightMotor.setSafetyEnabled(true);
     }
 
 
@@ -143,6 +141,12 @@ public class Climber extends SubsystemBase {
 
     // TODO: add units
 
+    public double getFPGATime() {
+        return Timer.getFPGATimestamp();
+    }
+
+    // TODO: add units
+
     /**
      * @return get motors velocity.
      */
@@ -152,8 +156,6 @@ public class Climber extends SubsystemBase {
         }
         return unitModel.toVelocity(leftMotor.getSelectedSensorVelocity());
     }
-
-    // TODO: add units
 
     /**
      * @param velocity the velocity of the right & left.
@@ -175,7 +177,7 @@ public class Climber extends SubsystemBase {
     public double getPosition() {
         return unitModel.toUnits(rightMotor.getSelectedSensorPosition());
     }
-    
+
     /**
      * @param position the position of the motors. [ticks]
      */
@@ -183,6 +185,22 @@ public class Climber extends SubsystemBase {
         rightMotor.set(ControlMode.MotionMagic, unitModel.toTicks(position));
     }
 
+    public boolean isStopperEngaged() {
+        return stopper.get();
+    }
+
+    public void setStopperMode(boolean engaged) {
+        stopper.set(!engaged);
+    }
+
+    public void toggle() {
+        if (isStopperEngaged()) {
+            setStopperMode(false);
+        } else {
+            setStopperMode(true);
+        }
+
+    }
 
     /**
      * stop both motors in the place they were.
@@ -190,6 +208,7 @@ public class Climber extends SubsystemBase {
     public void stop() {
         rightMotor.stopMotor();
     }
+
 
     /**
      * Add periodic for the simulation.

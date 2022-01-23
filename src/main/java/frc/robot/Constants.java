@@ -22,7 +22,7 @@ public final class Constants {
 
         public static final double MAX_VELOCITY = Math.PI * 2 / 3; //[rad/s]
 
-        public static final double GEAR_RATIO = 307.13;
+        public static final double GEAR_RATIO = 295.31;
 
         public static final double TICKS_PER_RAD = 2048 * GEAR_RATIO / (2 * Math.PI);
 
@@ -34,5 +34,9 @@ public final class Constants {
 
         public static final int MAX_ANGLE = 255;
         public static final int MIN_ANGLE = -75;
+
+        public static final int AUTONOMY_TIME = 15;
+
+        public static final double STOP_CLIMBER = 249.5;
     }
 }
