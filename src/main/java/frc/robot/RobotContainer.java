@@ -1,8 +1,8 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.commands.JoystickClimb;
 import frc.robot.subsystems.example.ExampleSubsystem;
@@ -10,14 +10,13 @@ import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
 
 public class RobotContainer {
-    private GenericHID xbox;
     //    private final XboxController xbox = new XboxController(Ports.Controls.JOYSTICK);
-   // private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
+    // private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final Climber climber = Climber.getInstance();
     private final Joystick joystick = new Joystick(Ports.Controls.JOYSTICK);
     // The robot's subsystems and commands are defined here...
     public ExampleSubsystem exampleSubsystem = ExampleSubsystem.getInstance();
-
+    private GenericHID xbox;
 
 
     /**
@@ -34,7 +33,6 @@ public class RobotContainer {
 
         configureButtonBindings();
     }
-
 
 
     private void configureDefaultCommands() {
