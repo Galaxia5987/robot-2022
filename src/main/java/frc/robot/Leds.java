@@ -68,9 +68,12 @@ public class Leds {
 
         rainbowFirstPixelHue += 3;
         rainbowFirstPixelHue %= 30;
+
+        for (var i = 0; i < ledBuffer.getLength(); i++) {
+            int hue = (rainbowFirstPixelHue + (i * 60 / ledBuffer.getLength())) % 30;
+            int a;
+        }
     }
-
-
 }
 
 

@@ -30,7 +30,7 @@ public class Climber extends SubsystemBase {
 
     private static Climber INSTANCE = null;
 
-    private final WPI_TalonFX motor = new WPI_TalonFX(Ports.Climber.MOTOR);
+    private final WPI_TalonFX aux = new WPI_TalonFX(Ports.Climber.AUX);
     private final WPI_TalonFX mainMotor = new WPI_TalonFX(Ports.Climber.MAIN_MOTOR);
     private final Solenoid stopper = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Climber.STOPPER);
 
@@ -81,30 +81,6 @@ public class Climber extends SubsystemBase {
         }
 
 
-        motor.follow(mainMotor);
-
-        /*
-         Set the left motor on Brake mode.
-         */
-        motor.setNeutralMode(NeutralMode.Brake);
-
-        /*
-         sets the phase of the sensor
-         */
-        motor.setSensorPhase(Ports.Climber.LEFT_SENSOR_PHASE);
-
-        /*
-         checking is motor inverted.
-         */
-        motor.setInverted(Ports.Climber.IS_LEFT_INVERTED);
-
-        /*
-         config PID velocity for left motor.
-         */
-        motor.config_kP(0, Constants.Climber.P_VELOCITY);
-        motor.config_kI(0, Constants.Climber.I_VELOCITY);
-        motor.config_kD(0, Constants.Climber.D_VELOCITY);
-
         /*
          set the right motor on Brake mode.
          */
@@ -113,21 +89,43 @@ public class Climber extends SubsystemBase {
         /*
         sets the phase of the sensor.
          */
-        mainMotor.setSensorPhase(Ports.Climber.RIGHT_SENSOR_PHASE);
+        mainMotor.setSensorPhase(Ports.Climber.MAIN_SENSOR_PHASE);
 
         /*
          checking is motor inverted.
          */
-        mainMotor.setInverted(Ports.Climber.IS_RIGHT_INVERTED);
+        mainMotor.setInverted(Ports.Climber.IS_MAIN_INVERTED);
 
         /*
-         config PID velocity for right motor.
+         config PID velocity for main motor.
          */
         mainMotor.config_kP(0, Constants.Climber.P_VELOCITY);
         mainMotor.config_kI(0, Constants.Climber.I_VELOCITY);
         mainMotor.config_kD(0, Constants.Climber.D_VELOCITY);
 
-        mainMotor.ve
+        aux.follow(mainMotor);
+
+        /*
+         Set the aux motor on Brake mode.
+         */
+        aux.setNeutralMode(NeutralMode.Brake);
+
+        /*
+         sets the phase of the sensor.
+         */
+        aux.setSensorPhase(Ports.Climber.AUX_SENSOR_PHASE);
+
+        /*
+         checking is aux inverted.
+         */
+        aux.setInverted(Ports.Climber.IS_AUX_INVERTED);
+
+        /*
+         config PID velocity for aux motor.
+         */
+        aux.config_kP(0, Constants.Climber.P_VELOCITY);
+        aux.config_kI(0, Constants.Climber.I_VELOCITY);
+        aux.config_kD(0, Constants.Climber.D_VELOCITY);
     }
 
 
@@ -141,26 +139,24 @@ public class Climber extends SubsystemBase {
         return INSTANCE;
     }
 
-    // TODO: add units
 
     public double getFPGATime() {
         return Timer.getFPGATimestamp();
-    }
+    } //[s]
 
-    // TODO: add units
 
     /**
-     * @return get motors velocity.
+     * @return get motors velocity. [ticks/rad]
      */
     public double getVelocity() {
         if (Robot.isSimulation()) {
             return m_encoderSim.getRate();
         }
-        return unitModel.toVelocity(motor.getSelectedSensorVelocity());
+        return unitModel.toVelocity(aux.getSelectedSensorVelocity());
     }
 
     /**
-     * @param velocity the velocity of the right & left.
+     * @param velocity the velocity of the motors. [ticks]
      */
 
     public void setVelocity(double velocity) {
