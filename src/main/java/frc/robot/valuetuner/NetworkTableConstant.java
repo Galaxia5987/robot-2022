@@ -13,9 +13,9 @@ public class NetworkTableConstant implements WebConstant {
     private final NetworkTableEntry constant;
     private final double defaultValue;
 
-    NetworkTableConstant(String subsystem, String key, double defaultValue) {
+    NetworkTableConstant(String table, String key, double defaultValue) {
         this.defaultValue = defaultValue;
-        constant = BASE_TABLE.getSubTable(subsystem).getEntry(key);
+        constant = BASE_TABLE.getSubTable(table).getEntry(key);
     }
 
     /**
