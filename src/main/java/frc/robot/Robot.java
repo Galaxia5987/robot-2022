@@ -5,11 +5,13 @@
 package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -17,11 +19,42 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * project.
  */
 public class Robot extends TimedRobot {
-    public static boolean debug = false;
-    public static final AHRS navx = new AHRS(SPI.Port.kMXP);
+    public static final boolean debug = true;
+    private static final AHRS navx = new AHRS(SPI.Port.kMXP);
+    private static Rotation2d startAngle = new Rotation2d();
+    //    private final Compressor compressor = new Compressor(0);
     public PowerDistribution pdp = new PowerDistribution();
-    private RobotContainer m_robotContainer;
     private Command m_autonomousCommand;
+    private RobotContainer m_robotContainer;
+
+    /**
+     * Gets the current angle of the robot in respect to the start angle.
+     *
+     * @return the current angle of the robot in respect to the start angle.
+     */
+    public static Rotation2d getAngle() {
+        var rotation = Rotation2d.fromDegrees(navx.getYaw());
+        if (Constants.INVERT_NAVX) {
+            rotation = rotation.unaryMinus();
+        }
+        return rotation.minus(startAngle);
+    }
+
+    /**
+     * Resets the angle of the navx to the current angle.
+     */
+    public static void resetAngle() {
+        resetAngle(getAngle());
+    }
+
+    /**
+     * Resets the angle of the navx to the current angle.
+     *
+     * @param angle the angle in -180 to 180 degrees coordinate system.
+     */
+    public static void resetAngle(Rotation2d angle) {
+        startAngle = angle;
+    }
 
     /**
      * This function is run when the robot is first started up and should be used for any
@@ -29,6 +62,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
+        resetAngle();
         m_robotContainer = new RobotContainer();
     }
 
@@ -69,7 +103,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousPeriodic() {
-
     }
 
     /**
@@ -87,6 +120,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
+
     }
 
     /**
