@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.command_groups.Shoot;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
@@ -32,7 +31,6 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        shooter.setDefaultCommand(new Shoot(shooter, xbox::getLeftY));
     }
 
     private void configureButtonBindings() {
