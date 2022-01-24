@@ -2,6 +2,7 @@ package frc.robot.command_groups;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.commands.Shoot;
 
 import java.util.function.DoubleSupplier;
 
@@ -13,7 +14,7 @@ public class Outtake extends ParallelCommandGroup {
         be added to feed the balls to the shooter.
          */
         addCommands(
-                new frc.robot.subsystems.shooter.commands.Shoot(shooter, () -> shooter.getSetpointVelocity(distance.getAsDouble()))
+                new Shoot(shooter, () -> shooter.getSetpointVelocity(distance.getAsDouble()))
         );
     }
 }

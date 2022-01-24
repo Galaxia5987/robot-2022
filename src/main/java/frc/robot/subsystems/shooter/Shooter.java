@@ -1,5 +1,6 @@
 package frc.robot.subsystems.shooter;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
@@ -105,6 +106,10 @@ public class Shooter extends SubsystemBase {
         linearSystemLoop.predict(currentTime - lastTime);
 
         motor.setVoltage(Utils.clamp(linearSystemLoop.getU(0), -NOMINAL_VOLTAGE, NOMINAL_VOLTAGE));
+    }
+
+    public void setPower(double output) {
+        motor.set(ControlMode.PercentOutput, output);
     }
 
     /**

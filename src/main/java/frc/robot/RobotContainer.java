@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.command_groups.Outtake;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.commands.bits.TestSolenoidPressure;
 import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
 
@@ -17,6 +18,7 @@ public class RobotContainer {
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final Trigger rt = new Trigger(() -> xbox.getRawAxis(XboxController.Axis.kRightTrigger.value) > TRIGGER_DEADBAND);
     private final Shooter shooter = Shooter.getInstance();
+    private final boolean isBitTesting = true;
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -34,6 +36,9 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
+        if (isBitTesting) {
+            shooter.setDefaultCommand(new TestSolenoidPressure(xbox::getLeftY, shooter));
+        }
     }
 
     private void configureButtonBindings() {
