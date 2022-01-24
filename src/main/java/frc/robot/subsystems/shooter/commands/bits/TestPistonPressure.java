@@ -7,11 +7,11 @@ import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.Shooter.Bits.OUTPUT_MULTIPLIER;
 
-public class TestSolenoidPressure extends CommandBase {
+public class TestPistonPressure extends CommandBase {
     private final DoubleSupplier joystick;
     private final Shooter shooter;
 
-    public TestSolenoidPressure(DoubleSupplier joystick, Shooter shooter) {
+    public TestPistonPressure(DoubleSupplier joystick, Shooter shooter) {
         this.joystick = joystick;
         this.shooter = shooter;
     }
