@@ -30,8 +30,8 @@ public class Climber extends SubsystemBase {
 
     private static Climber INSTANCE = null;
 
-    private final WPI_TalonFX leftMotor = new WPI_TalonFX(Ports.Climber.LEFT);
-    private final WPI_TalonFX rightMotor = new WPI_TalonFX(Ports.Climber.RIGHT);
+    private final WPI_TalonFX motor = new WPI_TalonFX(Ports.Climber.MOTOR);
+    private final WPI_TalonFX mainMotor = new WPI_TalonFX(Ports.Climber.MAIN_MOTOR);
     private final Solenoid stopper = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Climber.STOPPER);
 
     private final UnitModel unitModel = new UnitModel(Constants.Climber.TICKS_PER_RAD);
@@ -81,51 +81,53 @@ public class Climber extends SubsystemBase {
         }
 
 
-        leftMotor.follow(rightMotor);
+        motor.follow(mainMotor);
 
         /*
          Set the left motor on Brake mode.
          */
-        leftMotor.setNeutralMode(NeutralMode.Brake);
+        motor.setNeutralMode(NeutralMode.Brake);
 
         /*
          sets the phase of the sensor
          */
-        leftMotor.setSensorPhase(Ports.Climber.LEFT_SENSOR_PHASE);
+        motor.setSensorPhase(Ports.Climber.LEFT_SENSOR_PHASE);
 
         /*
          checking is motor inverted.
          */
-        leftMotor.setInverted(Ports.Climber.IS_LEFT_INVERTED);
+        motor.setInverted(Ports.Climber.IS_LEFT_INVERTED);
 
         /*
          config PID velocity for left motor.
          */
-        leftMotor.config_kP(0, Constants.Climber.P_VELOCITY);
-        leftMotor.config_kI(0, Constants.Climber.I_VELOCITY);
-        leftMotor.config_kD(0, Constants.Climber.D_VELOCITY);
+        motor.config_kP(0, Constants.Climber.P_VELOCITY);
+        motor.config_kI(0, Constants.Climber.I_VELOCITY);
+        motor.config_kD(0, Constants.Climber.D_VELOCITY);
 
         /*
          set the right motor on Brake mode.
          */
-        rightMotor.setNeutralMode(NeutralMode.Brake);
+        mainMotor.setNeutralMode(NeutralMode.Brake);
 
         /*
         sets the phase of the sensor.
          */
-        rightMotor.setSensorPhase(Ports.Climber.RIGHT_SENSOR_PHASE);
+        mainMotor.setSensorPhase(Ports.Climber.RIGHT_SENSOR_PHASE);
 
         /*
          checking is motor inverted.
          */
-        rightMotor.setInverted(Ports.Climber.IS_RIGHT_INVERTED);
+        mainMotor.setInverted(Ports.Climber.IS_RIGHT_INVERTED);
 
         /*
          config PID velocity for right motor.
          */
-        rightMotor.config_kP(0, Constants.Climber.P_VELOCITY);
-        rightMotor.config_kI(0, Constants.Climber.I_VELOCITY);
-        rightMotor.config_kD(0, Constants.Climber.D_VELOCITY);
+        mainMotor.config_kP(0, Constants.Climber.P_VELOCITY);
+        mainMotor.config_kI(0, Constants.Climber.I_VELOCITY);
+        mainMotor.config_kD(0, Constants.Climber.D_VELOCITY);
+
+        mainMotor.ve
     }
 
 
@@ -154,7 +156,7 @@ public class Climber extends SubsystemBase {
         if (Robot.isSimulation()) {
             return m_encoderSim.getRate();
         }
-        return unitModel.toVelocity(leftMotor.getSelectedSensorVelocity());
+        return unitModel.toVelocity(motor.getSelectedSensorVelocity());
     }
 
     /**
@@ -164,25 +166,25 @@ public class Climber extends SubsystemBase {
     public void setVelocity(double velocity) {
         if (Robot.isSimulation()) {
             double volts = m_controller.calculate(getVelocity(), velocity);
-            rightMotor.setVoltage(volts + feedforward.calculate(0, 0));
+            mainMotor.setVoltage(volts + feedforward.calculate(0, 0));
         } else {
             int tick100ms = unitModel.toTicks100ms(velocity);
-            rightMotor.set(ControlMode.Velocity, tick100ms);
+            mainMotor.set(ControlMode.Velocity, tick100ms);
         }
     }
 
     /**
-     * @return get motors position. [ticks/rad}
+     * @return get motors position. [ticks/rad]
      */
     public double getPosition() {
-        return unitModel.toUnits(rightMotor.getSelectedSensorPosition());
+        return unitModel.toUnits(mainMotor.getSelectedSensorPosition());
     }
 
     /**
      * @param position the position of the motors. [ticks]
      */
     public void setPosition(double position) {
-        rightMotor.set(ControlMode.MotionMagic, unitModel.toTicks(position));
+        mainMotor.set(ControlMode.MotionMagic, unitModel.toTicks(position));
     }
 
     public boolean isStopperEngaged() {
@@ -193,20 +195,15 @@ public class Climber extends SubsystemBase {
         stopper.set(!engaged);
     }
 
-    public void toggle() {
-        if (isStopperEngaged()) {
-            setStopperMode(false);
-        } else {
-            setStopperMode(true);
-        }
-
+    public void toggleStopper() {
+        setStopperMode(!isStopperEngaged());
     }
 
     /**
      * stop both motors in the place they were.
      */
     public void stop() {
-        rightMotor.stopMotor();
+        mainMotor.stopMotor();
     }
 
 
@@ -215,7 +212,7 @@ public class Climber extends SubsystemBase {
      */
     @Override
     public void simulationPeriodic() {
-        m_armSim.setInput(rightMotor.get() * RobotController.getBatteryVoltage());
+        m_armSim.setInput(mainMotor.get() * RobotController.getBatteryVoltage());
 
         m_armSim.update(0.02);
 

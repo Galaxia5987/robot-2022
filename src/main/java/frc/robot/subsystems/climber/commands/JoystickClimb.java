@@ -38,12 +38,10 @@ public class JoystickClimb extends CommandBase {
 
     @Override
     public void execute() {
-        if (isReady) {
             double climbVelocity = Utils.deadband(joystickOutput.getAsDouble(), Constants.Climber.THRESHOLD) * Constants.Climber.MAX_VELOCITY;
             climber.setVelocity(climbVelocity);
             if (isStopper.getAsBoolean()){
-                climber.toggle();
-            }
+                climber.toggleStopper();
         }
     }
 

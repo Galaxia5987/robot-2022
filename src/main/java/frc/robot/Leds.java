@@ -47,21 +47,32 @@ public class Leds {
     }
 
 
-        public void autonomousPeriodic(){
-            rainbowFirstPixelHue += 3;
-            rainbowFirstPixelHue %= 180;
-            for (var i = 0; i < ledBuffer.getLength(); i++) {
-                final var hue = (rainbowFirstPixelHue + (i * 180 / ledBuffer.getLength())) % 180;
-                ledBuffer.setHSV(i, hue, 255, 128);
-            }
+    public void autonomousPeriodic() {
+        rainbowFirstPixelHue += 3;
+        rainbowFirstPixelHue %= 180;
+        for (var i = 0; i < ledBuffer.getLength(); i++) {
+            final var hue = (rainbowFirstPixelHue + (i * 180 / ledBuffer.getLength())) % 180;
+            ledBuffer.setHSV(i, hue, 255, 128);
         }
+    }
 
 
-        public void teleopPeriodic(){
-            
+    public void teleopPeriodic() {
+        if (climbLedsTimer.get() == 0) {
+            climbLedsTimer.reset();
+            climbLedsTimer.start();
+        } else {
+            climbLedsTimer.stop();
+            climbLedsTimer.reset();
         }
+
+        rainbowFirstPixelHue += 3;
+        rainbowFirstPixelHue %= 30;
+    }
+
 
 }
+
 
 
 

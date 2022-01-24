@@ -32,11 +32,11 @@ public final class Constants {
         public static final double ARM_MASS = 5.0; // Kilograms
         public static final double ARM_LENGTH = 0.792; // [m]
 
-        public static final int MAX_ANGLE = 255;
-        public static final int MIN_ANGLE = -75;
+        public static final int MAX_ANGLE = 255; // [degree]
+        public static final int MIN_ANGLE = -75; // [degree]
 
-        public static final int AUTONOMY_TIME = 15;
+        public static final int AUTONOMY_TIME = 15; // [s]
 
-        public static final double STOP_CLIMBER = 249.5; // [s]
+        public static final double STOP_CLIMBER = 149.5; // [s]
     }
 }
