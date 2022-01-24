@@ -28,11 +28,6 @@
         "window": {
           "visible": true
         }
-      },
-      "/SmartDashboard/Arm sim": {
-        "window": {
-          "visible": true
-        }
       }
     }
   }
