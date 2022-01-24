@@ -60,7 +60,7 @@ public class Hood extends SubsystemBase {
     /**
      * Returns whether the solenoid is active.
      *
-     * @return a boolean representing the mode of the solenoid.
+     * @return whether the solenoid is active.
      */
     public boolean isActive() {
         return angleChanger.get();
