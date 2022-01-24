@@ -14,7 +14,6 @@ public class RobotContainer {
     private final XboxController xbox = new XboxController(Ports.Controls.XBOX);
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final JoystickButton b = new JoystickButton(xbox, XboxController.Button.kB.value);
-    private final Trigger rt = new Trigger(() -> xbox.getRightTriggerAxis() > 0);
     private final Hood hood = Hood.getInstance();
 
     /**

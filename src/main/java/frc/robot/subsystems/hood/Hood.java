@@ -1,6 +1,5 @@
 package frc.robot.subsystems.hood;
 
-import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -11,7 +10,7 @@ public class Hood extends SubsystemBase {
     private static Hood INSTANCE;
     private final Solenoid angleChanger = new Solenoid(PneumaticsModuleType.CTREPCM, SOLENOID);
 
-    public Hood() {
+    private Hood() {
     }
 
     public enum Mode {
@@ -42,9 +41,7 @@ public class Hood extends SubsystemBase {
      * solenoid only if it's currently closed.
      */
     public void open() {
-        if (angleChanger.get())
-            angleChanger.toggle();
-
+        angleChanger.set(false);
     }
 
     /**
@@ -53,9 +50,7 @@ public class Hood extends SubsystemBase {
      * solenoid only if it's currently open.
      */
     public void close() {
-        if (!angleChanger.get()) {
-            angleChanger.toggle();
-        }
+        angleChanger.set(true);
     }
 
     public void setSolenoid(Mode mode){
@@ -67,7 +62,7 @@ public class Hood extends SubsystemBase {
      *
      * @return a boolean representing the mode of the solenoid.
      */
-    public boolean getActive() {
+    public boolean isActive() {
         return angleChanger.get();
     }
 }
