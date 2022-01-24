@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-    private final XboxController xbox = new XboxController(0);
+    private final XboxController xbox = new XboxController(Ports.Controls.XBOX);
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final SimulateDrivetrain simulateDrivetrain = new SimulateDrivetrain();
     private final PhotonVisionModule visionModule;
