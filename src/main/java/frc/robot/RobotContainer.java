@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.command_groups.Outtake;
+import frc.robot.subsystems.example.ExampleSubsystem;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.bits.TestSolenoidPressure;
 import frc.robot.valuetuner.ValueTuner;
@@ -14,11 +15,11 @@ import static frc.robot.Constants.Control.RIGHT_TRIGGER_DEADBAND;
 
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
+    public ExampleSubsystem exampleSubsystem = ExampleSubsystem.getInstance();
     private final XboxController xbox = new XboxController(Ports.Controls.XBOX);
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final Trigger rightTrigger = new Trigger(() -> xbox.getRawAxis(XboxController.Axis.kRightTrigger.value) > RIGHT_TRIGGER_DEADBAND);
     private final Shooter shooter = Shooter.getInstance();
-    private final boolean isBitTesting = true;
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -36,9 +37,7 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        if (isBitTesting) {
-            shooter.setDefaultCommand(new TestSolenoidPressure(xbox::getLeftY, shooter));
-        }
+        shooter.setDefaultCommand(new TestSolenoidPressure(xbox::getLeftY, shooter));
     }
 
     private void configureButtonBindings() {

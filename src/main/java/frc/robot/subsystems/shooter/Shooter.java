@@ -60,10 +60,11 @@ public class Shooter extends SubsystemBase {
         final DCMotor motor = DCMotor.getFalcon500(1);
 
         LinearSystem<N1, N1, N1> flywheel_plant;
-        if (!isInertiaBased)
-            flywheel_plant = LinearSystemId.identifyVelocitySystem(Kv, Ka);
-        else
+        if (isInertiaBased) {
             flywheel_plant = LinearSystemId.createFlywheelSystem(motor, J, GEAR_RATIO);
+        } else {
+            flywheel_plant = LinearSystemId.identifyVelocitySystem(Kv, Ka);
+        }
 
         LinearQuadraticRegulator<N1, N1, N1> quadraticRegulator = new LinearQuadraticRegulator<>(
                 flywheel_plant,
