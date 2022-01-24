@@ -31,7 +31,7 @@ public class Shooter extends SubsystemBase {
 
     private Shooter() {
         motor.setInverted(IS_INVERTED);
-        motor.setSensorPhase(SENSOR_PHASE);
+        motor.setSensorPhase(IS_SENSOR_IN_PHASE);
         motor.configNeutralDeadband(NEUTRAL_DEADBAND, Constants.TALON_TIMEOUT);
         linearSystemLoop = configStateSpace(true);
     }
