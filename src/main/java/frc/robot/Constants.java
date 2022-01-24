@@ -1,11 +1,5 @@
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-import edu.wpi.first.math.MatBuilder;
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.Nat;
-import edu.wpi.first.math.numbers.N1;
-
 public final class Constants {
     public static final double LOOP_PERIOD = 0.02; // loop period. [s]
     public static final double g = 9.80665; // Gravity acceleration constant. [m/s^2]
@@ -29,7 +23,5 @@ public final class Constants {
         public static final double J = 0.00218; // Moment of inertia for state space. [kg*m^2]
         public static final double GEAR_RATIO = 1; // Gear ratio for encoder (placeholder).
         public static final double NEUTRAL_DEADBAND = 0.1;
-
-        public static final TalonFXConfiguration CONFIGURATION = new TalonFXConfiguration();
     }
 }
