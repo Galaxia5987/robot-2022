@@ -1,6 +1,7 @@
 package frc.robot.subsystems.climber;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -9,7 +10,10 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
@@ -25,7 +29,6 @@ import frc.robot.Constants;
 import frc.robot.Ports;
 import frc.robot.Robot;
 import frc.robot.subsystems.UnitModel;
-import jdk.jfr.Enabled;
 
 
 public class Climber extends SubsystemBase {
@@ -40,14 +43,14 @@ public class Climber extends SubsystemBase {
 
     private final ArmFeedforward feedforward = new ArmFeedforward(Constants.Climber.F_FORWARD_S, Constants.Climber.F_FORWARD_COS, Constants.Climber.F_FORWARD_V, Constants.Climber.F_FORWARD_A);
 
-    private final PIDController m_controller = new PIDController(Constants.Climber.P_VELOCITY, Constants.Climber.I_VELOCITY, Constants.Climber.D_VELOCITY);
+    private final PIDController controller = new PIDController(Constants.Climber.P_VELOCITY, Constants.Climber.I_VELOCITY, Constants.Climber.D_VELOCITY);
 
-    private final Encoder m_encoder = new Encoder(Ports.Climber.ENCODER_A_CHANNEL, Ports.Climber.ENCODER_B_CHANNEL);
-    private final DCMotor m_armGearbox = DCMotor.getFalcon500(2);
+    private final Encoder encoder = new Encoder(Ports.Climber.ENCODER_A_CHANNEL, Ports.Climber.ENCODER_B_CHANNEL);
+    private final DCMotor armGearbox = DCMotor.getFalcon500(2);
 
     private final SingleJointedArmSim m_armSim =
             new SingleJointedArmSim(
-                    m_armGearbox,
+                    armGearbox,
                     Constants.Climber.GEAR_RATIO,
                     SingleJointedArmSim.estimateMOI(Constants.Climber.ARM_LENGTH, Constants.Climber.ARM_MASS),
                     Constants.Climber.ARM_LENGTH,
@@ -58,15 +61,15 @@ public class Climber extends SubsystemBase {
                     VecBuilder.fill(Constants.Climber.ARM_ENCODER_DIST_PER_PULSE)
             );
 
-    private final EncoderSim m_encoderSim = new EncoderSim(m_encoder);
+    private final EncoderSim encoderSim = new EncoderSim(encoder);
 
-    private final Mechanism2d m_mech2d = new Mechanism2d(60, 60);
-    private final MechanismRoot2d m_armPivot = m_mech2d.getRoot("ArmPivot", 30, 30);
-    private final MechanismLigament2d m_armTower =
-            m_armPivot.append(new MechanismLigament2d("ArmTower", 30, -90));
+    private final Mechanism2d mechanism2d = new Mechanism2d(60, 60);
+    private final MechanismRoot2d armPivot = mechanism2d.getRoot("ArmPivot", 30, 30);
+    private final MechanismLigament2d armTower =
+            armPivot.append(new MechanismLigament2d("ArmTower", 30, -90));
 
-    private final MechanismLigament2d m_arm =
-            m_armPivot.append(
+    private final MechanismLigament2d arm =
+            armPivot.append(
                     new MechanismLigament2d(
                             "Arm",
                             30,
@@ -77,11 +80,10 @@ public class Climber extends SubsystemBase {
 
     public Climber() {
         if (Robot.isSimulation()) {
-            SmartDashboard.putData("Arm sim", m_mech2d);
-            m_encoder.setDistancePerPulse(Constants.Climber.ARM_ENCODER_DIST_PER_PULSE);
-            m_armTower.setColor(new Color8Bit(Color.kBlue));
+            SmartDashboard.putData("Arm sim", mechanism2d);
+            encoder.setDistancePerPulse(Constants.Climber.ARM_ENCODER_DIST_PER_PULSE);
+            armTower.setColor(new Color8Bit(Color.kBlue));
         }
-
 
         /*
          set the right motor on Brake mode.
@@ -105,8 +107,12 @@ public class Climber extends SubsystemBase {
         auxMotor.follow(mainMotor);
 
         mainMotor.enableVoltageCompensation(Constants.Climber.VOLTAGE_COMPENSATION);
-        
-        mainMotor.configVoltageCompSaturation(Constants.Climber.VOLTAGE_COMP_SATURATION);
+
+        mainMotor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
+
+        auxMotor.enableVoltageCompensation(Constants.Climber.VOLTAGE_COMPENSATION);
+
+        auxMotor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
 
         /*
          Set the aux motor on Brake mode.
@@ -127,7 +133,6 @@ public class Climber extends SubsystemBase {
         auxMotor.config_kD(0, Constants.Climber.D_VELOCITY);
     }
 
-
     /**
      * @return the object Climber.
      */
@@ -138,18 +143,12 @@ public class Climber extends SubsystemBase {
         return INSTANCE;
     }
 
-
-    public double getFPGATime() {
-        return Timer.getFPGATimestamp();
-    } //[s]
-
-
     /**
-     * @return get motors velocity. [rad/s]
+     * @return get motor velocity. [rad/s]
      */
     public double getVelocity() {
         if (Robot.isSimulation()) {
-            return m_encoderSim.getRate();
+            return encoderSim.getRate();
         }
         return unitModel.toVelocity(mainMotor.getSelectedSensorVelocity());
     }
@@ -157,14 +156,12 @@ public class Climber extends SubsystemBase {
     /**
      * @param velocity the velocity of the motors. [rad/s]
      */
-
     public void setVelocity(double velocity) {
         if (Robot.isSimulation()) {
-            double volts = m_controller.calculate(getVelocity(), velocity);
+            double volts = controller.calculate(getVelocity(), velocity);
             mainMotor.setVoltage(volts + feedforward.calculate(0, 0));
         } else {
-            int tick100ms = unitModel.toTicks100ms(velocity);
-            mainMotor.set(ControlMode.Velocity, tick100ms);
+            mainMotor.set(ControlMode.Velocity, unitModel.toTicks100ms(velocity));
         }
     }
 
@@ -179,23 +176,37 @@ public class Climber extends SubsystemBase {
      * @param position the position of the motors. [rad]
      */
     public void setPosition(double position) {
-        mainMotor.set(ControlMode.MotionMagic, unitModel.toTicks(position));
+        mainMotor.set(ControlMode.MotionMagic, unitModel.toTicks(position),
+                DemandType.ArbitraryFeedForward, feedforward.calculate(getPosition(), getVelocity()));
     }
 
+    /**
+     * Get the stopper's mode.
+     *
+     * @return the stopper's mode.
+     */
     public boolean isStopperEngaged() {
         return stopper.get();
     }
 
+    /**
+     * Set the stopper's mode.
+     *
+     * @param engaged whether the stopper is engaged.
+     */
     public void setStopperMode(boolean engaged) {
         stopper.set(!engaged);
     }
 
+    /**
+     * Toggle the value of the stopper.
+     */
     public void toggleStopper() {
         stopper.toggle();
     }
 
     /**
-     * stop both motors in the place they were.
+     * Stop both motors in the place they were.
      */
     public void stop() {
         mainMotor.stopMotor();
@@ -211,10 +222,10 @@ public class Climber extends SubsystemBase {
 
         m_armSim.update(0.02);
 
-        m_encoderSim.setDistance(m_armSim.getAngleRads());
+        encoderSim.setDistance(m_armSim.getAngleRads());
         RoboRioSim.setVInVoltage(
                 BatterySim.calculateDefaultBatteryLoadedVoltage(m_armSim.getCurrentDrawAmps()));
-        m_encoderSim.setRate(m_armSim.getVelocityRadPerSec());
-        m_arm.setAngle(Units.radiansToDegrees(m_armSim.getAngleRads()));
+        encoderSim.setRate(m_armSim.getVelocityRadPerSec());
+        arm.setAngle(Units.radiansToDegrees(m_armSim.getAngleRads()));
     }
 }
