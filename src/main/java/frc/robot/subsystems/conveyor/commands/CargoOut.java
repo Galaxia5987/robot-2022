@@ -3,8 +3,8 @@ package frc.robot.subsystems.conveyor.commands;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Ports;
 import frc.robot.Constants;
+import frc.robot.Ports;
 import frc.robot.subsystems.conveyor.Conveyor;
 
 public class CargoOut extends CommandBase {
@@ -19,8 +19,32 @@ public class CargoOut extends CommandBase {
 
     @Override
     public void initialize() {
-        if (conveyor.getColorPosition(true) == conveyor.dr)
+        if (conveyor.getColorPosition(true) == DriverStation.Alliance.Blue) {
+            if (conveyor.getColorPosition(false) == DriverStation.Alliance.Blue) {
+                // do nothing
+            }
+            if (conveyor.getColorPosition(false) != DriverStation.Alliance.Blue) {
+                conveyor.setPower(-Constants.POWER);
+                // use InTake
+            }
+
+        }
+        if (conveyor.getColorPosition(true) != DriverStation.Alliance.Blue) {
+            if (conveyor.getColorPosition(false) == DriverStation.Alliance.Blue) {
+                conveyor.setPower(Constants.POWER);
+                //use shooter
+            }
+            if (conveyor.getColorPosition(false) != DriverStation.Alliance.Blue) {
+                // out from any direction
+            }
+            if (conveyor.getColorPosition(false) == DriverStation.Alliance.Invalid) {
+                conveyor.setPower(Constants.POWER);
+                // use shooter - in case there is only one ball
+            }
+        }
+
     }
+
 
     @Override
     public void execute() {

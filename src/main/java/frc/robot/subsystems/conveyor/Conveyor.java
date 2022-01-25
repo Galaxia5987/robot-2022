@@ -89,6 +89,7 @@ public class Conveyor extends SubsystemBase {
         color = fmsColor;
     }
 
+    // still want to figure out how to fix this
     public DriverStation.Alliance getColorPosition(boolean first) {
         if (first) {
             return DriverStation.Alliance.valueOf(position.getFirst());

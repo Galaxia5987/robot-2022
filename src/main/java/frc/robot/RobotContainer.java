@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.CargoIn;
+import frc.robot.subsystems.conveyor.commands.CargoOut;
 import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
 
@@ -38,6 +39,7 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         a.whileHeld(new CargoIn(conveyor));
+        b.whileHeld(new CargoOut(conveyor));
 
     }
 
