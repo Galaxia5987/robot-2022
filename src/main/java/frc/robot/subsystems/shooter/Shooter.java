@@ -31,9 +31,15 @@ public class Shooter extends SubsystemBase {
     private double lastTime = 0;
 
     private Shooter() {
-        motor.setInverted(TalonFXInvertType.CounterClockwise);
-        motor.configNeutralDeadband(NEUTRAL_DEADBAND, Constants.TALON_TIMEOUT);
+        configureMotor();
         linearSystemLoop = configStateSpace(true);
+    }
+
+    private void configureMotor(){
+        CONFIGURATION.neutralDeadband = NEUTRAL_DEADBAND;
+
+        motor.configAllSettings(CONFIGURATION);
+        motor.setInverted(TalonFXInvertType.CounterClockwise);
     }
 
     /**
