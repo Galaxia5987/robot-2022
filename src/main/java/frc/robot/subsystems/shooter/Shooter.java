@@ -1,6 +1,7 @@
 package frc.robot.subsystems.shooter;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Nat;
@@ -30,8 +31,7 @@ public class Shooter extends SubsystemBase {
     private double lastTime = 0;
 
     private Shooter() {
-        motor.setInverted(IS_INVERTED);
-        motor.setSensorPhase(IS_SENSOR_IN_PHASE);
+        motor.setInverted(TalonFXInvertType.CounterClockwise);
         motor.configNeutralDeadband(NEUTRAL_DEADBAND, Constants.TALON_TIMEOUT);
         linearSystemLoop = configStateSpace(true);
     }
