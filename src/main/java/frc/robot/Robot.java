@@ -33,10 +33,7 @@ public class Robot extends TimedRobot {
      * @return the current angle of the robot in respect to the start angle.
      */
     public static Rotation2d getAngle() {
-        var rotation = Rotation2d.fromDegrees(navx.getYaw());
-        if (Constants.INVERT_NAVX) {
-            rotation = rotation.unaryMinus();
-        }
+        Rotation2d rotation = Rotation2d.fromDegrees(Math.IEEEremainder(Robot.navx.getRotation2d().getDegrees(), 360));
         return rotation.minus(startAngle);
     }
 
@@ -44,7 +41,7 @@ public class Robot extends TimedRobot {
      * Resets the angle of the navx to the current angle.
      */
     public static void resetAngle() {
-        resetAngle(getAngle());
+        resetAngle(new Rotation2d());
     }
 
     /**
@@ -53,7 +50,7 @@ public class Robot extends TimedRobot {
      * @param angle the angle in -180 to 180 degrees coordinate system.
      */
     public static void resetAngle(Rotation2d angle) {
-        startAngle = angle;
+        startAngle = Rotation2d.fromDegrees(Math.IEEEremainder(navx.getRotation2d().minus(angle).getDegrees(), 360));
     }
 
     /**

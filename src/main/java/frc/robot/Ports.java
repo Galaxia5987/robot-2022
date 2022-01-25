@@ -1,6 +1,11 @@
 package frc.robot;
 
 public final class Ports {
+
+    public static final double NOMINAL_VOLTAGE = 12; // [volts]
+    public static final boolean ENABLE_VOLTAGE_COMPENSATION = true;
+    public static final boolean ENABLE_CURRENT_LIMIT = true;
+
     public static final class SwerveDrive {
         // front right
         public static final int DRIVE_MOTOR_FR = 23;

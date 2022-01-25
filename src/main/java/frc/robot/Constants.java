@@ -15,15 +15,11 @@ import static frc.robot.Ports.SwerveDrive.*;
 public final class Constants {
     public static final double LOOP_PERIOD = 0.02; // [s]
     public static final int TALON_TIMEOUT = 10; // Waiting period for configurations [ms].
-    public static final double NOMINAL_VOLTAGE = 12; // [volts]
-    public static final boolean ENABLE_VOLTAGE_COMPENSATION = true;
-    public static final boolean ENABLE_CURRENT_LIMIT = true;
-    public static final boolean INVERT_NAVX = true;
 
     // The order of modules is ALWAYS front-right (fr), front-left (fl), rear-right (rr), rear-left (rl)
     public static final class SwerveDrive {
 
-        public static final double SPEED_MULTIPLIER = 3;
+        public static final double VELOCITY_MULTIPLIER = 4 / Math.sqrt(2);
         public static final double ROTATION_MULTIPLIER = 3;
 
         public static final int TICKS_PER_ROTATION_DRIVE_MOTOR = 2048;
@@ -53,10 +49,9 @@ public final class Constants {
 
         public static final double ROBOT_LENGTH = 0.5924; // [m]
         public static final double ROBOT_WIDTH = 0.5924; // [m]
-        public static final double VELOCITY_MULTIPLIER = 4 / Math.sqrt(2);
         // the rotational velocity of the robot, this constant multiplies the rotation output of the joystick
-        public static final double JOYSTICK_THRESHOLD = 0.1;
-        public static final double OUTER_JOYSTICK_THRESHOLD = 0.95;
+        public static final double JOYSTICK_THRESHOLD = 0.1; // [%]
+        public static final double OUTER_JOYSTICK_THRESHOLD = 0.95; // [%]
         public static final double JOYSTICK_ANGLE_DEADZONE = 5; // [degrees]
         public static final double ROTATION_DELAY = 0.1; // [sec]
         public static final int ANGLE_CURVE_STRENGTH = 4;
@@ -79,7 +74,7 @@ public final class Constants {
     }
 
     public static final class SwerveModule {
-        public static final int[] ZERO_POSITIONS = {-895, 567, 2775, 119}; // fr, fl, rr, rl
+        public static final int[] ZERO_POSITIONS = {7195, -503, -1329, 94}; // fr, fl, rr, rl
 
         public static final int TRIGGER_THRESHOLD_CURRENT = 2; // [amps]
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]
@@ -126,6 +121,13 @@ public final class Constants {
     }
 
     public static class Field {
-        public static final Translation2d HUB_POSITION = new Translation2d(6, 3);
+        public static final Translation2d HUB_POSITION = new Translation2d(8.23, 4.115);
+        public static final double TARGET_HEIGHT_METERS = 2.64;
     }
+
+    public static class Camera {
+        public static final double CAMERA_PITCH_RADIANS = Math.toRadians(45);
+        public static final double CAMERA_HEIGHT_METERS = 1;
+    }
+
 }

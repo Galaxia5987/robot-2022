@@ -5,13 +5,14 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.DriveWithVision;
+import frc.robot.commands.HolonomicDrive;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.valuetuner.ValueTuner;
@@ -46,7 +47,8 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        swerve.setDefaultCommand(new DriveWithVision(swerve, vision, () -> target.getDegrees()));
+//        swerve.setDefaultCommand(new DriveWithVision(swerve, () -> target.getDegrees()));
+        swerve.setDefaultCommand(new HolonomicDrive(swerve, () -> joystick.getY(), () -> joystick.getX(), () -> joystick2.getX()));
     }
 
     private void configureButtonBindings() {
@@ -67,6 +69,7 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         PathPlannerTrajectory path = PathPlanner.loadPath("Path", 3, 1.5, false);
+        swerve.resetOdometry(new Pose2d(path.getInitialState().poseMeters.getTranslation(), path.getInitialState().holonomicRotation), path.getInitialState().holonomicRotation);
         Robot.resetAngle(path.getInitialState().holonomicRotation);
         return new PPSwerveControllerCommand(
                 path,

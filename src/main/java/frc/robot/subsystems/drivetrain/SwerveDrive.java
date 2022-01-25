@@ -206,12 +206,9 @@ public class SwerveDrive extends SubsystemBase {
      * Terminates the modules from moving.
      */
     public void terminate() {
-//        for (SwerveModule module : modules) {
-//            module.stopDriveMotor();
-//            module.stopAngleMotor();
-//        }
-        for (int i = 0; i < 4; i++) {
-            getModule(i).setPower(0);
+        for (SwerveModule module : modules) {
+            module.stopDriveMotor();
+            module.stopAngleMotor();
         }
     }
 

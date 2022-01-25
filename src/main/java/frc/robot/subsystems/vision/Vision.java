@@ -10,13 +10,12 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 
+import static frc.robot.Constants.Camera.CAMERA_HEIGHT_METERS;
+import static frc.robot.Constants.Camera.CAMERA_PITCH_RADIANS;
 import static frc.robot.Constants.Field.HUB_POSITION;
+import static frc.robot.Constants.Field.TARGET_HEIGHT_METERS;
 
 public class Vision extends SubsystemBase {
-
-    private static final double CAMERA_HEIGHT_METERS = 1;
-    private static final double TARGET_HEIGHT_METERS = 2.64;
-    private static final double CAMERA_PITCH_RADIANS = Math.toRadians(45);
     private final PhotonCamera photonCamera = new PhotonCamera("myCamera");
 
     public Vision() {

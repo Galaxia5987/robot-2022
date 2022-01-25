@@ -7,13 +7,17 @@ import frc.robot.subsystems.drivetrain.SwerveDrive;
 import static frc.robot.Constants.SwerveDrive.ROTATION_MULTIPLIER;
 import static frc.robot.Constants.SwerveDrive.VELOCITY_MULTIPLIER;
 
-public class DriveSlowAccel extends CommandBase {
+public class DriveCommand extends CommandBase {
     private final SwerveDrive swerve;
-    private double current = 0;
 
-    public DriveSlowAccel(SwerveDrive swerve) {
+    public DriveCommand(SwerveDrive swerve) {
         this.swerve = swerve;
         addRequirements(swerve);
+    }
+
+    @Override
+    public void initialize() {
+        super.initialize();
     }
 
     @Override
@@ -22,14 +26,10 @@ public class DriveSlowAccel extends CommandBase {
         double strafe = -RobotContainer.xbox.getLeftX();
         double magnitude = Math.hypot(forward, strafe);
         double alpha = Math.atan2(strafe, forward);
-        if (Math.abs(magnitude) < 0.1)
-            magnitude = 0;
-        if (magnitude == 0) current = 0;
+        if (Math.abs(magnitude) < 0.1) magnitude = 0;
         magnitude *= VELOCITY_MULTIPLIER;
-        current += magnitude / 25;
-        if (current > magnitude) current = magnitude;
-        forward = Math.cos(alpha) * current;
-        strafe = Math.sin(alpha) * current;
+        forward = Math.cos(alpha) * magnitude;
+        strafe = Math.sin(alpha) * magnitude;
         double rotation = -RobotContainer.xbox.getRightX();
         if (Math.abs(rotation) < 0.1) rotation = 0;
         rotation *= ROTATION_MULTIPLIER;

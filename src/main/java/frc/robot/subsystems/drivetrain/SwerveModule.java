@@ -21,6 +21,7 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Ports;
 import frc.robot.subsystems.UnitModel;
 import frc.robot.utils.utils.SwerveModuleConfigBase;
 import frc.robot.utils.utils.Units;
@@ -67,7 +68,7 @@ public class SwerveModule extends SubsystemBase {
 
         // Set amperage limits
         SupplyCurrentLimitConfiguration currLimitConfig = new SupplyCurrentLimitConfiguration(
-                Constants.ENABLE_CURRENT_LIMIT,
+                Ports.ENABLE_CURRENT_LIMIT,
                 Constants.SwerveDrive.MAX_CURRENT,
                 Constants.SwerveModule.TRIGGER_THRESHOLD_CURRENT,
                 Constants.SwerveModule.TRIGGER_THRESHOLD_TIME
@@ -76,7 +77,7 @@ public class SwerveModule extends SubsystemBase {
         driveMotor.configSupplyCurrentLimit(currLimitConfig);
 
         angleMotor.configSupplyCurrentLimit(currLimitConfig);
-        angleMotor.enableCurrentLimit(Constants.ENABLE_CURRENT_LIMIT);
+        angleMotor.enableCurrentLimit(Ports.ENABLE_CURRENT_LIMIT);
 
         // set PIDF - angle motor
         configPID(config.angle_kp(), config.angle_ki(), config.angle_kd(), config.angle_kf());
@@ -88,8 +89,8 @@ public class SwerveModule extends SubsystemBase {
         angleMotor.configMotionSCurveStrength(Constants.SwerveDrive.ANGLE_CURVE_STRENGTH);
 
         // set voltage compensation and saturation
-        angleMotor.enableVoltageCompensation(Constants.ENABLE_VOLTAGE_COMPENSATION);
-        angleMotor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
+        angleMotor.enableVoltageCompensation(Ports.ENABLE_VOLTAGE_COMPENSATION);
+        angleMotor.configVoltageCompSaturation(Ports.NOMINAL_VOLTAGE);
 
         angleMotor.selectProfileSlot(0, 0);
         driveMotor.selectProfileSlot(1, 0);
@@ -126,7 +127,7 @@ public class SwerveModule extends SubsystemBase {
         );
         lqr.latencyCompensate(stateSpace, Constants.LOOP_PERIOD, Constants.TALON_TIMEOUT * 0.001);
 
-        return new LinearSystemLoop<>(stateSpace, lqr, kalman, Constants.NOMINAL_VOLTAGE, Constants.LOOP_PERIOD);
+        return new LinearSystemLoop<>(stateSpace, lqr, kalman, Ports.NOMINAL_VOLTAGE, Constants.LOOP_PERIOD);
     }
 
 
@@ -259,10 +260,5 @@ public class SwerveModule extends SubsystemBase {
         stateSpace.getObserver().reset();
         lastTime = currentTime;
         currentTime = Timer.getFPGATimestamp();
-    }
-
-    public void setPower(double power) {
-        angleMotor.set(ControlMode.PercentOutput, power);
-        driveMotor.set(ControlMode.PercentOutput, power);
     }
 }

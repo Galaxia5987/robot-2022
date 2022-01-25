@@ -6,35 +6,31 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
-import frc.robot.subsystems.vision.Vision;
 
 import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.SwerveDrive.ROTATION_MULTIPLIER;
-import static frc.robot.Constants.SwerveDrive.SPEED_MULTIPLIER;
+import static frc.robot.Constants.SwerveDrive.VELOCITY_MULTIPLIER;
 
 
 public class DriveWithVision extends CommandBase {
     private final SwerveDrive swerve;
-    private final Vision vision;
     private final DoubleSupplier targetSupplier;
-    ProfiledPIDController profiledPIDController = new ProfiledPIDController(0.8, 0, 0, new TrapezoidProfile.Constraints(5, 2.5)) {{
+    ProfiledPIDController profiledPIDController = new ProfiledPIDController(0.5, 0, 0, new TrapezoidProfile.Constraints(3, 1.5)) {{
         enableContinuousInput(-180, 180);
         setTolerance(5);
     }};
     private double current = 0;
 
 
-    public DriveWithVision(SwerveDrive swerve, Vision vision, DoubleSupplier targetSupplier) {
+    public DriveWithVision(SwerveDrive swerve, DoubleSupplier targetSupplier) {
         this.swerve = swerve;
-        this.vision = vision;
         this.targetSupplier = targetSupplier;
-        addRequirements(swerve, vision);
+        addRequirements(swerve);
     }
 
     @Override
     public void execute() {
-        double targetYaw = vision.getTargetYaw();
         double forward = -RobotContainer.joystick.getY();
         double strafe = -RobotContainer.joystick.getX();
         double magnitude = Math.hypot(forward, strafe);
@@ -42,7 +38,7 @@ public class DriveWithVision extends CommandBase {
         if (Math.abs(magnitude) < 0.1)
             magnitude = 0;
         if (magnitude == 0) current = 0;
-        magnitude *= SPEED_MULTIPLIER;
+        magnitude *= VELOCITY_MULTIPLIER;
         current += magnitude / 50;
         if (current > magnitude) current = magnitude;
         forward = Math.cos(alpha) * current;
