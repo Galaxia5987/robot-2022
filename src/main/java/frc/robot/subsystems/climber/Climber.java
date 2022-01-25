@@ -38,7 +38,6 @@ public class Climber extends SubsystemBase {
     private final WPI_TalonFX auxMotor = new WPI_TalonFX(Ports.Climber.AUX);
     private final WPI_TalonFX mainMotor = new WPI_TalonFX(Ports.Climber.MAIN_MOTOR);
     private final Solenoid stopper = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Climber.STOPPER);
-
     private final UnitModel unitModel = new UnitModel(Constants.Climber.TICKS_PER_RAD);
 
     private final ArmFeedforward feedforward = new ArmFeedforward(Constants.Climber.F_FORWARD_S, Constants.Climber.F_FORWARD_COS, Constants.Climber.F_FORWARD_V, Constants.Climber.F_FORWARD_A);
@@ -78,7 +77,7 @@ public class Climber extends SubsystemBase {
                             new Color8Bit(Color.kYellow)));
 
 
-    public Climber() {
+    private Climber() {
         if (Robot.isSimulation()) {
             SmartDashboard.putData("Arm sim", mechanism2d);
             encoder.setDistancePerPulse(Constants.Climber.ARM_ENCODER_DIST_PER_PULSE);
@@ -129,7 +128,6 @@ public class Climber extends SubsystemBase {
          */
         auxMotor.configMotionCruiseVelocity(Constants.Climber.CRUISE_VELOCITY);
         auxMotor.configMotionAcceleration(Constants.Climber.ACCELERATION);
-        auxMotor.configMotionCruiseVelocity(getVelocity());
         auxMotor.config_kP(0, Constants.Climber.P_VELOCITY);
         auxMotor.config_kI(0, Constants.Climber.I_VELOCITY);
         auxMotor.config_kD(0, Constants.Climber.D_VELOCITY);
