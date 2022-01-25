@@ -18,14 +18,14 @@ public final class Ports {
      left motor's data, right motor's data.
      */
     public static class Climber {
-        public static final int LEFT = 0;
-        public static final int RIGHT = 0;
+        public static final int AUX = 0;
+        public static final int MAIN = 0;
 
-        public static final boolean LEFT_SENSOR_PHASE = true;
-        public static final boolean IS_LEFT_INVERTED = true;
+        public static final boolean AUX_SENSOR_PHASE = true;
+        public static final boolean IS_AUX_INVERTED = true;
 
-        public static final boolean RIGHT_SENSOR_PHASE = true;
-        public static final boolean IS_RIGHT_INVERTED = true;
+        public static final boolean MAIN_SENSOR_PHASE = true;
+        public static final boolean IS_MAIN_INVERTED = true;
 
     }
 }

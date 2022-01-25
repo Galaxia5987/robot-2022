@@ -10,8 +10,8 @@ import frc.robot.subsystems.UnitModel;
 
 public class Climber extends SubsystemBase {
     private static Climber INSTANCE = null;
-    private final WPI_TalonFX leftMotor = new WPI_TalonFX(Ports.Climber.LEFT);
-    private final WPI_TalonFX rightMotor = new WPI_TalonFX(Ports.Climber.RIGHT);
+    private final WPI_TalonFX aux = new WPI_TalonFX(Ports.Climber.AUX);
+    private final WPI_TalonFX mainMotor = new WPI_TalonFX(Ports.Climber.MAIN);
     private final UnitModel unitModel = new UnitModel(Constants.Climber.TICKS_PER_RAD);
 
     public Climber() {
@@ -19,61 +19,61 @@ public class Climber extends SubsystemBase {
         /*
          Set the left motor on Brake mode.
          */
-        leftMotor.setNeutralMode(NeutralMode.Brake);
+        aux.setNeutralMode(NeutralMode.Brake);
 
         /*
          sets the phase of the sensor
          */
-        leftMotor.setSensorPhase(Ports.Climber.LEFT_SENSOR_PHASE);
+        aux.setSensorPhase(Ports.Climber.AUX_SENSOR_PHASE);
 
         /*
          checking is motor inverted.
          */
-        leftMotor.setInverted(Ports.Climber.IS_LEFT_INVERTED);
+        aux.setInverted(Ports.Climber.IS_AUX_INVERTED);
 
         /*
          config PID velocity for left motor.
          */
-        leftMotor.config_kP(0, Constants.Climber.P_LEFT_VELOCITY);
-        leftMotor.config_kI(0, Constants.Climber.I_LEFT_VELOCITY);
-        leftMotor.config_kD(0, Constants.Climber.D_LEFT_VELOCITY);
+        aux.config_kP(0, Constants.Climber.P_AUX_VELOCITY);
+        aux.config_kI(0, Constants.Climber.I_AUX_VELOCITY);
+        aux.config_kD(0, Constants.Climber.D_AUX_VELOCITY);
 
 
         /*
          config PID position for left motor.
          */
-        leftMotor.config_kP(1, Constants.Climber.P_LEFT_POSITION);
-        leftMotor.config_kI(1, Constants.Climber.I_LEFT_POSITION);
-        leftMotor.config_kD(1, Constants.Climber.D_LEFT_POSITION);
+        aux.config_kP(1, Constants.Climber.P_AUX_POSITION);
+        aux.config_kI(1, Constants.Climber.I_AUX_POSITION);
+        aux.config_kD(1, Constants.Climber.D_AUX_POSITION);
 
         /*
          set the right motor on Brake mode.
          */
-        rightMotor.setNeutralMode(NeutralMode.Brake);
+        mainMotor.setNeutralMode(NeutralMode.Brake);
 
         /*
         sets the phase of the sensor.
          */
-        rightMotor.setSensorPhase(Ports.Climber.RIGHT_SENSOR_PHASE);
+        mainMotor.setSensorPhase(Ports.Climber.MAIN_SENSOR_PHASE);
 
         /*
          checking is motor inverted.
          */
-        rightMotor.setInverted(Ports.Climber.IS_RIGHT_INVERTED);
+        mainMotor.setInverted(Ports.Climber.MAIN_SENSOR_PHASE);
 
         /*
          config PID velocity for right motor.
          */
-        rightMotor.config_kP(0, Constants.Climber.P_RIGHT_VELOCITY);
-        rightMotor.config_kI(0, Constants.Climber.I_RIGHT_VELOCITY);
-        rightMotor.config_kD(0, Constants.Climber.D_RIGHT_VELOCITY);
+        mainMotor.config_kP(0, Constants.Climber.P_MAIN_VELOCITY);
+        mainMotor.config_kI(0, Constants.Climber.I_MAIN_VELOCITY);
+        mainMotor.config_kD(0, Constants.Climber.D_MAIN_VELOCITY);
 
         /*
          config PID position for right motor.
          */
-        rightMotor.config_kP(1, Constants.Climber.P_RIGHT_POSITION);
-        rightMotor.config_kI(1, Constants.Climber.I_RIGHT_POSITION);
-        rightMotor.config_kD(1, Constants.Climber.D_RIGHT_POSITION);
+        mainMotor.config_kP(1, Constants.Climber.P_MAIN_POSITION);
+        mainMotor.config_kI(1, Constants.Climber.I_MAIN_POSITION);
+        mainMotor.config_kD(1, Constants.Climber.D_MAIN_POSITION);
     }
 
     /**
@@ -87,34 +87,34 @@ public class Climber extends SubsystemBase {
     }
 
     /**
-     * @return get motors velocity.
+     * @return get motors velocity. [ticks/rad]
      */
     public double getVelocity() {
-        return unitModel.toVelocity(rightMotor.getSelectedSensorVelocity());
+        return unitModel.toVelocity(mainMotor.getSelectedSensorVelocity());
     }
 
     /**
-     * @param velocity the velocity of the right & left.
+     * @param velocity the velocity of the right & left. [ticks]
      */
 
     public void setVelocity(double velocity) {
         int ticks100ms = unitModel.toTicks100ms(velocity);
-        rightMotor.set(ControlMode.Velocity, ticks100ms);
-        leftMotor.set(ControlMode.Velocity, ticks100ms);
+        mainMotor.set(ControlMode.Velocity, ticks100ms);
+        aux.set(ControlMode.Velocity, ticks100ms);
     }
 
     /**
-     * @return get motors position.
+     * @return get motors position. [ticks/rad]
      */
     public double getPosition() {
-        return unitModel.toUnits(rightMotor.getSelectedSensorPosition());
+        return unitModel.toUnits(mainMotor.getSelectedSensorPosition());
     }
 
     /**
-     * @param position the position of the motors.
+     * @param position the position of the motors. [ticks]
      */
     public void setPosition(double position) {
-        rightMotor.set(ControlMode.Position, unitModel.toTicks(position));
+        mainMotor.set(ControlMode.Position, unitModel.toTicks(position));
     }
 
     /**
@@ -122,7 +122,7 @@ public class Climber extends SubsystemBase {
      * stop both motors in the place they were.
      */
     public void stop() {
-        leftMotor.stopMotor();
-        rightMotor.stopMotor();
+        aux.stopMotor();
+        mainMotor.stopMotor();
     }
 }

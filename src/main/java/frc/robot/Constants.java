@@ -7,21 +7,21 @@ public final class Constants {
     }
 
     public static class Climber {
-        public static final double P_LEFT_VELOCITY = 0;
-        public static final double I_LEFT_VELOCITY = 0;
-        public static final double D_LEFT_VELOCITY = 0;
+        public static final double P_AUX_VELOCITY = 0;
+        public static final double I_AUX_VELOCITY = 0;
+        public static final double D_AUX_VELOCITY = 0;
 
-        public static final double P_RIGHT_VELOCITY = 0;
-        public static final double I_RIGHT_VELOCITY = 0;
-        public static final double D_RIGHT_VELOCITY = 0;
+        public static final double P_MAIN_VELOCITY = 0;
+        public static final double I_MAIN_VELOCITY = 0;
+        public static final double D_MAIN_VELOCITY = 0;
 
-        public static final double P_LEFT_POSITION = 0;
-        public static final double I_LEFT_POSITION = 0;
-        public static final double D_LEFT_POSITION = 0;
+        public static final double P_AUX_POSITION = 0;
+        public static final double I_AUX_POSITION = 0;
+        public static final double D_AUX_POSITION = 0;
 
-        public static final double P_RIGHT_POSITION = 0;
-        public static final double I_RIGHT_POSITION = 0;
-        public static final double D_RIGHT_POSITION = 0;
+        public static final double P_MAIN_POSITION = 0;
+        public static final double I_MAIN_POSITION = 0;
+        public static final double D_MAIN_POSITION = 0;
 
 
         public static final double MAX_VELOCITY = Math.PI * 2 / 3; //[rad/s]
