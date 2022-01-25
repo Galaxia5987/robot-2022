@@ -30,7 +30,7 @@ public class Climber extends SubsystemBase {
 
     private static Climber INSTANCE = null;
 
-    private final WPI_TalonFX aux = new WPI_TalonFX(Ports.Climber.AUX);
+    private final WPI_TalonFX auxMotor = new WPI_TalonFX(Ports.Climber.AUX);
     private final WPI_TalonFX mainMotor = new WPI_TalonFX(Ports.Climber.MAIN_MOTOR);
     private final Solenoid stopper = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Climber.STOPPER);
 
@@ -99,35 +99,39 @@ public class Climber extends SubsystemBase {
         /*
          config PID velocity for main motor.
          */
-        mainMotor.configMotionCruiseVelocity(getVelocity());
+        mainMotor.configMotionCruiseVelocity(); // Use constant
+        mainMotor.configMotionAcceleration(); // Constant
         mainMotor.config_kP(0, Constants.Climber.P_VELOCITY);
         mainMotor.config_kI(0, Constants.Climber.I_VELOCITY);
         mainMotor.config_kD(0, Constants.Climber.D_VELOCITY);
 
-        aux.follow(mainMotor);
+        auxMotor.follow(mainMotor);
+
+        mainMotor.enableVoltageCompensation();
+        mainMotor.configVoltageCompSaturation();
 
         /*
          Set the aux motor on Brake mode.
          */
-        aux.setNeutralMode(NeutralMode.Brake);
+        auxMotor.setNeutralMode(NeutralMode.Brake);
 
         /*
          sets the phase of the sensor.
          */
-        aux.setSensorPhase(Ports.Climber.AUX_SENSOR_PHASE);
+        auxMotor.setSensorPhase(Ports.Climber.AUX_SENSOR_PHASE);
 
         /*
          checking is aux inverted.
          */
-        aux.setInverted(Ports.Climber.IS_AUX_INVERTED);
+        auxMotor.setInverted(Ports.Climber.IS_AUX_INVERTED);
 
         /*
          config PID velocity for aux motor.
          */
-        aux.configMotionCruiseVelocity(getVelocity());
-        aux.config_kP(0, Constants.Climber.P_VELOCITY);
-        aux.config_kI(0, Constants.Climber.I_VELOCITY);
-        aux.config_kD(0, Constants.Climber.D_VELOCITY);
+        auxMotor.configMotionCruiseVelocity(getVelocity());
+        auxMotor.config_kP(0, Constants.Climber.P_VELOCITY);
+        auxMotor.config_kI(0, Constants.Climber.I_VELOCITY);
+        auxMotor.config_kD(0, Constants.Climber.D_VELOCITY);
     }
 
 
@@ -154,7 +158,7 @@ public class Climber extends SubsystemBase {
         if (Robot.isSimulation()) {
             return m_encoderSim.getRate();
         }
-        return unitModel.toVelocity(aux.getSelectedSensorVelocity());
+        return unitModel.toVelocity(mainMotor.getSelectedSensorVelocity());
     }
 
     /**
@@ -194,7 +198,7 @@ public class Climber extends SubsystemBase {
     }
 
     public void toggleStopper() {
-        setStopperMode(!isStopperEngaged());
+        stopper.toggle();
     }
 
     /**
