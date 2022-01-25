@@ -80,6 +80,7 @@ public class Climber extends SubsystemBase {
             m_armTower.setColor(new Color8Bit(Color.kBlue));
         }
 
+
         /*
          set the right motor on Brake mode.
          */
@@ -140,18 +141,24 @@ public class Climber extends SubsystemBase {
         return INSTANCE;
     }
 
+
+    public double getFPGATime() {
+        return Timer.getFPGATimestamp();
+    } //[s]
+
+
     /**
-     * @return get motors velocity. [ticks/rad]
+     * @return get motors velocity. [rad/s]
      */
     public double getVelocity() {
         if (Robot.isSimulation()) {
             return m_encoderSim.getRate();
         }
-        return unitModel.toVelocity(mainMotor.getSelectedSensorVelocity());
+        return unitModel.toVelocity(aux.getSelectedSensorVelocity());
     }
 
     /**
-     * @param velocity the velocity of the motors. [ticks]
+     * @param velocity the velocity of the motors. [rad/s]
      */
 
     public void setVelocity(double velocity) {
@@ -165,14 +172,14 @@ public class Climber extends SubsystemBase {
     }
 
     /**
-     * @return get motors position. [ticks/rad]
+     * @return get motors position. [rad]
      */
     public double getPosition() {
         return unitModel.toUnits(mainMotor.getSelectedSensorPosition());
     }
 
     /**
-     * @param position the position of the motors. [ticks]
+     * @param position the position of the motors. [rad]
      */
     public void setPosition(double position) {
         mainMotor.set(ControlMode.MotionMagic, unitModel.toTicks(position));
