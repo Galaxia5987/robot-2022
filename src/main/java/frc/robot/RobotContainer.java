@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.commands.Shoot;
 import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
 
@@ -31,6 +32,7 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
+        shooter.setDefaultCommand(new Shoot(() -> 4, shooter));
     }
 
     private void configureButtonBindings() {

@@ -108,9 +108,6 @@ public class Shooter extends SubsystemBase {
      * @return the velocity of the motor. [rad/s]
      */
     public double getVelocity() {
-        if (Robot.isSimulation()) {
-            return encoder.getRate();
-        }
         return unitModel.toVelocity(mainMotor.getSelectedSensorVelocity());
     }
 
@@ -133,7 +130,7 @@ public class Shooter extends SubsystemBase {
      * @param distance is the distance from the target. [m]
      * @return 15. [rad/s]
      */
-    public static double getSetpointVelocity(double distance) {
+    public double getSetpointVelocity(double distance) {
 //        return 15 * distance;
         return 15;
     }
