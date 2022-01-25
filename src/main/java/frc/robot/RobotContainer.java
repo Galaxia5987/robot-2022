@@ -10,8 +10,6 @@ import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
 
 public class RobotContainer {
-    //    private final XboxController xbox = new XboxController(Ports.Controls.JOYSTICK);
-    // private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final Climber climber = Climber.getInstance();
     private final Joystick joystick = new Joystick(Ports.Controls.JOYSTICK);
     // The robot's subsystems and commands are defined here...

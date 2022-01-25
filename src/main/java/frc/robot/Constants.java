@@ -17,8 +17,8 @@ public final class Constants {
         public static final double F_FORWARD_V = 0;
         public static final double F_FORWARD_A = 0;
 
-        public static final double MAX_ACCELERATION = 0;
-        public static final double MIN_ACCELERATION = 0;
+        public static final double MAX_CRUISE_VELOCITY = 0;
+        public static final double MIN_CRUISE_VELOCITY = 0;
 
         public static final double MAX_VELOCITY = Math.PI * 2 / 3; //[rad/s]
 

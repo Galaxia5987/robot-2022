@@ -1,5 +1,6 @@
 package frc.robot.subsystems.climber.commands;
 
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -33,7 +34,7 @@ public class JoystickClimb extends CommandBase {
     @Override
     public void initialize() {
         if (Robot.isReal() && !Robot.debug)
-            isReady = climber.getFPGATime() > Constants.Climber.AUTONOMY_TIME;
+            isReady = RobotController.getFPGATime()/1000000 > Constants.Climber.AUTONOMY_TIME;
     }
 
     @Override
@@ -47,7 +48,7 @@ public class JoystickClimb extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return isFinished.getAsBoolean() || !isReady || climber.getFPGATime() > Constants.Climber.STOP_CLIMBER;
+        return isFinished.getAsBoolean() || !isReady || RobotController.getFPGATime()/1000000 > Constants.Climber.STOP_CLIMBER;
     }
 
     @Override

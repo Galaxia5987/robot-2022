@@ -29,8 +29,6 @@ public final class Ports {
         public static final boolean MAIN_SENSOR_PHASE = true;
         public static final boolean IS_MAIN_INVERTED = true;
 
-        public static final int JOYSTICK_PORT = 0;
-
         /*
          Used only for simulation.
          */

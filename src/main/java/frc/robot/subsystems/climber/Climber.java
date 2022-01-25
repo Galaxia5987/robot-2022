@@ -80,7 +80,6 @@ public class Climber extends SubsystemBase {
             m_armTower.setColor(new Color8Bit(Color.kBlue));
         }
 
-
         /*
          set the right motor on Brake mode.
          */
@@ -99,6 +98,7 @@ public class Climber extends SubsystemBase {
         /*
          config PID velocity for main motor.
          */
+        mainMotor.configMotionCruiseVelocity(getVelocity());
         mainMotor.config_kP(0, Constants.Climber.P_VELOCITY);
         mainMotor.config_kI(0, Constants.Climber.I_VELOCITY);
         mainMotor.config_kD(0, Constants.Climber.D_VELOCITY);
@@ -123,6 +123,7 @@ public class Climber extends SubsystemBase {
         /*
          config PID velocity for aux motor.
          */
+        aux.configMotionCruiseVelocity(getVelocity());
         aux.config_kP(0, Constants.Climber.P_VELOCITY);
         aux.config_kI(0, Constants.Climber.I_VELOCITY);
         aux.config_kD(0, Constants.Climber.D_VELOCITY);
@@ -139,12 +140,6 @@ public class Climber extends SubsystemBase {
         return INSTANCE;
     }
 
-
-    public double getFPGATime() {
-        return Timer.getFPGATimestamp();
-    } //[s]
-
-
     /**
      * @return get motors velocity. [ticks/rad]
      */
@@ -152,7 +147,7 @@ public class Climber extends SubsystemBase {
         if (Robot.isSimulation()) {
             return m_encoderSim.getRate();
         }
-        return unitModel.toVelocity(aux.getSelectedSensorVelocity());
+        return unitModel.toVelocity(mainMotor.getSelectedSensorVelocity());
     }
 
     /**
