@@ -28,24 +28,19 @@ public class Leds {
     }
 
     public void disabledPeriodic() {
-        int red, blue, green;
+        rainbowFirstPixelHue += 10;
+        rainbowFirstPixelHue %= 360;
+        int hue;
         if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
-            red = 255;
-            blue = 0;
-            green = 0;
+            hue = 0;
         } else if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
-            red = 0;
-            blue = 255;
-            green = 0;
-        } else {
-            red = 239;
-            blue = 8;
-            green = 247;
+            hue = 120;
+        } else hue = 10;
+
+        for (var i = 0; i < ledBuffer.getLength(); i++) {
+            ledBuffer.setHSV(i, hue, 255, 45 + (int) (60 * (Math.sin(Math.toRadians(rainbowFirstPixelHue)) + 1) / 2));
         }
 
-        for (int i = 0; i < ledBuffer.getLength(); i++) {
-            ledBuffer.setRGB(i, red, green, blue);
-        }
         addressableLED.setData(ledBuffer);
     }
 
@@ -83,24 +78,21 @@ public class Leds {
             boolean intake = true;
             else if (intake) {//intake.isIntakeReady() {
                 a = 20;
-            }
-
-            else {
+            } else {
                 a = -1;
             }
 
             if (climbLedsTimer.get() != 0) {
                 ledBuffer.setHSV(i, 90 + 2 * rainbowFirstPixelHue, 255, 255);
-            }
-                else {
-                    int climb_hue = (int) (100 - 45 * Math.floor(climbLedsTimer.get())) / 2;
-                    ledBuffer.setHSV(i, climb_hue, 255, (int) (55 + 200 * (1 - climbLedsTimer.get() % 1)));
-                }
-
+            } else {
+                int climb_hue = (int) (100 - 45 * Math.floor(climbLedsTimer.get())) / 2;
+                ledBuffer.setHSV(i, climb_hue, 255, (int) (55 + 200 * (1 - climbLedsTimer.get() % 1)));
             }
 
         }
+
     }
+}
 
 
 
