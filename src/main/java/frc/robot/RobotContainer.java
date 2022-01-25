@@ -16,7 +16,6 @@ public class RobotContainer {
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final Climber climber = Climber.getInstance();
 
-
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
      */

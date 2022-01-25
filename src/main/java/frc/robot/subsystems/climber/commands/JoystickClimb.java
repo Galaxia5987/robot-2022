@@ -12,7 +12,6 @@ import java.util.function.DoubleSupplier;
  * parameters: Climber the climber, BooleanSupplier stop, DoubleSupplier joystickOutput.
  * This command let the driver control the climb movement by moving Xbox joystick.
  */
-
 public class JoystickClimb extends CommandBase {
     private final Climber climber;
     private final BooleanSupplier isFinished;
