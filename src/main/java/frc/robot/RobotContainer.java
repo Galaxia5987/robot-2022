@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.command_groups.Outtake;
 import frc.robot.subsystems.example.ExampleSubsystem;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.commands.Shoot;
 import frc.robot.subsystems.shooter.commands.bits.TestPistonPressure;
 import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
@@ -37,7 +38,7 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        shooter.setDefaultCommand(new TestPistonPressure(xbox::getLeftY, shooter));
+//        shooter.setDefaultCommand(new TestPistonPressure(xbox::getLeftY, shooter));
     }
 
     private void configureButtonBindings() {

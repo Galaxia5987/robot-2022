@@ -10,7 +10,7 @@ public class Outtake extends ParallelCommandGroup {
 
     public Outtake(Shooter shooter, DoubleSupplier distance) {
         addCommands(
-                new Shoot(shooter, () -> shooter.getSetpointVelocity(distance.getAsDouble()))
+                new Shoot(shooter, () -> Shooter.getSetpointVelocity(distance.getAsDouble()))
         );
     }
 }
