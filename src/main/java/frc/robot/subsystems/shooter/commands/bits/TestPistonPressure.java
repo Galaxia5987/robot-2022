@@ -14,6 +14,7 @@ public class TestPistonPressure extends CommandBase {
     public TestPistonPressure(DoubleSupplier joystick, Shooter shooter) {
         this.joystick = joystick;
         this.shooter = shooter;
+        addRequirements(shooter);
     }
 
     @Override

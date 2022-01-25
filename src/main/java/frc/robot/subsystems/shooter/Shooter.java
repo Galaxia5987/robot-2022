@@ -148,8 +148,8 @@ public class Shooter extends SubsystemBase {
      * @return 15. [rps]
      */
     public static double getSetpointVelocity(double distance) {
-        return 15 * distance;
-//        return 15;
+//        return 15 * distance;
+        return 15;
     }
 
     /**
