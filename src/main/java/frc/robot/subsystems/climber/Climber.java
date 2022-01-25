@@ -2,6 +2,7 @@ package frc.robot.subsystems.climber;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.ArmFeedforward;
@@ -24,6 +25,7 @@ import frc.robot.Constants;
 import frc.robot.Ports;
 import frc.robot.Robot;
 import frc.robot.subsystems.UnitModel;
+import jdk.jfr.Enabled;
 
 
 public class Climber extends SubsystemBase {
@@ -87,28 +89,24 @@ public class Climber extends SubsystemBase {
         mainMotor.setNeutralMode(NeutralMode.Brake);
 
         /*
-        sets the phase of the sensor.
+         Setting the motor to go clockwise.
          */
-        mainMotor.setSensorPhase(Ports.Climber.MAIN_SENSOR_PHASE);
-
-        /*
-         checking is motor inverted.
-         */
-        mainMotor.setInverted(Ports.Climber.IS_MAIN_INVERTED);
+        mainMotor.setInverted(TalonFXInvertType.Clockwise);
 
         /*
          config PID velocity for main motor.
          */
-        mainMotor.configMotionCruiseVelocity(); // Use constant
-        mainMotor.configMotionAcceleration(); // Constant
+        mainMotor.configMotionCruiseVelocity(Constants.Climber.CRUISE_VELOCITY);
+        mainMotor.configMotionAcceleration(Constants.Climber.ACCELERATION);
         mainMotor.config_kP(0, Constants.Climber.P_VELOCITY);
         mainMotor.config_kI(0, Constants.Climber.I_VELOCITY);
         mainMotor.config_kD(0, Constants.Climber.D_VELOCITY);
 
         auxMotor.follow(mainMotor);
 
-        mainMotor.enableVoltageCompensation();
-        mainMotor.configVoltageCompSaturation();
+        mainMotor.enableVoltageCompensation(Constants.Climber.VOLTAGE_COMPENSATION);
+        
+        mainMotor.configVoltageCompSaturation(Constants.Climber.VOLTAGE_COMP_SATURATION);
 
         /*
          Set the aux motor on Brake mode.
@@ -116,14 +114,9 @@ public class Climber extends SubsystemBase {
         auxMotor.setNeutralMode(NeutralMode.Brake);
 
         /*
-         sets the phase of the sensor.
+         Setting the motor to go clockwise.
          */
-        auxMotor.setSensorPhase(Ports.Climber.AUX_SENSOR_PHASE);
-
-        /*
-         checking is aux inverted.
-         */
-        auxMotor.setInverted(Ports.Climber.IS_AUX_INVERTED);
+        auxMotor.setInverted(TalonFXInvertType.Clockwise);
 
         /*
          config PID velocity for aux motor.

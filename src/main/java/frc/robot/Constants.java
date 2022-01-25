@@ -17,8 +17,10 @@ public final class Constants {
         public static final double F_FORWARD_V = 0;
         public static final double F_FORWARD_A = 0;
 
-        public static final double MAX_CRUISE_VELOCITY = 0;
-        public static final double MIN_CRUISE_VELOCITY = 0;
+        public static final double CRUISE_VELOCITY = 0;
+        public static final double ACCELERATION = 0;
+        public static final double VOLTAGE_COMP_SATURATION = 0;
+        public static final boolean VOLTAGE_COMPENSATION = true;
 
         public static final double MAX_VELOCITY = Math.PI * 2 / 3; //[rad/s]
 

@@ -23,7 +23,6 @@ public final class Ports {
         public static final int AUX = 0;
         public static final int STOPPER = 0;
 
-        public static final boolean AUX_SENSOR_PHASE = true;
         public static final boolean IS_AUX_INVERTED = true;
 
         public static final boolean MAIN_SENSOR_PHASE = true;
