@@ -1,6 +1,8 @@
 package frc.robot.subsystems.shooter;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.LinearQuadraticRegulator;
@@ -10,16 +12,10 @@ import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.simulation.*;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Robot;
 import frc.robot.subsystems.UnitModel;
-import frc.robot.utils.Utils;
 
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.Shooter.*;
@@ -27,23 +23,16 @@ import static frc.robot.Ports.Shooter.*;
 
 public class Shooter extends SubsystemBase {
     private static Shooter INSTANCE;
-    private final UnitModel unitModel = new UnitModel(TICKS_PER_RADIAN);
-    private final WPI_TalonFX mainMotor = new WPI_TalonFX(MAIN_MOTOR);
+    private final UnitModel unitModel = new UnitModel(TICKS_PER_REVOLUTION);
+    private final WPI_TalonFX motor = new WPI_TalonFX(MOTOR);
     private final LinearSystemLoop<N1, N1, N1> linearSystemLoop;
-    private final Encoder encoder = new Encoder(0, 1);
-    private final EncoderSim encoderSim = new EncoderSim(encoder);
     private double currentTime = 0;
     private double lastTime = 0;
 
-    private FlywheelSim flywheelSim;
-
-    /**
-     * Constructor.
-     */
     private Shooter() {
-        mainMotor.setInverted(IS_MAIN_INVERTED);
-        mainMotor.setSensorPhase(MAIN_SENSOR_PHASE);
-        mainMotor.configNeutralDeadband(NEUTRAL_DEADBAND, Constants.TALON_TIMEOUT);
+        motor.setInverted(IS_INVERTED);
+        motor.setSensorPhase(IS_SENSOR_IN_PHASE);
+        motor.configNeutralDeadband(NEUTRAL_DEADBAND, Constants.TALON_TIMEOUT);
         linearSystemLoop = configStateSpace(true);
     }
 
@@ -62,23 +51,19 @@ public class Shooter extends SubsystemBase {
     /**
      * State space configuration function. Note that there are 2 different configurations.
      *
-     * @param isIneritaBased is the configuration for the state space.
+     * @param isInertiaBased is the configuration for the state space.
      *                       If the value is true, the state space is based off of an inertia model.
      *                       Otherwise, the state space is based off of a voltage equation model.
      * @return the linear system loop (based on the type).
      */
-    private LinearSystemLoop<N1, N1, N1> configStateSpace(boolean isIneritaBased) {
+    private LinearSystemLoop<N1, N1, N1> configStateSpace(boolean isInertiaBased) {
         final DCMotor motor = DCMotor.getFalcon500(1);
 
         LinearSystem<N1, N1, N1> flywheel_plant;
-        if (!isIneritaBased)
-            flywheel_plant = LinearSystemId.identifyVelocitySystem(Kv, Ka);
-        else
+        if (isInertiaBased) {
             flywheel_plant = LinearSystemId.createFlywheelSystem(motor, J, GEAR_RATIO);
-
-        if (Robot.isSimulation()) {
-            flywheelSim = new FlywheelSim(flywheel_plant, motor, GEAR_RATIO);
-            encoder.setDistancePerPulse(2 * Math.PI);
+        } else {
+            flywheel_plant = LinearSystemId.identifyVelocitySystem(Kv, Ka);
         }
 
         LinearQuadraticRegulator<N1, N1, N1> quadraticRegulator = new LinearQuadraticRegulator<>(
@@ -105,33 +90,35 @@ public class Shooter extends SubsystemBase {
     /**
      * Gets the velocity of the motor.
      *
-     * @return the velocity of the motor. [rad/s]
+     * @return the velocity of the motor. [rps]
      */
     public double getVelocity() {
-        if (Robot.isSimulation()) {
-            return encoder.getRate();
-        }
-        return unitModel.toVelocity(mainMotor.getSelectedSensorVelocity());
+        return unitModel.toVelocity(motor.getSelectedSensorVelocity());
     }
 
     /**
      * Sets the velocity of the motor.
      *
-     * @param velocity is the velocity setpoint. [rad/s]
+     * @param velocity is the velocity setpoint. [rps]
      */
     public void setVelocity(double velocity) {
         linearSystemLoop.setNextR(VecBuilder.fill(velocity));
         linearSystemLoop.correct(VecBuilder.fill(getVelocity()));
         linearSystemLoop.predict(currentTime - lastTime);
 
-        mainMotor.setVoltage(Utils.clamp(linearSystemLoop.getU(0), -NOMINAL_VOLTAGE, NOMINAL_VOLTAGE));
+        motor.setVoltage(MathUtil.clamp(linearSystemLoop.getU(0), -NOMINAL_VOLTAGE, NOMINAL_VOLTAGE));
+    }
+
+    public void setPower(double output) {
+        motor.set(ControlMode.PercentOutput, output);
     }
 
     /**
      * Calculates the velocity setpoint according to the distance from the target.
+     * Once the data from the shooter is acquired this function will be changed.
      *
      * @param distance is the distance from the target. [m]
-     * @return 15. [rad/s]
+     * @return 15. [rps]
      */
     public static double getSetpointVelocity(double distance) {
 //        return 15 * distance;
@@ -142,7 +129,7 @@ public class Shooter extends SubsystemBase {
      * Terminates the movement of the wheel.
      */
     public void terminate() {
-        mainMotor.stopMotor();
+        motor.stopMotor();
     }
 
     @Override
@@ -150,15 +137,4 @@ public class Shooter extends SubsystemBase {
         lastTime = currentTime;
         currentTime = Timer.getFPGATimestamp();
     }
-
-    @Override
-    public void simulationPeriodic() {
-        SmartDashboard.putNumber("power", mainMotor.get());
-        flywheelSim.setInputVoltage(mainMotor.get() * RobotController.getBatteryVoltage());
-        flywheelSim.update(LOOP_PERIOD);
-        encoderSim.setRate(flywheelSim.getAngularVelocityRadPerSec());
-        RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(flywheelSim.getCurrentDrawAmps()));
-        SmartDashboard.putNumber("velocity", flywheelSim.getAngularVelocityRadPerSec());
-    }
-
 }

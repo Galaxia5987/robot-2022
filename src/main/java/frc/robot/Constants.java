@@ -23,5 +23,12 @@ public final class Constants {
         public static final double J = 0.00218; // Moment of inertia for state space. [kg*m^2]
         public static final double GEAR_RATIO = 1; // Gear ratio for encoder (placeholder).
         public static final double NEUTRAL_DEADBAND = 0.1;
+        public static class Bits{
+            public static final double OUTPUT_MULTIPLIER = 0.1;
+        }
+    }
+
+    public static class Control {
+        public static final double RIGHT_TRIGGER_DEADBAND = 0.4; // Deadband for right trigger. [%]
     }
 }

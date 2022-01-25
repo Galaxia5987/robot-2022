@@ -25,16 +25,4 @@ public class Utils {
             return 0;
         return (input - (Math.signum(input) * threshold)) / (1 - threshold);
     }
-
-    /**
-     * This function makes sure that the input parameter val is in a certain range.
-     *
-     * @param val is the value to keep in said certain rage.
-     * @param min is the minimal value of the input parameter val.
-     * @param max is the maximal value of the input parameter val.
-     * @return the fixed value.
-     */
-    public static double clamp(double val, double min, double max) {
-        return Math.min(Math.max(val, min), max);
-    }
 }
