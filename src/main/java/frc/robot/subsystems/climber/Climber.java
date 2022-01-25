@@ -127,6 +127,8 @@ public class Climber extends SubsystemBase {
         /*
          config PID velocity for aux motor.
          */
+        auxMotor.configMotionCruiseVelocity(Constants.Climber.CRUISE_VELOCITY);
+        auxMotor.configMotionAcceleration(Constants.Climber.ACCELERATION);
         auxMotor.configMotionCruiseVelocity(getVelocity());
         auxMotor.config_kP(0, Constants.Climber.P_VELOCITY);
         auxMotor.config_kI(0, Constants.Climber.I_VELOCITY);

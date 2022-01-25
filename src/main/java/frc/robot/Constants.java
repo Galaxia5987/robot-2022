@@ -28,7 +28,7 @@ public final class Constants {
 
         public static final double TICKS_PER_RAD = 2048 * GEAR_RATIO / (2 * Math.PI);
 
-        public static final double THRESHOLD = 0.05; // [%]
+        public static final double JOYSTICK_DEADBAND = 0.05; // [%]
 
         public static final double ARM_ENCODER_DIST_PER_PULSE = 2.0 * Math.PI / 2048;
         public static final double ARM_MASS = 5.0; // Kilograms
