@@ -11,6 +11,7 @@ public final class Ports {
     }
 
     public static class Controls {
+        public static final int JOYSTICK = 0;
         public static final int XBOX = 0;
     }
 
@@ -18,14 +19,17 @@ public final class Ports {
      left motor's data, right motor's data.
      */
     public static class Climber {
+        public static final int MAIN_MOTOR = 0;
         public static final int AUX = 0;
-        public static final int MAIN = 0;
+        public static final int STOPPER = 0;
 
-        public static final boolean AUX_SENSOR_PHASE = true;
         public static final boolean IS_AUX_INVERTED = true;
-
-        public static final boolean MAIN_SENSOR_PHASE = true;
         public static final boolean IS_MAIN_INVERTED = true;
 
+        /*
+         Used only for simulation.
+         */
+        public static final int ENCODER_A_CHANNEL = 0;
+        public static final int ENCODER_B_CHANNEL = 1;
     }
 }
