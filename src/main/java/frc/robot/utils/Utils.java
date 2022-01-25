@@ -25,4 +25,9 @@ public class Utils {
             return 0;
         return (input - (Math.signum(input) * threshold)) / (1 - threshold);
     }
+
+    public static double secondsToMinutes(double seconds){
+        return seconds / 60.0;
+    }
+
 }
