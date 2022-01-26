@@ -73,8 +73,8 @@ public class Leds {
         intakeConveyorLedBuffer = new AddressableLEDBuffer(INTAKE_CONVEYOR_LED_LENGTH);
     }
 
-    private void updateIntakeConveyorLEDs(boolean isDisabled){
-        int[] rgb = isDisabled ? Colors.ORANGE.getRgb() : Colors.YELLOW.getRgb();
+    private void updateIntakeConveyorLEDs(){
+        int[] rgb = DriverStation.isDisabled() ? Colors.ORANGE.getRgb() : Colors.YELLOW.getRgb();
         for (int i = 0; i < intakeConveyorLedBuffer.getLength(); i++) {
             intakeConveyorLedBuffer.setRGB(i, rgb[0], rgb[1], rgb[2]);
         }
