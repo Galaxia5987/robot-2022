@@ -21,4 +21,7 @@ public final class Ports {
         public static final int XBOX = 0; // Xbox controller port.
     }
 
+    public static class Leds{
+
+    }
 }

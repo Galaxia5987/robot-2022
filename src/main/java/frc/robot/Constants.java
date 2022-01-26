@@ -29,4 +29,8 @@ public final class Constants {
     public static class Control {
         public static final double RIGHT_TRIGGER_DEADBAND = 0.4; // Deadband for right trigger. [%]
     }
+
+    public static class Leds{
+        
+    }
 }
