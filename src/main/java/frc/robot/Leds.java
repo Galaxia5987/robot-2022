@@ -5,12 +5,17 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 
+import static frc.robot.Constants.Leds.SWERVE_LED_LENGTH;
+import static frc.robot.Ports.Leds.SWERVE_LED_PORT;
+
 
 public class Leds {
 
     private final AddressableLED addressableLED = new AddressableLED(0);
+    private AddressableLED swerveAddressableLED;
 
     private final AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(60);
+    private AddressableLEDBuffer swerveLedBuffer;
     private final Timer climbLedsTimer = new Timer();
     private int rainbowFirstPixelHue;
 
@@ -61,6 +66,28 @@ public class Leds {
         for (int i = 0; i < ledBuffer.getLength(); i++) {
             int hue = (rainbowFirstPixelHue + (i * 60 / ledBuffer.getLength())) % 30;
         }
+    }
+
+    private void configSwerveLEDs() {
+        swerveAddressableLED = new AddressableLED(SWERVE_LED_PORT);
+        swerveLedBuffer = new AddressableLEDBuffer(SWERVE_LED_LENGTH);
+    }
+
+    private void updateSwerveLEDs() {
+        int[] rgb;
+        if(DriverStation.isDisabled()){
+            rgb = Colors.ORANGE.getRgb();
+        } else {
+            if(DriverStation.getAlliance().equals(DriverStation.Alliance.Blue)){
+                rgb = Colors.BLUE.getRgb();
+            } else {
+                rgb = Colors.RED.getRgb();
+            }
+        }
+        for (int i = 0; i < swerveLedBuffer.getLength(); i++) {
+            swerveLedBuffer.setRGB(i, rgb[0], rgb[1], rgb[2]);
+        }
+        swerveAddressableLED.setData(swerveLedBuffer);
     }
 
     public enum Colors {
