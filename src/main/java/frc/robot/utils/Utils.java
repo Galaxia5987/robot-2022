@@ -26,6 +26,10 @@ public class Utils {
         return (input - (Math.signum(input) * threshold)) / (1 - threshold);
     }
 
+    public static double minutesToSeconds(double minutes){
+        return minutes * 60.0;
+    }
+
     public static double secondsToMinutes(double seconds){
         return seconds / 60.0;
     }
