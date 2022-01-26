@@ -62,6 +62,26 @@ public class Leds {
             int hue = (rainbowFirstPixelHue + (i * 60 / ledBuffer.getLength())) % 30;
         }
     }
+
+    public enum Colors {
+        RED(new int[]{255, 0, 0}),
+        GREEN(new int[]{0, 255, 0}),
+        BLUE(new int[]{0, 0, 255}),
+        PURPLE(new int[]{204, 0, 204}),
+        YELLOW(new int[]{255, 255, 0}),
+        ORANGE(new int[]{255, 153, 0}),
+        NONE(new int[]{0, 0, 0});
+
+        private final int[] rgb;
+
+        Colors(int[] rgb) {
+            this.rgb = rgb;
+        }
+
+        public int[] getRgb() {
+            return rgb;
+        }
+    }
 }
 
 
