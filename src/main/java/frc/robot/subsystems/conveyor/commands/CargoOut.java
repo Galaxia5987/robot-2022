@@ -1,16 +1,12 @@
 package frc.robot.subsystems.conveyor.commands;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.Ports;
 import frc.robot.subsystems.conveyor.Conveyor;
 
 public class CargoOut extends CommandBase {
     private final Conveyor conveyor;
-    private final WPI_TalonSRX motor = new WPI_TalonSRX(Ports.Conveyor.AUX);
-//    private frc.robot.subsystems.conveyor.Conveyor.AllianceColor color;
 
     public CargoOut(Conveyor conveyor) {
         this.conveyor = conveyor;
@@ -19,26 +15,27 @@ public class CargoOut extends CommandBase {
 
     @Override
     public void initialize() {
-        if (conveyor.getColorPosition(true) == DriverStation.Alliance.Blue) {
-            if (conveyor.getColorPosition(false) == DriverStation.Alliance.Blue) {
+        var color = DriverStation.getAlliance();
+        if (conveyor.getColorPosition(true) == color) {
+            if (conveyor.getColorPosition(false) == color) {
                 // do nothing
             }
-            if (conveyor.getColorPosition(false) != DriverStation.Alliance.Blue) {
-                conveyor.setPower(-Constants.POWER);
+            if (conveyor.getColorPosition(false) != color) {
+                conveyor.setPower(-Constants.Conveyor.POWER);
                 // use InTake
             }
 
         }
-        if (conveyor.getColorPosition(true) != DriverStation.Alliance.Blue) {
-            if (conveyor.getColorPosition(false) == DriverStation.Alliance.Blue) {
-                conveyor.setPower(Constants.POWER);
+        if (conveyor.getColorPosition(true) != color) {
+            if (conveyor.getColorPosition(false) == color) {
+                conveyor.setPower(Constants.Conveyor.POWER);
                 //use shooter
             }
-            if (conveyor.getColorPosition(false) != DriverStation.Alliance.Blue) {
+            if (conveyor.getColorPosition(false) != color) {
                 // out from any direction
             }
-            if (conveyor.getColorPosition(false) == DriverStation.Alliance.Invalid) {
-                conveyor.setPower(Constants.POWER);
+            if (conveyor.getColorPosition(false) == color) {
+                conveyor.setPower(Constants.Conveyor.POWER);
                 // use shooter - in case there is only one ball
             }
         }
