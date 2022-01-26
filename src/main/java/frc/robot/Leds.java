@@ -9,10 +9,8 @@ import edu.wpi.first.wpilibj.Timer;
 public class Leds {
 
     private final AddressableLED addressableLED = new AddressableLED(0);
-    private AddressableLED shooterAddressableLED;
 
     private final AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(60);
-    private AddressableLEDBuffer shooterLedBuffer;
     private final Timer climbLedsTimer = new Timer();
     private int rainbowFirstPixelHue;
 
@@ -62,18 +60,6 @@ public class Leds {
         rainbowFirstPixelHue %= 30;
         for (int i = 0; i < ledBuffer.getLength(); i++) {
             int hue = (rainbowFirstPixelHue + (i * 60 / ledBuffer.getLength())) % 30;
-        }
-    }
-
-    private void configShooterLEDs(){
-        shooterAddressableLED = new AddressableLED(0);
-        shooterLedBuffer  = new AddressableLEDBuffer(60);
-    }
-
-    private void updateShooterLEDs() {
-        int[] colors = Colors.PURPLE.getRgb();
-        for (int i = 0; i < shooterLedBuffer.getLength(); i++) {
-            shooterLedBuffer.setRGB(i, colors[0], colors[1], colors[2]);
         }
     }
 
