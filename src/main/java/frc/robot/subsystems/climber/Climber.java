@@ -36,18 +36,16 @@ public class Climber extends SubsystemBase {
     private static Climber INSTANCE = null;
 
     private final WPI_TalonFX auxMotor = new WPI_TalonFX(Ports.Climber.AUX);
-    private final WPI_TalonFX mainMotor = new WPI_TalonFX(Ports.Climber.MAIN_MOTOR);
+    private final WPI_TalonFX mainMotor = new WPI_TalonFX(Ports.Climber.MAIN);
     private final Solenoid stopper = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Climber.STOPPER);
     private final UnitModel unitModel = new UnitModel(Constants.Climber.TICKS_PER_RAD);
 
     private final ArmFeedforward feedforward = new ArmFeedforward(Constants.Climber.F_FORWARD_S, Constants.Climber.F_FORWARD_COS, Constants.Climber.F_FORWARD_V, Constants.Climber.F_FORWARD_A);
-
-    private final PIDController controller = new PIDController(Constants.Climber.P_VELOCITY, Constants.Climber.I_VELOCITY, Constants.Climber.D_VELOCITY);
-
+    private final PIDController controller = new PIDController(Constants.Climber.KP, Constants.Climber.KI, Constants.Climber.KD);
     private final Encoder encoder = new Encoder(Ports.Climber.ENCODER_A_CHANNEL, Ports.Climber.ENCODER_B_CHANNEL);
     private final DCMotor armGearbox = DCMotor.getFalcon500(2);
 
-    private final SingleJointedArmSim m_armSim =
+    private final SingleJointedArmSim armSim =
             new SingleJointedArmSim(
                     armGearbox,
                     Constants.Climber.GEAR_RATIO,
@@ -72,7 +70,7 @@ public class Climber extends SubsystemBase {
                     new MechanismLigament2d(
                             "Arm",
                             30,
-                            Units.radiansToDegrees(m_armSim.getAngleRads()),
+                            Units.radiansToDegrees(armSim.getAngleRads()),
                             6,
                             new Color8Bit(Color.kYellow)));
 
@@ -98,10 +96,10 @@ public class Climber extends SubsystemBase {
          config PID velocity for main motor.
          */
         mainMotor.configMotionCruiseVelocity(Constants.Climber.CRUISE_VELOCITY);
-        mainMotor.configMotionAcceleration(Constants.Climber.ACCELERATION);
-        mainMotor.config_kP(0, Constants.Climber.P_VELOCITY);
-        mainMotor.config_kI(0, Constants.Climber.I_VELOCITY);
-        mainMotor.config_kD(0, Constants.Climber.D_VELOCITY);
+        mainMotor.configMotionAcceleration(Constants.Climber.MAXIMAL_ACCELERATION);
+        mainMotor.config_kP(0, Constants.Climber.KP);
+        mainMotor.config_kI(0, Constants.Climber.KI);
+        mainMotor.config_kD(0, Constants.Climber.KD);
 
         auxMotor.follow(mainMotor);
 
@@ -122,15 +120,6 @@ public class Climber extends SubsystemBase {
          Setting the motor to go clockwise.
          */
         auxMotor.setInverted(TalonFXInvertType.Clockwise);
-
-        /*
-         config PID velocity for aux motor.
-         */
-        auxMotor.configMotionCruiseVelocity(Constants.Climber.CRUISE_VELOCITY);
-        auxMotor.configMotionAcceleration(Constants.Climber.ACCELERATION);
-        auxMotor.config_kP(0, Constants.Climber.P_VELOCITY);
-        auxMotor.config_kI(0, Constants.Climber.I_VELOCITY);
-        auxMotor.config_kD(0, Constants.Climber.D_VELOCITY);
     }
 
     /**
@@ -218,14 +207,14 @@ public class Climber extends SubsystemBase {
      */
     @Override
     public void simulationPeriodic() {
-        m_armSim.setInput(mainMotor.get() * RobotController.getBatteryVoltage());
+        armSim.setInput(mainMotor.get() * RobotController.getBatteryVoltage());
 
-        m_armSim.update(0.02);
+        armSim.update(0.02);
 
-        encoderSim.setDistance(m_armSim.getAngleRads());
+        encoderSim.setDistance(armSim.getAngleRads());
         RoboRioSim.setVInVoltage(
-                BatterySim.calculateDefaultBatteryLoadedVoltage(m_armSim.getCurrentDrawAmps()));
-        encoderSim.setRate(m_armSim.getVelocityRadPerSec());
-        arm.setAngle(Units.radiansToDegrees(m_armSim.getAngleRads()));
+                BatterySim.calculateDefaultBatteryLoadedVoltage(armSim.getCurrentDrawAmps()));
+        encoderSim.setRate(armSim.getVelocityRadPerSec());
+        arm.setAngle(Units.radiansToDegrees(armSim.getAngleRads()));
     }
 }

@@ -1,5 +1,6 @@
 package frc.robot.subsystems.climber.commands;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants;
@@ -19,8 +20,8 @@ public class ClimberStop extends InstantCommand {
     @Override
     public void initialize() {
         if (Robot.isReal() && !Robot.debug) {
-            boolean isReady = Timer.getFPGATimestamp() > Constants.Climber.AUTONOMY_TIME;
-            if (isReady) {
+            boolean notReady = DriverStation.isAutonomous();
+            if (!notReady) {
                 climber.toggleStopper();
             }
         }
