@@ -1,5 +1,6 @@
 package frc.robot.subsystems.shooter;
 
+import com.ctre.phoenix.Util;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -32,18 +33,18 @@ public class Shooter extends SubsystemBase {
     private final UnitModel unitModel = new UnitModel(TICKS_PER_REVOLUTION);
     private final WPI_TalonFX motor = new WPI_TalonFX(MOTOR);
     private final LinearSystemLoop<N1, N1, N1> linearSystemLoop;
+    private final Timer timer = new Timer();
     private FlywheelSim flywheelSim;
     private TalonFXSimCollection simCollection;
     private double currentTime = 0;
     private double lastTime = 0;
-    private final Timer timer = new Timer();
 
     private Shooter() {
         motor.setInverted(IS_INVERTED);
         motor.setSensorPhase(IS_SENSOR_IN_PHASE);
         motor.configNeutralDeadband(NEUTRAL_DEADBAND, Constants.TALON_TIMEOUT);
         linearSystemLoop = configStateSpace(true);
-        if(Robot.isSimulation()){
+        if (Robot.isSimulation()) {
             timer.start();
             timer.reset();
             simCollection = motor.getSimCollection();
@@ -63,6 +64,18 @@ public class Shooter extends SubsystemBase {
     }
 
     /**
+     * Calculates the velocity setpoint according to the distance from the target.
+     * Once the data from the shooter is acquired this function will be changed.
+     *
+     * @param distance is the distance from the target. [m]
+     * @return 15. [rps]
+     */
+    public static double getSetpointVelocity(double distance) {
+//        return 15 * distance;
+        return 6380;
+    }
+
+    /**
      * State space configuration function. Note that there are 2 different configurations.
      *
      * @param isInertiaBased is the configuration for the state space.
@@ -79,7 +92,7 @@ public class Shooter extends SubsystemBase {
         } else {
             flywheel_plant = LinearSystemId.identifyVelocitySystem(Kv, Ka);
         }
-        if(Robot.isSimulation()){
+        if (Robot.isSimulation()) {
             flywheelSim = new FlywheelSim(
                     flywheel_plant,
                     motor,
@@ -113,8 +126,8 @@ public class Shooter extends SubsystemBase {
      * @return the velocity of the motor. [rps]
      */
     public double getVelocity() {
-        if(Robot.isSimulation()){
-            return Utils.secondsToMinutes(flywheelSim.getAngularVelocityRPM());
+        if (Robot.isSimulation()) {
+            return Utils.minutesToSeconds(flywheelSim.getAngularVelocityRPM());
         }
         return unitModel.toVelocity(motor.getSelectedSensorVelocity());
     }
@@ -126,11 +139,11 @@ public class Shooter extends SubsystemBase {
      */
     public void setVelocity(double velocity) {
         linearSystemLoop.setNextR(VecBuilder.fill(Units.rotationsToRadians(velocity)));
-        linearSystemLoop.correct(VecBuilder.fill(Units.rotationsToRadians(getVelocity())));
+        linearSystemLoop.correct(VecBuilder.fill(Units.rotationsToRadians(Utils.secondsToMinutes(getVelocity()))));
         linearSystemLoop.predict(currentTime - lastTime);
-        if(Robot.isSimulation()){
+        if (Robot.isSimulation()) {
             flywheelSim.setInputVoltage(MathUtil.clamp(linearSystemLoop.getU(0), -NOMINAL_VOLTAGE, NOMINAL_VOLTAGE));
-            simCollection.setIntegratedSensorVelocity(unitModel.toTicks100ms(Utils.secondsToMinutes(flywheelSim.getAngularVelocityRPM())));
+            simCollection.setIntegratedSensorVelocity(unitModel.toTicks100ms(Utils.minutesToSeconds(flywheelSim.getAngularVelocityRPM())));
         } else {
             motor.setVoltage(MathUtil.clamp(linearSystemLoop.getU(0), -NOMINAL_VOLTAGE, NOMINAL_VOLTAGE));
         }
@@ -138,18 +151,6 @@ public class Shooter extends SubsystemBase {
 
     public void setPower(double output) {
         motor.set(ControlMode.PercentOutput, output);
-    }
-
-    /**
-     * Calculates the velocity setpoint according to the distance from the target.
-     * Once the data from the shooter is acquired this function will be changed.
-     *
-     * @param distance is the distance from the target. [m]
-     * @return 15. [rps]
-     */
-    public static double getSetpointVelocity(double distance) {
-//        return 15 * distance;
-        return 15;
     }
 
     /**
@@ -168,9 +169,9 @@ public class Shooter extends SubsystemBase {
     @Override
     public void simulationPeriodic() {
         lastTime = currentTime;
-        SmartDashboard.putNumber("velocity", Utils.secondsToMinutes(flywheelSim.getAngularVelocityRPM()));
+        SmartDashboard.putNumber("velocity", flywheelSim.getAngularVelocityRPM());
         SmartDashboard.putNumber("power", simCollection.getMotorOutputLeadVoltage());
-        flywheelSim.update(0.02);
+        flywheelSim.update(LOOP_PERIOD);
         currentTime = timer.get();
     }
 }
