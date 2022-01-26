@@ -24,17 +24,15 @@ public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final SimulateDrivetrain simulateDrivetrain = new SimulateDrivetrain();
     private final PhotonVisionModule visionModule;
-    // The robot's subsystems and commands are defined here...
-//    public ExampleSubsystem exampleSubsystem = ExampleSubsystem.getInstance();
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
         if (Robot.isSimulation()) {
-            visionModule = new PhotonVisionModule("photonvision", Optional.of(simulateDrivetrain));
+            visionModule = new PhotonVisionModule("photonvision", simulateDrivetrain);
         } else {
-            visionModule = new PhotonVisionModule("photonvision", Optional.empty());
+            visionModule = new PhotonVisionModule("photonvision", null);
         }
         // Configure the button bindings and default commands
         configureDefaultCommands();
