@@ -65,18 +65,6 @@ public class Leds {
         }
     }
 
-    private void configShooterLEDs(){
-        shooterAddressableLED = new AddressableLED(0);
-        shooterLedBuffer  = new AddressableLEDBuffer(60);
-    }
-
-    private void updateShooterLEDs() {
-        int[] colors = Colors.PURPLE.getRgb();
-        for (int i = 0; i < shooterLedBuffer.getLength(); i++) {
-            shooterLedBuffer.setRGB(i, colors[0], colors[1], colors[2]);
-        }
-    }
-
     public enum Colors {
         RED(new int[]{255, 0, 0}),
         GREEN(new int[]{0, 255, 0}),
