@@ -10,10 +10,8 @@ import frc.robot.subsystems.climber.commands.JoystickClimb;
 import frc.robot.utils.PhotonVisionModule;
 import frc.robot.utils.SimulateDrivetrain;
 import frc.robot.utils.commands.SimulateDrivetrainDefaultCommand;
-import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
 
-import java.util.Optional;
 
 public class RobotContainer {
     private final Climber climber = Climber.getInstance();
