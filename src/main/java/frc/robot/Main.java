@@ -6,7 +6,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
 
-import static spark.Spark.port;
 
 /**
  * Do NOT add any static variables to this class, or any initialization at all. Unless you know what
@@ -24,8 +23,6 @@ public final class Main {
      * <p>If you change your main robot class, change the parameter type.
      */
     public static void main(String... args) {
-        port(5802);
-
         RobotBase.startRobot(Robot::new);
     }
 }

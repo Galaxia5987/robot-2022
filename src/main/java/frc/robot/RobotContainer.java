@@ -38,7 +38,6 @@ public class RobotContainer {
         configureDefaultCommands();
 
         if (Robot.debug) {
-            startValueTuner();
             startFireLog();
         }
 
@@ -63,13 +62,6 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         return null;
-    }
-
-    /**
-     * Initiates the value tuner.
-     */
-    private void startValueTuner() {
-        new ValueTuner().start();
     }
 
     /**

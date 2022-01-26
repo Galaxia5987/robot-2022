@@ -1,5 +1,6 @@
 package frc.robot;
 
+import frc.robot.valuetuner.WebConstant;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -13,7 +14,8 @@ public final class Constants {
     public static final double FIELD_LENGTH = 16.46; // Length of the field. [m]
 
     public static class ExampleSubsystem {
-        public static final double POWER = 0.5; // [%]
+        private static final String NAME = ExampleSubsystem.class.getName();
+        public static final WebConstant POWER = WebConstant.of(NAME, "power", 0.5); // [%]
     }
 
     public static class Climber {
