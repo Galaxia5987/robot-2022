@@ -70,10 +70,10 @@ public class Leds {
         shooterLedBuffer  = new AddressableLEDBuffer(SHOOTER_LED_LENGTH);
     }
 
-    private void updateShooterLEDs(boolean isDisabled) {
-        int[] colors = isDisabled ? Colors.ORANGE.getRgb() : Colors.PURPLE.getRgb();
+    private void updateShooterLEDs() {
+        int[] rgb = DriverStation.isDisabled() ? Colors.ORANGE.getRgb() : Colors.PURPLE.getRgb();
         for (int i = 0; i < shooterLedBuffer.getLength(); i++) {
-            shooterLedBuffer.setRGB(i, colors[0], colors[1], colors[2]);
+            shooterLedBuffer.setRGB(i, rgb[0], rgb[1], rgb[2]);
         }
         shooterAddressableLED.setData(shooterLedBuffer);
     }
