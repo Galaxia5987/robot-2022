@@ -1,15 +1,12 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.PerpetualCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.commands.ClimberStop;
 import frc.robot.subsystems.climber.commands.JoystickClimb;
-import frc.robot.subsystems.example.ExampleSubsystem;
 import frc.robot.utils.PhotonVisionModule;
 import frc.robot.utils.SimulateDrivetrain;
 import frc.robot.utils.commands.SimulateDrivetrainDefaultCommand;
@@ -25,16 +22,16 @@ public class RobotContainer {
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final JoystickButton b = new JoystickButton(xbox, XboxController.Button.kB.value);
     // The robot's subsystems and commands are defined here...
-    public ExampleSubsystem exampleSubsystem = ExampleSubsystem.getInstance();
-  // The robot's subsystems and commands are defined here...
     private final SimulateDrivetrain simulateDrivetrain = new SimulateDrivetrain();
     private final PhotonVisionModule visionModule;
+    // The robot's subsystems and commands are defined here...
+//    public ExampleSubsystem exampleSubsystem = ExampleSubsystem.getInstance();
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        if(Robot.isSimulation()){
+        if (Robot.isSimulation()) {
             visionModule = new PhotonVisionModule("photonvision", Optional.of(simulateDrivetrain));
         } else {
             visionModule = new PhotonVisionModule("photonvision", Optional.empty());
