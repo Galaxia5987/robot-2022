@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import static frc.robot.Constants.Vision.HUB_POSE;
 
 public class SimulateDrivetrain extends SubsystemBase {
     private final EncoderSim leftEncoderSim;
@@ -73,6 +72,6 @@ public class SimulateDrivetrain extends SubsystemBase {
         SmartDashboard.putData("Field", field);
         field.setRobotPose(driveSim.getPose());
         SmartDashboard.putData("Target", target);
-        target.setRobotPose(HUB_POSE);
+//        target.setRobotPose(HUB_POSE);
     }
 }

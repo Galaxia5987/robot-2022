@@ -15,6 +15,7 @@ import static spark.Spark.port;
  */
 public final class Main {
     private Main() {
+
     }
 
     /**
