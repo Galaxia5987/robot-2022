@@ -1,33 +1,33 @@
 {
-  "HALProvider": {
-    "Other Devices": {
-      "Talon FX[0]": {
-        "header": {
-          "open": true
-        }
-      }
-    }
-  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/LiveWindow/Climber": "Subsystem",
-      "/LiveWindow/ExampleSubsystem": "Subsystem",
-      "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
+      "/LiveWindow/PhotonVisionModule": "Subsystem",
+      "/LiveWindow/SimulateDrivetrain": "Subsystem",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
-      "/SmartDashboard/Arm sim": "Mechanism2d",
-      "/SmartDashboard/Mech2d": "Mechanism2d"
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Target": "Field2d"
     },
     "windows": {
-      "/LiveWindow/Climber": {
+      "/SmartDashboard/Field": {
         "window": {
           "visible": true
         }
       },
-      "/LiveWindow/Ungrouped/PIDController[1]": {
+      "/SmartDashboard/Target": {
         "window": {
           "visible": true
         }
+      }
+    }
+  },
+  "NetworkTables": {
+    "SmartDashboard": {
+      "open": true
+    },
+    "photonvision": {
+      "photonvision": {
+        "open": true
       }
     }
   }
