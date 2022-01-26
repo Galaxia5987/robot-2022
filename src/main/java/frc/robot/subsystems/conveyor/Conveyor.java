@@ -43,8 +43,7 @@ public class Conveyor extends SubsystemBase {
     }
 
     /**
-     *
-     * @return the color sensor value as a driverstation.Allience enum
+     * @return the color sensor value as a DriverStation.Alliance enum
      */
     public DriverStation.Alliance getColor() {
         Color color = colorSensorIntake.getColor();
@@ -62,21 +61,23 @@ public class Conveyor extends SubsystemBase {
     }
 
     /**
-     *
      * @returns the amount of balls inside the cargo
      */
     public int getCargoCount() {
         return position.size();
     }
 
+    /**
+     * Set motor power.
+     * @param power the power to the motor [-1, 1].
+     */
     public void setPower(double power) {
         motor.set(power);
     }
 
     /**
-     *
-     * @param first boolean
-     * @returns the color of first/last cargos inside the conveyor. true - first, false - last.
+     * @param first the cargo place for which to get the color, true - first, false - last.
+     * @returns the color of first/last cargos inside the conveyor.
      */
     public DriverStation.Alliance getColorPosition(boolean first) {
         if (first) {
@@ -86,28 +87,43 @@ public class Conveyor extends SubsystemBase {
     }
 
     /**
-     * open/closes the "flap" - selenoid
+     * open the "flap" - solenoid
      */
     public void openFlap() {
         flap.set(false);
     }
 
+    /**
+     * closes the "flap" - solenoid
+     */
     public void closeFlap() {
         flap.set(true);
     }
 
-    public void togggle() {
+    /**
+     * toggles the "flap" - solenoid
+     */
+    public void toggle() {
         flap.toggle();
     }
 
+    /**
+     *
+     * @param alliance an DriverStation.Alliance enum
+     * @return the name of the enum
+     */
+    private String enumToString(DriverStation.Alliance alliance) {
+        return alliance.name();
+    }
 
-
-    
+    /**
+     * removes the string representing the ball from the list if the ball is ejected and adds if the ball is consumed
+     */
     @Override
     public void periodic() {
         var colorIntake = getColor();
         boolean hasPassed = beamBreaker.get();
-        if (hasPassed && !lastPassed && motor.getMotorOutputPercent() > 0) {
+        if (hasPassed && !lastPassed && motor.getMotorOutputPercent() > 0) { //
             position.removeFirst();
         }
         if (colorIntake == DriverStation.Alliance.Invalid && lastSeenColor != DriverStation.Alliance.Invalid) {
@@ -119,10 +135,6 @@ public class Conveyor extends SubsystemBase {
         }
         lastPassed = hasPassed;
         lastSeenColor = colorIntake;
-    }
-
-    private String enumToString(DriverStation.Alliance alliance) {
-        return alliance.name();
     }
 
 }
