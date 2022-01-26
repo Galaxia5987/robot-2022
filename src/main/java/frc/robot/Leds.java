@@ -1,9 +1,6 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.AddressableLED;
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.*;
 
 import static frc.robot.Constants.Leds.SHOOTER_LED_LENGTH;
 import static frc.robot.Ports.Leds.SHOOTER_LED_PORT;
@@ -73,11 +70,12 @@ public class Leds {
         shooterLedBuffer  = new AddressableLEDBuffer(SHOOTER_LED_LENGTH);
     }
 
-    private void updateShooterLEDs() {
-        int[] colors = Colors.PURPLE.getRgb();
+    private void updateShooterLEDs(boolean isDisabled) {
+        int[] colors = isDisabled ? Colors.ORANGE.getRgb() : Colors.PURPLE.getRgb();
         for (int i = 0; i < shooterLedBuffer.getLength(); i++) {
             shooterLedBuffer.setRGB(i, colors[0], colors[1], colors[2]);
         }
+        shooterAddressableLED.setData(shooterLedBuffer);
     }
 
     public enum Colors {
