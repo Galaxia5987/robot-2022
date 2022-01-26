@@ -12,8 +12,6 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
     private final XboxController xbox = new XboxController(Ports.Controls.XBOX);
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
-    private final Trigger rightTrigger = new Trigger(() -> xbox.getRawAxis(XboxController.Axis.kRightTrigger.value) > RIGHT_TRIGGER_DEADBAND);
-    private final Shooter shooter = Shooter.getInstance();
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -31,7 +29,6 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        shooter.setDefaultCommand(new TestPistonPressure(xbox::getLeftY, shooter));
     }
 
     private void configureButtonBindings() {
@@ -39,7 +36,6 @@ public class RobotContainer {
         Currently, the shooting is at 20 meters per second. This will be changed once
         the vision becomes available for use.
          */
-        rightTrigger.whileActiveContinuous(new Outtake(shooter, () -> 4));
     }
 
 
