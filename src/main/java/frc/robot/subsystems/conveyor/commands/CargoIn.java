@@ -27,7 +27,7 @@ public class CargoIn extends CommandBase {
     // leave me alone
     @Override
     public boolean isFinished() {
-        return conveyor.getCargoCount() > 2;
+        return conveyor.getCargoCount() > Constants.Conveyor.MAX_CARGO_AMOUNT;
     }
 
     @Override

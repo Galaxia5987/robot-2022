@@ -123,7 +123,7 @@ public class Conveyor extends SubsystemBase {
     public void periodic() {
         var colorIntake = getColor();
         boolean hasPassed = beamBreaker.get();
-        if (hasPassed && !lastPassed && motor.getMotorOutputPercent() > 0) { //
+        if (hasPassed && !lastPassed && motor.getMotorOutputPercent() > 0) {
             position.removeFirst();
         }
         if (colorIntake == DriverStation.Alliance.Invalid && lastSeenColor != DriverStation.Alliance.Invalid) {
