@@ -47,8 +47,6 @@ public final class Constants {
         public static final double MAX_ANGLE = Math.toRadians(255); // [radians]
         public static final double MIN_ANGLE = Math.toRadians(-75); // [radians]
 
-        public static final int AUTONOMOUS_TIME = 15; // [s]
-
         public static final double STOP_CLIMBER = 149.5; // [s]
     }
 
