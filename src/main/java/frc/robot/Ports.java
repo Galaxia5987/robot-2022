@@ -22,6 +22,6 @@ public final class Ports {
     }
 
     public static class Leds{
-
+        public static final int SHOOTER_LED_PORT = 0;
     }
 }

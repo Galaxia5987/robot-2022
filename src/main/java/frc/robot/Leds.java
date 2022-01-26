@@ -5,6 +5,9 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 
+import static frc.robot.Constants.Leds.SHOOTER_LED_LENGTH;
+import static frc.robot.Ports.Leds.SHOOTER_LED_PORT;
+
 
 public class Leds {
 
@@ -66,8 +69,8 @@ public class Leds {
     }
 
     private void configShooterLEDs(){
-        shooterAddressableLED = new AddressableLED(0);
-        shooterLedBuffer  = new AddressableLEDBuffer(60);
+        shooterAddressableLED = new AddressableLED(SHOOTER_LED_PORT);
+        shooterLedBuffer  = new AddressableLEDBuffer(SHOOTER_LED_LENGTH);
     }
 
     private void updateShooterLEDs() {
