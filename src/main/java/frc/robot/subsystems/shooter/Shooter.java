@@ -68,7 +68,7 @@ public class Shooter extends SubsystemBase {
      * Once the data from the shooter is acquired this function will be changed.
      *
      * @param distance is the distance from the target. [m]
-     * @return 15. [rps]
+     * @return 15. [rpm]
      */
     public static double getSetpointVelocity(double distance) {
 //        return 15 * distance;
@@ -123,7 +123,7 @@ public class Shooter extends SubsystemBase {
     /**
      * Gets the velocity of the motor.
      *
-     * @return the velocity of the motor. [rps]
+     * @return the velocity of the motor. [rpm]
      */
     public double getVelocity() {
         if (Robot.isSimulation()) {
@@ -135,7 +135,7 @@ public class Shooter extends SubsystemBase {
     /**
      * Sets the velocity of the motor.
      *
-     * @param velocity is the velocity setpoint. [rps]
+     * @param velocity is the velocity setpoint. [rpm]
      */
     public void setVelocity(double velocity) {
         linearSystemLoop.setNextR(VecBuilder.fill(Units.rotationsToRadians(Utils.secondsToMinutes(velocity))));
