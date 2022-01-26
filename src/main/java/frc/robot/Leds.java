@@ -15,13 +15,7 @@ public class Leds {
     private int rainbowFirstPixelHue;
 
     public Leds() {
-            /*
-           Leds (Intake intake, Drivetrain drivetrain, Shooter shooter, Climber climber) {
-                this.intake = intake;
-                this.drivetrain = drivetrain;
-                this.shooter = shooter;
-                this.climber = climber;
-                */
+
         addressableLED.setLength(ledBuffer.getLength());
         addressableLED.setData(ledBuffer);
         addressableLED.start();
