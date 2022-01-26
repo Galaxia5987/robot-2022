@@ -5,12 +5,17 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 
+import static frc.robot.Constants.Leds.INTAKE_CONVEYOR_LED_LENGTH;
+import static frc.robot.Ports.Leds.INTAKE_CONVEYOR_LED_PORT;
+
 
 public class Leds {
 
     private final AddressableLED addressableLED = new AddressableLED(0);
+    private AddressableLED intakeConveyorAddressableLED;
 
     private final AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(60);
+    private AddressableLEDBuffer intakeConveyorLedBuffer;
     private final Timer climbLedsTimer = new Timer();
     private int rainbowFirstPixelHue;
 
@@ -61,6 +66,19 @@ public class Leds {
         for (int i = 0; i < ledBuffer.getLength(); i++) {
             int hue = (rainbowFirstPixelHue + (i * 60 / ledBuffer.getLength())) % 30;
         }
+    }
+
+    private void configIntakeConveyorLEDs(){
+        intakeConveyorAddressableLED = new AddressableLED(INTAKE_CONVEYOR_LED_PORT);
+        intakeConveyorLedBuffer = new AddressableLEDBuffer(INTAKE_CONVEYOR_LED_LENGTH);
+    }
+
+    private void updateIntakeConveyorLEDs(boolean isDisabled){
+        int[] rgb = isDisabled ? Colors.ORANGE.getRgb() : Colors.YELLOW.getRgb();
+        for (int i = 0; i < intakeConveyorLedBuffer.getLength(); i++) {
+            intakeConveyorLedBuffer.setRGB(i, rgb[0], rgb[1], rgb[2]);
+        }
+        intakeConveyorAddressableLED.setData(intakeConveyorLedBuffer);
     }
 
     public enum Colors {

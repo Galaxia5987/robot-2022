@@ -31,6 +31,6 @@ public final class Constants {
     }
 
     public static class Leds{
-        
+        public static final int INTAKE_CONVEYOR_LED_LENGTH = 60;
     }
 }
