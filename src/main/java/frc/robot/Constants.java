@@ -34,8 +34,8 @@ public final class Constants {
         public static final double ARM_MASS = 5.0; // Kilograms
         public static final double ARM_LENGTH = 0.792; // [m]
 
-        public static final int MAX_ANGLE = 255; // [radians]
-        public static final int MIN_ANGLE = -75; // [radians]
+        public static final double MAX_ANGLE = Math.toRadians(255); // [radians]
+        public static final double MIN_ANGLE = Math.toRadians(-75); // [radians]
 
         public static final int AUTONOMOUS_TIME = 15; // [s]
 

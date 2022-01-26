@@ -3,7 +3,6 @@ package frc.robot.subsystems.climber;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.ArmFeedforward;
@@ -35,8 +34,8 @@ public class Climber extends SubsystemBase {
 
     private static Climber INSTANCE = null;
 
-    private final WPI_TalonFX auxMotor = new WPI_TalonFX(Ports.Climber.AUX);
     private final WPI_TalonFX mainMotor = new WPI_TalonFX(Ports.Climber.MAIN);
+    private final WPI_TalonFX auxMotor = new WPI_TalonFX(Ports.Climber.AUX);
     private final Solenoid stopper = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Climber.STOPPER);
     private final UnitModel unitModel = new UnitModel(Constants.Climber.TICKS_PER_RAD);
 
@@ -51,8 +50,8 @@ public class Climber extends SubsystemBase {
                     Constants.Climber.GEAR_RATIO,
                     SingleJointedArmSim.estimateMOI(Constants.Climber.ARM_LENGTH, Constants.Climber.ARM_MASS),
                     Constants.Climber.ARM_LENGTH,
-                    Units.degreesToRadians(Constants.Climber.MIN_ANGLE),
-                    Units.degreesToRadians(Constants.Climber.MAX_ANGLE),
+                    Constants.Climber.MIN_ANGLE,
+                    Constants.Climber.MAX_ANGLE,
                     Constants.Climber.ARM_MASS,
                     true,
                     VecBuilder.fill(Constants.Climber.ARM_ENCODER_DIST_PER_PULSE)
@@ -90,7 +89,7 @@ public class Climber extends SubsystemBase {
         /*
          Setting the motor to go clockwise.
          */
-        mainMotor.setInverted(TalonFXInvertType.Clockwise);
+        mainMotor.setInverted(Ports.Climber.IS_MAIN_INVERTED);
 
         /*
          config PID velocity for main motor.
@@ -119,7 +118,7 @@ public class Climber extends SubsystemBase {
         /*
          Setting the motor to go clockwise.
          */
-        auxMotor.setInverted(TalonFXInvertType.Clockwise);
+        auxMotor.setInverted(Ports.Climber.IS_AUX_INVERTED);
     }
 
     /**

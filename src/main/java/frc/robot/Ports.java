@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
+
 public final class Ports {
     public static class ExampleSubsystem {
         public static final int MAIN = 0;
@@ -23,8 +25,8 @@ public final class Ports {
         public static final int AUX = 0;
         public static final int STOPPER = 0;
 
-        public static final boolean IS_AUX_INVERTED = true;
-        public static final boolean IS_MAIN_INVERTED = true;
+        public static final TalonFXInvertType IS_AUX_INVERTED = TalonFXInvertType.Clockwise;
+        public static final TalonFXInvertType IS_MAIN_INVERTED = TalonFXInvertType.Clockwise;
 
         /*
          Used only for simulation.
