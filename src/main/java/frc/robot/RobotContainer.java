@@ -3,19 +3,13 @@ package frc.robot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.command_groups.Outtake;
-import frc.robot.subsystems.example.ExampleSubsystem;
-import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.commands.bits.TestPistonPressure;
 import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
 
 import static frc.robot.Constants.Control.RIGHT_TRIGGER_DEADBAND;
 
 public class RobotContainer {
-    // The robot's subsystems and commands are defined here...
-    public ExampleSubsystem exampleSubsystem = ExampleSubsystem.getInstance();
+  // The robot's subsystems and commands are defined here...
     private final XboxController xbox = new XboxController(Ports.Controls.XBOX);
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final Trigger rightTrigger = new Trigger(() -> xbox.getRawAxis(XboxController.Axis.kRightTrigger.value) > RIGHT_TRIGGER_DEADBAND);
