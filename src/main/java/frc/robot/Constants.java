@@ -15,8 +15,8 @@ public final class Constants {
 
         public static final double Ka = 1; // Acceleration state space coefficient (placeholder).
         public static final double Kv = 1; // Velocity state space coefficient (placeholder).
-        public static final double MODEL_TOLERANCE = 1e-6; // Model tolerance for state space.
-        public static final double SENSOR_TOLERANCE = 1e-6; // Sensor tolerance for state space.
+        public static final double MODEL_TOLERANCE = 10; // Model tolerance for state space.
+        public static final double SENSOR_TOLERANCE = 0.1; // Sensor tolerance for state space.
         public static final double VELOCITY_TOLERANCE = 0.15; // Velocity tolerance for state space.
         public static final double COST_LQR = 55; // Cost lqr for state space.
 

@@ -72,7 +72,7 @@ public class Shooter extends SubsystemBase {
      */
     public static double getSetpointVelocity(double distance) {
 //        return 15 * distance;
-        return 6380;
+        return 100;
     }
 
     /**
@@ -127,7 +127,7 @@ public class Shooter extends SubsystemBase {
      */
     public double getVelocity() {
         if (Robot.isSimulation()) {
-            return Utils.minutesToSeconds(flywheelSim.getAngularVelocityRPM());
+            return flywheelSim.getAngularVelocityRPM();
         }
         return unitModel.toVelocity(motor.getSelectedSensorVelocity());
     }
@@ -138,12 +138,13 @@ public class Shooter extends SubsystemBase {
      * @param velocity is the velocity setpoint. [rps]
      */
     public void setVelocity(double velocity) {
-        linearSystemLoop.setNextR(VecBuilder.fill(Units.rotationsToRadians(velocity)));
+        linearSystemLoop.setNextR(VecBuilder.fill(Units.rotationsToRadians(Utils.secondsToMinutes(velocity))));
         linearSystemLoop.correct(VecBuilder.fill(Units.rotationsToRadians(Utils.secondsToMinutes(getVelocity()))));
         linearSystemLoop.predict(currentTime - lastTime);
         if (Robot.isSimulation()) {
+            SmartDashboard.putNumber("ve", velocity);
             flywheelSim.setInputVoltage(MathUtil.clamp(linearSystemLoop.getU(0), -NOMINAL_VOLTAGE, NOMINAL_VOLTAGE));
-            simCollection.setIntegratedSensorVelocity(unitModel.toTicks100ms(Utils.minutesToSeconds(flywheelSim.getAngularVelocityRPM())));
+            simCollection.setIntegratedSensorVelocity(unitModel.toTicks100ms(Utils.secondsToMinutes(flywheelSim.getAngularVelocityRPM())));
         } else {
             motor.setVoltage(MathUtil.clamp(linearSystemLoop.getU(0), -NOMINAL_VOLTAGE, NOMINAL_VOLTAGE));
         }

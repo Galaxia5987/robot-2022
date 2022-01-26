@@ -38,7 +38,7 @@ public class RobotContainer {
 
     private void configureDefaultCommands() {
 //        shooter.setDefaultCommand(new TestPistonPressure(xbox::getLeftY, shooter));
-        shooter.setDefaultCommand(new Shoot(shooter, () -> 4));
+        shooter.setDefaultCommand(new Shoot(shooter, () -> 2));
     }
 
     private void configureButtonBindings() {
