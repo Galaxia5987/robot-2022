@@ -30,9 +30,6 @@ public class Leds {
 
 
     public void autonomousPeriodic() {
-        rainbowFirstPixelHue += 10;
-        rainbowFirstPixelHue %= 360;
-
         if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
             for (int i = 0; i < ledBuffer.getLength(); i++) {
                 ledBuffer.setRGB(i, 248, 37, 5);
