@@ -15,11 +15,11 @@ import java.util.LinkedList;
 
 public class Conveyor extends SubsystemBase {
     private static Conveyor INSTANCE = null;
-    private final WPI_TalonFX motor = new WPI_TalonFX(Ports.Conveyor.AUX);
+    private final WPI_TalonFX motor = new WPI_TalonFX(Ports.Conveyor.MOTOR);
     private final Deque<String> position = new LinkedList<>();
     private final ColorSensorV3 colorSensorIntake = new ColorSensorV3(I2C.Port.kOnboard);
-    private final DigitalInput beamBreaker = new DigitalInput(0);
-    private final Solenoid flap = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
+    private final DigitalInput beamBreaker = new DigitalInput(Ports.Conveyor.BEAM_BREAKER);
+    private final Solenoid flap = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Conveyor.SOLENOID);
     ColorMatch match = new ColorMatch();
     private DriverStation.Alliance lastSeenColor = DriverStation.Alliance.Invalid;
     private boolean lastPassed = true;
@@ -117,7 +117,7 @@ public class Conveyor extends SubsystemBase {
     }
 
     /**
-     * removes the string representing the ball from the list if the ball is ejected and adds if the ball is consumed
+     * removes the string representing the cargo from the list if the cargo is ejected and adds if the cargo is consumed
      */
     @Override
     public void periodic() {

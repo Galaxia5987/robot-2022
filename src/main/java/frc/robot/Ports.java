@@ -2,12 +2,10 @@ package frc.robot;
 
 public final class Ports {
     public static class Conveyor {
-        public static final int MAIN = 0;
-        public static final int AUX = 0;
-        public static final boolean IS_MAIN_INVERTED = false;
-        public static final boolean IS_AUX_INVERTED = false;
-        public static final boolean IS_MAIN_SENSOR_INVERTED = false;
-        public static final boolean IS_AUX_SENSOR_INVERTED = false;
+        public static final int MOTOR = 0;
+        public static final int SOLENOID = 0;
+        public static final int BEAM_BREAKER = 0;
+
     }
 
     public static class Controls {
