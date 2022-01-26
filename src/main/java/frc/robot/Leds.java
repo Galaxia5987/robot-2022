@@ -15,24 +15,14 @@ public class Leds {
     private int rainbowFirstPixelHue;
 
     public Leds() {
-
         addressableLED.setLength(ledBuffer.getLength());
         addressableLED.setData(ledBuffer);
         addressableLED.start();
     }
 
     public void disabledPeriodic() {
-        rainbowFirstPixelHue += 10;
-        rainbowFirstPixelHue %= 360;
-        int hue;
-        if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
-            hue = 0;
-        } else if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
-            hue = 120;
-        } else hue = 10;
-
-        for (var i = 0; i < ledBuffer.getLength(); i++) {
-            ledBuffer.setHSV(i, hue, 255, 45 + (int) (60 * (Math.sin(Math.toRadians(rainbowFirstPixelHue)) + 1) / 2));
+        for (int i = 0; i < ledBuffer.getLength(); i++) {
+            ledBuffer.setRGB(i, 255, 161, 36);
         }
 
         addressableLED.setData(ledBuffer);
@@ -40,12 +30,23 @@ public class Leds {
 
 
     public void autonomousPeriodic() {
-        rainbowFirstPixelHue += 3;
-        rainbowFirstPixelHue %= 180;
-        for (var i = 0; i < ledBuffer.getLength(); i++) {
-            final var hue = (rainbowFirstPixelHue + (i * 180 / ledBuffer.getLength())) % 180;
-            ledBuffer.setHSV(i, hue, 255, 128);
+        rainbowFirstPixelHue += 10;
+        rainbowFirstPixelHue %= 360;
+
+        if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
+            for (int i = 0; i < ledBuffer.getLength(); i++) {
+                ledBuffer.setRGB(i, 248, 37, 5);
+            }
+        } else if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
+            for (int i = 0; i < ledBuffer.getLength(); i++) {
+                ledBuffer.setRGB(i, 7, 88, 248);
+            }
+        } else {
+            for (int i = 0; i < ledBuffer.getLength(); i++) {
+                ledBuffer.setRGB(i, 60, 248, 236);
+            }
         }
+        addressableLED.setData(ledBuffer);
     }
 
 
@@ -62,13 +63,10 @@ public class Leds {
         rainbowFirstPixelHue %= 30;
         for (int i = 0; i < ledBuffer.getLength(); i++) {
             int hue = (rainbowFirstPixelHue + (i * 60 / ledBuffer.getLength())) % 30;
-            int a;
-
-        
-            }
         }
     }
 }
+
 
 
 
