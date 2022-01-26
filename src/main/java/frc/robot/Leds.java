@@ -64,27 +64,9 @@ public class Leds {
             int hue = (rainbowFirstPixelHue + (i * 60 / ledBuffer.getLength())) % 30;
             int a;
 
-            boolean shooter = true;
-            if (shooter) { //shooter.isShooterReady() && shooter.getSpeed > 5.
-                a = 100;
+        
             }
-
-            boolean intake = true;
-            else if (intake) {//intake.isIntakeReady() {
-                a = 20;
-            } else {
-                a = -1;
-            }
-
-            if (climbLedsTimer.get() != 0) {
-                ledBuffer.setHSV(i, 90 + 2 * rainbowFirstPixelHue, 255, 255);
-            } else {
-                int climb_hue = (int) (100 - 45 * Math.floor(climbLedsTimer.get())) / 2;
-                ledBuffer.setHSV(i, climb_hue, 255, (int) (55 + 200 * (1 - climbLedsTimer.get() % 1)));
-            }
-
         }
-
     }
 }
 
