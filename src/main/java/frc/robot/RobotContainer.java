@@ -1,12 +1,14 @@
 package frc.robot;
 
 import com.revrobotics.ColorSensorV3;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.CargoIn;
 import frc.robot.subsystems.conveyor.commands.CargoOut;
+import frc.robot.subsystems.conveyor.commands.Convey;
 import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
 
@@ -16,7 +18,7 @@ public class RobotContainer {
     private final XboxController xbox = new XboxController(Ports.Controls.XBOX);
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final JoystickButton b = new JoystickButton(xbox, XboxController.Button.kB.value);
-
+    private final Joystick joystick = new Joystick(0);
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -34,12 +36,10 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-
+        conveyor.setDefaultCommand(new Convey(conveyor, () -> joystick.getRawAxis(0)));
     }
 
     private void configureButtonBindings() {
-        a.whileHeld(new CargoIn(conveyor));
-        b.whileHeld(new CargoOut(conveyor));
 
     }
 
