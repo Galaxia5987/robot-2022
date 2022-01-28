@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.example.ExampleSubsystem;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.commands.IntakeByRobotSpeed;
-import frc.robot.subsystems.intake.commands.IntakeByVision;
+import frc.robot.subsystems.intake.commands.IntakeCargo;
 import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
 
@@ -40,7 +40,7 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         b.whileHeld(new IntakeByRobotSpeed(intake, () -> Constants.Intake.POWER));
-        x.whileHeld(new IntakeByVision(intake, () -> true, Constants.Intake.POWER));
+        x.whileHeld(new IntakeCargo(intake, () -> true, Constants.Intake.POWER));
         y.whenPressed(intake::toggleRetractor);
     }
 
