@@ -4,10 +4,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.command_groups.Outtake;
 import frc.robot.subsystems.example.ExampleSubsystem;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.commands.bits.TestPistonPressure;
+import frc.robot.subsystems.shooter.commands.Shoot;
 import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
 
@@ -37,15 +36,12 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        shooter.setDefaultCommand(new TestPistonPressure(xbox::getLeftY, shooter));
+//        shooter.setDefaultCommand(new TestPistonPressure(xbox::getLeftY, shooter));
+        shooter.setDefaultCommand(new Shoot(shooter, () -> 2));
     }
 
     private void configureButtonBindings() {
-        /*
-        Currently, the shooting is at 20 meters per second. This will be changed once
-        the vision becomes available for use.
-         */
-        rightTrigger.whileActiveContinuous(new Outtake(shooter, () -> 4));
+//        rightTrigger.whileActiveContinuous(new Outtake(shooter, () -> 4));
     }
 
 

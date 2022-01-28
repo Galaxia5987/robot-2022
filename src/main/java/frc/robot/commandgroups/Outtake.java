@@ -1,4 +1,4 @@
-package frc.robot.command_groups;
+package frc.robot.commandgroups;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.shooter.Shooter;
@@ -10,7 +10,7 @@ public class Outtake extends ParallelCommandGroup {
 
     public Outtake(Shooter shooter, DoubleSupplier distance) {
         addCommands(
-                new Shoot(shooter, () -> shooter.getSetpointVelocity(distance.getAsDouble()))
+                new Shoot(shooter, () -> Shooter.getSetpointVelocity(distance.getAsDouble()))
         );
     }
 }
