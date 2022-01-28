@@ -24,9 +24,7 @@ public final class Constants {
         public static final double GEAR_RATIO = 1; // Gear ratio for encoder (placeholder).
         public static final double NEUTRAL_DEADBAND = 0.1;
 
-        public static class Bits {
-            public static final double OUTPUT_MULTIPLIER = 0.1;
-        }
+        public static final double OUTPUT_MULTIPLIER = 0.1;
     }
 
     public static class Control {
