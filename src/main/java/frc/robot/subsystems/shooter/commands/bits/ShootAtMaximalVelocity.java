@@ -8,6 +8,7 @@ public class ShootAtMaximalVelocity extends CommandBase {
 
     public ShootAtMaximalVelocity(Shooter shooter) {
         this.shooter = shooter;
+        addRequirements(shooter);
     }
 
     @Override
