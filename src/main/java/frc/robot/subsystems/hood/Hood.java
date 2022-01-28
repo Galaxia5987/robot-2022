@@ -53,7 +53,7 @@ public class Hood extends SubsystemBase {
         angleChanger.set(true);
     }
 
-    public void setSolenoid(Mode mode){
+    public void setSolenoid(Mode mode) {
         angleChanger.set(mode.value);
     }
 
