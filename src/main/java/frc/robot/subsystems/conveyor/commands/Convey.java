@@ -17,10 +17,6 @@ public class Convey extends CommandBase {
     }
 
     @Override
-    public void initialize() {}
-
-
-    @Override
     public void execute() {
         conveyor.setPower(power.getAsDouble());
     }
@@ -32,6 +28,7 @@ public class Convey extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
+        conveyor.setPower(0);
     }
 
 }

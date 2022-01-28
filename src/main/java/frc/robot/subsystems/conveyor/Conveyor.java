@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Ports;
 
 import java.util.Deque;
@@ -114,14 +113,6 @@ public class Conveyor extends SubsystemBase {
     }
 
     /**
-     * @param alliance an DriverStation.Alliance enum
-     * @return the name of the enum
-     */
-    private String enumToString(DriverStation.Alliance alliance) {
-        return alliance.name();
-    }
-
-    /**
      * removes the string representing the cargo from the list if the cargo is ejected and adds if the cargo is consumed
      */
     @Override
@@ -136,7 +127,7 @@ public class Conveyor extends SubsystemBase {
             if (motor.getMotorOutputPercent() < 0) {
                 position.removeLast();
             } else if (motor.getMotorOutputPercent() > 0) {
-                position.add(enumToString(lastSeenColor));
+                position.add(lastSeenColor.name());
             }
         }
         lastPassed = hasPassed;
