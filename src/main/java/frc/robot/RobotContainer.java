@@ -5,9 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.hood.Hood;
-import frc.robot.valuetuner.ValueTuner;
 import frc.robot.utils.PhotonVisionModule;
 import frc.robot.utils.SimulateDrivetrain;
 import frc.robot.utils.commands.SimulateDrivetrainDefaultCommand;
@@ -42,7 +40,7 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-      
+
     }
 
     private void configureButtonBindings() {
@@ -52,19 +50,6 @@ public class RobotContainer {
                 xbox, simulateDrivetrain));
     }
 
-
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
-    public Command getAutonomousCommand() {
-        return null;
-    }
-
-    /**
-     * Initiates the value tuner.
-     */
     public Command getAutonomousCommand() {
         return null;
     }
