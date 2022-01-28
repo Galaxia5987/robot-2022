@@ -2,16 +2,33 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/LiveWindow/Ungrouped/Scheduler": "Scheduler"
+      "/LiveWindow/PhotonVisionModule": "Subsystem",
+      "/LiveWindow/SimulateDrivetrain": "Subsystem",
+      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Target": "Field2d"
+    },
+    "windows": {
+      "/SmartDashboard/Field": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Target": {
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
-  "Plot": {
-    "Plot <0>": {
-      "plots": [
-        {
-          "height": 419
-        }
-      ]
+  "NetworkTables": {
+    "SmartDashboard": {
+      "open": true
+    },
+    "photonvision": {
+      "photonvision": {
+        "open": true
+      }
     }
   }
 }
