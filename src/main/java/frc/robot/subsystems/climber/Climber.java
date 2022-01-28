@@ -208,7 +208,7 @@ public class Climber extends SubsystemBase {
     public void simulationPeriodic() {
         armSim.setInput(mainMotor.get() * RobotController.getBatteryVoltage());
 
-        armSim.update(0.02);
+        armSim.update(Constants.Climber.SIMULATION_LOOP_PERIOD);
 
         encoderSim.setDistance(armSim.getAngleRads());
         RoboRioSim.setVInVoltage(

@@ -49,6 +49,9 @@ public final class Constants {
 
         public static final double STOP_CLIMBER = 149.5; // [s]
 
+        public static final double SIMULATION_LOOP_PERIOD = 0.02; // [s]
+
+
         public static class Vision {
             public static final double CAMERA_HEIGHT = 0.767; // [m]
             public static final double TARGET_HEIGHT_FROM_GROUND = 2.64; // [m]
