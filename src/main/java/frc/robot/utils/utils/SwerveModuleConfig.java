@@ -10,7 +10,6 @@ public final class SwerveModuleConfig implements SwerveModuleConfigBase {
     // inversions
     private final boolean driveMotorInverted;
     private final boolean angleMotorInverted;
-    private final boolean driveMotorSensorPhase;
     private final boolean angleMotorSensorPhase;
 
     // PID
@@ -24,8 +23,7 @@ public final class SwerveModuleConfig implements SwerveModuleConfigBase {
     private final double zeroPosition; // [ticks]
 
     public SwerveModuleConfig(int wheel, int driveMotorPort, int angleMotorPort,
-                              boolean driveMotorInverted, boolean angleMotorInverted,
-                              boolean driveMotorSensorPhase, boolean angleMotorSensorPhase,
+                              boolean driveMotorInverted, boolean angleMotorInverted, boolean angleMotorSensorPhase,
                               double angle_kp, double angle_ki, double angle_kd, double angle_kf,
                               double j, double zeroPosition) {
         this.wheel = wheel;
@@ -33,7 +31,6 @@ public final class SwerveModuleConfig implements SwerveModuleConfigBase {
         this.angleMotorPort = angleMotorPort;
         this.driveMotorInverted = driveMotorInverted;
         this.angleMotorInverted = angleMotorInverted;
-        this.driveMotorSensorPhase = driveMotorSensorPhase;
         this.angleMotorSensorPhase = angleMotorSensorPhase;
         this.angle_kp = angle_kp;
         this.angle_ki = angle_ki;
@@ -66,11 +63,6 @@ public final class SwerveModuleConfig implements SwerveModuleConfigBase {
     @Override
     public boolean angleMotorInverted() {
         return angleMotorInverted;
-    }
-
-    @Override
-    public boolean driveMotorSensorPhase() {
-        return driveMotorSensorPhase;
     }
 
     @Override
