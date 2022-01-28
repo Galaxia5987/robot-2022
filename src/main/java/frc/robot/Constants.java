@@ -10,18 +10,21 @@ public final class Constants {
 
 
     public static class Shooter {
-        public static final int TICKS_PER_REVOLUTION = 2048; // Ticks per revolution of the shooter motor. [tick]
-        public static final double WHEEL_RADIUS = 0.1016; // Radius of the wheel. [m]
+        public static final double TICKS_PER_REVOLUTION = 2048; // Ticks per revolution of the shooter motor. [tick]
+        public static final double WHEEL_RADIUS = 0.1016; // Radius of the wheels. [m]
+
         public static final double Ka = 1; // Acceleration state space coefficient (placeholder).
         public static final double Kv = 1; // Velocity state space coefficient (placeholder).
-        public static final double MODEL_TOLERANCE = 1e-6; // Model tolerance for state space.
-        public static final double SENSOR_TOLERANCE = 1e-6; // Sensor tolerance for state space.
+        public static final double MODEL_TOLERANCE = 10; // Model tolerance for state space.
+        public static final double SENSOR_TOLERANCE = 0.1; // Sensor tolerance for state space.
+        public static final double VELOCITY_TOLERANCE = 0.15; // Velocity tolerance for state space.
+        public static final double COST_LQR = 55; // Cost lqr for state space.
 
-        public static final double J = 0.00218; // Moment of inertia for state space. This will be changed if the system will be in rps. [kg*m^2]
-        public static final double GEAR_RATIO = 1; // Gear ratio for encoder.
-        public static final double NEUTRAL_DEADBAND = 0.1; // [%]
+        public static final double J = 0.00218; // Moment of inertia for state space. [kg*m^2]
+        public static final double GEAR_RATIO = 1; // Gear ratio for encoder (placeholder).
+        public static final double NEUTRAL_DEADBAND = 0.1;
 
-        public static class Bits{
+        public static class Bits {
             public static final double OUTPUT_MULTIPLIER = 0.1;
         }
     }

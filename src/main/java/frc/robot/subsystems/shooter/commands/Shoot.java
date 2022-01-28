@@ -23,7 +23,7 @@ public class Shoot extends CommandBase {
 
     @Override
     public void execute() {
-        shooter.setVelocity(velocitySetpoint.getAsDouble());
+        shooter.setVelocity(Shooter.getSetpointVelocity(velocitySetpoint.getAsDouble()));
     }
 
     @Override
