@@ -179,6 +179,6 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putNumber("velocity", flywheelSim.getAngularVelocityRPM());
         SmartDashboard.putNumber("power", simCollection.getMotorOutputLeadVoltage());
         flywheelSim.update(LOOP_PERIOD);
-        currentTime = timer.get();
+        currentTime = Timer.getFPGATimestamp();
     }
 }
