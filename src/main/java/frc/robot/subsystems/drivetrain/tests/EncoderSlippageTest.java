@@ -10,8 +10,8 @@ public class EncoderSlippageTest extends CommandBase {
     private final SwerveDrive swerve;
     private final Timer timer = new Timer();
     private final Timer secondary = new Timer();
-    double power = 1;
-    double dt = 0.25;
+    private double power = 1;
+    private double dt = 0.25;
 
     public EncoderSlippageTest(SwerveDrive swerve) {
         this.swerve = swerve;
@@ -29,11 +29,10 @@ public class EncoderSlippageTest extends CommandBase {
 
     @Override
     public void execute() {
-        if (secondary.hasElapsed(dt)) {
+        if (secondary.advanceIfElapsed(dt)) {
             power = Math.random() * 2 - 1;
             power = Math.signum(power) * MathUtil.clamp(Math.abs(power), 0.7, 1);
             dt = MathUtil.clamp(Math.random() / 2, 0.1, 0.3);
-            secondary.reset();
         }
         swerve.setPower(power);
     }

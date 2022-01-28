@@ -128,6 +128,9 @@ public final class Constants {
         public static final Matrix<N3, N1> stateStdDevs = VecBuilder.fill(0, 0, 0);
         public static final Matrix<N1, N1> localMeasurementStdDevs = VecBuilder.fill(0);
         public static final Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0, 0, 0);
+
+        public static final double MAX_VEL = 3;
+        public static final double MAX_ACCEL = 1.5;
     }
 
     public static final double FIELD_WIDTH = 8.23; // Width of the field. [m]

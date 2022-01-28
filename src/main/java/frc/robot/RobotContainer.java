@@ -23,7 +23,7 @@ public class RobotContainer {
     public static XboxController xbox = new XboxController(Ports.Controls.XBOX);
     public static Joystick joystick = new Joystick(Ports.Controls.JOYSTICK);
     public static Joystick joystick2 = new Joystick(Ports.Controls.JOYSTICK2);
-    private final SwerveDrive swerve = new SwerveDrive(true);
+    private final SwerveDrive swerve = SwerveDrive.getFieldOrientedInstance();
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final SimulateDrivetrain simulateDrivetrain = new SimulateDrivetrain();
     private final PhotonVisionModule visionModule;
@@ -62,7 +62,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        PathPlannerTrajectory path = PathPlanner.loadPath("Path", 3, 1.5, false);
+        PathPlannerTrajectory path = PathPlanner.loadPath("Path", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL, false);
         swerve.resetOdometry(new Pose2d(path.getInitialState().poseMeters.getTranslation(), path.getInitialState().holonomicRotation), path.getInitialState().holonomicRotation);
         Robot.resetAngle(path.getInitialState().holonomicRotation);
         return new PPSwerveControllerCommand(

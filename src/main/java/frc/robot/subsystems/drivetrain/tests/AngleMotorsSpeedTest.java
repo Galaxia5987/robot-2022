@@ -10,7 +10,7 @@ import frc.robot.subsystems.drivetrain.SwerveDrive;
 public class AngleMotorsSpeedTest extends CommandBase {
     private final SwerveDrive swerveDrive;
     private final Timer timer = new Timer();
-    double times[] = new double[4];
+    private final double times[] = new double[4];
 
     public AngleMotorsSpeedTest(SwerveDrive swerveDrive) {
         this.swerveDrive = swerveDrive;
