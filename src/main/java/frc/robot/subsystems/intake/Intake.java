@@ -16,7 +16,7 @@ public class Intake extends SubsystemBase {
     private Intake() {
         motor.setInverted(Ports.Intake.IS_MOTOR_INVERTED);
         motor.enableVoltageCompensation(true);
-
+        motor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
     }
 
 
