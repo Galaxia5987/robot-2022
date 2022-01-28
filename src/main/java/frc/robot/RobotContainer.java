@@ -21,8 +21,8 @@ import webapp.Webserver;
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     public static XboxController xbox = new XboxController(Ports.Controls.XBOX);
-    public static Joystick joystick = new Joystick(2);
-    public static Joystick joystick2 = new Joystick(3);
+    public static Joystick joystick = new Joystick(Ports.Controls.JOYSTICK);
+    public static Joystick joystick2 = new Joystick(Ports.Controls.JOYSTICK2);
     private final SwerveDrive swerve = new SwerveDrive(true);
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final SimulateDrivetrain simulateDrivetrain = new SimulateDrivetrain();
@@ -80,8 +80,8 @@ public class RobotContainer {
 
     /**
      * Initiates the value tuner.
-     
-    /**
+     * <p>
+     * /**
      * Initiates the port of team 225s Fire-Logger.
      */
     private void startFireLog() {

@@ -5,6 +5,10 @@
 package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.CvSink;
+import edu.wpi.first.cscore.MjpegServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -61,11 +65,6 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         resetAngle();
         m_robotContainer = new RobotContainer();
-//        UsbCamera camera = new UsbCamera("USB Camera 0", 0);
-//        MjpegServer mjpegServer1 = new MjpegServer("serve_USB Camera 0", 1181);
-//        mjpegServer1.setSource(camera);
-//        CvSink cvSink = new CvSink("opencv_USB Camera 0");
-//        cvSink.setSource(camera);
     }
 
     /**
