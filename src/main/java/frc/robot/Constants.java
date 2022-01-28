@@ -120,19 +120,14 @@ public final class Constants {
     }
 
     public static class Autonomous {
-        public static final double kPThetaController = 12;
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(3, 1.5); // [rads/sec]
+        public static final double kPThetaController = 12;
         public static final double kPXController = 8;
         public static final double kPYController = 10;
 
         public static final Matrix<N3, N1> stateStdDevs = VecBuilder.fill(0, 0, 0);
         public static final Matrix<N1, N1> localMeasurementStdDevs = VecBuilder.fill(0);
         public static final Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0, 0, 0);
-    }
-
-    public static class Field {
-        public static final Translation2d HUB_POSITION = new Translation2d(8.23, 4.115);
-        public static final double TARGET_HEIGHT_METERS = 2.64;
     }
 
     public static final double FIELD_WIDTH = 8.23; // Width of the field. [m]

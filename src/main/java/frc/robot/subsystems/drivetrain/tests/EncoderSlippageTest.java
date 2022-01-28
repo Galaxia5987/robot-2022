@@ -1,4 +1,4 @@
-package frc.robot.tests;
+package frc.robot.subsystems.drivetrain.tests;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Timer;
@@ -7,9 +7,9 @@ import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 
 public class EncoderSlippageTest extends CommandBase {
-    SwerveDrive swerve;
-    Timer timer = new Timer();
-    Timer secondary = new Timer();
+    private final SwerveDrive swerve;
+    private final Timer timer = new Timer();
+    private final Timer secondary = new Timer();
     double power = 1;
     double dt = 0.25;
 
@@ -33,6 +33,7 @@ public class EncoderSlippageTest extends CommandBase {
             power = Math.random() * 2 - 1;
             power = Math.signum(power) * MathUtil.clamp(Math.abs(power), 0.7, 1);
             dt = MathUtil.clamp(Math.random() / 2, 0.1, 0.3);
+            secondary.reset();
         }
         swerve.setPower(power);
     }

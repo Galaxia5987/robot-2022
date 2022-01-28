@@ -5,6 +5,10 @@
 package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.CvSink;
+import edu.wpi.first.cscore.MjpegServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -33,8 +37,7 @@ public class Robot extends TimedRobot {
      * @return the current angle of the robot in respect to the start angle.
      */
     public static Rotation2d getAngle() {
-        Rotation2d rotation = Rotation2d.fromDegrees(Math.IEEEremainder(Robot.navx.getRotation2d().getDegrees(), 360));
-        return rotation.minus(startAngle);
+        return Robot.navx.getRotation2d().minus(startAngle);
     }
 
     /**
@@ -50,7 +53,7 @@ public class Robot extends TimedRobot {
      * @param angle the angle in -180 to 180 degrees coordinate system.
      */
     public static void resetAngle(Rotation2d angle) {
-        startAngle = Rotation2d.fromDegrees(Math.IEEEremainder(navx.getRotation2d().minus(angle).getDegrees(), 360));
+        startAngle = navx.getRotation2d().minus(angle);
     }
 
     /**
@@ -61,11 +64,6 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         resetAngle();
         m_robotContainer = new RobotContainer();
-//        UsbCamera camera = new UsbCamera("USB Camera 0", 0);
-//        MjpegServer mjpegServer1 = new MjpegServer("serve_USB Camera 0", 1181);
-//        mjpegServer1.setSource(camera);
-//        CvSink cvSink = new CvSink("opencv_USB Camera 0");
-//        cvSink.setSource(camera);
     }
 
     /**
