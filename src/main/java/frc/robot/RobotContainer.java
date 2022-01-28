@@ -43,7 +43,7 @@ public class RobotContainer {
         a.whileHeld(new BasicIntakeCommand(intake, () -> true, 0.5));
         b.whileHeld(new IntakeByRobotSpeed(intake, () -> 0.5));
         x.whileHeld(new IntakeByVision(intake, () -> true, 0.5));
-        y.whenPressed(intake::toggleSolenoid);
+        y.whenPressed(intake::toggleRetractor);
     }
 
 

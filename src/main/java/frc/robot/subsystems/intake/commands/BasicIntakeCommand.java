@@ -26,7 +26,7 @@ public class BasicIntakeCommand extends CommandBase {
      */
     @Override
     public void initialize() {
-        intake.openSolenoid();
+        intake.openRetractor();
         if (isAllianceColor.getAsBoolean())
             intake.setPower(power);
     }

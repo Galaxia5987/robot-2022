@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Ports;
 
 public class Intake extends SubsystemBase {
@@ -20,7 +21,7 @@ public class Intake extends SubsystemBase {
 
 
     /**
-     * creates an instance of the intake
+     * creates an instance of the intake.
      *
      * @return the subsystem instance.
      */
@@ -43,21 +44,21 @@ public class Intake extends SubsystemBase {
     /**
      * Open intake retractor.
      */
-    public void openSolenoid() {
+    public void openRetractor() {
         retractor.set(SolenoidState.OPEN.value);
     }
 
     /**
      * Close intake retractor.
      */
-    public void closeSolenoid() {
+    public void closeRetractor() {
         retractor.set(SolenoidState.CLOSED.value);
     }
 
     /**
      * Toggles intake retractor.
      */
-    public void toggleSolenoid() {
+    public void toggleRetractor() {
         retractor.toggle();
     }
 

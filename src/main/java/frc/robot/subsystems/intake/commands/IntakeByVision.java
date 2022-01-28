@@ -24,7 +24,7 @@ public class IntakeByVision extends CommandBase {
 
     @Override
     public void initialize() {
-        intake.openSolenoid();
+        intake.openRetractor();
     }
 
     /**
