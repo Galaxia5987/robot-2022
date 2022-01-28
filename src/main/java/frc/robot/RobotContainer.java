@@ -18,7 +18,7 @@ public class RobotContainer {
     public ExampleSubsystem exampleSubsystem = ExampleSubsystem.getInstance();
     private final XboxController xbox = new XboxController(Ports.Controls.XBOX);
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
-    private final Trigger rightTrigger = new Trigger(() -> xbox.getRawAxis(XboxController.Axis.kRightTrigger.value) > RIGHT_TRIGGER_DEADBAND);
+    private final Trigger rightTrigger = new Trigger(() -> xbox.getRightTriggerAxis() > RIGHT_TRIGGER_DEADBAND);
     private final Shooter shooter = Shooter.getInstance();
 
     /**

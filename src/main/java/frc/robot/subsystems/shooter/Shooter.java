@@ -2,6 +2,8 @@ package frc.robot.subsystems.shooter;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
+
+import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Nat;
@@ -39,15 +41,20 @@ public class Shooter extends SubsystemBase {
     private double lastTime = 0;
 
     private Shooter() {
-        motor.setInverted(IS_INVERTED);
-        motor.setSensorPhase(IS_SENSOR_IN_PHASE);
-        motor.configNeutralDeadband(NEUTRAL_DEADBAND, Constants.TALON_TIMEOUT);
+        configureMotor();
         linearSystemLoop = configStateSpace(true);
         if (Robot.isSimulation()) {
             timer.start();
             timer.reset();
             simCollection = motor.getSimCollection();
         }
+    }
+
+    private void configureMotor(){
+        CONFIGURATION.neutralDeadband = NEUTRAL_DEADBAND;
+
+        motor.configAllSettings(CONFIGURATION);
+        motor.setInverted(TalonFXInvertType.CounterClockwise);
     }
 
     /**
