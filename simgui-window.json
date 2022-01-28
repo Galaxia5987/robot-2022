@@ -38,7 +38,7 @@
     },
     "###Other Devices": {
       "Collapsed": "0",
-      "Pos": "1306,829",
+      "Pos": "1537,30",
       "Size": "375,1042"
     },
     "###System Joysticks": {
@@ -58,8 +58,8 @@
     },
     "Robot State": {
       "Collapsed": "0",
-      "Pos": "447,333",
-      "Size": "196,189"
+      "Pos": "5,20",
+      "Size": "126,129"
     }
   }
 }

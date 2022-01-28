@@ -23,8 +23,8 @@ import static frc.robot.Constants.Vision.*;
 public class PhotonVisionModule extends SubsystemBase {
     private final PhotonCamera camera;
     private final SimPhotonCamera simCamera;
-    private final SimulateDrivetrain simulateDrivetrain;
     private final SimVisionSystem simVisionSystem;
+    private final SimulateDrivetrain simulateDrivetrain;
 
     public PhotonVisionModule(String cameraName, SimulateDrivetrain simulateDrivetrain) {
         this.simulateDrivetrain = simulateDrivetrain;
