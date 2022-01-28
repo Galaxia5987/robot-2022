@@ -17,7 +17,7 @@ public class IntakeByVision extends CommandBase {
     public IntakeByVision(Intake intake, BooleanSupplier isAllianceColor, double power) {
         this.intake = intake;
         this.isAllianceColor = isAllianceColor;
-        this.power = Constants.Intake.POWER;
+        this.power = power;
         addRequirements(intake);
 
     }

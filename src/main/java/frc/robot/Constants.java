@@ -12,7 +12,7 @@ public final class Constants {
     public static class Intake {
         public static final double POWER = 0.5; // [%], power intake will receive on the basic command
         public static final double SLOPE = -3./16; // [% / m/s], 0.5 is a temp number (still hasnt been tested).
-        public static final double BIAS = 1;
+        public static final double BIAS = 1; //[m/s]
 
     }
 }
