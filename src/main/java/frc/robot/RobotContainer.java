@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.HolonomicDrive;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
-import frc.robot.subsystems.vision.Vision;
 import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
 
@@ -23,12 +22,7 @@ public class RobotContainer {
     public static XboxController xbox = new XboxController(Ports.Controls.XBOX);
     public static Joystick joystick = new Joystick(2);
     public static Joystick joystick2 = new Joystick(3);
-    public static JoystickButton trigger = new JoystickButton(joystick2, Joystick.ButtonType.kTrigger.value);
-    public static JoystickButton triggerLeft = new JoystickButton(joystick, Joystick.ButtonType.kTrigger.value);
-    private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final SwerveDrive swerve = new SwerveDrive(true);
-    private final Vision vision = new Vision();
-    private Rotation2d target = Robot.getAngle();
 
 
     /**
@@ -47,18 +41,10 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-//        swerve.setDefaultCommand(new DriveWithVision(swerve, () -> target.getDegrees()));
         swerve.setDefaultCommand(new HolonomicDrive(swerve, () -> joystick.getY(), () -> joystick.getX(), () -> joystick2.getX()));
     }
 
     private void configureButtonBindings() {
-        triggerLeft.whenPressed(() -> {
-            Robot.resetAngle();
-            swerve.resetThetaController();
-        });
-        trigger.whenPressed(() -> {
-            target = Robot.getAngle().minus(Rotation2d.fromDegrees(vision.getTargetYaw()));
-        });
     }
 
 
