@@ -9,6 +9,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -200,6 +201,28 @@ public class SwerveDrive extends SubsystemBase {
      */
     public void resetThetaController() {
         thetaController.reset(0, getChassisSpeeds().omegaRadiansPerSecond);
+    }
+
+    public void setPower(double power) {
+        for (int i = 0; i < 4; i++) {
+            getModule(i).setPower(power);
+        }
+    }
+
+    public void testEncoderSlippage() {
+        for (int i = 0; i < 4; i++) {
+            int error = (int) Math.abs(getModule(i).getSelectedSensorPosition() - Constants.SwerveModule.ZERO_POSITIONS[i]);
+            if (error < 5) {
+                System.out.println("WHEEL: " + i + "is PERFECT! Error is: " + error);
+                SmartDashboard.putString("EncoderSlippageResult [WHEEL " + i + "]", "WHEEL: " + i + "is PERFECT! Error is: " + error);
+            } else if (error < 20) {
+                System.out.println("WHEEL: " + i + "is GOOD. Error is: " + error);
+                SmartDashboard.putString("EncoderSlippageResult [WHEEL " + i + "]", "WHEEL: " + i + "is Good. Error is: " + error);
+            } else {
+                System.out.println("WHEEL: " + i + "is BAD! Error is: " + error);
+                SmartDashboard.putString("EncoderSlippageResult [WHEEL " + i + "]", "WHEEL: " + i + "is BAD! Error is: " + error);
+            }
+        }
     }
 
     /**

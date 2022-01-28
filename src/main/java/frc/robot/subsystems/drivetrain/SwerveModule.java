@@ -1,9 +1,6 @@
 package frc.robot.subsystems.drivetrain;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
@@ -196,6 +193,14 @@ public class SwerveModule extends SubsystemBase {
     public void setState(SwerveModuleState state) {
         setVelocity(state.speedMetersPerSecond);
         setAngle(state.angle);
+    }
+
+    public void setPower(double power) {
+        angleMotor.set(TalonSRXControlMode.PercentOutput, power);
+    }
+
+    public double getSelectedSensorPosition() {
+        return angleMotor.getSelectedSensorPosition();
     }
 
     /**

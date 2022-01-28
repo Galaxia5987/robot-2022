@@ -61,6 +61,11 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         resetAngle();
         m_robotContainer = new RobotContainer();
+//        UsbCamera camera = new UsbCamera("USB Camera 0", 0);
+//        MjpegServer mjpegServer1 = new MjpegServer("serve_USB Camera 0", 1181);
+//        mjpegServer1.setSource(camera);
+//        CvSink cvSink = new CvSink("opencv_USB Camera 0");
+//        cvSink.setSource(camera);
     }
 
     /**
