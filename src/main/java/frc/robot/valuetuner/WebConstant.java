@@ -1,26 +1,30 @@
 package frc.robot.valuetuner;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import frc.robot.Robot;
 
 /**
- * This class holds all the key value constants that will show up in the value tuner.
+ * The interface is used to update constants through the network table.
  */
-public class WebConstant {
-    private static Map<String, ConstantObject> constantMap = new ConcurrentHashMap<>();
-    private final ConstantObject constant;
-
-    public WebConstant(String key, double value) {
-        this.constant = new ConstantObject(key, value);
-        constantMap.put(key, this.constant);
+public interface WebConstant {
+    /**
+     * Retrieve a new {@code WebConstant}.
+     *
+     * @param subsystem    the name of the subsystem.
+     * @param key          the name of the key.
+     * @param defaultValue the default value of the constant.
+     * @return a new constant.
+     */
+    static WebConstant of(String subsystem, String key, double defaultValue) {
+        if (Robot.debug) {
+            return new NetworkTableConstant(subsystem, key, defaultValue);
+        }
+        return new WrapperConstant(defaultValue);
     }
 
-    public double get() {
-        return constant.getValue();
-    }
-
-    public static Map<String, ConstantObject> getConstantMap() {
-        return constantMap;
-    }
-
+    /**
+     * Gets the current value of the constant.
+     *
+     * @return the value of the constant.
+     */
+    double get();
 }

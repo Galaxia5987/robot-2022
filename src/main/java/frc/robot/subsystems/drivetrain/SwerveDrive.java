@@ -30,9 +30,9 @@ public class SwerveDrive extends SubsystemBase {
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(Constants.SwerveDrive.SWERVE_POSITIONS);
     private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, new Rotation2d());
     private final ProfiledPIDController thetaController = new ProfiledPIDController(
-            Constants.SwerveDrive.THETA_KP.get(),
-            Constants.SwerveDrive.THETA_KI.get(),
-            Constants.SwerveDrive.THETA_KD.get(),
+            Constants.SwerveDrive.THETA_KP,
+            Constants.SwerveDrive.THETA_KI,
+            Constants.SwerveDrive.THETA_KD,
             new TrapezoidProfile.Constraints(Constants.SwerveDrive.ROTATION_MULTIPLIER, Constants.SwerveDrive.ROTATION_MULTIPLIER / 2)
     );
     private final TimeDelayedBoolean rotationDelay = new TimeDelayedBoolean();

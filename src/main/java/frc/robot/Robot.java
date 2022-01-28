@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -19,10 +20,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * project.
  */
 public class Robot extends TimedRobot {
-    public static final boolean debug = true;
-    private static final AHRS navx = new AHRS(SPI.Port.kMXP);
     private static Rotation2d startAngle = new Rotation2d();
-    //    private final Compressor compressor = new Compressor(0);
+    public static final boolean debug = !DriverStation.isFMSAttached();
+    public static final AHRS navx = new AHRS(SPI.Port.kMXP);
     public PowerDistribution pdp = new PowerDistribution();
     private Command m_autonomousCommand;
     private RobotContainer m_robotContainer;

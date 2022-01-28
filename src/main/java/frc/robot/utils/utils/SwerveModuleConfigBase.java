@@ -96,13 +96,13 @@ public interface SwerveModuleConfigBase {
         }
 
         public SwerveModuleConfigBase build() {
-            if (debug) {
-                return new SwerveModuleConfigDebug(wheel, driveMotorPort, angleMotorPort,
-                        driveMotorInverted, angleMotorInverted, angleMotorSensorPhase,
-                        new WebConstant("Swerve_" + wheel + "_kp", angle_kp), new WebConstant("Swerve_" + wheel + "_ki", angle_ki),
-                        new WebConstant("Swerve_" + wheel + "_kd", angle_kd), new WebConstant("Swerve_" + wheel + "_kf", angle_kf),
-                        new WebConstant("Swerve_" + wheel + "_j", j), zeroPosition);
-            }
+//            if (debug) {
+//                return new SwerveModuleConfigDebug(wheel, driveMotorPort, angleMotorPort,
+//                        driveMotorInverted, angleMotorInverted, angleMotorSensorPhase,
+//                        new WebConstant("Swerve_" + wheel + "_kp", angle_kp), new WebConstant("Swerve_" + wheel + "_ki", angle_ki),
+//                        new WebConstant("Swerve_" + wheel + "_kd", angle_kd), new WebConstant("Swerve_" + wheel + "_kf", angle_kf),
+//                        new WebConstant("Swerve_" + wheel + "_j", j), zeroPosition);
+//            }
             return new SwerveModuleConfig(wheel, driveMotorPort, angleMotorPort,
                     driveMotorInverted, angleMotorInverted, angleMotorSensorPhase,
                     angle_kp, angle_ki, angle_kd, angle_kf, j, zeroPosition);
