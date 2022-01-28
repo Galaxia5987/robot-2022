@@ -60,12 +60,11 @@ public class SwerveModule extends SubsystemBase {
         driveMotor.setInverted(config.driveMotorInverted());
         angleMotor.setInverted(config.angleMotorInverted());
 
-        driveMotor.setSensorPhase(config.driveMotorSensorPhase());
         angleMotor.setSensorPhase(config.angleMotorSensorPhase());
 
         // Set amperage limits
         SupplyCurrentLimitConfiguration currLimitConfig = new SupplyCurrentLimitConfiguration(
-                Ports.ENABLE_CURRENT_LIMIT,
+                Constants.ENABLE_CURRENT_LIMIT,
                 Constants.SwerveDrive.MAX_CURRENT,
                 Constants.SwerveModule.TRIGGER_THRESHOLD_CURRENT,
                 Constants.SwerveModule.TRIGGER_THRESHOLD_TIME
@@ -74,7 +73,7 @@ public class SwerveModule extends SubsystemBase {
         driveMotor.configSupplyCurrentLimit(currLimitConfig);
 
         angleMotor.configSupplyCurrentLimit(currLimitConfig);
-        angleMotor.enableCurrentLimit(Ports.ENABLE_CURRENT_LIMIT);
+        angleMotor.enableCurrentLimit(Constants.ENABLE_CURRENT_LIMIT);
 
         // set PIDF - angle motor
         configPID(config.angle_kp(), config.angle_ki(), config.angle_kd(), config.angle_kf());
@@ -86,8 +85,8 @@ public class SwerveModule extends SubsystemBase {
         angleMotor.configMotionSCurveStrength(Constants.SwerveDrive.ANGLE_CURVE_STRENGTH);
 
         // set voltage compensation and saturation
-        angleMotor.enableVoltageCompensation(Ports.ENABLE_VOLTAGE_COMPENSATION);
-        angleMotor.configVoltageCompSaturation(Ports.NOMINAL_VOLTAGE);
+        angleMotor.enableVoltageCompensation(Constants.ENABLE_VOLTAGE_COMPENSATION);
+        angleMotor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
 
         angleMotor.selectProfileSlot(0, 0);
         driveMotor.selectProfileSlot(1, 0);
@@ -124,7 +123,7 @@ public class SwerveModule extends SubsystemBase {
         );
         lqr.latencyCompensate(stateSpace, Constants.LOOP_PERIOD, Constants.TALON_TIMEOUT * 0.001);
 
-        return new LinearSystemLoop<>(stateSpace, lqr, kalman, Ports.NOMINAL_VOLTAGE, Constants.LOOP_PERIOD);
+        return new LinearSystemLoop<>(stateSpace, lqr, kalman, Constants.NOMINAL_VOLTAGE, Constants.LOOP_PERIOD);
     }
 
 

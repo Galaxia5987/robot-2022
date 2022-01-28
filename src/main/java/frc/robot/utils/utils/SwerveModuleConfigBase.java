@@ -19,8 +19,6 @@ public interface SwerveModuleConfigBase {
 
     boolean angleMotorInverted();
 
-    boolean driveMotorSensorPhase();
-
     boolean angleMotorSensorPhase();
 
     double angle_kp();
@@ -46,7 +44,6 @@ public interface SwerveModuleConfigBase {
         // inversions
         private boolean driveMotorInverted;
         private boolean angleMotorInverted;
-        private boolean driveMotorSensorPhase;
         private boolean angleMotorSensorPhase;
         // PID
         private double angle_kp;
@@ -72,11 +69,9 @@ public interface SwerveModuleConfigBase {
             return this;
         }
 
-        public Builder configInversions(boolean driveMotorInverted, boolean angleMotorInverted,
-                                        boolean driveMotorSensorPhase, boolean angleMotorSensorPhase) {
+        public Builder configInversions(boolean driveMotorInverted, boolean angleMotorInverted, boolean angleMotorSensorPhase) {
             this.driveMotorInverted = driveMotorInverted;
             this.angleMotorInverted = angleMotorInverted;
-            this.driveMotorSensorPhase = driveMotorSensorPhase;
             this.angleMotorSensorPhase = angleMotorSensorPhase;
 
             return this;
@@ -103,13 +98,13 @@ public interface SwerveModuleConfigBase {
         public SwerveModuleConfigBase build() {
             if (debug) {
                 return new SwerveModuleConfigDebug(wheel, driveMotorPort, angleMotorPort,
-                        driveMotorInverted, angleMotorInverted, driveMotorSensorPhase, angleMotorSensorPhase,
+                        driveMotorInverted, angleMotorInverted, angleMotorSensorPhase,
                         new WebConstant("Swerve_" + wheel + "_kp", angle_kp), new WebConstant("Swerve_" + wheel + "_ki", angle_ki),
                         new WebConstant("Swerve_" + wheel + "_kd", angle_kd), new WebConstant("Swerve_" + wheel + "_kf", angle_kf),
                         new WebConstant("Swerve_" + wheel + "_j", j), zeroPosition);
             }
             return new SwerveModuleConfig(wheel, driveMotorPort, angleMotorPort,
-                    driveMotorInverted, angleMotorInverted, driveMotorSensorPhase, angleMotorSensorPhase,
+                    driveMotorInverted, angleMotorInverted, angleMotorSensorPhase,
                     angle_kp, angle_ki, angle_kd, angle_kf, j, zeroPosition);
         }
     }
