@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
 
+import static frc.robot.Constants.Intake.IS_COMPENSATING_VOLTAGE;
+
 public class Intake extends SubsystemBase {
     private static Intake INSTANCE;
     private final WPI_TalonSRX motor = new WPI_TalonSRX(Ports.Intake.MOTOR);
@@ -15,7 +17,7 @@ public class Intake extends SubsystemBase {
 
     private Intake() {
         motor.setInverted(Ports.Intake.IS_MOTOR_INVERTED);
-        motor.enableVoltageCompensation(true);
+        motor.enableVoltageCompensation(IS_COMPENSATING_VOLTAGE);
         motor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
     }
 
