@@ -6,8 +6,10 @@ import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Ports;
 
 import java.util.Deque;
@@ -28,6 +30,9 @@ public class Conveyor extends SubsystemBase {
         motor.setInverted(TalonFXInvertType.Clockwise);
         match.addColorMatch(Color.kRed); // red
         match.addColorMatch(Color.kBlue); // blue
+        match.addColorMatch(Color.kGreen);
+        match.addColorMatch(Color.kYellow);
+        match.addColorMatch(Color.kBlack);
     }
 
     /**
@@ -47,9 +52,9 @@ public class Conveyor extends SubsystemBase {
      */
     public DriverStation.Alliance getColor() {
         Color color = colorSensorIntake.getColor();
-        System.out.println(color.red + " Red " + color.blue + " Blue " + color.green + " Green ");
         ColorMatchResult result = match.matchClosestColor(color);
         Color resultColor = result.color;
+        SmartDashboard.putBoolean("match", resultColor == Color.kRed);
 
         if (resultColor == Color.kRed) {
             return DriverStation.Alliance.Red;
@@ -69,6 +74,7 @@ public class Conveyor extends SubsystemBase {
 
     /**
      * Set motor power.
+     *
      * @param power the power to the motor [-1, 1].
      */
     public void setPower(double power) {
@@ -108,7 +114,6 @@ public class Conveyor extends SubsystemBase {
     }
 
     /**
-     *
      * @param alliance an DriverStation.Alliance enum
      * @return the name of the enum
      */
@@ -123,6 +128,7 @@ public class Conveyor extends SubsystemBase {
     public void periodic() {
         var colorIntake = getColor();
         boolean hasPassed = beamBreaker.get();
+        SmartDashboard.putString("alliance", colorIntake.name());
         if (hasPassed && !lastPassed && motor.getMotorOutputPercent() > 0) {
             position.removeFirst();
         }
@@ -130,11 +136,17 @@ public class Conveyor extends SubsystemBase {
             if (motor.getMotorOutputPercent() < 0) {
                 position.removeLast();
             } else if (motor.getMotorOutputPercent() > 0) {
-                position.add(enumToString(colorIntake));
+                position.add(enumToString(lastSeenColor));
             }
         }
         lastPassed = hasPassed;
         lastSeenColor = colorIntake;
+        SmartDashboard.putString("lastSeen", lastSeenColor.name());
     }
 
+    @Override
+    public void simulationPeriodic() {
+        SmartDashboard.putString("position", position.toString());
+        SmartDashboard.putNumber("power", motor.get());
+    }
 }
