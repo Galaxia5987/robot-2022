@@ -13,7 +13,7 @@ public class ShootAtMaximalVelocity extends CommandBase {
 
     @Override
     public void execute() {
-        shooter.setPower(1);
+        shooter.setOutput(1);
     }
 
     @Override

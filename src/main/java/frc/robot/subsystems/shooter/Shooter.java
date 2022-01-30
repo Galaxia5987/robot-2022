@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.UnitModel;
 import frc.robot.utils.Utils;
@@ -158,7 +157,7 @@ public class Shooter extends SubsystemBase {
      *
      * @param output is the output for the motor. [%]
      */
-    public void setPower(double output) {
+    public void setOutput(double output) {
         motor.set(ControlMode.PercentOutput, output);
     }
 
