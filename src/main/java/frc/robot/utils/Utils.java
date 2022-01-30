@@ -30,7 +30,7 @@ public class Utils {
      * Converts minutes into seconds.
      *
      * @param minutes is the input of minutes. [min]
-     * @return how many seconds are in that minutes. [s]
+     * @return how many seconds those minutes amount to. [s]
      */
     public static double minutesToSeconds(double minutes) {
         return minutes * 60.0;
