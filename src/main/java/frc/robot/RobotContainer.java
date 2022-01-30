@@ -15,7 +15,6 @@ public class RobotContainer {
     private final XboxController xbox = new XboxController(Ports.Controls.XBOX);
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final JoystickButton b = new JoystickButton(xbox, XboxController.Button.kB.value);
-    private final Joystick joystick = new Joystick(0);
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -33,7 +32,7 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        conveyor.setDefaultCommand(new Convey(conveyor, () -> joystick.getRawAxis(0)));
+        conveyor.setDefaultCommand(new Convey(conveyor, () -> -xbox.getLeftY()));
     }
 
     private void configureButtonBindings() {
