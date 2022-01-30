@@ -36,12 +36,10 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-//        shooter.setDefaultCommand(new TestPistonPressure(xbox::getLeftY, shooter));
         shooter.setDefaultCommand(new Shoot(shooter, () -> Shooter.getSetpointVelocity(4)));
     }
 
     private void configureButtonBindings() {
-//        rightTrigger.whileActiveContinuous(new Outtake(shooter, () -> 4));
     }
 
 
