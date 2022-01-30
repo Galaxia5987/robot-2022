@@ -4,12 +4,14 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Ports;
 
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
 
@@ -20,12 +22,12 @@ public class Conveyor extends SubsystemBase {
     private final WPI_TalonFX motor = new WPI_TalonFX(Ports.Conveyor.MOTOR);
     private final Deque<String> position = new LinkedList<>();
     private final ColorSensorV3 colorSensorIntake = new ColorSensorV3(I2C.Port.kOnboard);
-    private final DigitalInput beamBreaker1 = new DigitalInput(Ports.Conveyor.BEAM_BREAKER1);
-    private final DigitalInput beamBreaker2 = new DigitalInput(Ports.Conveyor.BEAM_BREAKER2);
+    private final DigitalInput postFlapBeam = new DigitalInput(Ports.Conveyor.BEAM_BREAKER1);
+    private final DigitalInput preFlapBeam = new DigitalInput(Ports.Conveyor.BEAM_BREAKER2);
     private final Solenoid flap = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Conveyor.SOLENOID);
     private final ColorMatch match = new ColorMatch();
     private DriverStation.Alliance lastSeenColor = DriverStation.Alliance.Invalid;
-    private boolean lastPassed = true;
+    private boolean lastPostFlapBeamInput = true;
 
     private Conveyor() {
         motor.setInverted(INVERSION);
@@ -114,15 +116,26 @@ public class Conveyor extends SubsystemBase {
         flap.toggle();
     }
 
-    /**
-     * removes the string representing the cargo from the list if the cargo is ejected and adds if the cargo is consumed
-     */
-    @Override
-    public void periodic() {
+    public enum Queue{
+        AllianceOpponent("Special case", new boolean[]{true, false}),
+        Alliance("Shoot", new boolean[]{true}),
+        OpponentAlliance("Outtake one ball", new boolean[]{false, true}),
+        Opponent("Outtake", new boolean[]{false}),
+        None("I don't know man", new boolean[]{});
+
+        public final String recommendedAction;
+        public final boolean[] queue;
+        Queue(String recommendedAction, boolean[] queue){
+            this.recommendedAction = recommendedAction;
+            this.queue = queue;
+        }
+    }
+
+    private void updateActualBallPositions(){
         var colorIntake = getColor();
-        boolean hasPassedFirst = beamBreaker1.get();
+        boolean currentPostFlapBeamInput = postFlapBeam.get(); // post
         SmartDashboard.putString("alliance", colorIntake.name());
-        if (hasPassedFirst && !lastPassed && motor.getMotorOutputPercent() > 0) {
+        if (currentPostFlapBeamInput && !lastPostFlapBeamInput && motor.getMotorOutputPercent() > 0) {
             position.removeFirst();
         }
         if (colorIntake == DriverStation.Alliance.Invalid && lastSeenColor != DriverStation.Alliance.Invalid) {
@@ -132,9 +145,49 @@ public class Conveyor extends SubsystemBase {
                 position.add(lastSeenColor.name());
             }
         }
-        lastPassed = hasPassedFirst;
+        lastPostFlapBeamInput = currentPostFlapBeamInput;
         lastSeenColor = colorIntake;
         SmartDashboard.putString("lastSeen", lastSeenColor.name());
+    }
+
+    private Queue getQueue() {
+        /*
+        Case #1  queue = [Alliance, Opponent] - the special case.
+        Case #2  queue = [Alliance]
+        Case #3  queue = [Alliance, Alliance]
+        Case #4  queue = [Opponent, Alliance]
+        Case #5  queue = [Opponent]
+        Case #6  queue = [Opponent, Opponent]
+         */
+        if(!position.getLast().equals(DriverStation.getAlliance().name())) {
+            if(!position.getFirst().equals(DriverStation.getAlliance().name())) {
+                return Queue.Opponent; // Case #6 and #5
+            } else if(position.getFirst().equals(DriverStation.getAlliance().name())) {
+                return Queue.OpponentAlliance; // Case #4
+            } else {
+                return Queue.None;
+            }
+        } else if(position.getLast().equals(DriverStation.getAlliance().name())) {
+            if(position.getLast().equals(DriverStation.getAlliance().name())) {
+                return Queue.Alliance; // Case #3 and #2
+            } else if (!position.getLast().equals(DriverStation.getAlliance().name())) {
+                return Queue.AllianceOpponent; // Case #1
+            } else {
+                return Queue.None;
+            }
+        } else {
+            return Queue.None;
+        }
+    }
+
+    /**
+     * removes the string representing the cargo from the list if the cargo is ejected and adds if the cargo is consumed
+     */
+    @Override
+    public void periodic() {
+        updateActualBallPositions();
+        Queue queue = getQueue();
+        SmartDashboard.putString("Queue", Arrays.toString(queue.queue));
     }
 
     @Override
