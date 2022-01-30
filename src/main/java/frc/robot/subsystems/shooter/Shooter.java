@@ -34,7 +34,6 @@ public class Shooter extends SubsystemBase {
     private final UnitModel unitModel = new UnitModel(TICKS_PER_REVOLUTION);
     private final WPI_TalonFX motor = new WPI_TalonFX(MOTOR);
     private final LinearSystemLoop<N1, N1, N1> linearSystemLoop;
-    private final Timer timer = new Timer();
     private FlywheelSim flywheelSim;
     private TalonFXSimCollection simCollection;
     private double currentTime = 0;
@@ -44,8 +43,6 @@ public class Shooter extends SubsystemBase {
         configureMotor();
         linearSystemLoop = configStateSpace(true);
         if (Robot.isSimulation()) {
-            timer.start();
-            timer.reset();
             simCollection = motor.getSimCollection();
         }
     }
