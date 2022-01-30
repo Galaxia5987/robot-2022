@@ -14,6 +14,8 @@ import frc.robot.Ports;
 import java.util.Deque;
 import java.util.LinkedList;
 
+import static frc.robot.Ports.Conveyor.INVERSION;
+
 public class Conveyor extends SubsystemBase {
     private static Conveyor INSTANCE = null;
     private final WPI_TalonFX motor = new WPI_TalonFX(Ports.Conveyor.MOTOR);
@@ -26,7 +28,7 @@ public class Conveyor extends SubsystemBase {
     private boolean lastPassed = true;
 
     private Conveyor() {
-        motor.setInverted(TalonFXInvertType.Clockwise);
+        motor.setInverted(INVERSION);
         match.addColorMatch(Color.kRed); // red
         match.addColorMatch(Color.kBlue); // blue
         match.addColorMatch(Color.kGreen);
