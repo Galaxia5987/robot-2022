@@ -7,23 +7,23 @@ import java.util.function.DoubleSupplier;
 
 public class Shoot extends CommandBase {
     private final Shooter shooter;
-    private final DoubleSupplier velocitySetpoint;
+    private final DoubleSupplier distance;
 
     /**
      * Constructor.
      *
-     * @param shooter          is the shooter subsystem.
-     * @param velocitySetpoint is the setpoint for the shooter wheel. [rps]
+     * @param shooter  is the shooter subsystem.
+     * @param distance is the distance of the robot from the target. [m]
      */
-    public Shoot(Shooter shooter, DoubleSupplier velocitySetpoint) {
+    public Shoot(Shooter shooter, DoubleSupplier distance) {
         this.shooter = shooter;
-        this.velocitySetpoint = velocitySetpoint;
+        this.distance = distance;
         addRequirements(shooter);
     }
 
     @Override
     public void execute() {
-        shooter.setVelocity(Shooter.getSetpointVelocity(velocitySetpoint.getAsDouble()));
+        shooter.setVelocity(Shooter.getSetpointVelocity(distance.getAsDouble()));
     }
 
     @Override
