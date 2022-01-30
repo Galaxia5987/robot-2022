@@ -28,20 +28,22 @@ public class Utils {
 
     /**
      * Converts minutes into seconds.
+     *
      * @param minutes is the input of minutes. [min]
      * @return how many seconds are in that minutes. [s]
      */
-    public static double minutesToSeconds(double minutes){
+    public static double minutesToSeconds(double minutes) {
         return minutes * 60.0;
     }
 
     /**
      * Converts seconds into minutes.
      * Used for converting rpm into rps in shooter branch.
+     *
      * @param seconds is the input of seconds. [s]
      * @return how many minutes the seconds amount to. [min]
      */
-    public static double secondsToMinutes(double seconds){
+    public static double secondsToMinutes(double seconds) {
         return seconds / 60.0;
     }
 
