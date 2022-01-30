@@ -47,7 +47,7 @@ public class Shooter extends SubsystemBase {
         }
     }
 
-    private void configureMotor(){
+    private void configureMotor() {
         CONFIGURATION.neutralDeadband = NEUTRAL_DEADBAND;
 
         motor.configAllSettings(CONFIGURATION);
@@ -153,6 +153,11 @@ public class Shooter extends SubsystemBase {
         }
     }
 
+    /**
+     * Sets an output for the flywheel motor.
+     *
+     * @param output is the output for the motor. [%]
+     */
     public void setPower(double output) {
         motor.set(ControlMode.PercentOutput, output);
     }
