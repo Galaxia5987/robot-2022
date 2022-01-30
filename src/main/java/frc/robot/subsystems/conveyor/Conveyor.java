@@ -21,7 +21,7 @@ public class Conveyor extends SubsystemBase {
     private final ColorSensorV3 colorSensorIntake = new ColorSensorV3(I2C.Port.kOnboard);
     private final DigitalInput beamBreaker = new DigitalInput(Ports.Conveyor.BEAM_BREAKER);
     private final Solenoid flap = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Conveyor.SOLENOID);
-    ColorMatch match = new ColorMatch();
+    private final ColorMatch match = new ColorMatch();
     private DriverStation.Alliance lastSeenColor = DriverStation.Alliance.Invalid;
     private boolean lastPassed = true;
 
