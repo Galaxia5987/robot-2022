@@ -1,6 +1,5 @@
 package frc.robot.subsystems.conveyor;
 
-import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
@@ -21,7 +20,8 @@ public class Conveyor extends SubsystemBase {
     private final WPI_TalonFX motor = new WPI_TalonFX(Ports.Conveyor.MOTOR);
     private final Deque<String> position = new LinkedList<>();
     private final ColorSensorV3 colorSensorIntake = new ColorSensorV3(I2C.Port.kOnboard);
-    private final DigitalInput beamBreaker = new DigitalInput(Ports.Conveyor.BEAM_BREAKER);
+    private final DigitalInput beamBreaker1 = new DigitalInput(Ports.Conveyor.BEAM_BREAKER1);
+    private final DigitalInput beamBreaker2 = new DigitalInput(Ports.Conveyor.BEAM_BREAKER2);
     private final Solenoid flap = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Conveyor.SOLENOID);
     private final ColorMatch match = new ColorMatch();
     private DriverStation.Alliance lastSeenColor = DriverStation.Alliance.Invalid;
@@ -120,9 +120,9 @@ public class Conveyor extends SubsystemBase {
     @Override
     public void periodic() {
         var colorIntake = getColor();
-        boolean hasPassed = beamBreaker.get();
+        boolean hasPassedFirst = beamBreaker1.get();
         SmartDashboard.putString("alliance", colorIntake.name());
-        if (hasPassed && !lastPassed && motor.getMotorOutputPercent() > 0) {
+        if (hasPassedFirst && !lastPassed && motor.getMotorOutputPercent() > 0) {
             position.removeFirst();
         }
         if (colorIntake == DriverStation.Alliance.Invalid && lastSeenColor != DriverStation.Alliance.Invalid) {
@@ -132,7 +132,7 @@ public class Conveyor extends SubsystemBase {
                 position.add(lastSeenColor.name());
             }
         }
-        lastPassed = hasPassed;
+        lastPassed = hasPassedFirst;
         lastSeenColor = colorIntake;
         SmartDashboard.putString("lastSeen", lastSeenColor.name());
     }
