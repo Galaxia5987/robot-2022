@@ -73,13 +73,11 @@ public final class Constants {
         public static final int ANGLE_CRUISE_VELOCITY = Math.round(550 * MOTION_MAGIC_SAFETY);
         // Axis systems
         // TODO: check the coordinate system.
-        private static final double[] signX = {1, 1, -1, -1};
-        private static final double[] signY = {-1, 1, -1, 1};
         public static final Translation2d[] SWERVE_POSITIONS = new Translation2d[]{
-                new Translation2d(signX[0] * Rx, signY[0] * Ry),
-                new Translation2d(signX[1] * Rx, signY[1] * Ry),
-                new Translation2d(signX[2] * Rx, signY[2] * Ry),
-                new Translation2d(signX[3] * Rx, signY[3] * Ry)
+                new Translation2d(Rx, -Ry),
+                new Translation2d(Rx, Ry),
+                new Translation2d(-Rx, -Ry),
+                new Translation2d(-Rx, Ry)
         };
     }
 
