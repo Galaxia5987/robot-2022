@@ -176,10 +176,10 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void simulationPeriodic() {
-        lastTime = currentTime;
         SmartDashboard.putNumber("velocity", flywheelSim.getAngularVelocityRPM());
         SmartDashboard.putNumber("power", simCollection.getMotorOutputLeadVoltage());
         flywheelSim.update(LOOP_PERIOD);
+        lastTime = currentTime;
         currentTime = Timer.getFPGATimestamp();
     }
 }
