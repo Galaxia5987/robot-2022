@@ -12,11 +12,11 @@ import java.util.function.DoubleSupplier;
  */
 public class IntakeByRobotSpeed extends CommandBase {
     private final Intake intake;
-    private final DoubleSupplier robotSpeedMeterPerSecond;
+    private final DoubleSupplier robotVelocity;
 
-    public IntakeByRobotSpeed(Intake intake, DoubleSupplier speed) {
+    public IntakeByRobotSpeed(Intake intake, DoubleSupplier robotVelocity) {
         this.intake = intake;
-        this.robotSpeedMeterPerSecond = speed;
+        this.robotVelocity = robotVelocity;
         addRequirements(intake);
     }
 
@@ -30,7 +30,7 @@ public class IntakeByRobotSpeed extends CommandBase {
      */
     @Override
     public void execute() {
-        intake.setPower(Constants.Intake.BIAS + (robotSpeedMeterPerSecond.getAsDouble() * Constants.Intake.POWER_TO_VELOCITY));
+        intake.setPower(Constants.Intake.BIAS + (robotVelocity.getAsDouble() * Constants.Intake.POWER_TO_VELOCITY));
     }
 
     /**
