@@ -14,11 +14,7 @@ import frc.robot.Constants;
 import frc.robot.Ports;
 
 import java.util.Arrays;
-import java.util.Deque;
-import java.util.LinkedList;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.LinkedBlockingDeque;
 
 import static frc.robot.Ports.Conveyor.INVERSION;
 
@@ -114,17 +110,23 @@ public class Conveyor extends SubsystemBase {
         var colorIntake = getColor();
         boolean currentPostFlapBeamInput = postFlapBeam.get();
         SmartDashboard.putString("alliance", colorIntake.name());
-        if (currentPostFlapBeamInput && !lastPostFlapBeamInput && true) {//motor.getMotorOutputPercent() > 0) {
-             position.poll();
+        double power = 1;
+//        double power = motor.getMotorOutputPercent();
+        if (currentPostFlapBeamInput && !lastPostFlapBeamInput && power > 0) {
+            position.poll();
+            var temp = position.take();
+            position.add(DriverStation.Alliance.Invalid.name());
+            position.add(temp);
         }
-        if (colorIntake != lastSeenColor) {
-            if (motor.getMotorOutputPercent() < 0) {
-                if(position.remainingCapacity() == 0) {
+        if (colorIntake != lastSeenColor && !colorIntake.equals(DriverStation.Alliance.Invalid)) {
+            if (power < 0) {
+                if (position.remainingCapacity() == 0) {
                     position.poll();
                 }
                 position.offer(colorIntake.name());
-            } else if (true) {//motor.getMotorOutputPercent() > 0) {
-                position.put(colorIntake.name());
+            } else if (power > 0) {
+                position.remove();
+                position.offer(colorIntake.name());
             }
         }
         lastPostFlapBeamInput = currentPostFlapBeamInput;
@@ -183,21 +185,23 @@ public class Conveyor extends SubsystemBase {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        Queue queue = getQueue();
-        var color = colorSensorIntake.getColor();
-        var alliance = getColor();
-        SmartDashboard.putNumberArray("color", new double[]{color.red, color.green, color.blue});
-        SmartDashboard.putString("detected-color", alliance.name());
-        SmartDashboard.putString("position", Arrays.toString(position.toArray(String[]::new)));
-        SmartDashboard.putString("Queue", Arrays.toString(queue.queue));
-        SmartDashboard.putBoolean("dio", preFlapBeam.get());
-        System.out.println("I am working.");
     }
 
     @Override
     public void simulationPeriodic() {
         SmartDashboard.putString("position", position.toString());
-        SmartDashboard.putNumber("power", motor.get());
+        Queue queue = getQueue();
+        var color = colorSensorIntake.getColor();
+        var alliance = getColor();
+        SmartDashboard.putNumberArray("color", new double[]{color.red, color.green, color.blue});
+        System.out.println(Arrays.toString(new double[]{color.red, color.green, color.blue}));
+        SmartDashboard.putString("detected-color", alliance.name());
+        SmartDashboard.putString("position", Arrays.toString(position.toArray(String[]::new)));
+        SmartDashboard.putString("Queue", Arrays.toString(queue.queue));
+        SmartDashboard.putString("First", position.toArray()[0].toString());
+        SmartDashboard.putString("Last", position.toArray()[1].toString());
+        SmartDashboard.putBoolean("dio", preFlapBeam.get());
+        System.out.println("I am working.");
     }
 
     public enum Queue {
