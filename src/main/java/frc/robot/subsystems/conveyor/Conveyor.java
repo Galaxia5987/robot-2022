@@ -4,7 +4,9 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
-import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -14,17 +16,20 @@ import frc.robot.Ports;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import static frc.robot.Ports.Conveyor.INVERSION;
 
 public class Conveyor extends SubsystemBase {
     private static Conveyor INSTANCE = null;
     private final WPI_TalonFX motor = new WPI_TalonFX(Ports.Conveyor.MOTOR);
-    private final Deque<String> position = new LinkedList<>();
-    private final ColorSensorV3 colorSensorIntake = new ColorSensorV3(I2C.Port.kOnboard);
+    private final ArrayBlockingQueue<String> position = new ArrayBlockingQueue<>(2);
+    private final ColorSensorV3 colorSensorIntake = new ColorSensorV3(I2C.Port.kMXP);
     private final DigitalInput postFlapBeam = new DigitalInput(Ports.Conveyor.POST_FLAP_BEAM_BREAKER);
     private final DigitalInput preFlapBeam = new DigitalInput(Ports.Conveyor.PRE_FLAP_BEAM_BREAKER);
-    private final Solenoid flap = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Conveyor.SOLENOID);
+    //    private final Solenoid flap = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Conveyor.SOLENOID);
     private final ColorMatch match = new ColorMatch();
     private DriverStation.Alliance lastSeenColor = DriverStation.Alliance.Invalid;
     private boolean lastPostFlapBeamInput = true;
@@ -34,6 +39,8 @@ public class Conveyor extends SubsystemBase {
         match.addColorMatch(Constants.Conveyor.RED);
         match.addColorMatch(Constants.Conveyor.BLUE);
         match.addColorMatch(Constants.Conveyor.NONE);
+        position.add(DriverStation.Alliance.Invalid.name());
+        position.add(DriverStation.Alliance.Invalid.name());
     }
 
     /**
@@ -86,35 +93,38 @@ public class Conveyor extends SubsystemBase {
      * open the "flap" - solenoid
      */
     public void openFlap() {
-        flap.set(false);
+//        flap.set(false);
     }
 
     /**
      * closes the "flap" - solenoid
      */
     public void closeFlap() {
-        flap.set(true);
+//        flap.set(true);
     }
 
     /**
      * toggles the "flap" - solenoid
      */
     public void toggle() {
-        flap.toggle();
+//        flap.toggle();
     }
 
-    private void updateActualBallPositions() {
+    private void updateActualBallPositions() throws InterruptedException {
         var colorIntake = getColor();
         boolean currentPostFlapBeamInput = postFlapBeam.get();
         SmartDashboard.putString("alliance", colorIntake.name());
-        if (currentPostFlapBeamInput && !lastPostFlapBeamInput && motor.getMotorOutputPercent() > 0) {
-            position.removeFirst();
+        if (currentPostFlapBeamInput && !lastPostFlapBeamInput && true) {//motor.getMotorOutputPercent() > 0) {
+             position.poll();
         }
         if (colorIntake != lastSeenColor) {
             if (motor.getMotorOutputPercent() < 0) {
-                position.removeLast();
-            } else if (motor.getMotorOutputPercent() > 0) {
-                position.add(colorIntake.name());
+                if(position.remainingCapacity() == 0) {
+                    position.poll();
+                }
+                position.offer(colorIntake.name());
+            } else if (true) {//motor.getMotorOutputPercent() > 0) {
+                position.put(colorIntake.name());
             }
         }
         lastPostFlapBeamInput = currentPostFlapBeamInput;
@@ -134,8 +144,9 @@ public class Conveyor extends SubsystemBase {
         Case #8  queue = [Opponent, Opponent]
         Case #9  queue = [Opponent, Alliance]
          */
-        var last = position.getLast();
-        var first = position.getFirst();
+
+        var last = position.toArray()[1];
+        var first = position.toArray()[0];
         var invalid = DriverStation.Alliance.Invalid.name();
         var alliance = DriverStation.getAlliance().name();
 
@@ -167,9 +178,20 @@ public class Conveyor extends SubsystemBase {
      */
     @Override
     public void periodic() {
-        updateActualBallPositions();
+        try {
+            updateActualBallPositions();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         Queue queue = getQueue();
+        var color = colorSensorIntake.getColor();
+        var alliance = getColor();
+        SmartDashboard.putNumberArray("color", new double[]{color.red, color.green, color.blue});
+        SmartDashboard.putString("detected-color", alliance.name());
+        SmartDashboard.putString("position", Arrays.toString(position.toArray(String[]::new)));
         SmartDashboard.putString("Queue", Arrays.toString(queue.queue));
+        SmartDashboard.putBoolean("dio", preFlapBeam.get());
+        System.out.println("I am working.");
     }
 
     @Override
