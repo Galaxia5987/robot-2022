@@ -113,10 +113,17 @@ public class Conveyor extends SubsystemBase {
         double power = 1;
 //        double power = motor.getMotorOutputPercent();
         if (currentPostFlapBeamInput && !lastPostFlapBeamInput && power > 0) {
-            position.poll();
-            var temp = position.take();
-            position.add(DriverStation.Alliance.Invalid.name());
-            position.add(temp);
+            if(!position.toArray()[0].equals(DriverStation.Alliance.Invalid.name())) {
+                position.poll();
+                var temp = position.take();
+                position.add(DriverStation.Alliance.Invalid.name());
+                position.add(temp);
+            } else {
+                position.poll();
+                position.poll();
+                position.add(DriverStation.Alliance.Invalid.name());
+                position.add(DriverStation.Alliance.Invalid.name());
+            }
         }
         if (colorIntake != lastSeenColor && !colorIntake.equals(DriverStation.Alliance.Invalid)) {
             if (power < 0) {
