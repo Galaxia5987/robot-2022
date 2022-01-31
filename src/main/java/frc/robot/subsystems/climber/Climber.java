@@ -2,6 +2,7 @@ package frc.robot.subsystems.climber;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.VecBuilder;
@@ -9,10 +10,7 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
@@ -81,6 +79,8 @@ public class Climber extends SubsystemBase {
             armTower.setColor(new Color8Bit(Color.kBlue));
         }
 
+        mainMotor.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0, 1, Constants.TALON_TIMEOUT);
+
         /*
          set the right motor on Brake mode.
          */
@@ -96,9 +96,9 @@ public class Climber extends SubsystemBase {
          */
         mainMotor.configMotionCruiseVelocity(Constants.Climber.CRUISE_VELOCITY);
         mainMotor.configMotionAcceleration(Constants.Climber.MAXIMAL_ACCELERATION);
-        mainMotor.config_kP(0, Constants.Climber.KP);
-        mainMotor.config_kI(0, Constants.Climber.KI);
-        mainMotor.config_kD(0, Constants.Climber.KD);
+        mainMotor.config_kP(0, Constants.Climber.KP, Constants.TALON_TIMEOUT);
+        mainMotor.config_kI(0, Constants.Climber.KI, Constants.TALON_TIMEOUT);
+        mainMotor.config_kD(0, Constants.Climber.KD, Constants.TALON_TIMEOUT);
 
         auxMotor.follow(mainMotor);
 
@@ -138,7 +138,7 @@ public class Climber extends SubsystemBase {
         if (Robot.isSimulation()) {
             return encoderSim.getRate();
         }
-        return unitModel.toVelocity(mainMotor.getSelectedSensorVelocity());
+        return unitModel.toVelocity(mainMotor.getSelectedSensorVelocity(0));
     }
 
     /**
@@ -157,7 +157,7 @@ public class Climber extends SubsystemBase {
      * @return get motors position. [rad]
      */
     public double getPosition() {
-        return unitModel.toUnits(mainMotor.getSelectedSensorPosition());
+        return unitModel.toUnits(mainMotor.getSelectedSensorPosition(1));
     }
 
     /**
