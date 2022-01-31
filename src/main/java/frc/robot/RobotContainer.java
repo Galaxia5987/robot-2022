@@ -39,8 +39,8 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        b.whileHeld(new IntakeByRobotSpeed(intake, () -> Constants.Intake.POWER));
-        x.whileHeld(new IntakeCargo(intake, () -> true, Constants.Intake.POWER));
+        b.whileHeld(new IntakeByRobotSpeed(intake, () -> Constants.Intake.DEFAULT_POWER));
+        x.whileHeld(new IntakeCargo(intake, () -> true, Constants.Intake.DEFAULT_POWER));
         y.whenPressed(intake::toggleRetractor);
     }
 

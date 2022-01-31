@@ -37,7 +37,7 @@ public class IntakeCargo extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return super.isFinished();
+        return false;
     }
 
     /**
