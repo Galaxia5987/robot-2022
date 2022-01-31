@@ -27,24 +27,24 @@ public class Utils {
     }
 
     /**
-     * Converts minutes into seconds.
+     * This function converts rps into rpm.
      *
-     * @param minutes is the input of minutes. [min]
-     * @return how many seconds those minutes amount to. [s]
+     * @param rps is the input velocity. [rps]
+     * @return the same velocity. [rpm]
      */
-    public static double minutesToSeconds(double minutes) {
-        return minutes * 60.0;
+    public static double rpsToRpm(double rps) {
+        return rps * 60.0;
     }
 
+
     /**
-     * Converts seconds into minutes.
-     * Used for converting rpm into rps in shooter branch.
+     * This function converts rps into rpm.
      *
-     * @param seconds is the input of seconds. [s]
-     * @return how many minutes the seconds amount to. [min]
+     * @param rpm is the input velocity. [rpm]
+     * @return the same velocity. [rps]
      */
-    public static double secondsToMinutes(double seconds) {
-        return seconds / 60.0;
+    public static double rpmToRps(double rpm) {
+        return rpm / 60.0;
     }
 
 }
