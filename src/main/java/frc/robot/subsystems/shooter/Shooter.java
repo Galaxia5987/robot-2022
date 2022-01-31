@@ -47,9 +47,7 @@ public class Shooter extends SubsystemBase {
     }
 
     private void configureMotor() {
-        CONFIGURATION.neutralDeadband = NEUTRAL_DEADBAND;
-
-        motor.configAllSettings(CONFIGURATION);
+        motor.configAllSettings(getConfiguration());
         motor.setInverted(TalonFXInvertType.CounterClockwise);
     }
 
