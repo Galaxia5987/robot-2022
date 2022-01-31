@@ -205,6 +205,11 @@ public class Conveyor extends SubsystemBase {
     }
 
     public enum Queue {
+        /*
+        None - 0
+        Alliance - 1
+        Opponent - 2
+         */
         NoneNone(new int[]{0, 0}),
         NoneAlliance(new int[]{0, 1}),
         AllianceNone(new int[]{1, 0}),
