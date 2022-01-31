@@ -20,31 +20,6 @@ public class Leds {
         addressableLED.start();
     }
 
-    public void disabledPeriodic() {
-        for (int i = 0; i < ledBuffer.getLength(); i++) {
-            ledBuffer.setRGB(i, 255, 161, 36);
-        }
-
-        addressableLED.setData(ledBuffer);
-    }
-
-
-    public void autonomousPeriodic() {
-        if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
-            for (int i = 0; i < ledBuffer.getLength(); i++) {
-                ledBuffer.setRGB(i, 248, 37, 5);
-            }
-        } else if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
-            for (int i = 0; i < ledBuffer.getLength(); i++) {
-                ledBuffer.setRGB(i, 7, 88, 248);
-            }
-        } else {
-            for (int i = 0; i < ledBuffer.getLength(); i++) {
-                ledBuffer.setRGB(i, 60, 248, 236);
-            }
-        }
-        addressableLED.setData(ledBuffer);
-    }
 
 
     public void teleopPeriodic() {

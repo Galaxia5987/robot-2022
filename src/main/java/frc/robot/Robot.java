@@ -5,9 +5,7 @@
 package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 /**
@@ -22,6 +20,8 @@ public class Robot extends TimedRobot {
     public PowerDistribution pdp = new PowerDistribution();
     private RobotContainer m_robotContainer;
     private Command m_autonomousCommand;
+    private final AddressableLED addressableLED = new AddressableLED(0);
+    private final AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(60);
 
     /**
      * This function is run when the robot is first started up and should be used for any
@@ -62,6 +62,20 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();
         }
+        if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
+            for (int i = 0; i < ledBuffer.getLength(); i++) {
+                ledBuffer.setRGB(i, 248, 37, 5);
+            }
+        } else if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
+            for (int i = 0; i < ledBuffer.getLength(); i++) {
+                ledBuffer.setRGB(i, 7, 88, 248);
+            }
+        } else {
+            for (int i = 0; i < ledBuffer.getLength(); i++) {
+                ledBuffer.setRGB(i, 60, 248, 236);
+            }
+        }
+        addressableLED.setData(ledBuffer);
     }
 
     /**
@@ -94,6 +108,10 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void disabledInit() {
+        for (int i = 0; i < ledBuffer.getLength(); i++) {
+            ledBuffer.setRGB(i, 255, 161, 36);
+        }
+        addressableLED.setData(ledBuffer);
     }
 
     /**
