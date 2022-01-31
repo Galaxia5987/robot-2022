@@ -50,6 +50,7 @@ public class NetworkTableConstant implements WebConstant {
      */
     private void initialize() {
         constant = BASE_TABLE.getSubTable(table).getEntry(key);
+        constant.setDouble(defaultValue);
     }
 
     /**
