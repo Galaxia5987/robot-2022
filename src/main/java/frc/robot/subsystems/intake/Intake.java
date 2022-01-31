@@ -47,14 +47,14 @@ public class Intake extends SubsystemBase {
      * Open intake retractor.
      */
     public void openRetractor() {
-        retractor.set(SolenoidState.OPEN.value);
+        retractor.set(RetractorState.OPEN.value);
     }
 
     /**
      * Close intake retractor.
      */
     public void closeRetractor() {
-        retractor.set(SolenoidState.CLOSED.value);
+        retractor.set(RetractorState.CLOSED.value);
     }
 
     /**
@@ -64,13 +64,13 @@ public class Intake extends SubsystemBase {
         retractor.toggle();
     }
 
-    public enum SolenoidState {
+    public enum RetractorState {
         OPEN(true),
         CLOSED(false);
 
         public final boolean value;
 
-        SolenoidState(boolean value) {
+        RetractorState(boolean value) {
             this.value = value;
         }
     }
