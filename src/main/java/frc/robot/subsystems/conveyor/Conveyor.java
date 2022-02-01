@@ -75,7 +75,7 @@ public class Conveyor extends SubsystemBase {
     public int getCargoCount() {
         int count = 0;
         if (!cargoPositions.getFirst().equals(DriverStation.Alliance.Invalid.name())) count++;
-       if (!cargoPositions.getLast().equals(DriverStation.Alliance.Invalid.name())) count++;
+        if (!cargoPositions.getLast().equals(DriverStation.Alliance.Invalid.name())) count++;
         return count;
     }
 
@@ -133,7 +133,7 @@ public class Conveyor extends SubsystemBase {
         if (!colorIntake.equals(lastSeenColor) && !colorIntake.equals(DriverStation.Alliance.Invalid) && power > 0) {
             cargoPositions.removeFirstOccurrence(DriverStation.Alliance.Invalid.name());
             cargoPositions.add(colorIntake.name());
-        } else if(!colorIntake.equals(lastSeenColor) && colorIntake.equals(DriverStation.Alliance.Invalid) && power < 0) {
+        } else if (!colorIntake.equals(lastSeenColor) && colorIntake.equals(DriverStation.Alliance.Invalid) && power < 0) {
             cargoPositions.removeFirstOccurrence(getFirstNonInvalid());
             cargoPositions.add(DriverStation.Alliance.Invalid.name());
         }
@@ -150,7 +150,7 @@ public class Conveyor extends SubsystemBase {
     private String getFirstNonInvalid() {
         if (cargoPositions.getLast().equals(DriverStation.Alliance.Invalid.name())) {
             return cargoPositions.getFirst();
-        } else if(cargoPositions.getFirst().equals(DriverStation.Alliance.Invalid.name())) {
+        } else if (cargoPositions.getFirst().equals(DriverStation.Alliance.Invalid.name())) {
             return cargoPositions.getLast();
         } else {
             return DriverStation.Alliance.Invalid.name();

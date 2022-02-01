@@ -16,7 +16,7 @@ public class Utils {
     }
 
     /**
-     * @param input the joystick input
+     * @param input     the joystick input
      * @param threshold the joystick deadband threshold
      * @return the updated value after the deadband
      */
