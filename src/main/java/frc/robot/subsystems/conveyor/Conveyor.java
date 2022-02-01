@@ -112,6 +112,21 @@ public class Conveyor extends SubsystemBase {
         SmartDashboard.putString("alliance", colorIntake.name());
         double power = 1;
 //        double power = motor.getMotorOutputPercent();
+        /*
+        Check whether the post flap beam input changes and the conveyor is moving balls in
+            true => Check whether the last value is invalid
+                true => Take out the head of the queue
+                false => Take out the value in the queue
+
+        Check whether color sensor input changes and the current input isn't invalid
+            true => Check whether the conveyor is moving balls out
+                true => Check whether there are any remaining spaces in the queue
+                    true => Take out the head of the queue
+                    Add a ball to the end of the queue
+                false => Check whether the conveyor is moving balls in
+                    Remove the head of the queue
+                    Add another ball at the tail of the queue
+         */
         if (isPostFlapBeamActive && !wasPostFlapBeamActive && power > 0) {
             if(!cargoPositions.toArray()[0].equals(DriverStation.Alliance.Invalid.name())) {
                 cargoPositions.poll();
