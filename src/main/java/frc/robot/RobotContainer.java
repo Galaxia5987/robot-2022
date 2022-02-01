@@ -8,27 +8,41 @@ import frc.robot.subsystems.example.ExampleSubsystem;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.Shoot;
 import frc.robot.valuetuner.ValueTuner;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.hood.Hood;
+import frc.robot.utils.PhotonVisionModule;
+import frc.robot.utils.SimulateDrivetrain;
+
 import webapp.Webserver;
 
 import static frc.robot.Constants.Control.RIGHT_TRIGGER_DEADBAND;
 
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-    private final ExampleSubsystem exampleSubsystem = ExampleSubsystem.getInstance();
+    private final Shooter shooter = Shooter.getInstance();
+    private final Intake intake = Intake.getInstance();
+    private final Hood hood = Hood.getInstance();
+    private final SimulateDrivetrain simulateDrivetrain = new SimulateDrivetrain();
+    private final PhotonVisionModule visionModule;
+
     private final XboxController xbox = new XboxController(Ports.Controls.XBOX);
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
+    private final JoystickButton b = new JoystickButton(xbox, XboxController.Button.kB.value);
     private final Trigger rightTrigger = new Trigger(() -> xbox.getRightTriggerAxis() > RIGHT_TRIGGER_DEADBAND);
-    private final Shooter shooter = Shooter.getInstance();
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+        if (Robot.isSimulation()) {
+            visionModule = new PhotonVisionModule("photonvision", simulateDrivetrain);
+        } else {
+            visionModule = new PhotonVisionModule("photonvision", null);
+        }
         // Configure the button bindings and default commands
         configureDefaultCommands();
 
         if (Robot.debug) {
-            startValueTuner();
             startFireLog();
         }
 
@@ -53,17 +67,9 @@ public class RobotContainer {
     }
 
     /**
-     * Initiates the value tuner.
-     */
-    private void startValueTuner() {
-        new ValueTuner().start();
-    }
-
-    /**
      * Initiates the port of team 225s Fire-Logger.
      */
     private void startFireLog() {
-
         try {
             new Webserver();
         } catch (Exception e) {
