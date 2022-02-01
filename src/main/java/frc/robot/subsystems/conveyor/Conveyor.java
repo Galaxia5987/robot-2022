@@ -14,9 +14,7 @@ import frc.robot.Ports;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
-import java.util.concurrent.ArrayBlockingQueue;
 
-import static frc.robot.Constants.Conveyor.MAX_CARGO_AMOUNT;
 import static frc.robot.Ports.Conveyor.MOTOR_INVERSION;
 import static frc.robot.Ports.Conveyor.SOLENOID;
 
@@ -134,16 +132,31 @@ public class Conveyor extends SubsystemBase {
             cargoPositions.add(DriverStation.Alliance.Invalid.name());
         }
         if (colorIntake != lastSeenColor && !colorIntake.equals(DriverStation.Alliance.Invalid)) {
-            cargoPositions.removeLast();
             if (power < 0) {
+                cargoPositions.removeFirstOccurrence(getFirstNonInvalid());
                 cargoPositions.add(DriverStation.Alliance.Invalid.name());
             } else if (power > 0) {
+                cargoPositions.removeFirstOccurrence(DriverStation.Alliance.Invalid.name());
                 cargoPositions.add(colorIntake.name());
             }
         }
         wasPostFlapBeamActive = isPostFlapBeamActive;
         lastSeenColor = colorIntake;
         SmartDashboard.putString("lastSeen", lastSeenColor.name());
+    }
+
+    /**
+     * This function returns the first value in the queue that isn't invalid.
+     * Warning! This is under the assumption that there is such a value.
+     *
+     * @return the first non-invalid value.
+     */
+    private String getFirstNonInvalid() {
+        if (cargoPositions.getLast().equals(DriverStation.Alliance.Invalid.name())) {
+            return cargoPositions.getFirst();
+        } else {
+            return cargoPositions.getLast();
+        }
     }
 
     private Queue getQueue() {
@@ -161,8 +174,8 @@ public class Conveyor extends SubsystemBase {
         Case #9  queue = [Opponent, Alliance]
          */
 
-        var last = cargoPositions.toArray()[1];
-        var first = cargoPositions.toArray()[0];
+        var last = cargoPositions.getLast();
+        var first = cargoPositions.getFirst();
         var invalid = DriverStation.Alliance.Invalid.name();
         var alliance = DriverStation.getAlliance().name();
 
