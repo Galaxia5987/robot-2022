@@ -115,28 +115,25 @@ public class Conveyor extends SubsystemBase {
         SmartDashboard.putString("alliance", colorIntake.name());
         double power = motor.getMotorOutputPercent();
         /*
-        Check whether the post flap beam input changes and the conveyor is moving balls in
-            true => Check whether the last value is invalid
-                true => Take out the head of the queue
-                false => Take out the value in the queue
-
-        Check whether color sensor input changes and the current input isn't invalid
-            true => Check whether the conveyor is moving balls out
-                true => Check whether there are any remaining spaces in the queue
-                    true => Take out the head of the queue
-                    Add a ball to the end of the queue
-                false => Check whether the conveyor is moving balls in
-                    Remove the head of the queue
-                    Add another ball at the tail of the queue
+        Condition: post flap beam is currently active and wasn't in the last input and velocity is positive
+            true => Remove the head of the queue
+               Add an invalid value at the tail of the queue
+               
+        Condition: cargo coming into the conveyor
+            true => Remove the first invalid value
+               Add the new color sensor input
+            false => Condition: ball is coming out of the conveyor
+                    true => Remove the first non-invalid value from the queue
+                            Add an invalid value into the queue
          */
         if (isPostFlapBeamActive && !wasPostFlapBeamActive && power > 0) {
             cargoPositions.removeFirst();
             cargoPositions.add(DriverStation.Alliance.Invalid.name());
         }
-        if (colorIntake != lastSeenColor && !colorIntake.equals(DriverStation.Alliance.Invalid) && power > 0) {
+        if (!colorIntake.equals(lastSeenColor) && !colorIntake.equals(DriverStation.Alliance.Invalid) && power > 0) {
             cargoPositions.removeFirstOccurrence(DriverStation.Alliance.Invalid.name());
             cargoPositions.add(colorIntake.name());
-        } else if(colorIntake != lastSeenColor && colorIntake.equals(DriverStation.Alliance.Invalid) && power < 0) {
+        } else if(!colorIntake.equals(lastSeenColor) && colorIntake.equals(DriverStation.Alliance.Invalid) && power < 0) {
             cargoPositions.removeFirstOccurrence(getFirstNonInvalid());
             cargoPositions.add(DriverStation.Alliance.Invalid.name());
         }
