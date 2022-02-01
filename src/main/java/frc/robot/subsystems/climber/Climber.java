@@ -10,7 +10,10 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
@@ -37,10 +40,11 @@ public class Climber extends SubsystemBase {
     private final Solenoid stopper = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Climber.STOPPER);
     private final UnitModel unitModel = new UnitModel(Constants.Climber.TICKS_PER_RAD);
 
-    private final ArmFeedforward feedforward = new ArmFeedforward(Constants.Climber.F_FORWARD_S, Constants.Climber.F_FORWARD_COS, Constants.Climber.F_FORWARD_V, Constants.Climber.F_FORWARD_A);
     private final PIDController controller = new PIDController(Constants.Climber.KP, Constants.Climber.KI, Constants.Climber.KD);
+    private final ArmFeedforward feedforward = new ArmFeedforward(Constants.Climber.F_FORWARD_S, Constants.Climber.F_FORWARD_COS, Constants.Climber.F_FORWARD_V, Constants.Climber.F_FORWARD_A);
     private final Encoder encoder = new Encoder(Ports.Climber.ENCODER_A_CHANNEL, Ports.Climber.ENCODER_B_CHANNEL);
     private final DCMotor armGearbox = DCMotor.getFalcon500(2);
+
 
     private final SingleJointedArmSim armSim =
             new SingleJointedArmSim(
@@ -100,6 +104,7 @@ public class Climber extends SubsystemBase {
         mainMotor.config_kI(0, Constants.Climber.KI, Constants.TALON_TIMEOUT);
         mainMotor.config_kD(0, Constants.Climber.KD, Constants.TALON_TIMEOUT);
 
+
         auxMotor.follow(mainMotor);
 
         mainMotor.enableVoltageCompensation(Constants.Climber.VOLTAGE_COMPENSATION);
@@ -152,6 +157,16 @@ public class Climber extends SubsystemBase {
             mainMotor.set(ControlMode.Velocity, unitModel.toTicks100ms(velocity));
         }
     }
+
+
+    public void setAngleZero() {
+        double x = unitModel.toUnits(mainMotor.getSelectedSensorPosition(1));
+        if (x != Constants.Climber.K_TICKS) {
+            double angle = unitModel.toUnits(x - Constants.Climber.K_TICKS);
+            setPosition(angle);
+        }
+    }
+
 
     /**
      * @return get motors position. [rad]

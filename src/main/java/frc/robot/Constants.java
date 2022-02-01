@@ -51,6 +51,8 @@ public final class Constants {
         public static final double STOP_CLIMBER = 149.5; // [s]
 
         public static final double SIMULATION_LOOP_PERIOD = 0.02; // [s]
+
+        public static final int K_TICKS = 0;
     }
 
 
