@@ -4,9 +4,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,12 +16,14 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import static frc.robot.Constants.Conveyor.MAX_CARGO_AMOUNT;
 import static frc.robot.Ports.Conveyor.MOTOR_INVERSION;
+import static frc.robot.Ports.Conveyor.SOLENOID;
 
 public class Conveyor extends SubsystemBase {
     private static Conveyor INSTANCE = null;
     private final WPI_TalonFX motor = new WPI_TalonFX(Ports.Conveyor.MOTOR);
     private final ArrayBlockingQueue<String> cargoPositions = new ArrayBlockingQueue<>(MAX_CARGO_AMOUNT);
     private final ColorSensorV3 colorSensor = new ColorSensorV3(I2C.Port.kMXP);
+    private final Solenoid flap = new Solenoid(PneumaticsModuleType.CTREPCM, SOLENOID);
     private final DigitalInput postFlapBeam = new DigitalInput(Ports.Conveyor.POST_FLAP_BEAM_BREAKER);
     private final DigitalInput preFlapBeam = new DigitalInput(Ports.Conveyor.PRE_FLAP_BEAM_BREAKER);
     private final ColorMatch match = new ColorMatch();
@@ -89,21 +89,21 @@ public class Conveyor extends SubsystemBase {
      * open the "flap" - solenoid
      */
     public void openFlap() {
-//        flap.set(false);
+        flap.set(false);
     }
 
     /**
      * closes the "flap" - solenoid
      */
     public void closeFlap() {
-//        flap.set(true);
+        flap.set(true);
     }
 
     /**
      * toggles the "flap" - solenoid
      */
-    public void toggle() {
-//        flap.toggle();
+    public void toggleFlap() {
+        flap.toggle();
     }
 
     private void updateActualBallPositions() throws InterruptedException {
