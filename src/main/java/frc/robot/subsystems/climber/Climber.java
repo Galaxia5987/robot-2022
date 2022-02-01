@@ -38,7 +38,9 @@ public class Climber extends SubsystemBase {
     private final WPI_TalonFX mainMotor = new WPI_TalonFX(Ports.Climber.MAIN);
     private final WPI_TalonFX auxMotor = new WPI_TalonFX(Ports.Climber.AUX);
     private final Solenoid stopper = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Climber.STOPPER);
-    private final UnitModel unitModel = new UnitModel(Constants.Climber.TICKS_PER_RAD);
+    private final UnitModel unitModelGearbox = new UnitModel(Constants.Climber.TICKS_PER_RAD);
+    private final UnitModel unitModelPosition = new UnitModel(Constants.Climber.TICKS_PER_RAD);
+
 
     private final PIDController controller = new PIDController(Constants.Climber.KP, Constants.Climber.KI, Constants.Climber.KD);
     private final ArmFeedforward feedforward = new ArmFeedforward(Constants.Climber.F_FORWARD_S, Constants.Climber.F_FORWARD_COS, Constants.Climber.F_FORWARD_V, Constants.Climber.F_FORWARD_A);
@@ -143,7 +145,7 @@ public class Climber extends SubsystemBase {
         if (Robot.isSimulation()) {
             return encoderSim.getRate();
         }
-        return unitModel.toVelocity(mainMotor.getSelectedSensorVelocity(0));
+        return unitModelPosition.toVelocity(mainMotor.getSelectedSensorVelocity(0));
     }
 
     /**
@@ -154,15 +156,15 @@ public class Climber extends SubsystemBase {
             double volts = controller.calculate(getVelocity(), velocity);
             mainMotor.setVoltage(volts + feedforward.calculate(0, 0));
         } else {
-            mainMotor.set(ControlMode.Velocity, unitModel.toTicks100ms(velocity));
+            mainMotor.set(ControlMode.Velocity, unitModelPosition.toTicks100ms(velocity));
         }
     }
 
 
     public void setAngleZero() {
-        double x = unitModel.toUnits(mainMotor.getSelectedSensorPosition(1));
+        double x = unitModelPosition.toUnits(mainMotor.getSelectedSensorPosition(1));
         if (x != Constants.Climber.K_TICKS) {
-            double angle = unitModel.toUnits(x - Constants.Climber.K_TICKS);
+            double angle = unitModelPosition.toUnits(x - Constants.Climber.K_TICKS);
             setPosition(angle);
         }
     }
@@ -172,14 +174,14 @@ public class Climber extends SubsystemBase {
      * @return get motors position. [rad]
      */
     public double getPosition() {
-        return unitModel.toUnits(mainMotor.getSelectedSensorPosition(1));
+        return unitModelPosition.toUnits(mainMotor.getSelectedSensorPosition(1));
     }
 
     /**
      * @param position the position of the motors. [rad]
      */
     public void setPosition(double position) {
-        mainMotor.set(ControlMode.MotionMagic, unitModel.toTicks(position),
+        mainMotor.set(ControlMode.MotionMagic, unitModelPosition.toTicks(position),
                 DemandType.ArbitraryFeedForward, feedforward.calculate(getPosition(), getVelocity()));
     }
 

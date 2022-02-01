@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.subsystems.UnitModel;
 import org.photonvision.SimVisionTarget;
 
 public final class Constants {
@@ -36,6 +37,8 @@ public final class Constants {
         public static final double GEAR_RATIO = 292.1;
 
         public static final double TICKS_PER_RAD = 2048 * GEAR_RATIO / (2 * Math.PI);
+        private final double TICKS_PER  = 0;
+
 
         public static final double JOYSTICK_DEADBAND = 0.05; // [%]
 
