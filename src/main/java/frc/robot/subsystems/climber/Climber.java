@@ -38,7 +38,6 @@ public class Climber extends SubsystemBase {
     private final WPI_TalonFX mainMotor = new WPI_TalonFX(Ports.Climber.MAIN);
     private final WPI_TalonFX auxMotor = new WPI_TalonFX(Ports.Climber.AUX);
     private final Solenoid stopper = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Climber.STOPPER);
-    private final UnitModel unitModelGearbox = new UnitModel(Constants.Climber.TICKS_PER_MOTOR);
     private final UnitModel unitModelPosition = new UnitModel(Constants.Climber.TICKS_PER_RAD);
 
 
@@ -160,11 +159,19 @@ public class Climber extends SubsystemBase {
         }
     }
 
-
+    /**
+     * Set climber position to zero.
+     */
     public void setAngleZero() {
-        double angle = unitModelGearbox.toUnits(mainMotor.getSelectedSensorPosition(1)
-                - Constants.Climber.ZERO_POSITION);
-        setPosition(angle);
+        double angle = getAbsolutePosition();
+        setPosition(getPosition() - angle);
+    }
+
+    /**
+     * @return the absolute position of the Climber.
+     */
+    public double getAbsolutePosition() {
+        return unitModelPosition.toUnits(mainMotor.getSelectedSensorPosition(1) - Constants.Climber.ZERO_POSITION);
     }
 
 
@@ -172,7 +179,7 @@ public class Climber extends SubsystemBase {
      * @return get motors position. [rad]
      */
     public double getPosition() {
-        return unitModelPosition.toUnits(mainMotor.getSelectedSensorPosition(1));
+        return unitModelPosition.toUnits(mainMotor.getSelectedSensorPosition(0));
     }
 
     /**
@@ -214,7 +221,6 @@ public class Climber extends SubsystemBase {
     public void stop() {
         mainMotor.stopMotor();
     }
-
 
     /**
      * Add periodic for the simulation.

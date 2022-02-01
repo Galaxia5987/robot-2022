@@ -20,6 +20,11 @@ public class AdjustAngle extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return Math.abs(climber.getPosition() - Constants.Climber.ZERO_POSITION)  >= Constants.Climber.ZERO_POSITION_TOLERANCE;
+        return Math.abs(climber.getAbsolutePosition()) <= Constants.Climber.ZERO_POSITION_TOLERANCE;
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        climber.stop();
     }
 }
