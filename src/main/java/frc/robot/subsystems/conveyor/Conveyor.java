@@ -154,8 +154,10 @@ public class Conveyor extends SubsystemBase {
     private String getFirstNonInvalid() {
         if (cargoPositions.getLast().equals(DriverStation.Alliance.Invalid.name())) {
             return cargoPositions.getFirst();
-        } else {
+        } else if(cargoPositions.getFirst().equals(DriverStation.Alliance.Invalid.name())) {
             return cargoPositions.getLast();
+        } else {
+            return DriverStation.Alliance.Invalid.name();
         }
     }
 
