@@ -127,7 +127,7 @@ public class Conveyor extends SubsystemBase {
         }
         if (colorIntake != lastSeenColor && !colorIntake.equals(DriverStation.Alliance.Invalid)) {
             if (power < 0) {
-                if (cargoPositions.remainingCapacity() == 0) {
+                if (cargoPositions.isEmpty()) {
                     cargoPositions.poll();
                 }
                 cargoPositions.offer(colorIntake.name());
