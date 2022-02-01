@@ -80,7 +80,7 @@ public class Shooter extends SubsystemBase {
                 VecBuilder.fill(VELOCITY_TOLERANCE),
                 VecBuilder.fill(COST_LQR),
                 LOOP_PERIOD);
-        quadraticRegulator.latencyCompensate(flywheel_plant, LOOP_PERIOD, TALON_TIMEOUT / 1000.0);
+        quadraticRegulator.latencyCompensate(flywheel_plant, LOOP_PERIOD, Units.millisecondsToSeconds(TALON_TIMEOUT));
 
         KalmanFilter<N1, N1, N1> kalmanFilter = new KalmanFilter<>(
                 Nat.N1(), Nat.N1(),
