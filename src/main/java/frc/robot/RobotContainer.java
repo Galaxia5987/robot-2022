@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.Shoot;
 import frc.robot.subsystems.intake.Intake;
@@ -17,6 +18,7 @@ import static frc.robot.Constants.Control.RIGHT_TRIGGER_DEADBAND;
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final Shooter shooter = Shooter.getInstance();
+    private final Hood hood = Hood.getInstance();
     private final Intake intake = Intake.getInstance();
     private final SimulateDrivetrain simulateDrivetrain = new SimulateDrivetrain();
     private final PhotonVisionModule visionModule;
