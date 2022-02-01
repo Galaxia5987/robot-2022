@@ -44,21 +44,21 @@ public class Intake extends SubsystemBase {
     }
 
     /**
-     * Open intake retractor.
+     * Open intake.
      */
     public void openRetractor() {
         retractor.set(RetractorState.OPEN.value);
     }
 
     /**
-     * Close intake retractor.
+     * Close intake.
      */
     public void closeRetractor() {
         retractor.set(RetractorState.CLOSED.value);
     }
 
     /**
-     * Toggles intake retractor.
+     * Toggles intake.
      */
     public void toggleRetractor() {
         retractor.toggle();
