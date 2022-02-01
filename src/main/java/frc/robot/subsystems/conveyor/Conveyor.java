@@ -89,21 +89,21 @@ public class Conveyor extends SubsystemBase {
     }
 
     /**
-     * open the "flap" - solenoid
+     * open the flap
      */
     public void openFlap() {
         flap.set(false);
     }
 
     /**
-     * closes the "flap" - solenoid
+     * closes the flap
      */
     public void closeFlap() {
         flap.set(true);
     }
 
     /**
-     * toggles the "flap" - solenoid
+     * toggles the flap
      */
     public void toggleFlap() {
         flap.toggle();
