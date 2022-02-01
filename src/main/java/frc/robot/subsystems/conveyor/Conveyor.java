@@ -74,8 +74,8 @@ public class Conveyor extends SubsystemBase {
      */
     public int getCargoCount() {
         int count = 0;
-        count += !cargoPositions.getFirst().equals(DriverStation.Alliance.Invalid.name()) ? 1 : 0;
-        count += !cargoPositions.getLast().equals(DriverStation.Alliance.Invalid.name()) ? 1 : 0;
+        if (!cargoPositions.getFirst().equals(DriverStation.Alliance.Invalid.name())) count++;
+       if (!cargoPositions.getLast().equals(DriverStation.Alliance.Invalid.name())) count++;
         return count;
     }
 
