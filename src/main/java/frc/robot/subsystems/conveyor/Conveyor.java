@@ -52,7 +52,7 @@ public class Conveyor extends SubsystemBase {
     }
 
     /**
-     * @return the color sensor value as a DriverStation.Alliance enum.
+     * @return the color sensor value as a {@link edu.wpi.first.wpilibj.DriverStation.Alliance} enum.
      */
     public DriverStation.Alliance getColor() {
         Color color = colorSensor.getColor();
@@ -73,7 +73,10 @@ public class Conveyor extends SubsystemBase {
      * @return the amount of balls inside the cargo.
      */
     public int getCargoCount() {
-        return cargoPositions.size();
+        int count = 0;
+        count += !cargoPositions.getFirst().equals(DriverStation.Alliance.Invalid.name()) ? 1 : 0;
+        count += !cargoPositions.getLast().equals(DriverStation.Alliance.Invalid.name()) ? 1 : 0;
+        return count;
     }
 
     /**
