@@ -144,7 +144,6 @@ public class Conveyor extends SubsystemBase {
 
     /**
      * This function returns the first value in the queue that isn't invalid.
-     * Warning! This is under the assumption that there is such a value.
      *
      * @return the first non-invalid value.
      */
