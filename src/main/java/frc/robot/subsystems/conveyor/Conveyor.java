@@ -23,12 +23,12 @@ public class Conveyor extends SubsystemBase {
     private static Conveyor INSTANCE = null;
     private final WPI_TalonFX motor = new WPI_TalonFX(Ports.Conveyor.MOTOR);
     private final ArrayBlockingQueue<String> cargoPositions = new ArrayBlockingQueue<>(MAX_CARGO_AMOUNT);
-    private final ColorSensorV3 colorSensorIntake = new ColorSensorV3(I2C.Port.kMXP);
+    private final ColorSensorV3 colorSensor = new ColorSensorV3(I2C.Port.kMXP);
     private final DigitalInput postFlapBeam = new DigitalInput(Ports.Conveyor.POST_FLAP_BEAM_BREAKER);
     private final DigitalInput preFlapBeam = new DigitalInput(Ports.Conveyor.PRE_FLAP_BEAM_BREAKER);
     private final ColorMatch match = new ColorMatch();
     private DriverStation.Alliance lastSeenColor = DriverStation.Alliance.Invalid;
-    private boolean lastPostFlapBeamInput = true;
+    private boolean wasPostFlapBeamActive = true;
 
     private Conveyor() {
         motor.setInverted(MOTOR_INVERSION);
@@ -55,7 +55,7 @@ public class Conveyor extends SubsystemBase {
      * @return the color sensor value as a DriverStation.Alliance enum.
      */
     public DriverStation.Alliance getColor() {
-        Color color = colorSensorIntake.getColor();
+        Color color = colorSensor.getColor();
         ColorMatchResult result = match.matchClosestColor(color);
         Color resultColor = result.color;
         SmartDashboard.putBoolean("match", resultColor == Color.kRed);
@@ -108,11 +108,11 @@ public class Conveyor extends SubsystemBase {
 
     private void updateActualBallPositions() throws InterruptedException {
         var colorIntake = getColor();
-        boolean currentPostFlapBeamInput = postFlapBeam.get();
+        boolean isPostFlapBeamActive = postFlapBeam.get();
         SmartDashboard.putString("alliance", colorIntake.name());
         double power = 1;
 //        double power = motor.getMotorOutputPercent();
-        if (currentPostFlapBeamInput && !lastPostFlapBeamInput && power > 0) {
+        if (isPostFlapBeamActive && !wasPostFlapBeamActive && power > 0) {
             if(!cargoPositions.toArray()[0].equals(DriverStation.Alliance.Invalid.name())) {
                 cargoPositions.poll();
                 var temp = cargoPositions.take();
@@ -136,13 +136,15 @@ public class Conveyor extends SubsystemBase {
                 cargoPositions.offer(colorIntake.name());
             }
         }
-        lastPostFlapBeamInput = currentPostFlapBeamInput;
+        wasPostFlapBeamActive = isPostFlapBeamActive;
         lastSeenColor = colorIntake;
         SmartDashboard.putString("lastSeen", lastSeenColor.name());
     }
 
     private Queue getQueue() {
         /*
+        In each case the first element is the last in,
+        and the second is the first in.
         Case #1  queue = [None, None]
         Case #2  queue = [None, Alliance]
         Case #3  queue = [Alliance, None]
@@ -198,7 +200,7 @@ public class Conveyor extends SubsystemBase {
     public void simulationPeriodic() {
         SmartDashboard.putString("position", cargoPositions.toString());
         Queue queue = getQueue();
-        var color = colorSensorIntake.getColor();
+        var color = colorSensor.getColor();
         var alliance = getColor();
         SmartDashboard.putNumberArray("color", new double[]{color.red, color.green, color.blue});
         System.out.println(Arrays.toString(new double[]{color.red, color.green, color.blue}));
