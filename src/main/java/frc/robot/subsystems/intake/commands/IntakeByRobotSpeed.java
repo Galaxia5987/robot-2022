@@ -2,10 +2,12 @@ package frc.robot.subsystems.intake.commands;
 
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.intake.Intake;
 
 import java.util.function.DoubleSupplier;
+
+import static frc.robot.Constants.Intake.DEFAULT_POWER;
+import static frc.robot.Constants.Intake.POWER_TO_VELOCITY_RATIO;
 
 /**
  * intakes balls according to robot speed.
@@ -30,7 +32,7 @@ public class IntakeByRobotSpeed extends CommandBase {
      */
     @Override
     public void execute() {
-        intake.setPower(Constants.Intake.BIAS + (robotVelocity.getAsDouble() * Constants.Intake.POWER_TO_VELOCITY_RATIO));
+        intake.setPower(DEFAULT_POWER + (robotVelocity.getAsDouble() * POWER_TO_VELOCITY_RATIO));
     }
 
     /**
