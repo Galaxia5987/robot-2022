@@ -110,7 +110,6 @@ public class Conveyor extends SubsystemBase {
         var colorIntake = getColor();
         boolean isPostFlapBeamActive = postFlapBeam.get();
         SmartDashboard.putString("alliance", colorIntake.name());
-//        double power = 1;
         double power = motor.getMotorOutputPercent();
         /*
         Check whether the post flap beam input changes and the conveyor is moving balls in
