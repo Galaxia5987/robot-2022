@@ -157,49 +157,6 @@ public class Conveyor extends SubsystemBase {
         }
     }
 
-    private Queue getQueue() {
-        /*
-        In each case the first element is the last in,
-        and the second is the first in.
-        Case #1  queue = [None, None]
-        Case #2  queue = [None, Alliance]
-        Case #3  queue = [Alliance, None]
-        Case #4  queue = [Alliance, Alliance]
-        Case #5  queue = [Alliance, Opponent]
-        Case #6  queue = [None, Opponent]
-        Case #7  queue = [Opponent, None]
-        Case #8  queue = [Opponent, Opponent]
-        Case #9  queue = [Opponent, Alliance]
-         */
-
-        var last = cargoPositions.getLast();
-        var first = cargoPositions.getFirst();
-        var invalid = DriverStation.Alliance.Invalid.name();
-        var alliance = DriverStation.getAlliance().name();
-
-        if (last.equals(invalid)) {
-            if (first.equals(invalid)) {
-                return Queue.NoneNone;
-            } else if (first.equals(alliance)) {
-                return Queue.NoneAlliance;
-            }
-            return Queue.NoneOpponent;
-        } else if (last.equals(alliance)) {
-            if (first.equals(invalid)) {
-                return Queue.AllianceNone;
-            } else if (first.equals(alliance)) {
-                return Queue.AllianceAlliance;
-            }
-            return Queue.AllianceOpponent;
-        }
-        if (first.equals(invalid)) {
-            return Queue.OpponentNone;
-        } else if (first.equals(alliance)) {
-            return Queue.OpponentAlliance;
-        }
-        return Queue.OpponentOpponent;
-    }
-
     /**
      * removes the string representing the cargo from the list if the cargo is ejected and adds if the cargo is consumed
      */
@@ -211,40 +168,15 @@ public class Conveyor extends SubsystemBase {
     @Override
     public void simulationPeriodic() {
         SmartDashboard.putString("position", cargoPositions.toString());
-        Queue queue = getQueue();
         var color = colorSensor.getColor();
         var alliance = getColor();
         SmartDashboard.putNumberArray("color", new double[]{color.red, color.green, color.blue});
         System.out.println(Arrays.toString(new double[]{color.red, color.green, color.blue}));
         SmartDashboard.putString("detected-color", alliance.name());
         SmartDashboard.putString("position", Arrays.toString(cargoPositions.toArray(String[]::new)));
-        SmartDashboard.putString("Queue", Arrays.toString(queue.queue));
         SmartDashboard.putString("First", cargoPositions.toArray()[0].toString());
         SmartDashboard.putString("Last", cargoPositions.toArray()[1].toString());
         SmartDashboard.putBoolean("dio", preFlapBeam.get());
         System.out.println("I am working.");
-    }
-
-    public enum Queue {
-        /*
-        None - 0
-        Alliance - 1
-        Opponent - 2
-         */
-        NoneNone(new int[]{0, 0}),
-        NoneAlliance(new int[]{0, 1}),
-        AllianceNone(new int[]{1, 0}),
-        AllianceAlliance(new int[]{1, 1}),
-        AllianceOpponent(new int[]{1, 2}),
-        NoneOpponent(new int[]{0, 2}),
-        OpponentNone(new int[]{2, 0}),
-        OpponentOpponent(new int[]{2, 2}),
-        OpponentAlliance(new int[]{2, 1});
-
-        public final int[] queue;
-
-        Queue(int[] queue) {
-            this.queue = queue;
-        }
     }
 }
