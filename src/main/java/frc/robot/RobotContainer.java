@@ -48,7 +48,7 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        shooter.setDefaultCommand(new Shoot(shooter, () -> Shooter.getSetpointVelocity(4)));
+        shooter.setDefaultCommand(new Shoot(shooter, () -> 8)); // 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8
     }
 
     private void configureButtonBindings() {
