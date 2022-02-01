@@ -5,12 +5,12 @@ import frc.robot.subsystems.conveyor.Conveyor;
 
 import java.util.function.DoubleSupplier;
 
-public class Convey extends CommandBase {
+public class ConveyManually extends CommandBase {
 
     private final Conveyor conveyor;
     private final DoubleSupplier power;
 
-    public Convey(Conveyor conveyor, DoubleSupplier power) {
+    public ConveyManually(Conveyor conveyor, DoubleSupplier power) {
         this.conveyor = conveyor;
         this.power = power;
         addRequirements(conveyor);

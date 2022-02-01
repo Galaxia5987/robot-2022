@@ -1,11 +1,10 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.conveyor.Conveyor;
-import frc.robot.subsystems.conveyor.commands.Convey;
+import frc.robot.subsystems.conveyor.commands.ConveyManually;
 import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
 
@@ -32,7 +31,7 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        conveyor.setDefaultCommand(new Convey(conveyor, () -> -xbox.getLeftY()));
+        conveyor.setDefaultCommand(new ConveyManually(conveyor, () -> -xbox.getLeftY()));
     }
 
     private void configureButtonBindings() {
