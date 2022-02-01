@@ -16,12 +16,13 @@ import frc.robot.Ports;
 import java.util.Arrays;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import static frc.robot.Ports.Conveyor.INVERSION;
+import static frc.robot.Constants.Conveyor.MAX_CARGO_AMOUNT;
+import static frc.robot.Ports.Conveyor.MOTOR_INVERSION;
 
 public class Conveyor extends SubsystemBase {
     private static Conveyor INSTANCE = null;
     private final WPI_TalonFX motor = new WPI_TalonFX(Ports.Conveyor.MOTOR);
-    private final ArrayBlockingQueue<String> position = new ArrayBlockingQueue<>(2);
+    private final ArrayBlockingQueue<String> position = new ArrayBlockingQueue<>(MAX_CARGO_AMOUNT);
     private final ColorSensorV3 colorSensorIntake = new ColorSensorV3(I2C.Port.kMXP);
     private final DigitalInput postFlapBeam = new DigitalInput(Ports.Conveyor.POST_FLAP_BEAM_BREAKER);
     private final DigitalInput preFlapBeam = new DigitalInput(Ports.Conveyor.PRE_FLAP_BEAM_BREAKER);
@@ -31,7 +32,7 @@ public class Conveyor extends SubsystemBase {
     private boolean lastPostFlapBeamInput = true;
 
     private Conveyor() {
-        motor.setInverted(INVERSION);
+        motor.setInverted(MOTOR_INVERSION);
         match.addColorMatch(Constants.Conveyor.RED);
         match.addColorMatch(Constants.Conveyor.BLUE);
         match.addColorMatch(Constants.Conveyor.NONE);
