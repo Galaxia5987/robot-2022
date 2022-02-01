@@ -10,7 +10,7 @@ import static frc.robot.Constants.Intake.DEFAULT_POWER;
 import static frc.robot.Constants.Intake.POWER_TO_VELOCITY_RATIO;
 
 /**
- * intakes balls according to robot speed.
+ * Intakes cargo according to robot speed. (robot speed is in m/s)
  */
 public class IntakeByRobotSpeed extends CommandBase {
     private final Intake intake;
