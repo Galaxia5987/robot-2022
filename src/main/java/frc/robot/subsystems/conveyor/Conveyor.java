@@ -109,7 +109,7 @@ public class Conveyor extends SubsystemBase {
         flap.toggle();
     }
 
-    private void updateActualBallPositions() throws InterruptedException {
+    private void updateActualBallPositions() {
         var colorIntake = getColor();
         boolean isPostFlapBeamActive = postFlapBeam.get();
         SmartDashboard.putString("alliance", colorIntake.name());
@@ -207,11 +207,7 @@ public class Conveyor extends SubsystemBase {
      */
     @Override
     public void periodic() {
-        try {
-            updateActualBallPositions();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        updateActualBallPositions();
     }
 
     @Override
