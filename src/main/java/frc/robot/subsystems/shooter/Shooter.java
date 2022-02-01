@@ -25,6 +25,7 @@ import frc.robot.utils.Utils;
 
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.Shooter.*;
+import static frc.robot.Ports.Shooter.INVERSION_TYPE;
 import static frc.robot.Ports.Shooter.MOTOR;
 
 public class Shooter extends SubsystemBase {
@@ -59,7 +60,7 @@ public class Shooter extends SubsystemBase {
 
     private void configureMotor() {
         motor.configAllSettings(getConfiguration());
-        motor.setInverted(TalonFXInvertType.CounterClockwise);
+        motor.setInverted(INVERSION_TYPE);
     }
 
     /**
