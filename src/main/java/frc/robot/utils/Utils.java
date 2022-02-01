@@ -16,7 +16,7 @@ public class Utils {
     }
 
     /**
-     * @param input the joystick input
+     * @param input     the joystick input
      * @param threshold the joystick deadband threshold
      * @return the updated value after the deadband
      */
@@ -24,6 +24,27 @@ public class Utils {
         if (Math.abs(input) < threshold)
             return 0;
         return (input - (Math.signum(input) * threshold)) / (1 - threshold);
+    }
+
+    /**
+     * This function converts rps into rpm.
+     *
+     * @param rps is the input velocity. [rps]
+     * @return the same velocity. [rpm]
+     */
+    public static double rpsToRpm(double rps) {
+        return rps * 60.0;
+    }
+
+
+    /**
+     * This function converts rps into rpm.
+     *
+     * @param rpm is the input velocity. [rpm]
+     * @return the same velocity. [rps]
+     */
+    public static double rpmToRps(double rpm) {
+        return rpm / 60.0;
     }
 
 }
