@@ -1,10 +1,10 @@
 package frc.robot.subsystems.climber.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.climber.Climber;
 
 public class AdjustAngle extends CommandBase {
-
     private final Climber climber;
 
     public AdjustAngle(Climber climber) {
@@ -20,9 +20,6 @@ public class AdjustAngle extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        if (climber.getPosition() == 0) {
-            return true;
-        }
-        else return false;
+        return Math.abs(climber.getPosition() - Constants.Climber.ZERO_POSITION)  >= Constants.Climber.ZERO_POSITION_TOLERANCE;
     }
 }

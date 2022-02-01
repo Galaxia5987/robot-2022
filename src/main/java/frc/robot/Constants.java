@@ -37,7 +37,7 @@ public final class Constants {
         public static final double GEAR_RATIO = 292.1;
 
         public static final double TICKS_PER_RAD = 2048 * GEAR_RATIO / (2 * Math.PI);
-        private final double TICKS_PER  = 0;
+        public static final double TICKS_PER_MOTOR =  2048;
 
 
         public static final double JOYSTICK_DEADBAND = 0.05; // [%]
@@ -55,7 +55,9 @@ public final class Constants {
 
         public static final double SIMULATION_LOOP_PERIOD = 0.02; // [s]
 
-        public static final int K_TICKS = 0;
+        public static final int ZERO_POSITION = 0;
+
+        public static final int ZERO_POSITION_TOLERANCE = 0;
     }
 
 

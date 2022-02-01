@@ -38,7 +38,7 @@ public class Climber extends SubsystemBase {
     private final WPI_TalonFX mainMotor = new WPI_TalonFX(Ports.Climber.MAIN);
     private final WPI_TalonFX auxMotor = new WPI_TalonFX(Ports.Climber.AUX);
     private final Solenoid stopper = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Climber.STOPPER);
-    private final UnitModel unitModelGearbox = new UnitModel(Constants.Climber.TICKS_PER_RAD);
+    private final UnitModel unitModelGearbox = new UnitModel(Constants.Climber.TICKS_PER_MOTOR);
     private final UnitModel unitModelPosition = new UnitModel(Constants.Climber.TICKS_PER_RAD);
 
 
@@ -162,11 +162,9 @@ public class Climber extends SubsystemBase {
 
 
     public void setAngleZero() {
-        double x = unitModelPosition.toUnits(mainMotor.getSelectedSensorPosition(1));
-        if (x != Constants.Climber.K_TICKS) {
-            double angle = unitModelPosition.toUnits(x - Constants.Climber.K_TICKS);
-            setPosition(angle);
-        }
+        double angle = unitModelGearbox.toUnits(mainMotor.getSelectedSensorPosition(1)
+                - Constants.Climber.ZERO_POSITION);
+        setPosition(angle);
     }
 
 
