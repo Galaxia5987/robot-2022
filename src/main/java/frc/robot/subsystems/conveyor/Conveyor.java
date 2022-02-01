@@ -15,8 +15,7 @@ import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
 
-import static frc.robot.Ports.Conveyor.MOTOR_INVERSION;
-import static frc.robot.Ports.Conveyor.SOLENOID;
+import static frc.robot.Ports.Conveyor.*;
 
 public class Conveyor extends SubsystemBase {
     private static Conveyor INSTANCE = null;
@@ -32,6 +31,7 @@ public class Conveyor extends SubsystemBase {
 
     private Conveyor() {
         motor.setInverted(MOTOR_INVERSION);
+        motor.enableVoltageCompensation(IS_COMPENSATING_VOLTAGE);
         match.addColorMatch(Constants.Conveyor.RED);
         match.addColorMatch(Constants.Conveyor.BLUE);
         match.addColorMatch(Constants.Conveyor.NONE);
