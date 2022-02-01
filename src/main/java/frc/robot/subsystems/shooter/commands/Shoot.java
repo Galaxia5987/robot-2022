@@ -13,7 +13,7 @@ public class Shoot extends CommandBase {
      * Constructor.
      *
      * @param shooter          is the shooter subsystem.
-     * @param velocitySetpoint is the setpoint for the shooter wheel. [rps]
+     * @param velocitySetpoint is the setpoint for the shooter wheel. [rpm]
      */
     public Shoot(Shooter shooter, DoubleSupplier velocitySetpoint) {
         this.shooter = shooter;

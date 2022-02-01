@@ -129,7 +129,7 @@ public class Shooter extends SubsystemBase {
         if (Robot.isSimulation()) {
             return flywheelSim.getAngularVelocityRPM();
         }
-        return unitModel.toVelocity(motor.getSelectedSensorVelocity());
+        return Utils.rpsToRpm(unitModel.toVelocity(motor.getSelectedSensorVelocity()));
     }
 
     /**
