@@ -11,7 +11,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
 
+import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import static frc.robot.Constants.Conveyor.MAX_CARGO_AMOUNT;
@@ -21,7 +23,7 @@ import static frc.robot.Ports.Conveyor.SOLENOID;
 public class Conveyor extends SubsystemBase {
     private static Conveyor INSTANCE = null;
     private final WPI_TalonFX motor = new WPI_TalonFX(Ports.Conveyor.MOTOR);
-    private final ArrayBlockingQueue<String> cargoPositions = new ArrayBlockingQueue<>(MAX_CARGO_AMOUNT);
+    private final Deque<String> cargoPositions = new ArrayDeque<>();
     private final ColorSensorV3 colorSensor = new ColorSensorV3(I2C.Port.kMXP);
     private final Solenoid flap = new Solenoid(PneumaticsModuleType.CTREPCM, SOLENOID);
     private final DigitalInput postFlapBeam = new DigitalInput(Ports.Conveyor.POST_FLAP_BEAM_BREAKER);
@@ -128,27 +130,15 @@ public class Conveyor extends SubsystemBase {
                     Add another ball at the tail of the queue
          */
         if (isPostFlapBeamActive && !wasPostFlapBeamActive && power > 0) {
-            if(!cargoPositions.toArray()[0].equals(DriverStation.Alliance.Invalid.name())) {
-                cargoPositions.poll();
-                var temp = cargoPositions.take();
-                cargoPositions.add(DriverStation.Alliance.Invalid.name());
-                cargoPositions.add(temp);
-            } else {
-                cargoPositions.poll();
-                cargoPositions.poll();
-                cargoPositions.add(DriverStation.Alliance.Invalid.name());
-                cargoPositions.add(DriverStation.Alliance.Invalid.name());
-            }
+            cargoPositions.removeFirst();
+            cargoPositions.add(DriverStation.Alliance.Invalid.name());
         }
         if (colorIntake != lastSeenColor && !colorIntake.equals(DriverStation.Alliance.Invalid)) {
+            cargoPositions.removeLast();
             if (power < 0) {
-                if (cargoPositions.remainingCapacity() == 0) {
-                    cargoPositions.poll();
-                }
-                cargoPositions.offer(colorIntake.name());
+                cargoPositions.add(DriverStation.Alliance.Invalid.name());
             } else if (power > 0) {
-                cargoPositions.remove();
-                cargoPositions.offer(colorIntake.name());
+                cargoPositions.add(colorIntake.name());
             }
         }
         wasPostFlapBeamActive = isPostFlapBeamActive;
