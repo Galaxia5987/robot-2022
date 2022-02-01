@@ -1,6 +1,8 @@
-package frc.robot.utils.utils;
+package frc.robot.utils;
 
-public final class SwerveModuleConfig implements SwerveModuleConfigBase {
+import frc.robot.valuetuner.WebConstant;
+
+public final class SwerveModuleConfigDebug implements SwerveModuleConfigBase {
     private final int wheel;
 
     // ports
@@ -13,19 +15,19 @@ public final class SwerveModuleConfig implements SwerveModuleConfigBase {
     private final boolean angleMotorSensorPhase;
 
     // PID
-    private final double angle_kp;
-    private final double angle_ki;
-    private final double angle_kd;
-    private final double angle_kf;
+    private final WebConstant angle_kp;
+    private final WebConstant angle_ki;
+    private final WebConstant angle_kd;
+    private final WebConstant angle_kf;
 
-    private final double j; // moment of inertia [kg * m^2]
+    private final WebConstant j; // moment of inertia [kg * m^2]
 
     private final double zeroPosition; // [ticks]
 
-    public SwerveModuleConfig(int wheel, int driveMotorPort, int angleMotorPort,
-                              boolean driveMotorInverted, boolean angleMotorInverted, boolean angleMotorSensorPhase,
-                              double angle_kp, double angle_ki, double angle_kd, double angle_kf,
-                              double j, double zeroPosition) {
+    public SwerveModuleConfigDebug(int wheel, int driveMotorPort, int angleMotorPort,
+                                   boolean driveMotorInverted, boolean angleMotorInverted, boolean angleMotorSensorPhase,
+                                   WebConstant angle_kp, WebConstant angle_ki, WebConstant angle_kd, WebConstant angle_kf,
+                                   WebConstant j, double zeroPosition) {
         this.wheel = wheel;
         this.driveMotorPort = driveMotorPort;
         this.angleMotorPort = angleMotorPort;
@@ -72,27 +74,27 @@ public final class SwerveModuleConfig implements SwerveModuleConfigBase {
 
     @Override
     public double angle_kp() {
-        return angle_kp;
+        return angle_kp.get();
     }
 
     @Override
     public double angle_ki() {
-        return angle_ki;
+        return angle_ki.get();
     }
 
     @Override
     public double angle_kd() {
-        return angle_kd;
+        return angle_kd.get();
     }
 
     @Override
     public double angle_kf() {
-        return angle_kf;
+        return angle_kf.get();
     }
 
     @Override
     public double j() {
-        return j;
+        return j.get();
     }
 
     @Override
@@ -102,6 +104,6 @@ public final class SwerveModuleConfig implements SwerveModuleConfigBase {
 
     @Override
     public boolean debug() {
-        return false;
+        return true;
     }
 }

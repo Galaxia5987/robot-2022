@@ -1,4 +1,4 @@
-package frc.robot.utils.utils;
+package frc.robot.utils;
 
 import edu.wpi.first.wpilibj.Timer;
 

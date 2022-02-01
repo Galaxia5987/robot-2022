@@ -6,16 +6,14 @@ import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
-import frc.robot.utils.PhotonVisionModule;
-import frc.robot.utils.SimulateDrivetrain;
-import frc.robot.utils.commands.SimulateDrivetrainDefaultCommand;
 
+import frc.robot.subsystems.drivetrain.commands.DriveSlowAccel;
+import frc.robot.subsystems.drivetrain.commands.OverpoweredDrive;
 import webapp.Webserver;
 
 public class RobotContainer {
@@ -25,18 +23,12 @@ public class RobotContainer {
     public static Joystick joystick2 = new Joystick(Ports.Controls.JOYSTICK2);
     private final SwerveDrive swerve = SwerveDrive.getFieldOrientedInstance();
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
-    private final SimulateDrivetrain simulateDrivetrain = new SimulateDrivetrain();
-    private final PhotonVisionModule visionModule;
+    private final JoystickButton leftTrigger = new JoystickButton(joystick, Joystick.ButtonType.kTrigger.value);
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        if (Robot.isSimulation()) {
-            visionModule = new PhotonVisionModule("photonvision", simulateDrivetrain);
-        } else {
-            visionModule = new PhotonVisionModule("photonvision", null);
-        }
         // Configure the button bindings and default commands
         configureDefaultCommands();
 
@@ -48,11 +40,12 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        simulateDrivetrain.setDefaultCommand(new SimulateDrivetrainDefaultCommand(
-                xbox, simulateDrivetrain));
+        swerve.setDefaultCommand(new OverpoweredDrive(swerve, () -> joystick.getY(), () -> joystick.getX(), () -> joystick2.getX()));
+//        swerve.setDefaultCommand(new DriveSlowAccel(swerve, () -> joystick.getY(), () -> joystick.getX(), () -> joystick2.getX()));
     }
 
     private void configureButtonBindings() {
+        leftTrigger.whenPressed(() -> Robot.resetAngle());
     }
 
 
@@ -65,15 +58,16 @@ public class RobotContainer {
         PathPlannerTrajectory path = PathPlanner.loadPath("Path", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL, false);
         swerve.resetOdometry(new Pose2d(path.getInitialState().poseMeters.getTranslation(), path.getInitialState().holonomicRotation), path.getInitialState().holonomicRotation);
         Robot.resetAngle(path.getInitialState().holonomicRotation);
+        var thetaController = new ProfiledPIDController(Constants.Autonomous.kPThetaController, 0, 0, Constants.Autonomous.kThetaControllerConstraints);
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
         return new PPSwerveControllerCommand(
                 path,
                 swerve::getPose,
                 swerve.getKinematics(),
-                new PIDController(2, 0, 0),
-                new PIDController(2, 0, 0),
-                new ProfiledPIDController(2, 0, 0, new TrapezoidProfile.Constraints(3, 1.5)) {{
-                    enableContinuousInput(-Math.PI, Math.PI);
-                }},
+                new PIDController(Constants.Autonomous.kPXController, 0, 0),
+                new PIDController(Constants.Autonomous.kPYController, 0, 0),
+                thetaController,
                 swerve::setStates
         );
     }

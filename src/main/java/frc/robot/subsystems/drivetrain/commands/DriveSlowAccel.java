@@ -1,48 +1,39 @@
 package frc.robot.subsystems.drivetrain.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
-import static frc.robot.Constants.SwerveDrive.ROTATION_MULTIPLIER;
-import static frc.robot.Constants.SwerveDrive.VELOCITY_MULTIPLIER;
+import java.util.function.DoubleSupplier;
 
-public class DriveSlowAccel extends CommandBase {
-    private final SwerveDrive swerve;
+public class DriveSlowAccel extends HolonomicDrive {
     private double current = 0;
 
-    public DriveSlowAccel(SwerveDrive swerve) {
-        this.swerve = swerve;
-        addRequirements(swerve);
+    public DriveSlowAccel(SwerveDrive swerveDrive, DoubleSupplier forwardSupplier, DoubleSupplier strafeSupplier, DoubleSupplier rotationSupplier) {
+        super(swerveDrive, forwardSupplier, strafeSupplier, rotationSupplier);
     }
 
     @Override
     public void execute() {
-        double forward = -RobotContainer.xbox.getLeftY();
-        double strafe = -RobotContainer.xbox.getLeftX();
-        double magnitude = Math.hypot(forward, strafe);
-        double alpha = Math.atan2(strafe, forward);
-        if (Math.abs(magnitude) < 0.1)
-            magnitude = 0;
-        if (magnitude == 0) current = 0;
-        magnitude *= VELOCITY_MULTIPLIER;
-        current += magnitude / 25;
+        var speeds = calculateVelocities();
+        double magnitude = Math.hypot(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond);
+        current += magnitude / 10;
         if (current > magnitude) current = magnitude;
-        forward = Math.cos(alpha) * current;
-        strafe = Math.sin(alpha) * current;
-        double rotation = -RobotContainer.xbox.getRightX();
-        if (Math.abs(rotation) < 0.1) rotation = 0;
-        rotation *= ROTATION_MULTIPLIER;
+        double alpha = Math.atan2(speeds.vyMetersPerSecond, speeds.vxMetersPerSecond);
+
+        double forward = current * Math.cos(alpha);
+        double strafe = current * Math.sin(alpha);
+        double rotation = speeds.omegaRadiansPerSecond;
+
 
         if (magnitude == 0 && rotation == 0)
-            swerve.terminate();
+            swerveDrive.terminate();
         else {
-            swerve.holonomicDrive(forward, strafe, rotation);
+            swerveDrive.holonomicDrive(forward, strafe, rotation);
         }
+        log(speeds);
     }
 
     @Override
     public void end(boolean interrupted) {
-        swerve.terminate();
+        swerveDrive.terminate();
     }
 }

@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
-import frc.robot.utils.utils.TimeDelayedBoolean;
+import frc.robot.utils.TimeDelayedBoolean;
 
 
 /**
@@ -29,7 +29,7 @@ public class SwerveDrive extends SubsystemBase {
     private final SwerveModule[] modules = new SwerveModule[4];
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(Constants.SwerveDrive.SWERVE_POSITIONS);
     private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, new Rotation2d());
-    private final ProfiledPIDController thetaController = new ProfiledPIDController(
+    private final ProfiledPIDController headingController = new ProfiledPIDController(
             Constants.SwerveDrive.THETA_KP,
             Constants.SwerveDrive.THETA_KI,
             Constants.SwerveDrive.THETA_KD,
@@ -45,9 +45,9 @@ public class SwerveDrive extends SubsystemBase {
         modules[Constants.SwerveModule.rrConfig.wheel()] = new SwerveModule(Constants.SwerveModule.rrConfig);
         modules[Constants.SwerveModule.rlConfig.wheel()] = new SwerveModule(Constants.SwerveModule.rlConfig);
 
-        thetaController.enableContinuousInput(-Math.PI, Math.PI);
-        thetaController.reset(0, 0);
-        thetaController.setTolerance(Constants.SwerveDrive.ALLOWABLE_THETA_ERROR);
+        headingController.enableContinuousInput(-Math.PI, Math.PI);
+        headingController.reset(0, 0);
+        headingController.setTolerance(Constants.SwerveDrive.ALLOWABLE_THETA_ERROR);
     }
 
     /**
@@ -87,20 +87,11 @@ public class SwerveDrive extends SubsystemBase {
      * @param rotation rhe rotational velocity. [rad/s]
      */
     public void holonomicDrive(double forward, double strafe, double rotation) {
-        if (rotation == 0 &&
-                rotationDelay.update(Math.abs(thetaController.getGoal().position - Robot.getAngle()
-                                .getRadians()) < Constants.SwerveDrive.ALLOWABLE_THETA_ERROR,
-                        Constants.SwerveDrive.ROTATION_DELAY)
-        ) {
-            rotation = thetaController.calculate(Robot.getAngle().getRadians());
-        } else {
-            thetaController.reset(Robot.getAngle().getRadians());
-        }
         ChassisSpeeds speeds = fieldOriented ?
                 ChassisSpeeds.fromFieldRelativeSpeeds(forward, strafe, rotation, Robot.getAngle()) :
                 new ChassisSpeeds(forward, strafe, rotation);
-
         setStates(kinematics.toSwerveModuleStates(speeds));
+
     }
 
     /**
@@ -109,8 +100,8 @@ public class SwerveDrive extends SubsystemBase {
      * @param desiredAngle the desired angle of the robot.
      */
     public void holonomicDriveKeepSetpoint(double forward, double strafe, Rotation2d desiredAngle) {
-        thetaController.setGoal(desiredAngle.getRadians());
-        double output = thetaController.calculate(Robot.getAngle().getRadians());
+        headingController.setGoal(desiredAngle.getRadians());
+        double output = headingController.calculate(Robot.getAngle().getRadians());
 
         setStates(kinematics.toSwerveModuleStates(new ChassisSpeeds(forward, strafe, output)));
     }
@@ -134,7 +125,7 @@ public class SwerveDrive extends SubsystemBase {
      * @param states the states of the modules.
      */
     public void setStates(SwerveModuleState[] states) {
-        SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.SwerveDrive.VELOCITY_MULTIPLIER);
+        SwerveDriveKinematics.desaturateWheelSpeeds(states, 1.42 * Constants.SwerveDrive.VELOCITY_MULTIPLIER);
         for (SwerveModule module : modules) {
             SwerveModuleState state = states[module.getWheel()];
             state = SwerveModuleState.optimize(state, module.getAngle());
@@ -197,10 +188,10 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     /**
-     * Resets the theta controller target angle.
+     * Resets the heading controller target angle.
      */
-    public void resetThetaController() {
-        thetaController.reset(0, getChassisSpeeds().omegaRadiansPerSecond);
+    public void resetHeadingController() {
+        headingController.reset(0, getChassisSpeeds().omegaRadiansPerSecond);
     }
 
     public void setPower(double power) {
@@ -225,6 +216,36 @@ public class SwerveDrive extends SubsystemBase {
         }
     }
 
+    public void noSpeedSetChassisSpeedsStateSpace(double vx, double vy, double rot) {
+        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+                vx, vy, rot, Robot.navx.getRotation2d());
+        SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
+        noSpeedSetStatesStateSpace(states);
+    }
+
+    public void noSpeedSetStatesStateSpace(SwerveModuleState[] states) {
+        for (int i = 0; i < 4; i++) {
+            states[i] = SwerveModuleState.optimize(states[i], getModule(i).getAngle());
+            getModule(i).setAngle(states[i].angle);
+        }
+    }
+
+
+    public boolean haveReached(double vx, double vy, double rot) {
+        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+                vx, vy, rot, Robot.navx.getRotation2d());
+        SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
+        for (int i = 0; i < 4; i++)
+            states[i] = SwerveModuleState.optimize(states[i], getModule(i).getAngle());
+
+        for (int i = 0; i < 4; i++) {
+            if (!(Math.abs(states[i].angle.minus(getModule(i).getAngle()).getDegrees()) < 10)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * Terminates the modules from moving.
      */
@@ -243,9 +264,9 @@ public class SwerveDrive extends SubsystemBase {
                 getStates()
         );
 /*
-        thetaController.setP(Constants.SwerveDrive.THETA_KP.get());
-        thetaController.setI(Constants.SwerveDrive.THETA_KI.get());
-        thetaController.setD(Constants.SwerveDrive.THETA_KD.get());
+        headingController.setP(Constants.SwerveDrive.THETA_KP.get());
+        headingController.setI(Constants.SwerveDrive.THETA_KI.get());
+        headingController.setD(Constants.SwerveDrive.THETA_KD.get());
 */
     }
 }

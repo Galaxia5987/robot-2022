@@ -1,6 +1,4 @@
-package frc.robot.utils.utils;
-
-import frc.robot.valuetuner.WebConstant;
+package frc.robot.utils;
 
 /**
  * The interface encapsulates the module's unique properties, so it will be a lot easier and prettier to use it
