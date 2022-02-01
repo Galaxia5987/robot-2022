@@ -35,11 +35,6 @@ public class IntakeCargo extends CommandBase {
             intake.setPower(power);
     }
 
-    @Override
-    public boolean isFinished() {
-        return false;
-    }
-
     /**
      * Stops motor.
      */
