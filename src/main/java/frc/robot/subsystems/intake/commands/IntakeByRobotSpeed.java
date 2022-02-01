@@ -30,7 +30,7 @@ public class IntakeByRobotSpeed extends CommandBase {
      */
     @Override
     public void execute() {
-        intake.setPower(Constants.Intake.BIAS + (robotVelocity.getAsDouble() * Constants.Intake.POWER_TO_VELOCITY));
+        intake.setPower(Constants.Intake.BIAS + (robotVelocity.getAsDouble() * Constants.Intake.POWER_TO_VELOCITY_RATIO));
     }
 
     /**
