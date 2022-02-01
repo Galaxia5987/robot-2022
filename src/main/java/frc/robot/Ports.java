@@ -16,11 +16,6 @@ public final class Ports {
 
     public static class Shooter {
         public static final int MOTOR = 0; // Main motor port.
-        public static TalonFXConfiguration getConfiguration(){
-            final TalonFXConfiguration configuration = new TalonFXConfiguration();
-            configuration.neutralDeadband = NEUTRAL_DEADBAND;
-            return configuration;
-        }
     }
 
     public static class Controls {

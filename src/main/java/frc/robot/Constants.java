@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
+
 public final class Constants {
     public static final double LOOP_PERIOD = 0.02; // loop period. [s]
     public static final double g = 9.80665; // Gravity acceleration constant. [m/s^2]
@@ -25,6 +27,11 @@ public final class Constants {
         public static final double NEUTRAL_DEADBAND = 0.1; // [%]
 
         public static final double OUTPUT_MULTIPLIER = 0.1; // Multiplies the output for manual control in the bits. [%]
+        public static TalonFXConfiguration getConfiguration(){
+            final TalonFXConfiguration configuration = new TalonFXConfiguration();
+            configuration.neutralDeadband = NEUTRAL_DEADBAND;
+            return configuration;
+        }
     }
 
     public static class Control {
