@@ -7,8 +7,8 @@ public final class Constants {
     public static final double g = 9.80665; // Gravity acceleration constant. [m/s^2]
     public static final double UPPER_TARGET_HEIGHT = 2.64; // Height of upper target. [m]
     public static final double PEBZNER_HEIGHT = 4.8; // Height of pebzner auditorium. [m]
-    public static final int TALON_TIMEOUT = 10; // Waiting period for configurations. [ms]
     public static final double NOMINAL_VOLTAGE = 12.0; // Nominal voltage. [V]
+    public static final int TALON_TIMEOUT = 10; // Waiting period for configurations. [ms]
 
 
     public static class Shooter {
@@ -27,7 +27,8 @@ public final class Constants {
         public static final double NEUTRAL_DEADBAND = 0.1; // [%]
 
         public static final double OUTPUT_MULTIPLIER = 0.1; // Multiplies the output for manual control in the bits. [%]
-        public static TalonFXConfiguration getConfiguration(){
+
+        public static TalonFXConfiguration getConfiguration() {
             final TalonFXConfiguration configuration = new TalonFXConfiguration();
             configuration.neutralDeadband = NEUTRAL_DEADBAND;
             return configuration;

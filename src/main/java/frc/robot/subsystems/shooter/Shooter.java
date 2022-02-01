@@ -1,9 +1,8 @@
 package frc.robot.subsystems.shooter;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
-
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
+import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Nat;
@@ -26,7 +25,7 @@ import frc.robot.utils.Utils;
 
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.Shooter.*;
-import static frc.robot.Ports.Shooter.*;
+import static frc.robot.Ports.Shooter.MOTOR;
 
 public class Shooter extends SubsystemBase {
     private static Shooter INSTANCE;
@@ -44,6 +43,18 @@ public class Shooter extends SubsystemBase {
         if (Robot.isSimulation()) {
             simCollection = motor.getSimCollection();
         }
+    }
+
+    /**
+     * Gets the single instance of the shooter.
+     *
+     * @return shooter instance.
+     */
+    public static Shooter getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new Shooter();
+        }
+        return INSTANCE;
     }
 
     private void configureMotor() {
@@ -94,18 +105,6 @@ public class Shooter extends SubsystemBase {
                 quadraticRegulator,
                 kalmanFilter,
                 NOMINAL_VOLTAGE, LOOP_PERIOD);
-    }
-
-    /**
-     * Gets the single instance of the shooter.
-     *
-     * @return shooter instance.
-     */
-    public static Shooter getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new Shooter();
-        }
-        return INSTANCE;
     }
 
     /**

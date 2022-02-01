@@ -1,9 +1,5 @@
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-
-import static frc.robot.Constants.Shooter.NEUTRAL_DEADBAND;
-
 public final class Ports {
     public static class ExampleSubsystem {
         public static final int MAIN = 0;
