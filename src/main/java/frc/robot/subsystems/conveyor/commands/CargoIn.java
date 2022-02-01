@@ -29,6 +29,3 @@ public class CargoIn extends CommandBase {
         conveyor.setPower(0);
     }
 }
-
-
-
