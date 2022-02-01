@@ -72,6 +72,7 @@ public final class Constants {
         public static final double DEFAULT_POWER = 0.5; // power intake will receive on the basic command. [%]
         public static final double POWER_TO_VELOCITY_RATIO = -3 / 16.0; // Ratio of power to velocity. [% / m/s]
         public static final boolean IS_COMPENSATING_VOLTAGE = true;
+    }
 
     public static class Control {
         public static final double RIGHT_TRIGGER_DEADBAND = 0.4; // Deadband for right trigger. [%]
