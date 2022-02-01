@@ -150,15 +150,6 @@ public class Shooter extends SubsystemBase {
     }
 
     /**
-     * Sets an output for the flywheel motor.
-     *
-     * @param output is the output for the motor. [%]
-     */
-    public void setOutput(double output) {
-        motor.set(ControlMode.PercentOutput, output);
-    }
-
-    /**
      * Terminates the movement of the wheel.
      */
     public void terminate() {
