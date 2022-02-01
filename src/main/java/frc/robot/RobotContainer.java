@@ -14,7 +14,7 @@ import static frc.robot.Constants.Control.RIGHT_TRIGGER_DEADBAND;
 
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-    public ExampleSubsystem exampleSubsystem = ExampleSubsystem.getInstance();
+    private final ExampleSubsystem exampleSubsystem = ExampleSubsystem.getInstance();
     private final XboxController xbox = new XboxController(Ports.Controls.XBOX);
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final Trigger rightTrigger = new Trigger(() -> xbox.getRightTriggerAxis() > RIGHT_TRIGGER_DEADBAND);
