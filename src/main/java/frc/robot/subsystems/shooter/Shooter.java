@@ -52,30 +52,6 @@ public class Shooter extends SubsystemBase {
     }
 
     /**
-     * Gets the single instance of the shooter.
-     *
-     * @return shooter instance.
-     */
-    public static Shooter getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new Shooter();
-        }
-        return INSTANCE;
-    }
-
-    /**
-     * Calculates the velocity setpoint according to the distance from the target.
-     * Once the data from the shooter is acquired this function will be changed.
-     *
-     * @param distance is the distance from the target. [m]
-     * @return 15. [rpm]
-     */
-    public static double getSetpointVelocity(double distance) {
-//        return 15 * distance;
-        return 100;
-    }
-
-    /**
      * State space configuration function. Note that there are 2 different configurations.
      *
      * @param isInertiaBased is the configuration for the state space.
@@ -118,6 +94,30 @@ public class Shooter extends SubsystemBase {
                 quadraticRegulator,
                 kalmanFilter,
                 NOMINAL_VOLTAGE, LOOP_PERIOD);
+    }
+
+    /**
+     * Gets the single instance of the shooter.
+     *
+     * @return shooter instance.
+     */
+    public static Shooter getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new Shooter();
+        }
+        return INSTANCE;
+    }
+
+    /**
+     * Calculates the velocity setpoint according to the distance from the target.
+     * Once the data from the shooter is acquired this function will be changed.
+     *
+     * @param distance is the distance from the target. [m]
+     * @return 15. [rpm]
+     */
+    public static double getSetpointVelocity(double distance) {
+//        return 15 * distance;
+        return 100;
     }
 
     /**
