@@ -189,6 +189,8 @@ public class SwerveModule extends SubsystemBase {
      * @param state the desired state.
      */
     public void setState(SwerveModuleState state) {
+//        double diff = Math.abs(state.angle.minus(getAngle()).getRadians()); //comment this in
+//        setVelocity(state.speedMetersPerSecond * Math.abs(Math.cos(diff)));//comment this in
         setVelocity(state.speedMetersPerSecond);
         setAngle(state.angle);
     }

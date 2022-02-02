@@ -27,8 +27,8 @@ public final class Constants {
     // The order of modules is ALWAYS front-right (fr), front-left (fl), rear-right (rr), rear-left (rl)
     public static final class SwerveDrive {
 
-        public static final double VELOCITY_MULTIPLIER = 2.5;
-        public static final double ROTATION_MULTIPLIER = 5;
+        public static final double VELOCITY_MULTIPLIER = 2.2;
+        public static final double ROTATION_MULTIPLIER = 2;
 
         public static final int TICKS_PER_ROTATION_DRIVE_MOTOR = 2048;
         public static final int TICKS_PER_ROTATION_ANGLE_MOTOR = 1024;

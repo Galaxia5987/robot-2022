@@ -216,24 +216,26 @@ public class SwerveDrive extends SubsystemBase {
         }
     }
 
-    public void noSpeedSetChassisSpeedsStateSpace(double vx, double vy, double rot) {
-        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                vx, vy, rot, Robot.navx.getRotation2d());
-        SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
-        noSpeedSetStatesStateSpace(states);
+    public void noSpeedSetChassisSpeedsStateSpace(double forward, double strafe, double rotation) {
+        ChassisSpeeds speeds = fieldOriented ?
+                ChassisSpeeds.fromFieldRelativeSpeeds(forward, strafe, rotation, Robot.getAngle()) :
+                new ChassisSpeeds(forward, strafe, rotation);
+        noSpeedSetStatesStateSpace(kinematics.toSwerveModuleStates(speeds));
     }
 
     public void noSpeedSetStatesStateSpace(SwerveModuleState[] states) {
         for (int i = 0; i < 4; i++) {
+            double diff = Math.abs(states[i].angle.minus(getModule(i).getAngle()).getRadians());
             states[i] = SwerveModuleState.optimize(states[i], getModule(i).getAngle());
             getModule(i).setAngle(states[i].angle);
+            getModule(i).setVelocity(states[i].speedMetersPerSecond * Math.abs(Math.cos(diff)));//comment this out
         }
     }
 
 
     public boolean haveReached(double vx, double vy, double rot) {
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                vx, vy, rot, Robot.navx.getRotation2d());
+                vx, vy, rot, Robot.getAngle());
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
         for (int i = 0; i < 4; i++)
             states[i] = SwerveModuleState.optimize(states[i], getModule(i).getAngle());

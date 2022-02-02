@@ -3,6 +3,7 @@ package frc.robot.subsystems.drivetrain.commands;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
@@ -15,7 +16,7 @@ import static frc.robot.Constants.SwerveDrive.VELOCITY_MULTIPLIER;
 
 // AssistedDrive, WaitBeforeAccel, DriveSlowAccel
 public class OverpoweredDrive extends CommandBase {
-    PIDController pidController = new PIDController(0.08, 0, 0) {{
+    PIDController pidController = new PIDController(0.05, 0, 0) {{
         enableContinuousInput(-180, 180);
         setTolerance(5);
     }};
@@ -75,11 +76,12 @@ public class OverpoweredDrive extends CommandBase {
             if (wait) {//comment this out
                 swerveDrive.noSpeedSetChassisSpeedsStateSpace(forward, strafe, rotation);//comment this out
             } else {//comment this out
-                if (keepSetpoint) {
-                    swerveDrive.holonomicDrive(forward, strafe, pidController.calculate(Robot.getAngle().getDegrees(), setpoint.getDegrees()));
-                } else {
-                    swerveDrive.holonomicDrive(forward, strafe, rotation);
-                }
+//                if (keepSetpoint) {//comment in
+//                    swerveDrive.holonomicDrive(forward, strafe, pidController.calculate(Robot.getAngle().getDegrees(), setpoint.getDegrees()));//comment it
+//                } else {//comment in
+                swerveDrive.holonomicDrive(forward, strafe, rotation * (1 + magnitude / (VELOCITY_MULTIPLIER * 2)));//comment this in
+//                    swerveDrive.holonomicDrive(forward, strafe, rotation);
+//                }//comment in
 
             }
         }//comment this out

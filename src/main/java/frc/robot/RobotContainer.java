@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 import frc.robot.subsystems.drivetrain.commands.DriveSlowAccel;
+import frc.robot.subsystems.drivetrain.commands.HolonomicDrive;
 import frc.robot.subsystems.drivetrain.commands.OverpoweredDrive;
 import webapp.Webserver;
 
@@ -40,12 +41,14 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        swerve.setDefaultCommand(new OverpoweredDrive(swerve, () -> joystick.getY(), () -> joystick.getX(), () -> joystick2.getX()));
+//        swerve.setDefaultCommand(new OverpoweredDrive(swerve, () -> joystick.getY(), () -> joystick.getX(), () -> joystick2.getX()));
+        swerve.setDefaultCommand(new OverpoweredDrive(swerve, () -> xbox.getLeftY(), () -> xbox.getLeftX(), () -> xbox.getRightX()));
+//        swerve.setDefaultCommand(new HolonomicDrive(swerve, () -> xbox.getLeftY(), () -> xbox.getLeftX(), () -> xbox.getRightX()));
 //        swerve.setDefaultCommand(new DriveSlowAccel(swerve, () -> joystick.getY(), () -> joystick.getX(), () -> joystick2.getX()));
     }
 
     private void configureButtonBindings() {
-        leftTrigger.whenPressed(() -> Robot.resetAngle());
+        a.whenPressed(() -> Robot.resetAngle());
     }
 
 
