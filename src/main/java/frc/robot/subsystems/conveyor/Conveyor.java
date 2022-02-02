@@ -15,6 +15,7 @@ import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
 
+import static frc.robot.Constants.Conveyor.*;
 import static frc.robot.Ports.Conveyor.*;
 
 public class Conveyor extends SubsystemBase {
@@ -25,16 +26,16 @@ public class Conveyor extends SubsystemBase {
     private final Solenoid flap = new Solenoid(PneumaticsModuleType.CTREPCM, SOLENOID);
     private final DigitalInput postFlapBeam = new DigitalInput(Ports.Conveyor.POST_FLAP_BEAM_BREAKER);
     private final DigitalInput preFlapBeam = new DigitalInput(Ports.Conveyor.PRE_FLAP_BEAM_BREAKER);
-    private final ColorMatch match = new ColorMatch();
+    private final ColorMatch colorMatch = new ColorMatch();
     private DriverStation.Alliance lastSeenColor = DriverStation.Alliance.Invalid;
     private boolean wasPostFlapBeamActive = true;
 
     private Conveyor() {
         motor.setInverted(MOTOR_INVERSION);
         motor.enableVoltageCompensation(IS_COMPENSATING_VOLTAGE);
-        match.addColorMatch(Constants.Conveyor.RED);
-        match.addColorMatch(Constants.Conveyor.BLUE);
-        match.addColorMatch(Constants.Conveyor.NONE);
+        colorMatch.addColorMatch(RED);
+        colorMatch.addColorMatch(BLUE);
+        colorMatch.addColorMatch(NONE);
         cargoPositions.add(DriverStation.Alliance.Invalid.name());
         cargoPositions.add(DriverStation.Alliance.Invalid.name());
     }
@@ -110,10 +111,21 @@ public class Conveyor extends SubsystemBase {
     }
 
     private void updateActualBallPositions() {
-        var colorIntake = getColor();
+        DriverStation.Alliance colorIntake;
+        int distance = colorSensor.getProximity();
+        SmartDashboard.putNumber("distance", distance);
+        if (distance > Constants.Conveyor.MIN_PROXIMITY_VALUE) {
+            colorIntake = getColor();
+            if (colorIntake.equals(DriverStation.Alliance.Invalid)) {
+                colorIntake = lastSeenColor;
+            }
+        } else {
+            colorIntake = DriverStation.Alliance.Invalid;
+        }
+
         boolean isPostFlapBeamActive = postFlapBeam.get();
         SmartDashboard.putString("alliance", colorIntake.name());
-        double power = motor.getMotorOutputPercent();
+        double power = 1;
         /*
         Condition: post flap beam is currently active and wasn't in the last input and velocity is positive
             true => Remove the head of the queue
@@ -127,10 +139,14 @@ public class Conveyor extends SubsystemBase {
                             Add an invalid value into the queue
          */
         if (isPostFlapBeamActive && !wasPostFlapBeamActive && power > 0) {
-            cargoPositions.removeFirst();
+            if(getCargoCount() == 1) {
+                cargoPositions.removeFirstOccurrence(getFirstNonInvalid());
+            } else {
+                cargoPositions.removeFirst();
+            }
             cargoPositions.add(DriverStation.Alliance.Invalid.name());
         }
-        if (!colorIntake.equals(lastSeenColor) && !colorIntake.equals(DriverStation.Alliance.Invalid) && power > 0) {
+        if (!colorIntake.equals(lastSeenColor) && !colorIntake.equals(DriverStation.Alliance.Invalid) && power > 0 && getCargoCount() != 2) {
             cargoPositions.removeFirstOccurrence(DriverStation.Alliance.Invalid.name());
             cargoPositions.add(colorIntake.name());
         } else if (!colorIntake.equals(lastSeenColor) && colorIntake.equals(DriverStation.Alliance.Invalid) && power < 0) {
@@ -148,10 +164,10 @@ public class Conveyor extends SubsystemBase {
      * @return the first non-invalid value.
      */
     private String getFirstNonInvalid() {
-        if (cargoPositions.getLast().equals(DriverStation.Alliance.Invalid.name())) {
-            return cargoPositions.getFirst();
-        } else if (cargoPositions.getFirst().equals(DriverStation.Alliance.Invalid.name())) {
+        if(cargoPositions.getLast().equals(DriverStation.Alliance.Red.name()) || cargoPositions.getLast().equals(DriverStation.Alliance.Blue.name())) {
             return cargoPositions.getLast();
+        } else if(cargoPositions.getFirst().equals(DriverStation.Alliance.Red.name()) || cargoPositions.getFirst().equals(DriverStation.Alliance.Blue.name())) {
+            return cargoPositions.getFirst();
         } else {
             return DriverStation.Alliance.Invalid.name();
         }
@@ -163,6 +179,11 @@ public class Conveyor extends SubsystemBase {
     @Override
     public void periodic() {
         updateActualBallPositions();
+        var color = colorSensor.getColor();
+        SmartDashboard.putNumberArray("color", new double[]{color.blue, color.red, color.green});
+        SmartDashboard.putString("color-name", getColor().name());
+        SmartDashboard.putString("positions", Arrays.toString(cargoPositions.toArray()));
+        SmartDashboard.putString("ima-shel-alon", colorSensor.getRed() + "      " + colorSensor.getGreen() + "      " + colorSensor.getBlue());
     }
 
     @Override
