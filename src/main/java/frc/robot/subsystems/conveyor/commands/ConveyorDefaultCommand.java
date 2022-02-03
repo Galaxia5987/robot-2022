@@ -37,6 +37,5 @@ public class ConveyorDefaultCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         conveyor.setPower(0);
-        conveyor.openFlap();
     }
 }
