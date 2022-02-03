@@ -163,7 +163,7 @@ public class Conveyor extends SubsystemBase {
          */
         if (isPostFlapBeamActive && !wasPostFlapBeamActive && power > 0) {
             if (getCargoCount() == 1) {
-                cargoPositions.removeFirstOccurrence(getFirstNonInvalid());
+                cargoPositions.removeFirstOccurrence(getFirstNotInvalid());
             } else {
                 cargoPositions.removeFirst();
             }
@@ -174,7 +174,7 @@ public class Conveyor extends SubsystemBase {
                 cargoPositions.removeFirstOccurrence(DriverStation.Alliance.Invalid.name());
                 cargoPositions.add(colorIntake.name());
             } else if (colorIntake.equals(DriverStation.Alliance.Invalid) && power < 0) {
-                cargoPositions.removeFirstOccurrence(getFirstNonInvalid());
+                cargoPositions.removeFirstOccurrence(getFirstNotInvalid());
                 cargoPositions.add(DriverStation.Alliance.Invalid.name());
             }
         }
@@ -186,9 +186,9 @@ public class Conveyor extends SubsystemBase {
     /**
      * This function returns the first value in the queue that isn't invalid.
      *
-     * @return the first non-invalid value.
+     * @return the first not invalid value.
      */
-    private String getFirstNonInvalid() {
+    private String getFirstNotInvalid() {
         if (cargoPositions.getLast().equals(DriverStation.Alliance.Red.name()) || cargoPositions.getLast().equals(DriverStation.Alliance.Blue.name())) {
             return cargoPositions.getLast();
         } else if (cargoPositions.getFirst().equals(DriverStation.Alliance.Red.name()) || cargoPositions.getFirst().equals(DriverStation.Alliance.Blue.name())) {
