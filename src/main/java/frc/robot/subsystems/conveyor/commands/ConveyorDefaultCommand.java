@@ -1,6 +1,5 @@
 package frc.robot.subsystems.conveyor.commands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.conveyor.Conveyor;
@@ -28,7 +27,7 @@ public class ConveyorDefaultCommand extends CommandBase {
             } else {
                conveyor.setPower(power);
             }
-        } else if (conveyor.getCargoCount() == 1 && conveyor.getPreFlapBeam()) {
+        } else if (conveyor.getCargoCount() == 1 && conveyor.getPreFlapBeamInput()) {
             conveyor.setPower(power);
         } else {
             conveyor.setPower(0);

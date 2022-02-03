@@ -85,7 +85,7 @@ public class Conveyor extends SubsystemBase {
      *
      * @return the input of the pre-flap beam breaker (true or false).
      */
-    public boolean getPreFlapBeam() {
+    public boolean getPreFlapBeamInput() {
         return preFlapBeam.get();
     }
 
