@@ -60,7 +60,6 @@ public class Conveyor extends SubsystemBase {
         Color color = colorSensor.getColor();
         ColorMatchResult result = colorMatch.matchClosestColor(color);
         Color resultColor = result.color;
-        SmartDashboard.putBoolean("match", resultColor == Color.kRed);
 
         if (resultColor == RED) {
             return DriverStation.Alliance.Red;
@@ -131,10 +130,8 @@ public class Conveyor extends SubsystemBase {
 
     private void updateActualBallPositions() {
         DriverStation.Alliance colorIntake;
-        SmartDashboard.putNumber("distance", currentDistance);
         if (currentDistance >= MIN_PROXIMITY_VALUE) {
             colorIntake = getColor();
-            SmartDashboard.putBoolean("MIN_VALUE", true);
             if (colorIntake.equals(DriverStation.Alliance.Invalid) && !lastSeenColor.equals(DriverStation.Alliance.Invalid)) {
                 colorIntake = lastSeenColor;
             } else if (colorIntake.equals(DriverStation.Alliance.Invalid)) {
@@ -143,11 +140,9 @@ public class Conveyor extends SubsystemBase {
             }
         } else {
             colorIntake = DriverStation.Alliance.Invalid;
-            SmartDashboard.putBoolean("MIN_VALUE", false);
         }
 
         boolean isPostFlapBeamActive = postFlapBeam.get();
-        SmartDashboard.putString("alliance", colorIntake.name());
         double power = motor.getMotorOutputPercent();
         /*
         Condition: post flap beam is currently active and wasn't in the last input and velocity is positive
@@ -180,7 +175,6 @@ public class Conveyor extends SubsystemBase {
         }
         wasPostFlapBeamActive = isPostFlapBeamActive;
         lastSeenColor = colorIntake;
-        SmartDashboard.putString("lastSeen", lastSeenColor.name());
     }
 
     /**
@@ -205,11 +199,6 @@ public class Conveyor extends SubsystemBase {
     public void periodic() {
         currentDistance = colorSensor.getProximity();
         updateActualBallPositions();
-        var color = colorSensor.getColor();
-        SmartDashboard.putNumberArray("color", new double[]{color.blue, color.red, color.green});
-        SmartDashboard.putString("color-name", getColor().name());
-        SmartDashboard.putString("positions", Arrays.toString(cargoPositions.toArray()));
-        SmartDashboard.putString("ima-shel-alon", colorSensor.getRed() + "      " + colorSensor.getGreen() + "      " + colorSensor.getBlue());
     }
 
     @Override
