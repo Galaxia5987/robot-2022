@@ -27,7 +27,7 @@ public class Conveyor extends SubsystemBase {
     private final DigitalInput preFlapBeam = new DigitalInput(Ports.Conveyor.PRE_FLAP_BEAM_BREAKER);
     private final ColorMatch colorMatch = new ColorMatch();
     private DriverStation.Alliance lastSeenColor = DriverStation.Alliance.Invalid;
-    private boolean wasPostFlapBeamActive = true;
+    private boolean wasPostFlapBeamConnected = true;
     private int currentProximity = 0;
 
     private Conveyor() {
@@ -84,7 +84,7 @@ public class Conveyor extends SubsystemBase {
      *
      * @return the input of the pre-flap beam breaker (true or false).
      */
-    public boolean getPreFlapBeamInput() {
+    public boolean isPreFlapBeamConnected() {
         return preFlapBeam.get();
     }
 
@@ -152,7 +152,7 @@ public class Conveyor extends SubsystemBase {
             colorIntake = DriverStation.Alliance.Invalid;
         }
 
-        boolean isPostFlapBeamActive = postFlapBeam.get();
+        boolean isPostFlapBeamConnected = postFlapBeam.get();
         double power = motor.getMotorOutputPercent();
 
         /*
@@ -162,7 +162,7 @@ public class Conveyor extends SubsystemBase {
                         false => remove the head of the queue
                     add an invalid value to the tail of the queue
          */
-        if (isPostFlapBeamActive && !wasPostFlapBeamActive && power > 0) {
+        if (isPostFlapBeamConnected && !wasPostFlapBeamConnected && power > 0) {
             if (getCargoCount() == 1) {
                 cargoPositions.removeFirstOccurrence(getFirstNotInvalid());
             } else {
@@ -190,7 +190,7 @@ public class Conveyor extends SubsystemBase {
             }
         }
 
-        wasPostFlapBeamActive = isPostFlapBeamActive;
+        wasPostFlapBeamConnected = isPostFlapBeamConnected;
         lastSeenColor = colorIntake;
     }
 

@@ -27,7 +27,7 @@ public class ConveyorDefaultCommand extends CommandBase {
             } else {
                conveyor.setPower(power);
             }
-        } else if (conveyor.getCargoCount() == 1 && conveyor.getPreFlapBeamInput()) {
+        } else if (conveyor.getCargoCount() == 1 && conveyor.isPreFlapBeamConnected()) {
             conveyor.setPower(power);
         } else {
             conveyor.setPower(0);
