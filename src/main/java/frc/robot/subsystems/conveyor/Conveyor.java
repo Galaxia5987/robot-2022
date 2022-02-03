@@ -169,12 +169,14 @@ public class Conveyor extends SubsystemBase {
             }
             cargoPositions.add(DriverStation.Alliance.Invalid.name());
         }
-        if (!colorIntake.equals(lastSeenColor) && !colorIntake.equals(DriverStation.Alliance.Invalid) && power > 0 && getCargoCount() != 2) {
-            cargoPositions.removeFirstOccurrence(DriverStation.Alliance.Invalid.name());
-            cargoPositions.add(colorIntake.name());
-        } else if (!colorIntake.equals(lastSeenColor) && colorIntake.equals(DriverStation.Alliance.Invalid) && power < 0) {
-            cargoPositions.removeFirstOccurrence(getFirstNonInvalid());
-            cargoPositions.add(DriverStation.Alliance.Invalid.name());
+        if(!colorIntake.equals(lastSeenColor)) {
+            if (!colorIntake.equals(DriverStation.Alliance.Invalid) && power > 0 && getCargoCount() != 2) {
+                cargoPositions.removeFirstOccurrence(DriverStation.Alliance.Invalid.name());
+                cargoPositions.add(colorIntake.name());
+            } else if (colorIntake.equals(DriverStation.Alliance.Invalid) && power < 0) {
+                cargoPositions.removeFirstOccurrence(getFirstNonInvalid());
+                cargoPositions.add(DriverStation.Alliance.Invalid.name());
+            }
         }
         wasPostFlapBeamActive = isPostFlapBeamActive;
         lastSeenColor = colorIntake;
