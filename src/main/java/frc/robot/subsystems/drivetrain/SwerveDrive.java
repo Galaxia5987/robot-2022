@@ -194,12 +194,20 @@ public class SwerveDrive extends SubsystemBase {
         headingController.reset(0, getChassisSpeeds().omegaRadiansPerSecond);
     }
 
+    /**
+     * Set the power of the angle motors for each module to a specified percent power for testing purposes.
+     *
+     * @param power percent power to give to the angel motors. [%]
+     */
     public void setPower(double power) {
         for (int i = 0; i < 4; i++) {
             getModule(i).setPower(power);
         }
     }
 
+    /**
+     * Test the slippage of the angle motor encoders by setting all the modules to their zero positions and running this function.
+     */
     public void testEncoderSlippage() {
         for (int i = 0; i < 4; i++) {
             int error = (int) Math.abs(getModule(i).getSelectedSensorPosition() - Constants.SwerveModule.ZERO_POSITIONS[i]);
@@ -216,14 +224,26 @@ public class SwerveDrive extends SubsystemBase {
         }
     }
 
-    public void noSpeedSetChassisSpeedsStateSpace(double forward, double strafe, double rotation) {
+    /**
+     * Set all the modules to their desired positions without much velocity for smoothing purposes.
+     *
+     * @param vx  velocity for the x-axis. [m/s]
+     * @param vy  velocity for the x-axis. [m/s]
+     * @param rot rotational velocity counter-clockwise positive. [rad/s]
+     */
+    public void noSpeedHolonomicDrive(double vx, double vy, double rot) {
         ChassisSpeeds speeds = fieldOriented ?
-                ChassisSpeeds.fromFieldRelativeSpeeds(forward, strafe, rotation, Robot.getAngle()) :
-                new ChassisSpeeds(forward, strafe, rotation);
-        noSpeedSetStatesStateSpace(kinematics.toSwerveModuleStates(speeds));
+                ChassisSpeeds.fromFieldRelativeSpeeds(vx, vy, rot, Robot.getAngle()) :
+                new ChassisSpeeds(vx, vy, rot);
+        noSpeedSetStates(kinematics.toSwerveModuleStates(speeds));
     }
 
-    public void noSpeedSetStatesStateSpace(SwerveModuleState[] states) {
+    /**
+     * Set all the modules to their desired positions without much velocity for smoothing purposes.
+     *
+     * @param states desired angles and velocities for each module.
+     */
+    public void noSpeedSetStates(SwerveModuleState[] states) {
         for (int i = 0; i < 4; i++) {
             double diff = Math.abs(states[i].angle.minus(getModule(i).getAngle()).getRadians());
             states[i] = SwerveModuleState.optimize(states[i], getModule(i).getAngle());
@@ -233,7 +253,15 @@ public class SwerveDrive extends SubsystemBase {
     }
 
 
-    public boolean haveReached(double vx, double vy, double rot) {
+    /**
+     * Check whether all modules have reached their desired angles.
+     *
+     * @param vx  velocity for the x-axis. [m/s]
+     * @param vy  velocity for the x-axis. [m/s]
+     * @param rot rotational velocity counter-clockwise positive. [rad/s]
+     * @return whether all modules have reached their desired angles.
+     */
+    public boolean haveReachedAngles(double vx, double vy, double rot) {
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
                 vx, vy, rot, Robot.getAngle());
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
