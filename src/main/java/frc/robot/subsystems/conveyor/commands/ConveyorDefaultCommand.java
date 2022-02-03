@@ -1,5 +1,6 @@
 package frc.robot.subsystems.conveyor.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.conveyor.Conveyor;
@@ -15,22 +16,28 @@ public class ConveyorDefaultCommand extends CommandBase {
     }
 
     @Override
+    public void initialize() {
+        conveyor.closeFlap();
+    }
+
+    @Override
     public void execute() {
-        if (conveyor.getProximityValue() >= Constants.Conveyor.OVERRIDE_INVALID_COLOR_DISTANCE || conveyor.getPreFlapBeam()){
+        if (conveyor.getProximityValue() >= Constants.Conveyor.MIN_PROXIMITY_VALUE) {
+            if (conveyor.getCargoCount() >= Constants.Conveyor.MAX_CARGO_AMOUNT) {
+                conveyor.setPower(0);
+            } else {
+               conveyor.setPower(power);
+            }
+        } else if (conveyor.getCargoCount() == 1 && conveyor.getPreFlapBeam()) {
             conveyor.setPower(power);
         } else {
             conveyor.setPower(0);
         }
-
     }
 
     @Override
     public void end(boolean interrupted) {
         conveyor.setPower(0);
-    }
-
-    @Override
-    public boolean isFinished() {
-        return false;
+        conveyor.openFlap();
     }
 }
