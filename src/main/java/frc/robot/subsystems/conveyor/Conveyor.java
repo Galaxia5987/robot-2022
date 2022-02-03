@@ -28,7 +28,7 @@ public class Conveyor extends SubsystemBase {
     private final ColorMatch colorMatch = new ColorMatch();
     private DriverStation.Alliance lastSeenColor = DriverStation.Alliance.Invalid;
     private boolean wasPostFlapBeamActive = true;
-    private int currentDistance = 0;
+    private int currentProximity = 0;
 
     private Conveyor() {
         motor.setInverted(MOTOR_INVERSION);
@@ -128,15 +128,18 @@ public class Conveyor extends SubsystemBase {
         flap.toggle();
     }
 
+    /**
+     * This function updates the actual positions of the balls based on the following sensors:
+     * color sensor, post flap beam, proximity sensor (in the color sensor).
+     *
+     * Logic documentation is included in the function.
+     */
     private void updateActualBallPositions() {
         DriverStation.Alliance colorIntake;
-        if (currentDistance >= MIN_PROXIMITY_VALUE) {
+        if (currentProximity >= MIN_PROXIMITY_VALUE) {
             colorIntake = getColor();
             if (colorIntake.equals(DriverStation.Alliance.Invalid) && !lastSeenColor.equals(DriverStation.Alliance.Invalid)) {
                 colorIntake = lastSeenColor;
-            } else if (colorIntake.equals(DriverStation.Alliance.Invalid)) {
-                cargoPositions.removeFirstOccurrence(DriverStation.Alliance.Invalid.name()); // remove invalid/unknown
-                cargoPositions.add("Unknown");
             }
         } else {
             colorIntake = DriverStation.Alliance.Invalid;
@@ -144,18 +147,7 @@ public class Conveyor extends SubsystemBase {
 
         boolean isPostFlapBeamActive = postFlapBeam.get();
         double power = motor.getMotorOutputPercent();
-        /*
-        Condition: post flap beam is currently active and wasn't in the last input and velocity is positive
-            true => Remove the head of the queue
-               Add an invalid value at the tail of the queue
-               
-        Condition: cargo coming into the conveyor
-            true => Remove the first invalid value
-               Add the new color sensor input
-            false => Condition: ball is coming out of the conveyor
-                    true => Remove the first non-invalid value from the queue
-                            Add an invalid value into the queue
-         */
+
         if (isPostFlapBeamActive && !wasPostFlapBeamActive && power > 0) {
             if (getCargoCount() == 1) {
                 cargoPositions.removeFirstOccurrence(getFirstNotInvalid());
@@ -197,7 +189,7 @@ public class Conveyor extends SubsystemBase {
      */
     @Override
     public void periodic() {
-        currentDistance = colorSensor.getProximity();
+        currentProximity = colorSensor.getProximity();
         updateActualBallPositions();
     }
 
