@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.conveyor.Conveyor;
+import frc.robot.subsystems.conveyor.commands.ConveyorDefaultCommand;
 import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
 
@@ -30,10 +31,10 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
+        conveyor.setDefaultCommand(new ConveyorDefaultCommand(conveyor, Constants.Conveyor.POWER));
     }
 
     private void configureButtonBindings() {
-
     }
 
 
