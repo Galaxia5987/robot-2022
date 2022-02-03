@@ -135,6 +135,13 @@ public class Conveyor extends SubsystemBase {
      * Logic documentation is included in the function.
      */
     private void updateActualBallPositions() {
+        /*
+        Condition: if the current proximity of the object in front of the sensor is less than the constant
+            true => get the current color the color sensor sees
+                    Condition: if the current input of the color sensor is invalid and the last wasn't
+                        true => set the current input of the color sensor to the last input
+            false => set current input of the color sensor to invalid
+         */
         DriverStation.Alliance colorIntake;
         if (currentProximity >= MIN_PROXIMITY_VALUE) {
             colorIntake = getColor();
@@ -148,6 +155,13 @@ public class Conveyor extends SubsystemBase {
         boolean isPostFlapBeamActive = postFlapBeam.get();
         double power = motor.getMotorOutputPercent();
 
+        /*
+        Condition: if the post flap beam break is active and last input it wasn't and the power is positive
+            true => Condition: if the amount of non-invalid cargo in the queue is 1
+                        true => remove the first non-invalid in the queue
+                        false => remove the head of the queue
+                    add an invalid value to the tail of the queue
+         */
         if (isPostFlapBeamActive && !wasPostFlapBeamActive && power > 0) {
             if (getCargoCount() == 1) {
                 cargoPositions.removeFirstOccurrence(getFirstNotInvalid());
@@ -156,6 +170,16 @@ public class Conveyor extends SubsystemBase {
             }
             cargoPositions.add(DriverStation.Alliance.Invalid.name());
         }
+
+        /*
+        Condition: if the current input of the color sensor isn't equal to the last
+            true => Condition: if current input isn't invalid and the power is positive and there isn't 2 cargo in the queue
+                        true => remove the first invalid value in the queue
+                                add the current input of the color sensor
+                        false => Condition: the current input of the color sensor is invalid and the power is negative
+                                    true => remove the first non-invalid value in the queue
+                                            add an invalid value at the tail of the queue
+         */
         if(!colorIntake.equals(lastSeenColor)) {
             if (!colorIntake.equals(DriverStation.Alliance.Invalid) && power > 0 && getCargoCount() != 2) {
                 cargoPositions.removeFirstOccurrence(DriverStation.Alliance.Invalid.name());
@@ -165,6 +189,7 @@ public class Conveyor extends SubsystemBase {
                 cargoPositions.add(DriverStation.Alliance.Invalid.name());
             }
         }
+
         wasPostFlapBeamActive = isPostFlapBeamActive;
         lastSeenColor = colorIntake;
     }
