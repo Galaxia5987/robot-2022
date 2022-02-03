@@ -189,16 +189,24 @@ public class SwerveModule extends SubsystemBase {
      * @param state the desired state.
      */
     public void setState(SwerveModuleState state) {
-//        double diff = Math.abs(state.angle.minus(getAngle()).getRadians()); //comment this in
-//        setVelocity(state.speedMetersPerSecond * Math.abs(Math.cos(diff)));//comment this in
         setVelocity(state.speedMetersPerSecond);
         setAngle(state.angle);
     }
 
+    /**
+     * Set the power of angle motor for this module for testing purposes.
+     *
+     * @param power percent power to give to the angel motor. [%]
+     */
     public void setPower(double power) {
         angleMotor.set(TalonSRXControlMode.PercentOutput, power);
     }
 
+    /**
+     * Get the encoder reading of the module for testing purposes.
+     *
+     * @return the encoder reading of the module. [ticks]
+     */
     public double getSelectedSensorPosition() {
         return angleMotor.getSelectedSensorPosition();
     }

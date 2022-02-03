@@ -26,10 +26,10 @@ public class WaitBeforeAccel extends HolonomicDrive {
             swerveDrive.terminate();
             wait = true;
         } else {
-            if (swerveDrive.haveReached(forward, strafe, rotation))
+            if (swerveDrive.haveReachedAngles(forward, strafe, rotation))
                 wait = false;
             if (wait) {
-                swerveDrive.noSpeedSetChassisSpeedsStateSpace(forward, strafe, rotation);
+                swerveDrive.noSpeedHolonomicDrive(forward, strafe, rotation);
             } else {
                 swerveDrive.holonomicDrive(forward, strafe, rotation);
             }

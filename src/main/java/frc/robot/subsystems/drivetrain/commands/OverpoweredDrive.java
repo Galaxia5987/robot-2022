@@ -2,11 +2,9 @@ package frc.robot.subsystems.drivetrain.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 import java.util.function.DoubleSupplier;
@@ -24,10 +22,11 @@ public class OverpoweredDrive extends CommandBase {
     private Rotation2d setpoint = new Rotation2d();
     private boolean wait = false;
     private double current = 0;
-    SwerveDrive swerveDrive;
-    DoubleSupplier forwardSupplier;
-    DoubleSupplier strafeSupplier;
-    DoubleSupplier rotationSupplier;
+    private final SwerveDrive swerveDrive;
+    private final DoubleSupplier forwardSupplier;
+    private final DoubleSupplier strafeSupplier;
+    private final DoubleSupplier rotationSupplier;
+    private final Timer timer = new Timer();
 
     public OverpoweredDrive(SwerveDrive swerveDrive, DoubleSupplier forwardSupplier, DoubleSupplier strafeSupplier, DoubleSupplier rotationSupplier) {
         this.swerveDrive = swerveDrive;
@@ -40,6 +39,8 @@ public class OverpoweredDrive extends CommandBase {
     @Override
     public void initialize() {
         super.initialize();
+        timer.start();
+        timer.reset();
     }
 
     @Override
@@ -63,26 +64,26 @@ public class OverpoweredDrive extends CommandBase {
             swerveDrive.terminate();
             keepSetpoint = false;
             wait = true;
+            timer.reset();
         } else {
             if (rotation != 0) {
                 keepSetpoint = false;
-            } else if (!keepSetpoint) {
+            } else if (!keepSetpoint || timer.get() <= 0.1) {
                 setpoint = Robot.getAngle();
                 keepSetpoint = true;
             }
 
-            if (swerveDrive.haveReached(forward, strafe, rotation))//comment this out
+            if (swerveDrive.haveReachedAngles(forward, strafe, rotation))//comment this out
                 wait = false;//comment this out
             if (wait) {//comment this out
-                swerveDrive.noSpeedSetChassisSpeedsStateSpace(forward, strafe, rotation);//comment this out
+                swerveDrive.noSpeedHolonomicDrive(forward, strafe, rotation);//comment this out
             } else {//comment this out
 //                if (keepSetpoint) {//comment in
-//                    swerveDrive.holonomicDrive(forward, strafe, pidController.calculate(Robot.getAngle().getDegrees(), setpoint.getDegrees()));//comment it
+//                    swerveDrive.holonomicDrive(forward, strafe, pidController.calculate(Robot.getAngle().getDegrees(), setpoint.getDegrees()));//comment in
 //                } else {//comment in
                 swerveDrive.holonomicDrive(forward, strafe, rotation * (1 + magnitude / (VELOCITY_MULTIPLIER * 2)));//comment this in
 //                    swerveDrive.holonomicDrive(forward, strafe, rotation);
 //                }//comment in
-
             }
         }//comment this out
     }
@@ -90,5 +91,6 @@ public class OverpoweredDrive extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         swerveDrive.terminate();
+        timer.stop();
     }
 }
