@@ -71,10 +71,20 @@ public class Conveyor extends SubsystemBase {
         }
     }
 
+    /**
+     * Returns the proximity of the color sensor from the nearest object.
+     *
+     * @return the proximity from the object (0 to 2047, largest when object is close).
+     */
     public int getProximityValue() {
         return colorSensor.getProximity();
     }
 
+    /**
+     * Get the input of the pre-flap beam breaker.
+     *
+     * @return the input of the pre-flap beam breaker (true or false).
+     */
     public boolean getPreFlapBeam() {
         return preFlapBeam.get();
     }
