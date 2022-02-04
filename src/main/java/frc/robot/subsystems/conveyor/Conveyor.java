@@ -232,4 +232,14 @@ public class Conveyor extends SubsystemBase {
         SmartDashboard.putString("Last", positions[1]);
         SmartDashboard.putBoolean("dio", preFlapBeam.get());
     }
+
+    public enum FlapMode {
+        Open(true),
+        Closed(false);
+
+        public boolean mode;
+        FlapMode(boolean mode) {
+            this.mode = mode;
+        }
+    }
 }
