@@ -261,8 +261,8 @@ public class Conveyor extends SubsystemBase {
     }
 
     public enum FlapMode {
-        Open(true),
-        Closed(false);
+        Open(false),
+        Closed(true);
 
         public final boolean mode;
 
@@ -272,9 +272,9 @@ public class Conveyor extends SubsystemBase {
 
         public static FlapMode getValue(boolean val) {
             if(val) {
-                return Open;
-            } else {
                 return Closed;
+            } else {
+                return Open;
             }
         }
     }
