@@ -138,6 +138,15 @@ public class Conveyor extends SubsystemBase {
     }
 
     /**
+     * Gets the current mode of the flap.
+     *
+     * @return the mode of the flap (true or false).
+     */
+    public boolean getFlapMode() {
+        return flap.get();
+    }
+
+    /**
      * This function updates the actual positions of the balls based on the following sensors:
      * color sensor, post flap beam, proximity sensor (in the color sensor).
      *
