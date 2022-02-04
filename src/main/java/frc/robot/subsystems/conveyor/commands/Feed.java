@@ -8,17 +8,17 @@ import java.util.function.BooleanSupplier;
 public class Feed extends CommandBase {
     private final double power;
     private final Conveyor conveyor;
-    private final BooleanSupplier activate;
+    private final BooleanSupplier condition;
 
-    public Feed(double power, Conveyor conveyor, BooleanSupplier activate) {
+    public Feed(double power, Conveyor conveyor, BooleanSupplier condition) {
         this.power = power;
         this.conveyor = conveyor;
-        this.activate = activate;
+        this.condition = condition;
     }
 
     @Override
     public void execute() {
-        if(activate.getAsBoolean()) {
+        if(condition.getAsBoolean()) {
             conveyor.setPower(power);
         }
     }
