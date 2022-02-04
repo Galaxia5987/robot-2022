@@ -14,11 +14,6 @@ public class Feed extends CommandBase {
 
     @Override
     public void execute() {
-        if(power > 0) {
-            conveyor.openFlap();
-        } else {
-            conveyor.closeFlap();
-        }
         conveyor.setPower(power);
     }
 
