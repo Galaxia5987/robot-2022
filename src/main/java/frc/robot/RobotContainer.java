@@ -52,7 +52,7 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        shooter.setDefaultCommand(new Shoot(shooter, () -> Shooter.getSetpointVelocity(4)));
+        shooter.setDefaultCommand(new Shoot(shooter, () -> 4));
         conveyor.setDefaultCommand(new ConveyorDefaultCommand(conveyor, Constants.Conveyor.POWER));
     }
 
