@@ -32,7 +32,7 @@ public class JoystickClimb extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return Timer.getFPGATimestamp() > Constants.Climber.STOP_CLIMBER;
+        return Timer.getFPGATimestamp() > Constants.Climber.STOP_CLIMBER_TIMESTAMP;
     }
 
     @Override

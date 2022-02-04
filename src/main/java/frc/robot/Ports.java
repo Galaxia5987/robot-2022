@@ -25,6 +25,8 @@ public final class Ports {
         public static final int AUX = 0;
         public static final int STOPPER = 0;
 
+        public static final boolean SENSOR_PHASE = true;
+
         public static final TalonFXInvertType IS_AUX_INVERTED = TalonFXInvertType.Clockwise;
         public static final TalonFXInvertType IS_MAIN_INVERTED = TalonFXInvertType.Clockwise;
 

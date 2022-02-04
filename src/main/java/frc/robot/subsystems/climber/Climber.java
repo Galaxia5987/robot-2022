@@ -87,7 +87,11 @@ public class Climber extends SubsystemBase {
         mainMotor.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0, 1, Constants.TALON_TIMEOUT);
 
         /*
-         set the right motor on Brake mode.
+         Set sensor phase.
+         */
+        mainMotor.setSensorPhase(Ports.Climber.SENSOR_PHASE);
+        /*
+         Set the right motor on Brake mode.
          */
         mainMotor.setNeutralMode(NeutralMode.Brake);
 
@@ -161,6 +165,7 @@ public class Climber extends SubsystemBase {
 
     /**
      * Set climber position to zero.
+     * Zero is the balanced position of the arms.
      */
     public void setAngleZero() {
         double angle = getAbsolutePosition();
@@ -229,7 +234,7 @@ public class Climber extends SubsystemBase {
     public void simulationPeriodic() {
         armSim.setInput(mainMotor.get() * RobotController.getBatteryVoltage());
 
-        armSim.update(Constants.Climber.SIMULATION_LOOP_PERIOD);
+        armSim.update(Constants.SIMULATION_LOOP_PERIOD);
 
         encoderSim.setDistance(armSim.getAngleRads());
         RoboRioSim.setVInVoltage(

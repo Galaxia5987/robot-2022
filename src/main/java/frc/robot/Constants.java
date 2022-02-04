@@ -5,7 +5,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import frc.robot.subsystems.UnitModel;
 import org.photonvision.SimVisionTarget;
 
 public final class Constants {
@@ -13,11 +12,12 @@ public final class Constants {
     public static final double NOMINAL_VOLTAGE = 12; // [volts]
     public static final double FIELD_WIDTH = 8.23; // Width of the field. [m]
     public static final double FIELD_LENGTH = 16.46; // Length of the field. [m]
+    public static final double SIMULATION_LOOP_PERIOD = 0.02; // [s]
 
     public static class ExampleSubsystem {
         public static final double POWER = 0.5; // [%]
-    }
 
+    }
     public static class Climber {
         public static final double KP = 1.5;
         public static final double KI = 0;
@@ -32,7 +32,7 @@ public final class Constants {
         public static final double MAXIMAL_ACCELERATION = 0; // [ticks/100ms*sec]
         public static final boolean VOLTAGE_COMPENSATION = true;
 
-        public static final double MAX_VELOCITY = Math.PI * 2 / 3; //[rad// /s]
+        public static final double MAX_VELOCITY = Math.PI * 2 / 3; //[rad/s]
 
         public static final double GEAR_RATIO = 292.1;
 
@@ -47,15 +47,12 @@ public final class Constants {
         public static final double MAX_ANGLE = Math.toRadians(255); // [radians]
         public static final double MIN_ANGLE = Math.toRadians(-75); // [radians]
 
-        public static final int AUTONOMOUS_TIME = 15; // [s]
+        public static final double STOP_CLIMBER_TIMESTAMP = 149.5; // [s]
 
-        public static final double STOP_CLIMBER = 149.5; // [s]
-
-        public static final double SIMULATION_LOOP_PERIOD = 0.02; // [s]
 
         public static final int ZERO_POSITION = 0; //[radians]
 
-        public static final int ZERO_POSITION_TOLERANCE = 0; //[radians]
+        public static final double ZERO_POSITION_TOLERANCE = 0.05; //[radians]
     }
 
 
