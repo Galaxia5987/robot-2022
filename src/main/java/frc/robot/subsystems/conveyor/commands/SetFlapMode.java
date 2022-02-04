@@ -1,13 +1,15 @@
 package frc.robot.subsystems.conveyor.commands;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.conveyor.Conveyor;
 
-public class SetFlapMode extends InstantCommand {
-    private final Conveyor conveyor;
-    private final Conveyor.FlapMode flapMode;
+import java.util.function.Supplier;
 
-    public SetFlapMode(Conveyor conveyor, Conveyor.FlapMode flapMode) {
+public class SetFlapMode extends CommandBase {
+    private final Conveyor conveyor;
+    private final Supplier<Conveyor.FlapMode> flapMode;
+
+    public SetFlapMode(Conveyor conveyor, Supplier<Conveyor.FlapMode> flapMode) {
         this.conveyor = conveyor;
         this.flapMode = flapMode;
 
@@ -15,8 +17,8 @@ public class SetFlapMode extends InstantCommand {
     }
 
     @Override
-    public void initialize() {
-        if (flapMode.mode) {
+    public void execute() {
+        if (flapMode.get().mode) {
             conveyor.openFlap();
         } else {
             conveyor.closeFlap();

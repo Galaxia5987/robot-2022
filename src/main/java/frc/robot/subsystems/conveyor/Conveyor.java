@@ -147,6 +147,15 @@ public class Conveyor extends SubsystemBase {
     }
 
     /**
+     * Sets the mode of the flap (open or closed).
+     *
+     * @param flapMode is the enum describing the mode of the flap.
+     */
+    public void setFlapMode(FlapMode flapMode) {
+        flap.set(flapMode.mode);
+    }
+
+    /**
      * This function updates the actual positions of the balls based on the following sensors:
      * color sensor, post flap beam, proximity sensor (in the color sensor).
      *
@@ -259,6 +268,14 @@ public class Conveyor extends SubsystemBase {
 
         FlapMode(boolean mode) {
             this.mode = mode;
+        }
+
+        public static FlapMode getValue(boolean val) {
+            if(val) {
+                return Open;
+            } else {
+                return Closed;
+            }
         }
     }
 }
