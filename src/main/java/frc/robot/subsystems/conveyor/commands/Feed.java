@@ -29,6 +29,6 @@ public class Feed extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return !conveyor.isPreFlapBeamConnected();
+        return conveyor.getCargoCount() == 0;
     }
 }
