@@ -20,6 +20,8 @@ public class Feed extends CommandBase {
     public void execute() {
         if(condition.getAsBoolean()) {
             conveyor.setPower(power);
+        } else {
+            conveyor.setPower(0);
         }
     }
 
