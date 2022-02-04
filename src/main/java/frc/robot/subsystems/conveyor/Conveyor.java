@@ -34,8 +34,8 @@ public class Conveyor extends SubsystemBase {
         motor.setInverted(MOTOR_INVERSION);
         motor.enableVoltageCompensation(IS_COMPENSATING_VOLTAGE);
         colorMatch.addColorMatch(RED);
-        colorMatch.addColorMatch(BLUE);
         colorMatch.addColorMatch(GREEN);
+        colorMatch.addColorMatch(BLUE);
         colorMatch.addColorMatch(NONE);
         cargoPositions.add(DriverStation.Alliance.Invalid.name());
         cargoPositions.add(DriverStation.Alliance.Invalid.name());
