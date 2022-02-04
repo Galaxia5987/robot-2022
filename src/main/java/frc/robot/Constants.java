@@ -89,6 +89,6 @@ public final class Constants {
     }
 
     public static class CommandGroups {
-        public static final double SHOOTER_VELOCITY_DEADBAND = 2.95 / 3.0;
+        public static final double SHOOTER_VELOCITY_DEADBAND = 1 - 2.95 / 3.0;
     }
 }
