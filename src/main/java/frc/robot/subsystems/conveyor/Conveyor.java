@@ -89,6 +89,15 @@ public class Conveyor extends SubsystemBase {
     }
 
     /**
+     * Get input of the post-flap beam breaker.
+     *
+     * @return the input of the post-flap beam breaker (true or false).
+     */
+    public boolean isPostFlapBeamConnected(){
+        return postFlapBeam.get();
+    }
+
+    /**
      * @return the amount of balls inside the cargo.
      */
     public int getCargoCount() {
