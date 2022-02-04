@@ -29,9 +29,4 @@ public class Feed extends CommandBase {
     public void end(boolean interrupted) {
         conveyor.setPower(0);
     }
-
-    @Override
-    public boolean isFinished() {
-        return conveyor.getCargoCount() == 0;
-    }
 }
