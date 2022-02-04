@@ -12,10 +12,7 @@ public class PickUpCargo extends ParallelCommandGroup {
     public PickUpCargo(Conveyor conveyor, Intake intake, double conveyorPower, double intakePower) {
         addCommands(
                 new Feed(conveyorPower, conveyor, () -> true),
-                new ConditionalCommand(
-                        new IntakeCargo(intake, () -> true, intakePower),
-                        null,
-                        () -> conveyor.getCargoCount() < 2)
+                new IntakeCargo(intake, () -> true, intakePower)
         );
     }
 }
