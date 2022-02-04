@@ -7,9 +7,9 @@ import frc.robot.subsystems.conveyor.commands.Feed;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.commands.IntakeCargo;
 
-public class FeedWithIntake extends ParallelCommandGroup {
+public class PickUpCargo extends ParallelCommandGroup {
 
-    public FeedWithIntake(Conveyor conveyor, Intake intake, double conveyorPower, double intakePower) {
+    public PickUpCargo(Conveyor conveyor, Intake intake, double conveyorPower, double intakePower) {
         addCommands(
                 new Feed(conveyorPower, conveyor, () -> true),
                 new ConditionalCommand(
