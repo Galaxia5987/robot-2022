@@ -237,7 +237,8 @@ public class Conveyor extends SubsystemBase {
         Open(true),
         Closed(false);
 
-        public boolean mode;
+        public final boolean mode;
+
         FlapMode(boolean mode) {
             this.mode = mode;
         }
