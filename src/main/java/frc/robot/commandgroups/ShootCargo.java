@@ -20,20 +20,18 @@ public class ShootCargo extends ParallelCommandGroup {
                       Conveyor conveyor,
                       DoubleSupplier distanceFromTarget,
                       double conveyorPower) {
-        final BooleanSupplier isAtSetpoint =
+        final BooleanSupplier isShooterAtSetpoint =
                 () -> Utils.deadband(
-                        shooter.getVelocity() / Shoot.getSetpointVelocity(
-                                distanceFromTarget.getAsDouble()) - 1, SHOOTER_VELOCITY_DEADBAND) == 0;
+                        1 - shooter.getVelocity() / Shoot.getSetpointVelocity(
+                                distanceFromTarget.getAsDouble()), SHOOTER_VELOCITY_DEADBAND) == 0;
 
         addCommands(
                 new ConditionalCommand(
-                        new SetFlapMode(conveyor, Conveyor.FlapMode.Open),
+                        new ParallelCommandGroup(
+                                new Feed(conveyorPower, conveyor),
+                                new SetFlapMode(conveyor, Conveyor.FlapMode.Open)),
                         new SetFlapMode(conveyor, Conveyor.FlapMode.Closed),
-                        isAtSetpoint),
-                new ConditionalCommand(
-                        new Feed(conveyorPower, conveyor),
-                        null,
-                        isAtSetpoint),
+                        isShooterAtSetpoint),
                 new Shoot(shooter, distanceFromTarget)
         );
     }
