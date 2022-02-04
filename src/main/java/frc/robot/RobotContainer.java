@@ -2,7 +2,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commandgroups.PickUpCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.ConveyorDefaultCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -31,7 +34,7 @@ public class RobotContainer {
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final JoystickButton b = new JoystickButton(xbox, XboxController.Button.kB.value);
     private final Trigger rightTrigger = new Trigger(() -> xbox.getRightTriggerAxis() > RIGHT_TRIGGER_DEADBAND);
-
+    private boolean override = false;
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
      */
@@ -52,11 +55,10 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        shooter.setDefaultCommand(new Shoot(shooter, () -> 4));
-        conveyor.setDefaultCommand(new ConveyorDefaultCommand(conveyor, Constants.Conveyor.POWER));
     }
 
     private void configureButtonBindings() {
+        rightTrigger.whenActive(() -> override = true).whenInactive(() -> override = false);
     }
 
 
