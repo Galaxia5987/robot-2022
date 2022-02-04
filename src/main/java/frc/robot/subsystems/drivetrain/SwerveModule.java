@@ -207,8 +207,8 @@ public class SwerveModule extends SubsystemBase {
      *
      * @return the encoder reading of the module. [ticks]
      */
-    public double getSelectedSensorPosition() {
-        return angleMotor.getSelectedSensorPosition();
+    public int getSelectedSensorPosition() {
+        return (int) angleMotor.getSelectedSensorPosition();
     }
 
     /**

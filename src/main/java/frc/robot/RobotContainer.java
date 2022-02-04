@@ -12,9 +12,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
-import frc.robot.subsystems.drivetrain.commands.DriveSlowAccel;
-import frc.robot.subsystems.drivetrain.commands.HolonomicDrive;
-import frc.robot.subsystems.drivetrain.commands.OverpoweredDrive;
 import webapp.Webserver;
 
 public class RobotContainer {
@@ -24,6 +21,7 @@ public class RobotContainer {
     public static Joystick joystick2 = new Joystick(Ports.Controls.JOYSTICK2);
     private final SwerveDrive swerve = SwerveDrive.getFieldOrientedInstance();
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
+    private final JoystickButton x = new JoystickButton(xbox, XboxController.Button.kX.value);
     private final JoystickButton leftTrigger = new JoystickButton(joystick, Joystick.ButtonType.kTrigger.value);
 
     /**
@@ -41,10 +39,11 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        swerve.setDefaultCommand(new OverpoweredDrive(swerve, () -> joystick.getY(), () -> joystick.getX(), () -> joystick2.getX()));
+//        swerve.setDefaultCommand(new OverpoweredDrive(swerve, () -> joystick.getY(), () -> joystick.getX(), () -> joystick2.getX()));
 //        swerve.setDefaultCommand(new OverpoweredDrive(swerve, () -> xbox.getLeftY(), () -> xbox.getLeftX(), () -> xbox.getRightX()));
 //        swerve.setDefaultCommand(new HolonomicDrive(swerve, () -> xbox.getLeftY(), () -> xbox.getLeftX(), () -> xbox.getRightX()));
 //        swerve.setDefaultCommand(new DriveSlowAccel(swerve, () -> joystick.getY(), () -> joystick.getX(), () -> joystick2.getX()));
+//        swerve.setDefaultCommand(new HelpfulZeroing(swerve));
     }
 
     private void configureButtonBindings() {
