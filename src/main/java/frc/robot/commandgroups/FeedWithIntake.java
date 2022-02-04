@@ -11,7 +11,7 @@ public class FeedWithIntake extends ParallelCommandGroup {
 
     public FeedWithIntake(Conveyor conveyor, Intake intake, double conveyorPower, double intakePower) {
         addCommands(
-                new Feed(conveyorPower, conveyor),
+                new Feed(conveyorPower, conveyor, () -> true),
                 new ConditionalCommand(
                         new IntakeCargo(intake, () -> true, intakePower),
                         null,
