@@ -20,7 +20,7 @@ public class ShootCargo extends ParallelCommandGroup {
                       Conveyor conveyor,
                       DoubleSupplier distanceFromTarget,
                       double conveyorPower) {
-        final BooleanSupplier isShooterAtSetpoint =
+        final BooleanSupplier isFlywheelAtSetpoint =
                 () -> Utils.deadband(
                         1 - shooter.getVelocity() / Shoot.getSetpointVelocity(
                                 distanceFromTarget.getAsDouble()), SHOOTER_VELOCITY_DEADBAND) == 0;
@@ -31,7 +31,7 @@ public class ShootCargo extends ParallelCommandGroup {
                                 new Feed(conveyorPower, conveyor),
                                 new SetFlapMode(conveyor, Conveyor.FlapMode.Open)),
                         new SetFlapMode(conveyor, Conveyor.FlapMode.Closed),
-                        isShooterAtSetpoint),
+                        isFlywheelAtSetpoint),
                 new Shoot(shooter, distanceFromTarget)
         );
     }
