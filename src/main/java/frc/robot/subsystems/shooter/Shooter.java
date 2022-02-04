@@ -109,18 +109,6 @@ public class Shooter extends SubsystemBase {
     }
 
     /**
-     * Calculates the velocity setpoint according to the distance from the target.
-     * Once the data from the shooter is acquired this function will be changed.
-     *
-     * @param distance is the distance from the target. [m]
-     * @return 15. [rpm]
-     */
-    public static double getSetpointVelocity(double distance) {
-//        return 15 * distance;
-        return 100;
-    }
-
-    /**
      * Gets the velocity of the motor.
      *
      * @return the velocity of the motor. [rpm]
