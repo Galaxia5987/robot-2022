@@ -52,8 +52,7 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        shooter.setDefaultCommand(new Shoot(shooter, () -> 4));
-        conveyor.setDefaultCommand(new ConveyorDefaultCommand(conveyor, Constants.Conveyor.POWER));
+        conveyor.setDefaultCommand(new ConveyorDefaultCommand(conveyor, Constants.Conveyor.POWER).withInterrupt(a::get));
     }
 
     private void configureButtonBindings() {
