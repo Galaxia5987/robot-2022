@@ -226,10 +226,10 @@ public class Conveyor extends SubsystemBase {
         SmartDashboard.putNumberArray("color", new double[]{color.red, color.green, color.blue});
         System.out.println(Arrays.toString(new double[]{color.red, color.green, color.blue}));
         SmartDashboard.putString("detected-color", alliance.name());
-        SmartDashboard.putString("position", Arrays.toString(cargoPositions.toArray(String[]::new)));
-        SmartDashboard.putString("First", cargoPositions.toArray()[0].toString());
-        SmartDashboard.putString("Last", cargoPositions.toArray()[1].toString());
+        String[] positions = cargoPositions.toArray(String[]::new);
+        SmartDashboard.putStringArray("position", positions);
+        SmartDashboard.putString("First", positions[0]);
+        SmartDashboard.putString("Last", positions[1]);
         SmartDashboard.putBoolean("dio", preFlapBeam.get());
-        System.out.println("I am working.");
     }
 }
