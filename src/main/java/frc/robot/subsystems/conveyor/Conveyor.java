@@ -161,7 +161,7 @@ public class Conveyor extends SubsystemBase {
             colorIntake = DriverStation.Alliance.Invalid;
         }
 
-        boolean isPostFlapBeamConnected = postFlapBeam.get();
+        boolean isPostFlapBeamConnected = isPostFlapBeamConnected();
         double power = motor.getMotorOutputPercent();
 
         /*
