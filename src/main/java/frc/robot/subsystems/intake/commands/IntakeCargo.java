@@ -1,7 +1,6 @@
 package frc.robot.subsystems.intake.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.intake.Intake;
 
 import java.util.function.BooleanSupplier;
@@ -11,12 +10,12 @@ import java.util.function.BooleanSupplier;
  */
 public class IntakeCargo extends CommandBase {
     private final Intake intake;
-    private final BooleanSupplier isAllianceColor;
+    private final BooleanSupplier activate;
     private final double power;
 
-    public IntakeCargo(Intake intake, BooleanSupplier isAllianceColor, double power) {
+    public IntakeCargo(Intake intake, BooleanSupplier activate, double power) {
         this.intake = intake;
-        this.isAllianceColor = isAllianceColor;
+        this.activate = activate;
         this.power = power;
         addRequirements(intake);
     }
@@ -31,8 +30,9 @@ public class IntakeCargo extends CommandBase {
      */
     @Override
     public void execute() {
-        if (isAllianceColor.getAsBoolean())
+        if (activate.getAsBoolean()){
             intake.setPower(power);
+        }
     }
 
     /**
