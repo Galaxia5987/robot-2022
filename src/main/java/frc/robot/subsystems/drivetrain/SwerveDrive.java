@@ -15,6 +15,8 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.utils.TimeDelayedBoolean;
 
+import java.util.Arrays;
+
 
 /**
  * The {@code SwerveDrive} Subsystem is responsible for the integration of modules together in order to move the robot honolomicaly.
@@ -210,7 +212,7 @@ public class SwerveDrive extends SubsystemBase {
      */
     public void testEncoderSlippage() {
         for (int i = 0; i < 4; i++) {
-            int error = (int) Math.abs(getModule(i).getSelectedSensorPosition() - Constants.SwerveModule.ZERO_POSITIONS[i]);
+            int error = (int) (Math.abs(getModule(i).getSelectedSensorPosition() - Constants.SwerveModule.ZERO_POSITIONS[i]) % Constants.SwerveDrive.TICKS_PER_ROTATION_ANGLE_MOTOR);
             if (error < 5) {
                 System.out.println("WHEEL: " + i + "is PERFECT! Error is: " + error);
                 SmartDashboard.putString("EncoderSlippageResult [WHEEL " + i + "]", "WHEEL: " + i + "is PERFECT! Error is: " + error);
@@ -222,6 +224,19 @@ public class SwerveDrive extends SubsystemBase {
                 SmartDashboard.putString("EncoderSlippageResult [WHEEL " + i + "]", "WHEEL: " + i + "is BAD! Error is: " + error);
             }
         }
+    }
+
+
+    public void printEncoderReadings() {
+        System.out.println("THE VALUES ARE: " + getModule(0).getSelectedSensorPosition() + ", " + getModule(1).getSelectedSensorPosition() + ", " + getModule(2).getSelectedSensorPosition() + ", " + getModule(3).getSelectedSensorPosition());
+    }
+
+    public void printJustInCase() {
+        System.out.println("-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*");
+        System.out.println(" [NOTICE ME!!] TAKE A PICTURE OF THIS WITH YOUR PHONE TO FIX THE SWERVE [NOTICE ME!!]");
+        System.out.println("-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*");
+        System.out.println("To fix the wheels rotation, reset zero positions by following these steps, 1. open FRC DRIVER STATION app, disable the robot, 2. rotate the wheel so that the black part of the wheel is pointing towards the direction of the drawn y arrow (all wheels are pointing to the same direction), 3. Take another picture of this message again because you have changed the values by turning the wheels, On the left side of the coding software, under the robot-2022 folder -> src -> -> main -> java -< frc.robot -> double click the Constants class (painted in blue) and find the line ZERO_POSITIONS =" + Arrays.toString(Constants.SwerveModule.ZERO_POSITIONS) + "  -> and Change the values inside the brackets to the values:");
+        printEncoderReadings();
     }
 
     /**
@@ -277,6 +292,19 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     /**
+     * Sets the state of the modules without optimizing them.
+     *
+     * @param states the states of the modules.
+     */
+    public void noOptimizeSetStates(SwerveModuleState[] states) {
+        SwerveDriveKinematics.desaturateWheelSpeeds(states, 1.42 * Constants.SwerveDrive.VELOCITY_MULTIPLIER);
+        for (SwerveModule module : modules) {
+            SwerveModuleState state = states[module.getWheel()];
+            module.setState(state);
+        }
+    }
+
+    /**
      * Terminates the modules from moving.
      */
     public void terminate() {
@@ -293,6 +321,8 @@ public class SwerveDrive extends SubsystemBase {
                 Robot.getAngle(),
                 getStates()
         );
+        printJustInCase();
+
 /*
         headingController.setP(Constants.SwerveDrive.THETA_KP.get());
         headingController.setI(Constants.SwerveDrive.THETA_KI.get());
