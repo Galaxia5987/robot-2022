@@ -181,7 +181,7 @@ public class Conveyor extends SubsystemBase {
                                             add an invalid value at the tail of the queue
          */
         if(!colorIntake.equals(lastSeenColor)) {
-            if (!colorIntake.equals(DriverStation.Alliance.Invalid) && power > 0 && getCargoCount() != 2) {
+            if (!colorIntake.equals(DriverStation.Alliance.Invalid) && power > 0 && getCargoCount() != MAX_CARGO_AMOUNT) {
                 cargoPositions.removeFirstOccurrence(DriverStation.Alliance.Invalid.name());
                 cargoPositions.add(colorIntake.name());
             } else if (colorIntake.equals(DriverStation.Alliance.Invalid) && power < 0) {
