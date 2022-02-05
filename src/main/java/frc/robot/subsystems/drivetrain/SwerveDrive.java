@@ -321,8 +321,6 @@ public class SwerveDrive extends SubsystemBase {
                 Robot.getAngle(),
                 getStates()
         );
-        printJustInCase();
-
 /*
         headingController.setP(Constants.SwerveDrive.THETA_KP.get());
         headingController.setI(Constants.SwerveDrive.THETA_KI.get());
