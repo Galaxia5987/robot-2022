@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commandgroups.InterchangeableCommands;
+import frc.robot.commandgroups.Outtake;
 import frc.robot.commandgroups.PickUpCargo;
 import frc.robot.commandgroups.ShootCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
@@ -71,6 +72,14 @@ public class RobotContainer {
                 new PickUpCargo(conveyor, intake,
                         Constants.Conveyor.DEFAULT_POWER, Constants.Intake.DEFAULT_POWER),
                 new IntakeByRobotSpeed(intake, () -> 4)
+        ));
+        b.whileHeld(
+                new Outtake(
+                        intake,
+                        conveyor,
+                        shooter,
+                        Constants.Conveyor.DEFAULT_POWER * (leftTrigger.get() ? -1 : 1),
+                        0
         ));
         rightTrigger.whenActive(new InterchangeableCommands(
                 leftTrigger::get,
