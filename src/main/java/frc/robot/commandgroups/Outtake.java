@@ -20,43 +20,17 @@ public class Outtake extends ParallelCommandGroup {
     public Outtake(Intake intake,
                    Conveyor conveyor,
                    Shooter shooter,
-                   double conveyorPower,
-                   int remainingBalls) {
+                   double conveyorPower) {
         addCommands(
                 new ParallelCommandGroup(
-                        new FlapDefaultCommand(conveyor, () -> Conveyor.FlapMode.getValue(conveyor.getCargoCount() <= remainingBalls)),
-                        new Feed(conveyorPower, conveyor, () -> conveyor.getCargoCount() <= remainingBalls),
+                        new FlapDefaultCommand(conveyor, () -> Conveyor.FlapMode.getValue(true)),
+                        new Feed(conveyorPower, conveyor, () -> true),
                         new ConditionalCommand(
                                 new Shoot(shooter, () -> 8, OptionalDouble.of(Constants.Shooter.OUTTAKE_POWER)),
                                 new IntakeCargo(intake, () -> true, -Constants.Intake.DEFAULT_POWER),
                                 () -> conveyorPower > 0
                         )
-                ).withInterrupt(() -> conveyor.getCargoCount() <= remainingBalls)
+                )
         );
-    }
-
-    /**
-     * This function is designated to returning a recommended number of balls to outtake.
-     *
-     * @param conveyor is the conveyor subsystem.
-     * @return the recommended number of balls to leave in the conveyor.
-     */
-    public static int getRemainingBalls(Conveyor conveyor) {
-        Deque<String> queue = conveyor.getQueue();
-        if (conveyor.getCargoCount() == 2) {
-            if (queue.getFirst().equals(DriverStation.getAlliance().name())) {
-                if (queue.getLast().equals(DriverStation.getAlliance().name())) {
-                    return 2;
-                } else if (queue.getLast().equals(DriverStation.Alliance.Invalid.name())) {
-                    return 0;
-                } else {
-                    return 1;
-                }
-            } else {
-                return 1;
-            }
-        } else {
-            return 0;
-        }
     }
 }
