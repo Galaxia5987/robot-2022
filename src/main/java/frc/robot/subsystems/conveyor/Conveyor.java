@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Ports;
+import frc.robot.Robot;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;
@@ -16,13 +17,14 @@ import java.util.Deque;
 
 import static frc.robot.Constants.Conveyor.*;
 import static frc.robot.Ports.Conveyor.*;
+import static frc.robot.Ports.Hood.SOLENOID;
 
 public class Conveyor extends SubsystemBase {
     private static Conveyor INSTANCE = null;
     private final WPI_TalonFX motor = new WPI_TalonFX(Ports.Conveyor.MOTOR);
     private final Deque<String> cargoPositions = new ArrayDeque<>();
     private final ColorSensorV3 colorSensor = new ColorSensorV3(I2C.Port.kMXP);
-    private final Solenoid flap = new Solenoid(PneumaticsModuleType.CTREPCM, SOLENOID);
+    private final Solenoid flap;
     private final DigitalInput postFlapBeam = new DigitalInput(Ports.Conveyor.POST_FLAP_BEAM_BREAKER);
     private final DigitalInput preFlapBeam = new DigitalInput(Ports.Conveyor.PRE_FLAP_BEAM_BREAKER);
     private final ColorMatch colorMatch = new ColorMatch();
@@ -39,6 +41,11 @@ public class Conveyor extends SubsystemBase {
         colorMatch.addColorMatch(NONE);
         cargoPositions.add(DriverStation.Alliance.Invalid.name());
         cargoPositions.add(DriverStation.Alliance.Invalid.name());
+        if (Robot.pneumaticsBase.checkSolenoidChannel(SOLENOID)) {
+            flap = new Solenoid(PneumaticsModuleType.CTREPCM, SOLENOID);
+        } else {
+            flap = null;
+        }
     }
 
     /**

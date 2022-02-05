@@ -7,18 +7,25 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
+import frc.robot.Robot;
 
 import static frc.robot.Constants.Intake.IS_COMPENSATING_VOLTAGE;
+import static frc.robot.Ports.Hood.SOLENOID;
 
 public class Intake extends SubsystemBase {
     private static Intake INSTANCE;
     private final WPI_TalonSRX motor = new WPI_TalonSRX(Ports.Intake.MOTOR);
-    private final Solenoid retractor = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Intake.SOLENOID);
+    private final Solenoid retractor;
 
     private Intake() {
         motor.setInverted(Ports.Intake.IS_MOTOR_INVERTED);
         motor.enableVoltageCompensation(IS_COMPENSATING_VOLTAGE);
         motor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
+        if (Robot.pneumaticsBase.checkSolenoidChannel(SOLENOID)) {
+            retractor = new Solenoid(PneumaticsModuleType.CTREPCM, SOLENOID);
+        } else {
+            retractor = null;
+        }
     }
 
 

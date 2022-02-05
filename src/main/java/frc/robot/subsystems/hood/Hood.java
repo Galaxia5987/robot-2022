@@ -3,14 +3,21 @@ package frc.robot.subsystems.hood;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
+import frc.robot.Robot.*;
 
 import static frc.robot.Ports.Hood.SOLENOID;
 
 public class Hood extends SubsystemBase {
     private static Hood INSTANCE;
-    private final Solenoid angleChanger = new Solenoid(PneumaticsModuleType.CTREPCM, SOLENOID);
+    private final Solenoid angleChanger;
 
     private Hood() {
+        if (Robot.pneumaticsBase.checkSolenoidChannel(SOLENOID)) {
+            angleChanger = new Solenoid(PneumaticsModuleType.CTREPCM, SOLENOID);
+        } else {
+            angleChanger = null;
+        }
     }
 
     public enum Mode {
