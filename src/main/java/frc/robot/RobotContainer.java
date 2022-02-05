@@ -5,17 +5,20 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commandgroups.InterchangeableCommands;
 import frc.robot.commandgroups.PickUpCargo;
+import frc.robot.commandgroups.ShootCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.commands.IntakeByRobotSpeed;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.shooter.commands.Shoot;
 import frc.robot.utils.PhotonVisionModule;
 import frc.robot.utils.SimulateDrivetrain;
 
 import webapp.Webserver;
 
+import static frc.robot.Constants.Control.LEFT_TRIGGER_DEADBAND;
 import static frc.robot.Constants.Control.RIGHT_TRIGGER_DEADBAND;
 
 public class RobotContainer {
@@ -31,7 +34,8 @@ public class RobotContainer {
     private final XboxController xbox = new XboxController(Ports.Controls.XBOX);
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final JoystickButton b = new JoystickButton(xbox, XboxController.Button.kB.value);
-    private final Trigger leftTrigger = new Trigger(() -> xbox.getLeftTriggerAxis() > RIGHT_TRIGGER_DEADBAND);
+    private final Trigger leftTrigger = new Trigger(() -> xbox.getLeftTriggerAxis() > LEFT_TRIGGER_DEADBAND);
+    private final Trigger rightTrigger = new Trigger(() -> xbox.getLeftTriggerAxis() > RIGHT_TRIGGER_DEADBAND);
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -56,10 +60,20 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
+        /*
+        Everywhere there is a double supplier for 8, replace it with supplier for distance from target,
+        and when there is a double supplier for 4, replace it with supplier for robot velocity.
+         */
         a.whileHeld(new InterchangeableCommands(
                 leftTrigger::get,
-                new PickUpCargo(conveyor, intake, Constants.Conveyor.DEFAULT_POWER, Constants.Intake.DEFAULT_POWER),
-                new IntakeByRobotSpeed(intake, () -> 4) // This robot speed is temporary
+                new PickUpCargo(conveyor, intake,
+                        Constants.Conveyor.DEFAULT_POWER, Constants.Intake.DEFAULT_POWER),
+                new IntakeByRobotSpeed(intake, () -> 4)
+        ));
+        rightTrigger.whenActive(new InterchangeableCommands(
+                leftTrigger::get,
+                new ShootCargo(shooter, conveyor, () -> 8, Constants.Conveyor.DEFAULT_POWER),
+                new Shoot(shooter, () -> 8)
         ));
     }
 
