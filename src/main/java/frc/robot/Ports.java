@@ -26,7 +26,7 @@ public final class Ports {
     }
 
     public static class Hood {
-        public static final int SOLENOID = 0; // Hood solenoid port.
+        public static final int SOLENOID = 8; // Hood solenoid port.
     }
 
     public static class Controls {
