@@ -10,6 +10,7 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.Shoot;
 import frc.robot.utils.Utils;
 
+import java.util.OptionalDouble;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -29,7 +30,7 @@ public class ShootCargo extends ParallelCommandGroup {
         addCommands(
                 new Feed(conveyorPower, conveyor, isFlywheelAtSetpoint),
                 new SetFlapMode(conveyor, () -> Conveyor.FlapMode.getValue(isFlywheelAtSetpoint.getAsBoolean())),
-                new Shoot(shooter, distanceFromTarget)
+                new Shoot(shooter, distanceFromTarget, OptionalDouble.empty())
         );
     }
 }

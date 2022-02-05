@@ -18,6 +18,8 @@ import frc.robot.utils.SimulateDrivetrain;
 
 import webapp.Webserver;
 
+import java.util.OptionalDouble;
+
 import static frc.robot.Constants.Control.LEFT_TRIGGER_DEADBAND;
 import static frc.robot.Constants.Control.RIGHT_TRIGGER_DEADBAND;
 
@@ -73,7 +75,7 @@ public class RobotContainer {
         rightTrigger.whenActive(new InterchangeableCommands(
                 leftTrigger::get,
                 new ShootCargo(shooter, conveyor, () -> 8, Constants.Conveyor.DEFAULT_POWER),
-                new Shoot(shooter, () -> 8)
+                new Shoot(shooter, () -> 8, OptionalDouble.empty())
         ));
     }
 

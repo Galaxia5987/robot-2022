@@ -1,46 +1,33 @@
 package frc.robot.commandgroups;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants;
 import frc.robot.subsystems.conveyor.Conveyor;
+import frc.robot.subsystems.conveyor.commands.Feed;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.commands.IntakeCargo;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.commands.Shoot;
 
-public class Outtake extends CommandBase {
-    private final Intake intake ;
-    private final Conveyor conveyor;
-    private final Shooter shooter;
-    private final double conveyorPower;
+import java.util.OptionalDouble;
 
-    public Outtake(Intake intake, Conveyor conveyor, Shooter shooter, double conveyorPower) {
-        this.intake = intake;
-        this.conveyor = conveyor;
-        this.shooter = shooter;
-        this.conveyorPower = conveyorPower;
-        addRequirements(intake, conveyor, shooter);
-    }
+public class Outtake extends ParallelCommandGroup {
 
-    @Override
-    public void execute() {
-        if(conveyorPower < 0) {
-            conveyor.setPower(conveyorPower);
-            intake.setPower(conveyorPower);
-        } else {
-            conveyor.setFlapMode(Conveyor.FlapMode.Closed);
-            conveyor.setPower(conveyorPower);
-            shooter.setPower(Constants.Shooter.OUTTAKE_POWER);
-        }
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        shooter.setPower(0);
-        intake.setPower(0);
-        conveyor.setPower(0);
-    }
-
-    @Override
-    public boolean isFinished() {
-        return conveyor.getCargoCount() == 0;
+    public Outtake(Intake intake,
+                   Conveyor conveyor,
+                   Shooter shooter,
+                   double conveyorPower,
+                   double remainingBalls) {
+        addCommands(
+                new ParallelCommandGroup(
+                        new Feed(conveyorPower, conveyor, () -> conveyor.getCargoCount() < remainingBalls),
+                        new ConditionalCommand(
+                                new Shoot(shooter, () -> 8, OptionalDouble.empty()),
+                                new IntakeCargo(intake, () -> true, -Constants.Intake.DEFAULT_POWER),
+                                () -> conveyorPower > 0
+                        )
+                )
+        );
     }
 }
