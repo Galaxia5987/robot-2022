@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Feed;
+import frc.robot.subsystems.conveyor.commands.SetFlapMode;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.commands.IntakeCargo;
 import frc.robot.subsystems.shooter.Shooter;
@@ -18,10 +19,11 @@ public class Outtake extends ParallelCommandGroup {
                    Conveyor conveyor,
                    Shooter shooter,
                    double conveyorPower,
-                   double remainingBalls) {
+                   int remainingBalls) {
         addCommands(
                 new ParallelCommandGroup(
-                        new Feed(conveyorPower, conveyor, () -> conveyor.getCargoCount() < remainingBalls),
+                        new SetFlapMode(conveyor, () -> Conveyor.FlapMode.getValue(conveyor.getCargoCount() <= remainingBalls)),
+                        new Feed(conveyorPower, conveyor, () -> conveyor.getCargoCount() <= remainingBalls),
                         new ConditionalCommand(
                                 new Shoot(shooter, () -> 8, OptionalDouble.empty()),
                                 new IntakeCargo(intake, () -> true, -Constants.Intake.DEFAULT_POWER),

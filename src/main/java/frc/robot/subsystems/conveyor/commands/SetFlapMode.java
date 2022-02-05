@@ -24,4 +24,9 @@ public class SetFlapMode extends CommandBase {
             conveyor.closeFlap();
         }
     }
+
+    @Override
+    public void end(boolean interrupted) {
+        conveyor.setFlapMode(Conveyor.FlapMode.Closed);
+    }
 }
