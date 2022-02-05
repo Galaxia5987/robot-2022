@@ -138,6 +138,10 @@ public class Shooter extends SubsystemBase {
         }
     }
 
+    public void setPower(double power) {
+        motor.set(ControlMode.PercentOutput, power);
+    }
+
     /**
      * Terminates the movement of the wheel.
      */

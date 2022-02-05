@@ -40,6 +40,7 @@ public final class Constants {
         public static final double NEUTRAL_DEADBAND = 0.1; // [%]
 
         public static final double OUTPUT_MULTIPLIER = 0.1; // Multiplies the output for manual control in the bits. [%]
+        public static final double OUTTAKE_POWER = 0.2;
 
         public static TalonFXConfiguration getConfiguration() {
             final TalonFXConfiguration configuration = new TalonFXConfiguration();
