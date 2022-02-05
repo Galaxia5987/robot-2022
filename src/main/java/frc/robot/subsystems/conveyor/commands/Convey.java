@@ -5,12 +5,12 @@ import frc.robot.subsystems.conveyor.Conveyor;
 
 import java.util.function.BooleanSupplier;
 
-public class Feed extends CommandBase {
+public class Convey extends CommandBase {
     private final double power;
     private final Conveyor conveyor;
     private final BooleanSupplier condition;
 
-    public Feed(double power, Conveyor conveyor, BooleanSupplier condition) {
+    public Convey(double power, Conveyor conveyor, BooleanSupplier condition) {
         this.power = power;
         this.conveyor = conveyor;
         this.condition = condition;

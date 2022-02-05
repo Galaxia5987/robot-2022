@@ -3,7 +3,7 @@ package frc.robot.commandgroups;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants;
 import frc.robot.subsystems.conveyor.Conveyor;
-import frc.robot.subsystems.conveyor.commands.Feed;
+import frc.robot.subsystems.conveyor.commands.Convey;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.hood.commands.InstantChangeAngle;
 import frc.robot.subsystems.shooter.Shooter;
@@ -20,7 +20,7 @@ public class BasicShooting extends ParallelCommandGroup {
         addCommands(
                 new InstantChangeAngle(hood, Hood.Mode.getValue(distanceFromTarget.getAsDouble() < DISTANCE_FROM_TARGET_DEADBAND)),
                 new Shoot(shooter, distanceFromTarget, OptionalDouble.empty()),
-                new Feed(Constants.Conveyor.DEFAULT_POWER, conveyor, () -> true)
+                new Convey(Constants.Conveyor.DEFAULT_POWER, conveyor, () -> true)
         );
     }
 }
