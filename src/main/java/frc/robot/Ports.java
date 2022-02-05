@@ -3,6 +3,13 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 
 public final class Ports {
+
+    public static class Intake {
+        public static final int MOTOR = 11;
+        public static final boolean IS_MOTOR_INVERTED = false;
+        public static final int SOLENOID = 5;
+    }
+
     public static class Conveyor {
         public static final int MOTOR = 0;
         public static final TalonFXInvertType MOTOR_INVERSION = TalonFXInvertType.Clockwise;
@@ -23,11 +30,5 @@ public final class Ports {
 
     public static class Controls {
         public static final int XBOX = 0; // Xbox controller port.
-    }
-
-    public static class Intake {
-        public static final int MOTOR = 0;
-        public static final boolean IS_MOTOR_INVERTED = false;
-        public static final int SOLENOID = 0;
     }
 }
