@@ -78,19 +78,10 @@ public class RobotContainer {
                         Constants.Conveyor.DEFAULT_POWER * (leftTrigger.get() ? -1 : 1),
                         Outtake.getRemainingBalls(conveyor)
         ));
-        rb.whileHeld(
-                new ConditionalCommand(
-                        new InstantChangeAngle(hood,
-                                Hood.Mode.getValue(distanceFromTarget.getAsDouble() < Constants.Hood.DISTANCE_FROM_TARGET_DEADBAND)),
-                        new HoodDefaultCommand(hood,
-                                () -> Hood.Mode.getValue(distanceFromTarget.getAsDouble() < Constants.Hood.DISTANCE_FROM_TARGET_DEADBAND)),
-                        leftTrigger::get
-                )
-        );
         rightTrigger.whenActive(new InterchangeableCommands(
                 leftTrigger::get,
-                new BasicShooting(shooter, conveyor, distanceFromTarget),
-                new ShootCargo(shooter, conveyor, distanceFromTarget, Constants.Conveyor.DEFAULT_POWER)
+                new BasicShooting(shooter, hood, conveyor, distanceFromTarget),
+                new ShootCargo(shooter, hood, conveyor, distanceFromTarget, Constants.Conveyor.DEFAULT_POWER)
         ));
     }
 
