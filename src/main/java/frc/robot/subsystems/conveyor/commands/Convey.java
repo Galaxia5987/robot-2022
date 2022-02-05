@@ -14,6 +14,7 @@ public class Convey extends CommandBase {
         this.power = power;
         this.conveyor = conveyor;
         this.condition = condition;
+        addRequirements(conveyor);
     }
 
     @Override
