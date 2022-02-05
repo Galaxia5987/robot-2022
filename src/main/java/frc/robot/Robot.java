@@ -20,7 +20,7 @@ public class Robot extends TimedRobot {
     public PowerDistribution pdp = new PowerDistribution();
     private RobotContainer m_robotContainer;
     private Command m_autonomousCommand;
-    public static final PneumaticsBase pneumaticsBase = PneumaticsBase.getForType(0, PneumaticsModuleType.CTREPCM);
+    public static final PneumaticsControlModule pneumaticsBase = new PneumaticsControlModule(0);
 
     /**
      * This function is run when the robot is first started up and should be used for any
