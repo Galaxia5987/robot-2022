@@ -45,11 +45,11 @@ public final class Constants {
         public static final double KI = 0;
         public static final double KD = 0;
 
-        public static final Pose2d HUB_POSE = new Pose2d( // Position of the hub relative to the field.
-                new Translation2d(FIELD_LENGTH / 2, FIELD_WIDTH / 2), new Rotation2d());
-        public static final Transform2d CAMERA_TO_ROBOT = new Transform2d(
-                new Translation2d(0.038, 0.171), new Rotation2d()); // Position of the vision relative to the robot.
-
+        public static final double F_FORWARD_S = 0;
+        public static final double F_FORWARD_COS = 0;
+        public static final double F_FORWARD_V = 0;
+        public static final double F_FORWARD_A = 0;
+        
         public static final double CRUISE_VELOCITY = 0; // [ticks/100ms]
         public static final double MAXIMAL_ACCELERATION = 0; // [ticks/100ms*sec]
         public static final boolean VOLTAGE_COMPENSATION = true;
