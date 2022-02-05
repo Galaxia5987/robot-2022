@@ -1,7 +1,5 @@
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
-
 public final class Ports {
     public static class ExampleSubsystem {
         public static final int MAIN = 0;
@@ -13,7 +11,6 @@ public final class Ports {
     }
 
     public static class Controls {
-        public static final int JOYSTICK = 0;
         public static final int XBOX = 0;
     }
 
