@@ -40,7 +40,7 @@ public final class Constants {
         public static final double NEUTRAL_DEADBAND = 0.1; // [%]
 
         public static final double OUTPUT_MULTIPLIER = 0.1; // Multiplies the output for manual control in the bits. [%]
-        public static final double OUTTAKE_POWER = 0.2;
+        public static final double OUTTAKE_POWER = 0.2; // Power to give to the shooter when taking balls out. [%]
 
         public static TalonFXConfiguration getConfiguration() {
             final TalonFXConfiguration configuration = new TalonFXConfiguration();
@@ -91,6 +91,6 @@ public final class Constants {
     }
 
     public static class CommandGroups {
-        public static final double SHOOTER_VELOCITY_DEADBAND = 1 - 2.95 / 3.0;
+        public static final double SHOOTER_VELOCITY_DEADBAND = 1 - 2.95 / 3.0; // Dead band for shooter velocity setpoint. [%]
     }
 }
