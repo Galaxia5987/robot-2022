@@ -1,15 +1,12 @@
 package frc.robot;
 
-import frc.robot.valuetuner.WebConstant;
-import edu.wpi.first.wpilibj.util.Color;
-
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.util.Color;
 import org.photonvision.SimVisionTarget;
-
-import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
 
 public final class Constants {
@@ -48,6 +45,7 @@ public final class Constants {
             return configuration;
         }
     }
+
     public static class Conveyor {
         public static final double DEFAULT_POWER = 0.5; // [%]
         public static final int MAX_CARGO_AMOUNT = 2;
@@ -55,9 +53,9 @@ public final class Constants {
         public static final Color RED = new Color(0.15, 0.55, 0.3);
         public static final Color BLUE = new Color(0.02, 0.51, 0.44);
         public static final Color GREEN = new Color(0.06, 0.54, 0.39);
-        public static final Color NONE   = new Color(2e-4, 0.94, 0.045);
+        public static final Color NONE = new Color(2e-4, 0.94, 0.045);
     }
-	
+
     public static class Vision {
         public static final double CAMERA_HEIGHT = 0.767; // [m]
         public static final double TARGET_HEIGHT_FROM_GROUND = 2.64; // [m]

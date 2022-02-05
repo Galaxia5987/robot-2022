@@ -25,7 +25,7 @@ public class ConveyorDefaultCommand extends CommandBase {
             if (conveyor.getCargoCount() >= Constants.Conveyor.MAX_CARGO_AMOUNT) {
                 conveyor.setPower(0);
             } else {
-               conveyor.setPower(power);
+                conveyor.setPower(power);
             }
         } else if (conveyor.getCargoCount() == 1 && conveyor.isPreFlapBeamConnected()) {
             conveyor.setPower(power);

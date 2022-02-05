@@ -24,15 +24,15 @@ public class InterchangeableCommands extends CommandBase {
     public void execute() {
         boolean currentConditionState = condition.getAsBoolean();
 
-        if(currentConditionState) {
+        if (currentConditionState) {
             auxiliaryCommand.end(true);
-            if(!defaultCommand.isFinished()) {
+            if (!defaultCommand.isFinished()) {
                 defaultCommand.initialize();
                 defaultCommand.execute();
             }
         } else {
             defaultCommand.end(true);
-            if(!auxiliaryCommand.isFinished()) {
+            if (!auxiliaryCommand.isFinished()) {
                 auxiliaryCommand.initialize();
                 auxiliaryCommand.execute();
             }
