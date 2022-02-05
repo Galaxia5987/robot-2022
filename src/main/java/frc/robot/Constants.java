@@ -48,7 +48,7 @@ public final class Constants {
         }
     }
     public static class Conveyor {
-        public static final double POWER = 0.5; // [%]
+        public static final double DEFAULT_POWER = 0.5; // [%]
         public static final int MAX_CARGO_AMOUNT = 2;
         public static final int MIN_PROXIMITY_VALUE = 100; // Minimum distance from the color sensor in order to induce detection (arbitrary bit units).
         public static final Color RED = new Color(0.15, 0.55, 0.3);
