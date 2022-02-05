@@ -7,16 +7,11 @@ import frc.robot.commandgroups.*;
 import frc.robot.subsystems.conveyor.Conveyor;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.hood.Hood;
-import frc.robot.subsystems.intake.commands.IntakeByRobotSpeed;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.shooter.commands.Shoot;
 import frc.robot.utils.PhotonVisionModule;
 import frc.robot.utils.SimulateDrivetrain;
-
 import webapp.Webserver;
-
-import java.util.OptionalDouble;
 
 import static frc.robot.Constants.Control.LEFT_TRIGGER_DEADBAND;
 import static frc.robot.Constants.Control.RIGHT_TRIGGER_DEADBAND;
