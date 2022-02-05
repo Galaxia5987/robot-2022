@@ -31,7 +31,7 @@ public class InterchangeableCommands extends CommandBase {
         boolean currentConditionState = condition.getAsBoolean();
 
         if (currentConditionState) {
-            if(lastConditionState != currentConditionState) {
+            if (lastConditionState != currentConditionState) {
                 defaultCommand.end(true);
                 auxiliaryCommand.initialize();
             }
@@ -39,7 +39,7 @@ public class InterchangeableCommands extends CommandBase {
                 auxiliaryCommand.execute();
             }
         } else {
-            if(lastConditionState != currentConditionState) {
+            if (lastConditionState != currentConditionState) {
                 auxiliaryCommand.end(true);
                 defaultCommand.initialize();
             }

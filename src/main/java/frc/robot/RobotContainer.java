@@ -2,15 +2,12 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commandgroups.*;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.hood.Hood;
-import frc.robot.subsystems.hood.commands.HoodDefaultCommand;
-import frc.robot.subsystems.hood.commands.InstantChangeAngle;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.utils.PhotonVisionModule;
@@ -76,7 +73,7 @@ public class RobotContainer {
                         conveyor,
                         shooter,
                         Constants.Conveyor.DEFAULT_POWER * (leftTrigger.get() ? -1 : 1)
-        ));
+                ));
         rightTrigger.whenActive(new InterchangeableCommands(
                 leftTrigger::get,
                 new BasicShooting(shooter, hood, conveyor, distanceFromTarget),

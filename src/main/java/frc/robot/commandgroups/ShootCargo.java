@@ -8,7 +8,6 @@ import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.hood.commands.HoodDefaultCommand;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.Shoot;
-import frc.robot.utils.Utils;
 
 import java.util.OptionalDouble;
 import java.util.function.BooleanSupplier;
@@ -30,7 +29,7 @@ public class ShootCargo extends ParallelCommandGroup {
          */
         final BooleanSupplier isFlywheelAtSetpoint =
                 () -> (1 - shooter.getVelocity() / Shoot.getSetpointVelocity(
-                                distanceFromTarget.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND);
+                        distanceFromTarget.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND);
 
         addCommands(
                 new HoodDefaultCommand(hood, () -> Hood.Mode.getValue(distanceFromTarget.getAsDouble() < DISTANCE_FROM_TARGET_DEADBAND)),

@@ -67,7 +67,7 @@ public class Hood extends SubsystemBase {
         }
 
         public static Mode getValue(boolean val) {
-            if(val) {
+            if (val) {
                 return ShortDistance;
             } else {
                 return LongDistance;
