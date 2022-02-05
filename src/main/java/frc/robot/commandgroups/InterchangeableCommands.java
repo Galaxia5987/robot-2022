@@ -9,15 +9,21 @@ import static edu.wpi.first.wpilibj2.command.CommandGroupBase.requireUngrouped;
 
 public class InterchangeableCommands extends CommandBase {
     private final BooleanSupplier condition;
-    private final Command defaultCommand;
     private final Command auxiliaryCommand;
+    private final Command defaultCommand;
+    private boolean lastConditionState;
 
-    public InterchangeableCommands(BooleanSupplier condition, Command defaultCommand, Command auxiliaryCommand) {
+    public InterchangeableCommands(BooleanSupplier condition, Command auxiliaryCommand, Command defaultCommand) {
         this.condition = condition;
-        this.defaultCommand = defaultCommand;
         this.auxiliaryCommand = auxiliaryCommand;
+        this.defaultCommand = defaultCommand;
 
-        requireUngrouped(defaultCommand, auxiliaryCommand);
+        requireUngrouped(auxiliaryCommand, defaultCommand);
+    }
+
+    @Override
+    public void initialize() {
+        lastConditionState = condition.getAsBoolean();
     }
 
     @Override
@@ -25,23 +31,29 @@ public class InterchangeableCommands extends CommandBase {
         boolean currentConditionState = condition.getAsBoolean();
 
         if (currentConditionState) {
-            auxiliaryCommand.end(true);
-            if (!defaultCommand.isFinished()) {
-                defaultCommand.initialize();
-                defaultCommand.execute();
-            }
-        } else {
-            defaultCommand.end(true);
-            if (!auxiliaryCommand.isFinished()) {
+            if(lastConditionState != currentConditionState) {
+                defaultCommand.end(true);
                 auxiliaryCommand.initialize();
+            }
+            if (!auxiliaryCommand.isFinished()) {
                 auxiliaryCommand.execute();
             }
+        } else {
+            if(lastConditionState != currentConditionState) {
+                auxiliaryCommand.end(true);
+                defaultCommand.initialize();
+            }
+            if (!defaultCommand.isFinished()) {
+                defaultCommand.execute();
+            }
         }
+
+        lastConditionState = currentConditionState;
     }
 
     @Override
     public void end(boolean interrupted) {
-        defaultCommand.end(interrupted);
         auxiliaryCommand.end(interrupted);
+        defaultCommand.end(interrupted);
     }
 }
