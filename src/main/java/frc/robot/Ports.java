@@ -21,7 +21,7 @@ public final class Ports {
     }
 
     public static class Shooter {
-        public static final int MOTOR = 0; // Main motor port.
+        public static final int MOTOR = 31; // Main motor port.
         public static final TalonFXInvertType INVERSION_TYPE = TalonFXInvertType.CounterClockwise;
     }
 
