@@ -32,7 +32,7 @@ public class RobotContainer {
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final JoystickButton b = new JoystickButton(xbox, XboxController.Button.kB.value);
     private final Trigger leftTrigger = new Trigger(() -> xbox.getLeftTriggerAxis() > RIGHT_TRIGGER_DEADBAND);
-    private boolean override = false;
+
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
      */
@@ -56,7 +56,6 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        leftTrigger.whenActive(() -> override = true).whenInactive(() -> override = false);
         a.whileHeld(new InterchangeableCommands(
                 leftTrigger::get,
                 new PickUpCargo(conveyor, intake, Constants.Conveyor.DEFAULT_POWER, Constants.Intake.DEFAULT_POWER),
