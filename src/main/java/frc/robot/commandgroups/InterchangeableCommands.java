@@ -11,7 +11,6 @@ public class InterchangeableCommands extends CommandBase {
     private final BooleanSupplier condition;
     private final Command defaultCommand;
     private final Command auxiliaryCommand;
-    private boolean lastConditionState;
 
     public InterchangeableCommands(BooleanSupplier condition, Command defaultCommand, Command auxiliaryCommand) {
         this.condition = condition;
@@ -22,28 +21,22 @@ public class InterchangeableCommands extends CommandBase {
     }
 
     @Override
-    public void initialize() {
-        lastConditionState = condition.getAsBoolean();
-    }
-
-    @Override
     public void execute() {
         boolean currentConditionState = condition.getAsBoolean();
-        Command currentCommand = currentConditionState ? defaultCommand : auxiliaryCommand;
-        Command lastCommand = lastConditionState ? defaultCommand : auxiliaryCommand;
 
-        if (currentConditionState != lastConditionState) {
-            lastCommand.end(true);
-            currentCommand.initialize();
+        if(currentConditionState) {
+            auxiliaryCommand.end(true);
+            if(!defaultCommand.isFinished()) {
+                defaultCommand.initialize();
+                defaultCommand.execute();
+            }
         } else {
-            if(lastCommand.isFinished()) {
-                lastCommand.end(false);
-            } else {
-                lastCommand.execute();
+            defaultCommand.end(true);
+            if(!auxiliaryCommand.isFinished()) {
+                auxiliaryCommand.initialize();
+                auxiliaryCommand.execute();
             }
         }
-
-        lastConditionState = currentConditionState;
     }
 
     @Override
