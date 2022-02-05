@@ -5,11 +5,11 @@ import frc.robot.subsystems.conveyor.Conveyor;
 
 import java.util.function.Supplier;
 
-public class SetFlapMode extends CommandBase {
+public class FlapDefaultCommand extends CommandBase {
     private final Conveyor conveyor;
     private final Supplier<Conveyor.FlapMode> flapMode;
 
-    public SetFlapMode(Conveyor conveyor, Supplier<Conveyor.FlapMode> flapMode) {
+    public FlapDefaultCommand(Conveyor conveyor, Supplier<Conveyor.FlapMode> flapMode) {
         this.conveyor = conveyor;
         this.flapMode = flapMode;
 

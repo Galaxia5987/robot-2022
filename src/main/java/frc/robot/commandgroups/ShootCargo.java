@@ -1,11 +1,9 @@
 package frc.robot.commandgroups;
 
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Feed;
-import frc.robot.subsystems.conveyor.commands.SetFlapMode;
+import frc.robot.subsystems.conveyor.commands.FlapDefaultCommand;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.Shoot;
 import frc.robot.utils.Utils;
@@ -29,7 +27,7 @@ public class ShootCargo extends ParallelCommandGroup {
 
         addCommands(
                 new Feed(conveyorPower, conveyor, isFlywheelAtSetpoint),
-                new SetFlapMode(conveyor, () -> Conveyor.FlapMode.getValue(isFlywheelAtSetpoint.getAsBoolean())),
+                new FlapDefaultCommand(conveyor, () -> Conveyor.FlapMode.getValue(isFlywheelAtSetpoint.getAsBoolean())),
                 new Shoot(shooter, distanceFromTarget, OptionalDouble.empty())
         );
     }
