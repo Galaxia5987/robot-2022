@@ -32,6 +32,8 @@ public class IntakeCargo extends CommandBase {
     public void execute() {
         if (condition.getAsBoolean()) {
             intake.setPower(power);
+        } else {
+            intake.setPower(0);
         }
     }
 
