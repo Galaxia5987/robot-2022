@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
 import frc.robot.Robot;
+import frc.robot.utils.Utils;
 
 import static frc.robot.Constants.Intake.IS_COMPENSATING_VOLTAGE;
 import static frc.robot.Ports.Hood.SOLENOID;
@@ -21,7 +22,7 @@ public class Intake extends SubsystemBase {
         motor.setInverted(Ports.Intake.IS_MOTOR_INVERTED);
         motor.enableVoltageCompensation(IS_COMPENSATING_VOLTAGE);
         motor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
-        if (Robot.pneumaticsBase.checkSolenoidChannel(SOLENOID)) {
+        if (Utils.isBitSet(Robot.pneumaticsBase.getSolenoids(), SOLENOID)) {
             retractor = new Solenoid(PneumaticsModuleType.CTREPCM, SOLENOID);
         } else {
             retractor = null;

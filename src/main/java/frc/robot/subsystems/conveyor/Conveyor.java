@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Ports;
 import frc.robot.Robot;
+import frc.robot.utils.Utils;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;
@@ -41,7 +42,7 @@ public class Conveyor extends SubsystemBase {
         colorMatch.addColorMatch(NONE);
         cargoPositions.add(DriverStation.Alliance.Invalid.name());
         cargoPositions.add(DriverStation.Alliance.Invalid.name());
-        if (Robot.pneumaticsBase.checkSolenoidChannel(SOLENOID)) {
+        if (Utils.isBitSet(Robot.pneumaticsBase.getSolenoids(), SOLENOID)) {
             flap = new Solenoid(PneumaticsModuleType.CTREPCM, SOLENOID);
         } else {
             flap = null;
