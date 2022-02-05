@@ -24,10 +24,13 @@ public class ShootCargo extends ParallelCommandGroup {
                       Conveyor conveyor,
                       DoubleSupplier distanceFromTarget,
                       double conveyorPower) {
+        /*
+        This boolean supplier uses a deadband for the shooter velocity by turning it into the
+        ratio between the current velocity and the setpoint.
+         */
         final BooleanSupplier isFlywheelAtSetpoint =
-                () -> Utils.deadband(
-                        1 - shooter.getVelocity() / Shoot.getSetpointVelocity(
-                                distanceFromTarget.getAsDouble()), SHOOTER_VELOCITY_DEADBAND) == 0;
+                () -> (1 - shooter.getVelocity() / Shoot.getSetpointVelocity(
+                                distanceFromTarget.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND);
 
         addCommands(
                 new HoodDefaultCommand(hood, () -> Hood.Mode.getValue(distanceFromTarget.getAsDouble() < DISTANCE_FROM_TARGET_DEADBAND)),
