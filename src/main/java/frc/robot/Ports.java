@@ -11,10 +11,11 @@ public final class Ports {
     }
 
     public static class Conveyor {
-        public static final int MOTOR = 0;
+        public static final int MOTOR = 21;
         public static final TalonFXInvertType MOTOR_INVERSION = TalonFXInvertType.Clockwise;
         public static final boolean IS_COMPENSATING_VOLTAGE = true;
-        public static final int SOLENOID = 0;
+
+        public static final int SOLENOID = 6;
         public static final int POST_FLAP_BEAM_BREAKER = 1;
         public static final int PRE_FLAP_BEAM_BREAKER = 0;
     }
