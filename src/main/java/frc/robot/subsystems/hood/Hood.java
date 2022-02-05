@@ -59,10 +59,19 @@ public class Hood extends SubsystemBase {
     public enum Mode {
         ShortDistance(true),
         LongDistance(false);
+
         public final boolean value;
 
         Mode(boolean value) {
             this.value = value;
+        }
+
+        public static Mode getValue(boolean val) {
+            if(val) {
+                return ShortDistance;
+            } else {
+                return LongDistance;
+            }
         }
     }
 }

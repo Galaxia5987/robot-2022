@@ -88,6 +88,10 @@ public final class Constants {
         public static final double LEFT_TRIGGER_DEADBAND = 0.4; // Deadband for right trigger. [%]
     }
 
+    public static class Hood {
+        public static final double DISTANCE_FROM_TARGET_DEADBAND = 3.5; // [m]
+    }
+
     public static class CommandGroups {
         public static final double SHOOTER_VELOCITY_DEADBAND = 1 - 2.95 / 3.0; // Dead band for shooter velocity setpoint. [%]
     }

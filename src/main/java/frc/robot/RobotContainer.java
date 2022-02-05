@@ -2,16 +2,22 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commandgroups.*;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.hood.commands.HoodDefaultCommand;
+import frc.robot.subsystems.hood.commands.InstantChangeAngle;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.utils.PhotonVisionModule;
 import frc.robot.utils.SimulateDrivetrain;
 import webapp.Webserver;
+
+import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.Control.LEFT_TRIGGER_DEADBAND;
 import static frc.robot.Constants.Control.RIGHT_TRIGGER_DEADBAND;
@@ -29,6 +35,7 @@ public class RobotContainer {
     private final XboxController xbox = new XboxController(Ports.Controls.XBOX);
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final JoystickButton b = new JoystickButton(xbox, XboxController.Button.kB.value);
+    private final Button rb = new Button(xbox::getRightBumper);
     private final Trigger leftTrigger = new Trigger(() -> xbox.getLeftTriggerAxis() > LEFT_TRIGGER_DEADBAND);
     private final Trigger rightTrigger = new Trigger(() -> xbox.getLeftTriggerAxis() > RIGHT_TRIGGER_DEADBAND);
 
@@ -55,11 +62,13 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
+        DoubleSupplier distanceFromTarget = () -> 8;
+        DoubleSupplier robotVelocity = () -> 4;
+
         a.whileHeld(new InterchangeableCommands(
                 leftTrigger::get,
-                new PickUpCargo(conveyor, intake,
-                        Constants.Conveyor.DEFAULT_POWER, Constants.Intake.DEFAULT_POWER),
-                new BasicPickUp(conveyor, intake, () -> 4 /* Replace with robot velocity supplier */)
+                new BasicPickUp(conveyor, intake, robotVelocity),
+                new PickUpCargo(conveyor, intake, Constants.Conveyor.DEFAULT_POWER, Constants.Intake.DEFAULT_POWER)
         ));
         b.whileHeld(
                 new Outtake(
@@ -68,11 +77,20 @@ public class RobotContainer {
                         shooter,
                         Constants.Conveyor.DEFAULT_POWER * (leftTrigger.get() ? -1 : 1),
                         Outtake.getRemainingBalls(conveyor)
-                ));
+        ));
+        rb.whileHeld(
+                new ConditionalCommand(
+                        new InstantChangeAngle(hood,
+                                Hood.Mode.getValue(distanceFromTarget.getAsDouble() < Constants.Hood.DISTANCE_FROM_TARGET_DEADBAND)),
+                        new HoodDefaultCommand(hood,
+                                () -> Hood.Mode.getValue(distanceFromTarget.getAsDouble() < Constants.Hood.DISTANCE_FROM_TARGET_DEADBAND)),
+                        leftTrigger::get
+                )
+        );
         rightTrigger.whenActive(new InterchangeableCommands(
                 leftTrigger::get,
-                new ShootCargo(shooter, conveyor, () -> 8 /* Replace with distance from target supplier */, Constants.Conveyor.DEFAULT_POWER),
-                new BasicShooting(shooter, conveyor, () -> 8 /* Replace with distance from target supplier */)
+                new BasicShooting(shooter, conveyor, distanceFromTarget),
+                new ShootCargo(shooter, conveyor, distanceFromTarget, Constants.Conveyor.DEFAULT_POWER)
         ));
     }
 
