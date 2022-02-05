@@ -161,7 +161,7 @@ public class Conveyor extends SubsystemBase {
      * @return the queue of the balls.
      */
     public Deque<String> getQueue() {
-        return cargoPositions;
+        return new ArrayDeque<>(cargoPositions);
     }
 
     /**
