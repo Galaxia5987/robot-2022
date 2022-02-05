@@ -8,13 +8,13 @@ import java.util.function.BooleanSupplier;
 import static edu.wpi.first.wpilibj2.command.CommandGroupBase.requireUngrouped;
 
 public class InterchangeableCommands extends CommandBase {
-    private final BooleanSupplier override;
+    private final BooleanSupplier condition;
     private final Command defaultCommand;
     private final Command auxiliaryCommand;
-    private boolean lastInput;
+    private boolean lastConditionState;
 
-    public InterchangeableCommands(BooleanSupplier override, Command defaultCommand, Command auxiliaryCommand) {
-        this.override = override;
+    public InterchangeableCommands(BooleanSupplier condition, Command defaultCommand, Command auxiliaryCommand) {
+        this.condition = condition;
         this.defaultCommand = defaultCommand;
         this.auxiliaryCommand = auxiliaryCommand;
 
@@ -23,16 +23,16 @@ public class InterchangeableCommands extends CommandBase {
 
     @Override
     public void initialize() {
-        lastInput = override.getAsBoolean();
+        lastConditionState = condition.getAsBoolean();
     }
 
     @Override
     public void execute() {
-        boolean currentInput = override.getAsBoolean();
-        Command currentCommand = currentInput ? defaultCommand : auxiliaryCommand;
-        Command lastCommand = lastInput ? defaultCommand : auxiliaryCommand;
+        boolean currentConditionState = condition.getAsBoolean();
+        Command currentCommand = currentConditionState ? defaultCommand : auxiliaryCommand;
+        Command lastCommand = lastConditionState ? defaultCommand : auxiliaryCommand;
 
-        if (currentInput != lastInput) {
+        if (currentConditionState != lastConditionState) {
             lastCommand.end(true);
             currentCommand.initialize();
         } else {
@@ -43,7 +43,7 @@ public class InterchangeableCommands extends CommandBase {
             }
         }
 
-        lastInput = currentInput;
+        lastConditionState = currentConditionState;
     }
 
     @Override
