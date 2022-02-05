@@ -7,9 +7,12 @@ package frc.robot;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -17,8 +20,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * project.
  */
 public class Robot extends TimedRobot {
+    public static final boolean debug = !DriverStation.isFMSAttached();
     public static final AHRS navx = new AHRS(SPI.Port.kMXP);
-    public static boolean debug = false;
     public PowerDistribution pdp = new PowerDistribution();
     private RobotContainer m_robotContainer;
     private Command m_autonomousCommand;
@@ -87,6 +90,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
+
     }
 
     /**

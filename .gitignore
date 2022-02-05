@@ -195,3 +195,5 @@ build/
 .gradle/
 
 !/.idea/fileTemplates/**
+
+simgui*
