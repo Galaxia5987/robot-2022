@@ -20,14 +20,12 @@ public class Outtake extends ParallelCommandGroup {
                    Shooter shooter,
                    double conveyorPower) {
         addCommands(
-                new ParallelCommandGroup(
-                        new FlapDefaultCommand(conveyor, () -> Conveyor.FlapMode.Closed),
-                        new Convey(conveyorPower, conveyor, () -> true),
-                        new ConditionalCommand(
-                                new Shoot(shooter, () -> 8, OptionalDouble.of(Constants.Shooter.OUTTAKE_POWER)),
-                                new IntakeCargo(intake, () -> true, -Constants.Intake.DEFAULT_POWER),
-                                () -> conveyorPower > 0
-                        )
+                new FlapDefaultCommand(conveyor, () -> Conveyor.FlapMode.Closed),
+                new Convey(conveyorPower, conveyor, () -> true),
+                new ConditionalCommand(
+                        new Shoot(shooter, () -> 8, OptionalDouble.of(Constants.Shooter.OUTTAKE_POWER)),
+                        new IntakeCargo(intake, () -> true, -Constants.Intake.DEFAULT_POWER),
+                        () -> conveyorPower > 0
                 )
         );
     }
