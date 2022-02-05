@@ -3,10 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commandgroups.InterchangeableCommands;
-import frc.robot.commandgroups.Outtake;
-import frc.robot.commandgroups.PickUpCargo;
-import frc.robot.commandgroups.ShootCargo;
+import frc.robot.commandgroups.*;
 import frc.robot.subsystems.conveyor.Conveyor;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.hood.Hood;
@@ -63,15 +60,11 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        /*
-        Everywhere there is a double supplier for 8, replace it with supplier for distance from target,
-        and when there is a double supplier for 4, replace it with supplier for robot velocity.
-         */
         a.whileHeld(new InterchangeableCommands(
                 leftTrigger::get,
                 new PickUpCargo(conveyor, intake,
                         Constants.Conveyor.DEFAULT_POWER, Constants.Intake.DEFAULT_POWER),
-                new IntakeByRobotSpeed(intake, () -> 4)
+                new BasicPickUp(conveyor, intake, () -> 4 /* Replace with robot velocity supplier */)
         ));
         b.whileHeld(
                 new Outtake(
@@ -83,8 +76,8 @@ public class RobotContainer {
         ));
         rightTrigger.whenActive(new InterchangeableCommands(
                 leftTrigger::get,
-                new ShootCargo(shooter, conveyor, () -> 8, Constants.Conveyor.DEFAULT_POWER),
-                new Shoot(shooter, () -> 8, OptionalDouble.empty())
+                new ShootCargo(shooter, conveyor, () -> 8 /* Replace with distance from target supplier */, Constants.Conveyor.DEFAULT_POWER),
+                new BasicShooting(shooter, conveyor, () -> 8 /* Replace with distance from target supplier */)
         ));
     }
 
