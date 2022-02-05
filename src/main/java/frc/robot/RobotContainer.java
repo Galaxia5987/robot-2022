@@ -57,7 +57,7 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         leftTrigger.whenActive(() -> override = true).whenInactive(() -> override = false);
-        a.whenPressed(new InterchangeableCommands(
+        a.whileHeld(new InterchangeableCommands(
                 leftTrigger::get,
                 new PickUpCargo(conveyor, intake, Constants.Conveyor.DEFAULT_POWER, Constants.Intake.DEFAULT_POWER),
                 new IntakeByRobotSpeed(intake, () -> 4) // This robot speed is temporary
