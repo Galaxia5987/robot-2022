@@ -155,6 +155,11 @@ public class Conveyor extends SubsystemBase {
         flap.set(flapMode.mode);
     }
 
+    /**
+     * Gets the queue of all the balls in the conveyor.
+     *
+     * @return the queue of the balls.
+     */
     public Deque<String> getQueue() {
         return cargoPositions;
     }

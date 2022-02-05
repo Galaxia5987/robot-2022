@@ -35,6 +35,12 @@ public class Outtake extends ParallelCommandGroup {
         );
     }
 
+    /**
+     * This function is designated to returning a recommended number of balls to outtake.
+     *
+     * @param conveyor is the conveyor subsystem.
+     * @return the recommended number of balls to leave in the conveyor.
+     */
     public static int getRemainingBalls(Conveyor conveyor) {
         Deque<String> queue = conveyor.getQueue();
         if(conveyor.getCargoCount() == 2) {
