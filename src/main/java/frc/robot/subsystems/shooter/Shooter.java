@@ -137,6 +137,11 @@ public class Shooter extends SubsystemBase {
         }
     }
 
+    /**
+     * Set the power for the shooter motor.
+     *
+     * @param power is the power for the motor. [%]
+     */
     public void setPower(double power) {
         motor.set(ControlMode.PercentOutput, power);
     }
