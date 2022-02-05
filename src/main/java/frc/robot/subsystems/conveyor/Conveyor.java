@@ -155,6 +155,10 @@ public class Conveyor extends SubsystemBase {
         flap.set(flapMode.mode);
     }
 
+    public Deque<String> getQueue() {
+        return cargoPositions;
+    }
+
     /**
      * This function updates the actual positions of the balls based on the following sensors:
      * color sensor, post flap beam, proximity sensor (in the color sensor).

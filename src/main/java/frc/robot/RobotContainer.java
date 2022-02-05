@@ -79,7 +79,7 @@ public class RobotContainer {
                         conveyor,
                         shooter,
                         Constants.Conveyor.DEFAULT_POWER * (leftTrigger.get() ? -1 : 1),
-                        0
+                        Outtake.getRemainingBalls(conveyor)
         ));
         rightTrigger.whenActive(new InterchangeableCommands(
                 leftTrigger::get,
