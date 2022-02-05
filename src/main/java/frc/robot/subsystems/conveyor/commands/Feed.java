@@ -18,7 +18,7 @@ public class Feed extends CommandBase {
 
     @Override
     public void execute() {
-        if(condition.getAsBoolean()) {
+        if (condition.getAsBoolean()) {
             conveyor.setPower(power);
         } else {
             conveyor.setPower(0);

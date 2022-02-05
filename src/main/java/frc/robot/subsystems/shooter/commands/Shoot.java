@@ -3,7 +3,6 @@ package frc.robot.subsystems.shooter.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.shooter.Shooter;
 
-import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.function.DoubleSupplier;
 
@@ -15,7 +14,7 @@ public class Shoot extends CommandBase {
     /**
      * Constructor.
      *
-     * @param shooter          is the shooter subsystem.
+     * @param shooter  is the shooter subsystem.
      * @param distance is the distance of the robot from the target. [rpm]
      */
     public Shoot(Shooter shooter, DoubleSupplier distance, OptionalDouble power) {
@@ -38,7 +37,7 @@ public class Shoot extends CommandBase {
 
     @Override
     public void execute() {
-        if(power.isEmpty()) {
+        if (power.isEmpty()) {
             shooter.setVelocity(getSetpointVelocity(distance.getAsDouble()));
         } else {
             shooter.setPower(power.getAsDouble());

@@ -93,7 +93,7 @@ public class Conveyor extends SubsystemBase {
      *
      * @return the input of the post-flap beam breaker (true or false).
      */
-    public boolean isPostFlapBeamConnected(){
+    public boolean isPostFlapBeamConnected() {
         return postFlapBeam.get();
     }
 
@@ -167,7 +167,7 @@ public class Conveyor extends SubsystemBase {
     /**
      * This function updates the actual positions of the balls based on the following sensors:
      * color sensor, post flap beam, proximity sensor (in the color sensor).
-     *
+     * <p>
      * Logic documentation is included in the function.
      */
     private void updateActualBallPositions() {
@@ -216,7 +216,7 @@ public class Conveyor extends SubsystemBase {
                                     true => remove the first non-invalid value in the queue
                                             add an invalid value at the tail of the queue
          */
-        if(!colorIntake.equals(lastSeenColor)) {
+        if (!colorIntake.equals(lastSeenColor)) {
             if (!colorIntake.equals(DriverStation.Alliance.Invalid) && power > 0 && getCargoCount() != MAX_CARGO_AMOUNT) {
                 cargoPositions.removeFirstOccurrence(DriverStation.Alliance.Invalid.name());
                 cargoPositions.add(colorIntake.name());
@@ -280,7 +280,7 @@ public class Conveyor extends SubsystemBase {
         }
 
         public static FlapMode getValue(boolean val) {
-            if(val) {
+            if (val) {
                 return Closed;
             } else {
                 return Open;

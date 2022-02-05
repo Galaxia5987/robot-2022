@@ -43,11 +43,11 @@ public class Outtake extends ParallelCommandGroup {
      */
     public static int getRemainingBalls(Conveyor conveyor) {
         Deque<String> queue = conveyor.getQueue();
-        if(conveyor.getCargoCount() == 2) {
-            if(queue.getFirst().equals(DriverStation.getAlliance().name())) {
-                if(queue.getLast().equals(DriverStation.getAlliance().name())) {
+        if (conveyor.getCargoCount() == 2) {
+            if (queue.getFirst().equals(DriverStation.getAlliance().name())) {
+                if (queue.getLast().equals(DriverStation.getAlliance().name())) {
                     return 2;
-                } else if(queue.getLast().equals(DriverStation.Alliance.Invalid.name())) {
+                } else if (queue.getLast().equals(DriverStation.Alliance.Invalid.name())) {
                     return 0;
                 } else {
                     return 1;
