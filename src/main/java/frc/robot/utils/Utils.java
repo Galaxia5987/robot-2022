@@ -48,9 +48,9 @@ public class Utils {
     }
 
     /**
-     * @param number a integer
-     * @param index an integer index
-     * @return whether in the corresponding index of the number the bit is on
+     * @param number an integer.
+     * @param index an integer index.
+     * @return whether in the corresponding index of the number the bit is on.
      */
     public static boolean isBitSet(int number, int index) {
         return (number & (1 << index)) != 0;
