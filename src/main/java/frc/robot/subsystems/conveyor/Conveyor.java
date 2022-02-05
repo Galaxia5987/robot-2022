@@ -279,6 +279,12 @@ public class Conveyor extends SubsystemBase {
             this.mode = mode;
         }
 
+        /**
+         * Get a flap mode according to input boolean (true - closed, false - open).
+         *
+         * @param val is the input value.
+         * @return the flap mode as an enum.
+         */
         public static FlapMode getValue(boolean val) {
             if (val) {
                 return Closed;
