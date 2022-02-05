@@ -7,13 +7,13 @@ import java.util.function.BooleanSupplier;
 
 import static edu.wpi.first.wpilibj2.command.CommandGroupBase.requireUngrouped;
 
-public class OverridableCommand extends CommandBase {
+public class InterchangeableCommands extends CommandBase {
     private final BooleanSupplier override;
     private final Command defaultCommand;
     private final Command auxiliaryCommand;
     private boolean lastInput;
 
-    public OverridableCommand(BooleanSupplier override, Command defaultCommand, Command auxiliaryCommand) {
+    public InterchangeableCommands(BooleanSupplier override, Command defaultCommand, Command auxiliaryCommand) {
         this.override = override;
         this.defaultCommand = defaultCommand;
         this.auxiliaryCommand = auxiliaryCommand;
