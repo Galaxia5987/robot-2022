@@ -29,7 +29,7 @@ public class Outtake extends ParallelCommandGroup {
                                 new IntakeCargo(intake, () -> true, -Constants.Intake.DEFAULT_POWER),
                                 () -> conveyorPower > 0
                         )
-                )
+                ).withInterrupt(() -> conveyor.getCargoCount() <= remainingBalls)
         );
     }
 }
