@@ -1,6 +1,5 @@
 package frc.robot.commandgroups;
 
-import com.fasterxml.jackson.databind.node.BinaryNode;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -30,7 +29,7 @@ public class DynamicConditionalCommand extends CommandBase {
     @Override
     public void execute() {
         boolean currentConditionState = condition.getAsBoolean();
-        boolean change = lastConditionState & !currentConditionState;
+        var change = lastConditionState & !currentConditionState;
         currentConditionState ^= change;
 
         if (currentConditionState) {
@@ -56,5 +55,10 @@ public class DynamicConditionalCommand extends CommandBase {
     public void end(boolean interrupted) {
         onTrueCommand.end(interrupted);
         onFalseCommand.end(interrupted);
+    }
+
+    @Override
+    public boolean isFinished() {
+        return onFalseCommand.isFinished() & onTrueCommand.isFinished();
     }
 }
