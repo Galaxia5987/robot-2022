@@ -18,7 +18,7 @@ public class ManualFlywheelControl extends CommandBase {
 
     @Override
     public void execute() {
-        shooter.setPower(Constants.Shooter.OUTPUT_MULTIPLIER * -output.getAsDouble());
+        shooter.setPower(Constants.Shooter.OUTPUT_MULTIPLIER * output.getAsDouble());
     }
 
     @Override
