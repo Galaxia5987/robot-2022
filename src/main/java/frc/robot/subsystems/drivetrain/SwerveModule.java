@@ -190,7 +190,9 @@ public class SwerveModule extends SubsystemBase {
      */
     public void setState(SwerveModuleState state) {
         setVelocity(state.speedMetersPerSecond);
-        setAngle(state.angle);
+        if (state.speedMetersPerSecond != 0) {
+            setAngle(state.angle);
+        }
     }
 
     /**
