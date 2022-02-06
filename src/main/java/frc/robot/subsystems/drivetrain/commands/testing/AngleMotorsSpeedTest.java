@@ -1,4 +1,4 @@
-package frc.robot.subsystems.drivetrain.commands.tests;
+package frc.robot.subsystems.drivetrain.commands.testing;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;

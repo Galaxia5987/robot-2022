@@ -1,4 +1,4 @@
-package frc.robot.subsystems.drivetrain.commands.tests;
+package frc.robot.subsystems.drivetrain.commands.testing;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -7,18 +7,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
-public class DriveMotorsEqualVelocityTest extends CommandBase {
+public class DriveMotorsSpeedTest extends CommandBase {
     private final SwerveDrive swerveDrive;
     private final Timer timer = new Timer();
+    private final double[] times = new double[4];
 
-    public DriveMotorsEqualVelocityTest(SwerveDrive swerveDrive) {
+    public DriveMotorsSpeedTest(SwerveDrive swerveDrive) {
         this.swerveDrive = swerveDrive;
         addRequirements(swerveDrive);
     }
 
     @Override
     public void initialize() {
-        timer.reset();
         timer.start();
     }
 
@@ -30,27 +30,27 @@ public class DriveMotorsEqualVelocityTest extends CommandBase {
                 new SwerveModuleState(3, Rotation2d.fromDegrees(0)),
                 new SwerveModuleState(3, Rotation2d.fromDegrees(0))
         });
+        for (int i = 0; i < 4; i++) {
+            if (Math.abs(Math.abs(swerveDrive.getModule(i).getVelocity()) - 3) < 0.1) {
+                if (times[i] == 0) times[i] = timer.get();
+            }
+        }
     }
 
     @Override
     public void end(boolean interrupted) {
-        double average = 0;
-        double[] velocities = new double[4];
         for (int i = 0; i < 4; i++) {
-            velocities[i] = swerveDrive.getModule(i).getVelocity();
-            average += velocities[i];
-        }
-        average /= 4;
-        for (int i = 0; i < 4; i++) {
-            String value = "WHEEL: " + i + " has reached: " + velocities[i] + " m/s, and is off by: " + (velocities[i] - average) + "m/s from the average.";
-            System.out.println(value);
-            SmartDashboard.putString("SameVelocityResult [WHEEL " + i + "]", value);
+            System.out.println("WHEEL: " + i + " reached 3m/s in: " + times[i] + " seconds.");
+            SmartDashboard.putString("SpeedTestResult [WHEEL " + i + "]", "WHEEL: " + i + " reached 3m/s in: " + times[i] + " seconds.");
         }
         swerveDrive.terminate();
     }
 
     @Override
     public boolean isFinished() {
-        return timer.hasElapsed(4);
+        for (double time : times) {
+            if (time == 0) return false;
+        }
+        return true;
     }
 }
