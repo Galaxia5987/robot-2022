@@ -240,7 +240,7 @@ public class SwerveDrive extends SubsystemBase {
     public void periodic() {
         odometry.updateWithTime(
                 Timer.getFPGATimestamp(),
-                Robot.getAngle(),
+                Robot.getRawAngle(),
                 getStates()
         );
 /*
