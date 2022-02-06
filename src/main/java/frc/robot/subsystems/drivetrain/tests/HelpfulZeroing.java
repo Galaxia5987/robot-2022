@@ -5,9 +5,12 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
+import java.util.Arrays;
+
 public class HelpfulZeroing extends CommandBase {
     private final SwerveDrive swerve;
-    Timer timer = new Timer();
+    private final Timer timer = new Timer();
+    private final SwerveModuleState[] zeroStates = new SwerveModuleState[4];
 
     public HelpfulZeroing(SwerveDrive swerve) {
         this.swerve = swerve;
@@ -16,25 +19,18 @@ public class HelpfulZeroing extends CommandBase {
 
     @Override
     public void initialize() {
-        super.initialize();
         timer.start();
         timer.reset();
+        Arrays.fill(zeroStates, new SwerveModuleState());
     }
 
     @Override
     public void execute() {
-        SwerveModuleState[] swerveModuleStates = {
-                new SwerveModuleState(),
-                new SwerveModuleState(),
-                new SwerveModuleState(),
-                new SwerveModuleState()
-        };
-        swerve.noOptimizeSetStates(swerveModuleStates);
+        swerve.noOptimizeSetStates(zeroStates);
     }
 
     @Override
     public void end(boolean interrupted) {
-        super.end(interrupted);
         timer.stop();
         swerve.terminate();
     }

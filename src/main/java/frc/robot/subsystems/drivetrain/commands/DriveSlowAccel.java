@@ -23,7 +23,6 @@ public class DriveSlowAccel extends HolonomicDrive {
         double strafe = current * Math.sin(alpha);
         double rotation = speeds.omegaRadiansPerSecond;
 
-
         if (magnitude == 0 && rotation == 0)
             swerveDrive.terminate();
         else {

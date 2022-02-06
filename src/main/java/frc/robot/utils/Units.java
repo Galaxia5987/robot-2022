@@ -4,7 +4,7 @@ public class Units {
     /**
      * Converts the value from m/s to rps.
      *
-     * @param value the speed in m/s.
+     * @param value  the speed in m/s.
      * @param radius the radius of the wheel. [m]
      * @return the speed in rps.
      */

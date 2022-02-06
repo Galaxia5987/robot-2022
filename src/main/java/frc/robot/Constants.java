@@ -1,19 +1,13 @@
 package frc.robot;
 
-import frc.robot.valuetuner.WebConstant;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import org.photonvision.SimVisionTarget;
-
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.utils.SwerveModuleConfigBase;
+import frc.robot.valuetuner.WebConstant;
 
 import static frc.robot.Ports.SwerveDrive.*;
 
@@ -23,6 +17,8 @@ public final class Constants {
     public static final double NOMINAL_VOLTAGE = 12; // [volts]
     public static final boolean ENABLE_VOLTAGE_COMPENSATION = true;
     public static final boolean ENABLE_CURRENT_LIMIT = true;
+    public static final double FIELD_WIDTH = 8.23; // Width of the field. [m]
+    public static final double FIELD_LENGTH = 16.46; // Length of the field. [m]
 
     // The order of modules is ALWAYS front-right (fr), front-left (fl), rear-right (rr), rear-left (rl)
     public static final class SwerveDrive {
@@ -129,9 +125,6 @@ public final class Constants {
         public static final double MAX_VEL = 3;
         public static final double MAX_ACCEL = 1.5;
     }
-
-    public static final double FIELD_WIDTH = 8.23; // Width of the field. [m]
-    public static final double FIELD_LENGTH = 16.46; // Length of the field. [m]
 
     public static class ExampleSubsystem {
         private static final String NAME = ExampleSubsystem.class.getName();

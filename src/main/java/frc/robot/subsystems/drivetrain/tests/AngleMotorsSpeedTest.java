@@ -7,10 +7,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
+import java.util.Arrays;
+
 public class AngleMotorsSpeedTest extends CommandBase {
     private final SwerveDrive swerveDrive;
     private final Timer timer = new Timer();
-    private final double times[] = new double[4];
+    private final double[] times = new double[4];
+    private final SwerveModuleState[] states = new SwerveModuleState[4];
 
     public AngleMotorsSpeedTest(SwerveDrive swerveDrive) {
         this.swerveDrive = swerveDrive;
@@ -19,18 +22,13 @@ public class AngleMotorsSpeedTest extends CommandBase {
 
     @Override
     public void initialize() {
-        super.initialize();
         timer.start();
+        Arrays.fill(states, new SwerveModuleState(0, Rotation2d.fromDegrees(90)));
     }
 
     @Override
     public void execute() {
-        swerveDrive.setStates(new SwerveModuleState[]{
-                new SwerveModuleState(0, Rotation2d.fromDegrees(90)),
-                new SwerveModuleState(0, Rotation2d.fromDegrees(90)),
-                new SwerveModuleState(0, Rotation2d.fromDegrees(90)),
-                new SwerveModuleState(0, Rotation2d.fromDegrees(90))
-        });
+        swerveDrive.setStates(states);
         for (int i = 0; i < 4; i++) {
             if (Math.abs(swerveDrive.getModule(i).getAngle().minus(Rotation2d.fromDegrees(90)).getDegrees()) < 3) {
                 if (times[i] == 0) times[i] = timer.get();
@@ -49,8 +47,8 @@ public class AngleMotorsSpeedTest extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        for (int i = 0; i < 4; i++) {
-            if (times[i] == 0) return false;
+        for (double time : times) {
+            if (time == 0) return false;
         }
         return true;
     }

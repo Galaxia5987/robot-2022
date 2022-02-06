@@ -20,7 +20,6 @@ public class EncoderSlippageTest extends CommandBase {
 
     @Override
     public void initialize() {
-        super.initialize();
         timer.reset();
         timer.start();
         secondary.reset();
@@ -39,7 +38,6 @@ public class EncoderSlippageTest extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        super.end(interrupted);
         timer.stop();
         secondary.stop();
         swerve.terminate();

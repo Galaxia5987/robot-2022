@@ -10,7 +10,7 @@ import frc.robot.subsystems.drivetrain.SwerveDrive;
 public class DriveMotorsSpeedTest extends CommandBase {
     private final SwerveDrive swerveDrive;
     private final Timer timer = new Timer();
-    double times[] = new double[4];
+    private final double[] times = new double[4];
 
     public DriveMotorsSpeedTest(SwerveDrive swerveDrive) {
         this.swerveDrive = swerveDrive;
@@ -19,7 +19,6 @@ public class DriveMotorsSpeedTest extends CommandBase {
 
     @Override
     public void initialize() {
-        super.initialize();
         timer.start();
     }
 
@@ -49,8 +48,8 @@ public class DriveMotorsSpeedTest extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        for (int i = 0; i < 4; i++) {
-            if (times[i] == 0) return false;
+        for (double time : times) {
+            if (time == 0) return false;
         }
         return true;
     }

@@ -219,10 +219,8 @@ public class SwerveDrive extends SubsystemBase {
      * @param states the states of the modules.
      */
     public void noOptimizeSetStates(SwerveModuleState[] states) {
-        SwerveDriveKinematics.desaturateWheelSpeeds(states, 1.42 * Constants.SwerveDrive.VELOCITY_MULTIPLIER);
         for (SwerveModule module : modules) {
-            SwerveModuleState state = states[module.getWheel()];
-            module.setState(state);
+            module.setState(states[module.getWheel()]);
         }
     }
 

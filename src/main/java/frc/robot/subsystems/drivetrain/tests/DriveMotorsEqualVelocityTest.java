@@ -18,7 +18,6 @@ public class DriveMotorsEqualVelocityTest extends CommandBase {
 
     @Override
     public void initialize() {
-        super.initialize();
         timer.reset();
         timer.start();
     }
@@ -31,7 +30,6 @@ public class DriveMotorsEqualVelocityTest extends CommandBase {
                 new SwerveModuleState(3, Rotation2d.fromDegrees(0)),
                 new SwerveModuleState(3, Rotation2d.fromDegrees(0))
         });
-        super.execute();
     }
 
     @Override
