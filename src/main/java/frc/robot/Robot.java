@@ -21,9 +21,9 @@ import frc.robot.subsystems.drivetrain.SwerveDrive;
  * project.
  */
 public class Robot extends TimedRobot {
-    private static Rotation2d startAngle = new Rotation2d();
     public static final boolean debug = !DriverStation.isFMSAttached();
     public static final AHRS navx = new AHRS(SPI.Port.kMXP);
+    private static Rotation2d zeroAngle = new Rotation2d();
     public PowerDistribution pdp = new PowerDistribution();
     private Command m_autonomousCommand;
     private RobotContainer m_robotContainer;
@@ -34,7 +34,16 @@ public class Robot extends TimedRobot {
      * @return the current angle of the robot in respect to the start angle.
      */
     public static Rotation2d getAngle() {
-        return Robot.navx.getRotation2d().minus(startAngle);
+        return getRawAngle().minus(zeroAngle);
+    }
+
+    /**
+     * Gets the raw angle from the navx.
+     *
+     * @return the angle of the robot in respect to the angle of the robot initiation time.
+     */
+    public static Rotation2d getRawAngle() {
+        return Robot.navx.getRotation2d();
     }
 
     /**
@@ -50,7 +59,7 @@ public class Robot extends TimedRobot {
      * @param angle the angle in -180 to 180 degrees coordinate system.
      */
     public static void resetAngle(Rotation2d angle) {
-        startAngle = navx.getRotation2d().minus(angle);
+        zeroAngle = getRawAngle().minus(angle);
     }
 
     /**
@@ -59,6 +68,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
+        navx.reset();
         resetAngle();
         m_robotContainer = new RobotContainer();
     }
