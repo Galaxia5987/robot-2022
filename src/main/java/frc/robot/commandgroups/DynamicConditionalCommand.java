@@ -11,9 +11,10 @@ public class DynamicConditionalCommand extends CommandBase {
     private final BooleanSupplier condition;
     private final Command onTrueCommand;
     private final Command onFalseCommand;
+    private boolean lastIsToggled;
     private boolean lastConditionState;
 
-    public DynamicConditionalCommand(BooleanSupplier condition, Command onTrueCommand, Command onFalseCommand) {
+    public DynamicConditionalCommand(BooleanSupplier condition, Command onTrueCommand, Command onFalseCommand){
         this.condition = condition;
         this.onTrueCommand = onTrueCommand;
         this.onFalseCommand = onFalseCommand;
@@ -24,30 +25,31 @@ public class DynamicConditionalCommand extends CommandBase {
     @Override
     public void initialize() {
         lastConditionState = condition.getAsBoolean();
+        lastIsToggled = false;
     }
 
     @Override
     public void execute() {
         boolean currentConditionState = condition.getAsBoolean();
+        boolean currentIsToggled = lastConditionState && !currentConditionState;
 
-        if (currentConditionState) {
-            if (lastConditionState != currentConditionState) {
+        if (currentIsToggled) {
+            if(onFalseCommand.isScheduled()) {
                 onFalseCommand.end(true);
-                onTrueCommand.initialize();
             }
-            if (!onTrueCommand.isFinished()) {
-                onTrueCommand.execute();
+            if(!lastIsToggled) {
+                onTrueCommand.schedule();
             }
         } else {
-            if (lastConditionState != currentConditionState) {
+            if(onTrueCommand.isScheduled()){
                 onTrueCommand.end(true);
-                onFalseCommand.initialize();
             }
-            if (!onFalseCommand.isFinished()) {
-                onFalseCommand.execute();
+            if(lastIsToggled) {
+                onFalseCommand.schedule();
             }
         }
 
+        lastIsToggled = currentIsToggled;
         lastConditionState = currentConditionState;
     }
 
