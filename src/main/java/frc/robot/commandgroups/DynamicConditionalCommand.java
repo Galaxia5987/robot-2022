@@ -27,6 +27,8 @@ public class DynamicConditionalCommand extends CommandBase {
     }
 
     /**
+     * For logic documentation see link below.
+     *
      * @see <https://docs.google.com/document/d/1DLzhcw4T3GlePEOU7x3P3x5kkEZ1wxjmsLIv5DoKhzg/edit?usp=sharing>
      */
     @Override
