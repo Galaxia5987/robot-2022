@@ -91,6 +91,8 @@ public class SwerveModule extends SubsystemBase {
         driveMotor.selectProfileSlot(1, 0);
         driveMotor.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToZero);
 
+        driveMotor.configOpenloopRamp(Constants.SwerveModule.RAMP_RATE, Constants.TALON_TIMEOUT);
+
         driveMotor.configOpenloopRamp(0, Constants.TALON_TIMEOUT);
         driveMotor.configClosedloopRamp(0, Constants.TALON_TIMEOUT);
 /*
