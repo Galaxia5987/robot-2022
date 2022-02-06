@@ -261,9 +261,9 @@ public class SwerveModule extends SubsystemBase {
                 stateSpace.reset(VecBuilder.fill(Units.metersPerSecondToRps(getVelocity(), Constants.SwerveDrive.WHEEL_RADIUS)));
                 lastJ = config.j();
             }
+            FireLog.log("angle " + config.wheel(), getAngle().getDegrees());
+            FireLog.log("velocity " + config.wheel(), getVelocity());
         }
-        FireLog.log("angle " + config.wheel(), getAngle().getDegrees());
-        FireLog.log("velocity " + config.wheel(), getVelocity());
         // There is no need for kalman, so we technically disable him that way
         stateSpace.getObserver().reset();
         lastTime = currentTime;
