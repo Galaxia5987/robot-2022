@@ -75,7 +75,7 @@ public class SwerveModule extends SubsystemBase {
         angleMotor.enableCurrentLimit(Constants.ENABLE_CURRENT_LIMIT);
 
         // set PIDF - angle motor
-        configPID(config.angle_kp(), config.angle_ki(), config.angle_kd(), config.angle_kf());
+        configPID(config.angleKp(), config.angleKi(), config.angleKd(), config.angleKf());
         angleMotor.config_IntegralZone(0, 5);
         angleMotor.configAllowableClosedloopError(0, angleUnitModel.toTicks(Constants.SwerveDrive.ALLOWABLE_ANGLE_ERROR));
 
@@ -255,7 +255,7 @@ public class SwerveModule extends SubsystemBase {
     @Override
     public void periodic() {
         if (config.debug()) {
-            configPID(config.angle_kp(), config.angle_ki(), config.angle_kd(), config.angle_kf());
+            configPID(config.angleKp(), config.angleKi(), config.angleKd(), config.angleKf());
             if (config.j() != lastJ) {
                 stateSpace = constructVelocityLinearSystem(config.j());
                 stateSpace.reset(VecBuilder.fill(Units.metersPerSecondToRps(getVelocity(), Constants.SwerveDrive.WHEEL_RADIUS)));

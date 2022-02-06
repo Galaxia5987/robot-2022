@@ -1,5 +1,7 @@
 package frc.robot.utils;
 
+import frc.robot.valuetuner.WebConstant;
+
 /**
  * The interface encapsulates the module's unique properties, so it will be a lot easier and prettier to use it
  * on different modules.
@@ -19,13 +21,13 @@ public interface SwerveModuleConfigBase {
 
     boolean angleMotorSensorPhase();
 
-    double angle_kp();
+    double angleKp();
 
-    double angle_ki();
+    double angleKi();
 
-    double angle_kd();
+    double angleKd();
 
-    double angle_kf();
+    double angleKf();
 
     double j();
 
@@ -44,10 +46,10 @@ public interface SwerveModuleConfigBase {
         private boolean angleMotorInverted;
         private boolean angleMotorSensorPhase;
         // PID
-        private double angle_kp;
-        private double angle_ki;
-        private double angle_kd;
-        private double angle_kf;
+        private double angleKp;
+        private double angleKi;
+        private double angleKd;
+        private double angleKf;
         private double j; // moment of inertia
 
         private boolean debug;
@@ -76,10 +78,10 @@ public interface SwerveModuleConfigBase {
         }
 
         public Builder configAnglePID(double kp, double ki, double kd, double kf) {
-            this.angle_kp = kp;
-            this.angle_ki = ki;
-            this.angle_kd = kd;
-            this.angle_kf = kf;
+            this.angleKp = kp;
+            this.angleKi = ki;
+            this.angleKd = kd;
+            this.angleKf = kf;
             return this;
         }
 
@@ -94,16 +96,16 @@ public interface SwerveModuleConfigBase {
         }
 
         public SwerveModuleConfigBase build() {
-//            if (debug) {
-//                return new SwerveModuleConfigDebug(wheel, driveMotorPort, angleMotorPort,
-//                        driveMotorInverted, angleMotorInverted, angleMotorSensorPhase,
-//                        new WebConstant("Swerve_" + wheel + "_kp", angle_kp), new WebConstant("Swerve_" + wheel + "_ki", angle_ki),
-//                        new WebConstant("Swerve_" + wheel + "_kd", angle_kd), new WebConstant("Swerve_" + wheel + "_kf", angle_kf),
-//                        new WebConstant("Swerve_" + wheel + "_j", j), zeroPosition);
-//            }
+            if (debug) {
+                return new SwerveModuleConfigDebug(wheel, driveMotorPort, angleMotorPort,
+                        driveMotorInverted, angleMotorInverted, angleMotorSensorPhase,
+                        WebConstant.of("Swerve", wheel + "_kp", angleKp), WebConstant.of("Swerve", wheel + "_ki", angleKi),
+                        WebConstant.of("Swerve", wheel + "_kd", angleKd), WebConstant.of("Swerve", wheel + "_kf", angleKf),
+                        WebConstant.of("Swerve", wheel + "_j", j), zeroPosition);
+            }
             return new SwerveModuleConfig(wheel, driveMotorPort, angleMotorPort,
                     driveMotorInverted, angleMotorInverted, angleMotorSensorPhase,
-                    angle_kp, angle_ki, angle_kd, angle_kf, j, zeroPosition);
+                    angleKp, angleKi, angleKd, angleKf, j, zeroPosition);
         }
     }
 }

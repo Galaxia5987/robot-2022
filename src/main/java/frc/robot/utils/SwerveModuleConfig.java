@@ -13,10 +13,10 @@ public final class SwerveModuleConfig implements SwerveModuleConfigBase {
     private final boolean angleMotorSensorPhase;
 
     // PID
-    private final double angle_kp;
-    private final double angle_ki;
-    private final double angle_kd;
-    private final double angle_kf;
+    private final double angleKp;
+    private final double angleKi;
+    private final double angleKd;
+    private final double angleKf;
 
     private final double j; // moment of inertia [kg * m^2]
 
@@ -24,7 +24,7 @@ public final class SwerveModuleConfig implements SwerveModuleConfigBase {
 
     public SwerveModuleConfig(int wheel, int driveMotorPort, int angleMotorPort,
                               boolean driveMotorInverted, boolean angleMotorInverted, boolean angleMotorSensorPhase,
-                              double angle_kp, double angle_ki, double angle_kd, double angle_kf,
+                              double angleKp, double angleKi, double angleKd, double angleKf,
                               double j, double zeroPosition) {
         this.wheel = wheel;
         this.driveMotorPort = driveMotorPort;
@@ -32,10 +32,10 @@ public final class SwerveModuleConfig implements SwerveModuleConfigBase {
         this.driveMotorInverted = driveMotorInverted;
         this.angleMotorInverted = angleMotorInverted;
         this.angleMotorSensorPhase = angleMotorSensorPhase;
-        this.angle_kp = angle_kp;
-        this.angle_ki = angle_ki;
-        this.angle_kd = angle_kd;
-        this.angle_kf = angle_kf;
+        this.angleKp = angleKp;
+        this.angleKi = angleKi;
+        this.angleKd = angleKd;
+        this.angleKf = angleKf;
         this.j = j;
         this.zeroPosition = zeroPosition;
     }
@@ -71,23 +71,23 @@ public final class SwerveModuleConfig implements SwerveModuleConfigBase {
     }
 
     @Override
-    public double angle_kp() {
-        return angle_kp;
+    public double angleKp() {
+        return angleKp;
     }
 
     @Override
-    public double angle_ki() {
-        return angle_ki;
+    public double angleKi() {
+        return angleKi;
     }
 
     @Override
-    public double angle_kd() {
-        return angle_kd;
+    public double angleKd() {
+        return angleKd;
     }
 
     @Override
-    public double angle_kf() {
-        return angle_kf;
+    public double angleKf() {
+        return angleKf;
     }
 
     @Override

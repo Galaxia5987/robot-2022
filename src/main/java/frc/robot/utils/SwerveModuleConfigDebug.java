@@ -15,10 +15,10 @@ public final class SwerveModuleConfigDebug implements SwerveModuleConfigBase {
     private final boolean angleMotorSensorPhase;
 
     // PID
-    private final WebConstant angle_kp;
-    private final WebConstant angle_ki;
-    private final WebConstant angle_kd;
-    private final WebConstant angle_kf;
+    private final WebConstant angleKp;
+    private final WebConstant angleKi;
+    private final WebConstant angleKd;
+    private final WebConstant angleKf;
 
     private final WebConstant j; // moment of inertia [kg * m^2]
 
@@ -26,7 +26,7 @@ public final class SwerveModuleConfigDebug implements SwerveModuleConfigBase {
 
     public SwerveModuleConfigDebug(int wheel, int driveMotorPort, int angleMotorPort,
                                    boolean driveMotorInverted, boolean angleMotorInverted, boolean angleMotorSensorPhase,
-                                   WebConstant angle_kp, WebConstant angle_ki, WebConstant angle_kd, WebConstant angle_kf,
+                                   WebConstant angleKp, WebConstant angleKi, WebConstant angleKd, WebConstant angleKf,
                                    WebConstant j, double zeroPosition) {
         this.wheel = wheel;
         this.driveMotorPort = driveMotorPort;
@@ -34,10 +34,10 @@ public final class SwerveModuleConfigDebug implements SwerveModuleConfigBase {
         this.driveMotorInverted = driveMotorInverted;
         this.angleMotorInverted = angleMotorInverted;
         this.angleMotorSensorPhase = angleMotorSensorPhase;
-        this.angle_kp = angle_kp;
-        this.angle_ki = angle_ki;
-        this.angle_kd = angle_kd;
-        this.angle_kf = angle_kf;
+        this.angleKp = angleKp;
+        this.angleKi = angleKi;
+        this.angleKd = angleKd;
+        this.angleKf = angleKf;
         this.j = j;
         this.zeroPosition = zeroPosition;
     }
@@ -73,23 +73,23 @@ public final class SwerveModuleConfigDebug implements SwerveModuleConfigBase {
     }
 
     @Override
-    public double angle_kp() {
-        return angle_kp.get();
+    public double angleKp() {
+        return angleKp.get();
     }
 
     @Override
-    public double angle_ki() {
-        return angle_ki.get();
+    public double angleKi() {
+        return angleKi.get();
     }
 
     @Override
-    public double angle_kd() {
-        return angle_kd.get();
+    public double angleKd() {
+        return angleKd.get();
     }
 
     @Override
-    public double angle_kf() {
-        return angle_kf.get();
+    public double angleKf() {
+        return angleKf.get();
     }
 
     @Override
