@@ -7,7 +7,7 @@ public final class Ports {
     public static class Intake {
         public static final int MOTOR = 11;
         public static final boolean IS_MOTOR_INVERTED = false;
-        public static final int SOLENOID = 5;
+        public static final int SOLENOID = 7;
     }
 
     public static class Conveyor {
@@ -26,7 +26,7 @@ public final class Ports {
     }
 
     public static class Hood {
-        public static final int SOLENOID = 8; // Hood solenoid port.
+        public static final int SOLENOID = 4; // Hood solenoid port.
     }
 
     public static class Controls {
