@@ -7,18 +7,18 @@ import java.util.function.BooleanSupplier;
 
 import static edu.wpi.first.wpilibj2.command.CommandGroupBase.requireUngrouped;
 
-public class InterchangeableCommands extends CommandBase {
+public class DynamicConditionalCommand extends CommandBase {
     private final BooleanSupplier condition;
-    private final Command auxiliaryCommand;
-    private final Command defaultCommand;
+    private final Command onTrueCommand;
+    private final Command onFalseCommand;
     private boolean lastConditionState;
 
-    public InterchangeableCommands(BooleanSupplier condition, Command auxiliaryCommand, Command defaultCommand) {
+    public DynamicConditionalCommand(BooleanSupplier condition, Command onTrueCommand, Command onFalseCommand) {
         this.condition = condition;
-        this.auxiliaryCommand = auxiliaryCommand;
-        this.defaultCommand = defaultCommand;
+        this.onTrueCommand = onTrueCommand;
+        this.onFalseCommand = onFalseCommand;
 
-        requireUngrouped(auxiliaryCommand, defaultCommand);
+        requireUngrouped(onTrueCommand, onFalseCommand);
     }
 
     @Override
@@ -32,19 +32,19 @@ public class InterchangeableCommands extends CommandBase {
 
         if (currentConditionState) {
             if (lastConditionState != currentConditionState) {
-                defaultCommand.end(true);
-                auxiliaryCommand.initialize();
+                onFalseCommand.end(true);
+                onTrueCommand.initialize();
             }
-            if (!auxiliaryCommand.isFinished()) {
-                auxiliaryCommand.execute();
+            if (!onTrueCommand.isFinished()) {
+                onTrueCommand.execute();
             }
         } else {
             if (lastConditionState != currentConditionState) {
-                auxiliaryCommand.end(true);
-                defaultCommand.initialize();
+                onTrueCommand.end(true);
+                onFalseCommand.initialize();
             }
-            if (!defaultCommand.isFinished()) {
-                defaultCommand.execute();
+            if (!onFalseCommand.isFinished()) {
+                onFalseCommand.execute();
             }
         }
 
@@ -53,7 +53,7 @@ public class InterchangeableCommands extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        auxiliaryCommand.end(interrupted);
-        defaultCommand.end(interrupted);
+        onTrueCommand.end(interrupted);
+        onFalseCommand.end(interrupted);
     }
 }
