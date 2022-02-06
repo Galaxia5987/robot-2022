@@ -108,7 +108,7 @@ public class SwerveModule extends SubsystemBase {
      * @return an object that represents the model to reach the velocity at the best rate.
      */
     private LinearSystemLoop<N1, N1, N1> constructVelocityLinearSystem(double j) {
-        if (j == 0) throw new RuntimeException("j must have non-zero value");
+        if (j <= 0) throw new IllegalStateException("j must have non-zero value");
         // https://file.tavsys.net/control/controls-engineering-in-frc.pdf Page 76
         LinearSystem<N1, N1, N1> stateSpace = LinearSystemId.createFlywheelSystem(DCMotor.getFalcon500(1),
                 j, Constants.SwerveDrive.GEAR_RATIO_DRIVE_MOTOR);
