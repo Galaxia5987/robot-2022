@@ -24,6 +24,8 @@ public class ManualFlywheelControl extends CommandBase {
     public void end(boolean interrupted) {
         if(interrupted) {
             System.out.println("I've been shanked!");
+        } else {
+            System.out.println("Someone tried to shank me!");
         }
         shooter.setPower(0);
     }
