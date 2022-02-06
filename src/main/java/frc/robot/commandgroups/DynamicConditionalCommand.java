@@ -1,5 +1,6 @@
 package frc.robot.commandgroups;
 
+import com.fasterxml.jackson.databind.node.BinaryNode;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -11,7 +12,6 @@ public class DynamicConditionalCommand extends CommandBase {
     private final BooleanSupplier condition;
     private final Command onTrueCommand;
     private final Command onFalseCommand;
-    private boolean lastIsToggled;
     private boolean lastConditionState;
 
     public DynamicConditionalCommand(BooleanSupplier condition, Command onTrueCommand, Command onFalseCommand) {
@@ -25,32 +25,31 @@ public class DynamicConditionalCommand extends CommandBase {
     @Override
     public void initialize() {
         lastConditionState = condition.getAsBoolean();
-        lastIsToggled = false;
     }
 
     @Override
     public void execute() {
         boolean currentConditionState = condition.getAsBoolean();
-        boolean currentIsToggled = lastConditionState && !currentConditionState;
+        boolean change = lastConditionState & !currentConditionState;
+        currentConditionState ^= change;
 
-        if (currentIsToggled) {
+        if (currentConditionState) {
             if (onFalseCommand.isScheduled()) {
                 onFalseCommand.end(true);
             }
-            if (!lastIsToggled) {
+            if (!lastConditionState) {
                 onTrueCommand.schedule();
             }
         } else {
             if (onTrueCommand.isScheduled()) {
                 onTrueCommand.end(true);
             }
-            if (lastIsToggled) {
+            if (lastConditionState) {
                 onFalseCommand.schedule();
             }
         }
 
         lastConditionState = currentConditionState;
-        lastIsToggled = currentIsToggled;
     }
 
     @Override
