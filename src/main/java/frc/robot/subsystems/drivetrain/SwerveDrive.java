@@ -93,7 +93,6 @@ public class SwerveDrive extends SubsystemBase {
                 ChassisSpeeds.fromFieldRelativeSpeeds(forward, strafe, rotation, Robot.getAngle()) :
                 new ChassisSpeeds(forward, strafe, rotation);
         setStates(kinematics.toSwerveModuleStates(speeds));
-
     }
 
     /**
@@ -202,97 +201,14 @@ public class SwerveDrive extends SubsystemBase {
      * @param power percent power to give to the angel motors. [%]
      */
     public void setPower(double power) {
-        for (int i = 0; i < 4; i++) {
-            getModule(i).setPower(power);
+        for (var module : modules) {
+            module.setPower(power);
         }
-    }
-
-    /**
-     * Test the slippage of the angle motor encoders by setting all the modules to their zero positions and running this function.
-     */
-    public void testEncoderSlippage() {
-        for (int i = 0; i < 4; i++) {
-            int error = (int) (Math.abs(getModule(i).getSelectedSensorPosition() - Constants.SwerveModule.ZERO_POSITIONS[i]) % Constants.SwerveDrive.TICKS_PER_ROTATION_ANGLE_MOTOR);
-            if (error < 5) {
-                System.out.println("WHEEL: " + i + "is PERFECT! Error is: " + error);
-                SmartDashboard.putString("EncoderSlippageResult [WHEEL " + i + "]", "WHEEL: " + i + "is PERFECT! Error is: " + error);
-            } else if (error < 20) {
-                System.out.println("WHEEL: " + i + "is GOOD. Error is: " + error);
-                SmartDashboard.putString("EncoderSlippageResult [WHEEL " + i + "]", "WHEEL: " + i + "is Good. Error is: " + error);
-            } else {
-                System.out.println("WHEEL: " + i + "is BAD! Error is: " + error);
-                SmartDashboard.putString("EncoderSlippageResult [WHEEL " + i + "]", "WHEEL: " + i + "is BAD! Error is: " + error);
-            }
-        }
-    }
-
-
-    public void printEncoderReadings() {
-        System.out.println("THE VALUES ARE: " + getModule(0).getSelectedSensorPosition() + ", " + getModule(1).getSelectedSensorPosition() + ", " + getModule(2).getSelectedSensorPosition() + ", " + getModule(3).getSelectedSensorPosition());
-    }
-
-    public void printJustInCase() {
-        System.out.println("-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*");
-        System.out.println(" [NOTICE ME!!] TAKE A PICTURE OF THIS WITH YOUR PHONE TO FIX THE SWERVE [NOTICE ME!!]");
-        System.out.println("-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*");
-        System.out.println("To fix the wheels rotation, reset zero positions by following these steps, 1. open FRC DRIVER STATION app, disable the robot, 2. rotate the wheel so that the black part of the wheel is pointing towards the direction of the drawn y arrow (all wheels are pointing to the same direction), 3. Take another picture of this message again because you have changed the values by turning the wheels, On the left side of the coding software, under the robot-2022 folder -> src -> -> main -> java -< frc.robot -> double click the Constants class (painted in blue) and find the line ZERO_POSITIONS =" + Arrays.toString(Constants.SwerveModule.ZERO_POSITIONS) + "  -> and Change the values inside the brackets to the values:");
-        printEncoderReadings();
-    }
-
-    /**
-     * Set all the modules to their desired positions without much velocity for smoothing purposes.
-     *
-     * @param vx  velocity for the x-axis. [m/s]
-     * @param vy  velocity for the x-axis. [m/s]
-     * @param rot rotational velocity counter-clockwise positive. [rad/s]
-     */
-    public void noSpeedHolonomicDrive(double vx, double vy, double rot) {
-        ChassisSpeeds speeds = fieldOriented ?
-                ChassisSpeeds.fromFieldRelativeSpeeds(vx, vy, rot, Robot.getAngle()) :
-                new ChassisSpeeds(vx, vy, rot);
-        noSpeedSetStates(kinematics.toSwerveModuleStates(speeds));
-    }
-
-    /**
-     * Set all the modules to their desired positions without much velocity for smoothing purposes.
-     *
-     * @param states desired angles and velocities for each module.
-     */
-    public void noSpeedSetStates(SwerveModuleState[] states) {
-        for (int i = 0; i < 4; i++) {
-            double diff = Math.abs(states[i].angle.minus(getModule(i).getAngle()).getRadians());
-            states[i] = SwerveModuleState.optimize(states[i], getModule(i).getAngle());
-            getModule(i).setAngle(states[i].angle);
-            getModule(i).setVelocity(states[i].speedMetersPerSecond * Math.abs(Math.cos(diff)));//comment this out
-        }
-    }
-
-
-    /**
-     * Check whether all modules have reached their desired angles.
-     *
-     * @param vx  velocity for the x-axis. [m/s]
-     * @param vy  velocity for the x-axis. [m/s]
-     * @param rot rotational velocity counter-clockwise positive. [rad/s]
-     * @return whether all modules have reached their desired angles.
-     */
-    public boolean haveReachedAngles(double vx, double vy, double rot) {
-        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                vx, vy, rot, Robot.getAngle());
-        SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
-        for (int i = 0; i < 4; i++)
-            states[i] = SwerveModuleState.optimize(states[i], getModule(i).getAngle());
-
-        for (int i = 0; i < 4; i++) {
-            if (!(Math.abs(states[i].angle.minus(getModule(i).getAngle()).getDegrees()) < 10)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     /**
      * Sets the state of the modules without optimizing them.
+     * USE ONLY FOR TESTING!
      *
      * @param states the states of the modules.
      */
