@@ -26,6 +26,9 @@ public class DynamicConditionalCommand extends CommandBase {
         lastConditionState = condition.getAsBoolean();
     }
 
+    /**
+     * @see <https://docs.google.com/document/d/1DLzhcw4T3GlePEOU7x3P3x5kkEZ1wxjmsLIv5DoKhzg/edit?usp=sharing>
+     */
     @Override
     public void execute() {
         boolean currentConditionState = condition.getAsBoolean();
