@@ -12,20 +12,21 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.Shoot;
 
 import java.util.OptionalDouble;
+import java.util.function.DoubleSupplier;
 
 public class Outtake extends ParallelCommandGroup {
 
     public Outtake(Intake intake,
                    Conveyor conveyor,
                    Shooter shooter,
-                   double conveyorPower) {
+                   DoubleSupplier conveyorPower) {
         addCommands(
                 new FlapDefaultCommand(conveyor, () -> Conveyor.FlapMode.Open),
                 new Convey(conveyorPower, conveyor, () -> true),
                 new ConditionalCommand(
                         new Shoot(shooter, () -> 8, OptionalDouble.of(Constants.Shooter.OUTTAKE_POWER)),
                         new IntakeCargo(intake, () -> true, -Constants.Intake.DEFAULT_POWER),
-                        () -> conveyorPower > 0
+                        () -> conveyorPower.getAsDouble() > 0
                 )
         );
     }
