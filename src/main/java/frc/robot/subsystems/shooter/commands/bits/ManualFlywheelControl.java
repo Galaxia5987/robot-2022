@@ -7,18 +7,18 @@ import frc.robot.subsystems.shooter.Shooter;
 import java.util.function.DoubleSupplier;
 
 public class ManualFlywheelControl extends CommandBase {
-    private final DoubleSupplier joystickY;
+    private final DoubleSupplier output;
     private final Shooter shooter;
 
-    public ManualFlywheelControl(DoubleSupplier joystickY, Shooter shooter) {
-        this.joystickY = joystickY;
+    public ManualFlywheelControl(DoubleSupplier output, Shooter shooter) {
+        this.output = output;
         this.shooter = shooter;
         addRequirements(shooter);
     }
 
     @Override
     public void execute() {
-        shooter.setPower(Constants.Shooter.OUTPUT_MULTIPLIER * -joystickY.getAsDouble());
+        shooter.setPower(Constants.Shooter.OUTPUT_MULTIPLIER * -output.getAsDouble());
     }
 
     @Override

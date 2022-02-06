@@ -43,6 +43,7 @@ public class CheckShooterAccuracy extends Shoot {
         super.end(interrupted);
 
         double finalTime = timer.get();
+        System.out.println("The final time is... " + finalTime);
         if (finalTime < Constants.Shooter.RECOMMENDED_ACCELERATION_TIME) {
             System.out.println("The shooter worked quickly :)");
         } else {
