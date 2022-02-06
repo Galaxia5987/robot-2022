@@ -13,6 +13,7 @@ public class ManualFlywheelControl extends CommandBase {
     public ManualFlywheelControl(DoubleSupplier joystickY, Shooter shooter) {
         this.joystickY = joystickY;
         this.shooter = shooter;
+        addRequirements(shooter);
     }
 
     @Override
