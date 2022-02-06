@@ -1,7 +1,8 @@
-package frc.robot.subsystems.shooter.commands;
+package frc.robot.subsystems.shooter.commands.bits;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.commands.Shoot;
 
 import java.util.OptionalDouble;
 import java.util.function.DoubleSupplier;
@@ -25,10 +26,5 @@ public class CheckShooterAccuracy extends Shoot {
 
         SmartDashboard.putNumber("Setpoint", setpoint);
         SmartDashboard.putNumber("Current velocity", currentVelocity);
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        super.end(interrupted);
     }
 }
