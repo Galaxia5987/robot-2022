@@ -57,18 +57,22 @@ public final class Constants {
 
         public static final double ROBOT_LENGTH = 0.5924; // [m]
         public static final double ROBOT_WIDTH = 0.5924; // [m]
+
         // the rotational velocity of the robot, this constant multiplies the rotation output of the joystick
         public static final double JOYSTICK_THRESHOLD = 0.1; // [%]
+        public static final double ALLOWABLE_ANGLE_MOTOR_ACCELERATION_THRESHOLD = Math.toRadians(10); // [rads]
         public static final double OUTER_JOYSTICK_THRESHOLD = 0.95; // [%]
         public static final double JOYSTICK_ANGLE_DEADZONE = 5; // [degrees]
         public static final double ROTATION_DELAY = 0.1; // [sec]
         public static final int ANGLE_CURVE_STRENGTH = 4;
         private static final double Rx = SwerveDrive.ROBOT_WIDTH / 2;
         private static final double Ry = SwerveDrive.ROBOT_LENGTH / 2;
+
         // angle motion magic
         private static final float MOTION_MAGIC_SAFETY = 0.7f;
         public static final int ANGLE_MOTION_ACCELERATION = Math.round(2800 * MOTION_MAGIC_SAFETY);
         public static final int ANGLE_CRUISE_VELOCITY = Math.round(550 * MOTION_MAGIC_SAFETY);
+
         // Axis systems
         public static final Translation2d[] SWERVE_POSITIONS = new Translation2d[]{
                 new Translation2d(Rx, -Ry),
