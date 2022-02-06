@@ -29,8 +29,8 @@ public class DynamicConditionalCommand extends CommandBase {
     @Override
     public void execute() {
         boolean currentConditionState = condition.getAsBoolean();
-        var change = lastConditionState & !currentConditionState;
-        currentConditionState ^= change;
+        var toggle = !lastConditionState & currentConditionState;
+        currentConditionState ^= toggle;
 
         if (currentConditionState) {
             if (onFalseCommand.isScheduled()) {
