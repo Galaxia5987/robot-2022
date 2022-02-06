@@ -22,7 +22,7 @@ public class ShootCargo extends ParallelCommandGroup {
                       Hood hood,
                       Conveyor conveyor,
                       DoubleSupplier distanceFromTarget,
-                      double conveyorPower) {
+                      DoubleSupplier conveyorPower) {
         /*
         This boolean supplier uses a deadband for the shooter velocity by turning it into the
         ratio between the current velocity and the setpoint.

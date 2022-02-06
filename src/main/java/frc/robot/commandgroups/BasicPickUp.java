@@ -14,7 +14,7 @@ public class BasicPickUp extends ParallelCommandGroup {
     public BasicPickUp(Conveyor conveyor, Intake intake, DoubleSupplier robotVelocity) {
         addCommands(
                 new IntakeByRobotSpeed(intake, robotVelocity),
-                new Convey(Constants.Conveyor.DEFAULT_POWER, conveyor, () -> true)
+                new Convey(() -> Constants.Conveyor.DEFAULT_POWER, conveyor, () -> true)
         );
     }
 }

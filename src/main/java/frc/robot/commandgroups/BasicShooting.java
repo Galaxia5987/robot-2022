@@ -20,7 +20,7 @@ public class BasicShooting extends ParallelCommandGroup {
         addCommands(
                 new HoodDefaultCommand(hood, () -> Hood.Mode.getValue(distanceFromTarget.getAsDouble() < DISTANCE_FROM_TARGET_DEADBAND)),
                 new Shoot(shooter, distanceFromTarget, OptionalDouble.empty()),
-                new Convey(Constants.Conveyor.DEFAULT_POWER, conveyor, () -> true)
+                new Convey(() -> Constants.Conveyor.DEFAULT_POWER, conveyor, () -> true)
         );
     }
 }

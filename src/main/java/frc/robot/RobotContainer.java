@@ -64,7 +64,7 @@ public class RobotContainer {
 
         a.whileHeld(new DynamicConditionalCommand(
                 () -> !leftTrigger.get(),
-                new PickUpCargo(conveyor, intake, Constants.Conveyor.DEFAULT_POWER, Constants.Intake.DEFAULT_POWER),
+                new PickUpCargo(conveyor, intake, () -> Constants.Conveyor.DEFAULT_POWER, Constants.Intake.DEFAULT_POWER),
                 new BasicPickUp(conveyor, intake, robotVelocity)
         ));
         b.whileHeld(
@@ -76,7 +76,7 @@ public class RobotContainer {
                 ));
         rightTrigger.whenActive(new DynamicConditionalCommand(
                 () -> !leftTrigger.get(),
-                new ShootCargo(shooter, hood, conveyor, distanceFromTarget, Constants.Conveyor.DEFAULT_POWER),
+                new ShootCargo(shooter, hood, conveyor, distanceFromTarget, () -> Constants.Conveyor.DEFAULT_POWER),
                 new BasicShooting(shooter, hood, conveyor, distanceFromTarget)
         ));
     }
