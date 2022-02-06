@@ -61,8 +61,6 @@ public final class Constants {
         // the rotational velocity of the robot, this constant multiplies the rotation output of the joystick
         public static final double JOYSTICK_THRESHOLD = 0.1; // [%]
         public static final double ALLOWABLE_ANGLE_MOTOR_ACCELERATION_THRESHOLD = Math.toRadians(10); // [rads]
-        public static final double OUTER_JOYSTICK_THRESHOLD = 0.95; // [%]
-        public static final double JOYSTICK_ANGLE_DEADZONE = 5; // [degrees]
         public static final double ROTATION_DELAY = 0.1; // [sec]
         public static final int ANGLE_CURVE_STRENGTH = 4;
         private static final double Rx = SwerveDrive.ROBOT_WIDTH / 2;
