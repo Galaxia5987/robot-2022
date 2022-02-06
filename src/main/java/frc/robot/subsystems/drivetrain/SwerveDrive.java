@@ -9,13 +9,11 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.utils.TimeDelayedBoolean;
-
-import java.util.Arrays;
+import frc.robot.utils.Utils;
 
 
 /**
@@ -126,11 +124,12 @@ public class SwerveDrive extends SubsystemBase {
      * @param states the states of the modules.
      */
     public void setStates(SwerveModuleState[] states) {
-        SwerveDriveKinematics.desaturateWheelSpeeds(states, 1.42 * Constants.SwerveDrive.VELOCITY_MULTIPLIER);
         for (SwerveModule module : modules) {
-            SwerveModuleState state = states[module.getWheel()];
-            state = SwerveModuleState.optimize(state, module.getAngle());
-            module.setState(state);
+            states[module.getWheel()] = SwerveModuleState.optimize(states[module.getWheel()], module.getAngle());
+            double diff = Utils.deadband(states[module.getWheel()].angle.minus(module.getAngle())
+                    .getRadians(), Constants.SwerveDrive.ALLOWABLE_ANGLE_MOTOR_ACCELERATION_THRESHOLD);
+            module.setAngle(states[module.getWheel()].angle);
+            module.setVelocity(states[module.getWheel()].speedMetersPerSecond * Math.cos(diff)); // cos(0) = 1
         }
     }
 
