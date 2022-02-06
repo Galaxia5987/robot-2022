@@ -39,17 +39,11 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-//        swerve.setDefaultCommand(new OverpoweredDrive(swerve, () -> joystick.getY(), () -> joystick.getX(), () -> joystick2.getX()));
-//        swerve.setDefaultCommand(new OverpoweredDrive(swerve, () -> xbox.getLeftY(), () -> xbox.getLeftX(), () -> xbox.getRightX()));
         swerve.setDefaultCommand(new HolonomicDrive(swerve, () -> xbox.getLeftY(), () -> xbox.getLeftX(), () -> xbox.getRightX()));
-//        swerve.setDefaultCommand(new HolonomicDrive(swerve, () -> xbox.getLeftY(), () -> xbox.getLeftX(), () -> xbox.getRightX()));
-//        swerve.setDefaultCommand(new DriveSlowAccel(swerve, () -> joystick.getY(), () -> joystick.getX(), () -> joystick2.getX()));
-//        swerve.setDefaultCommand(new HelpfulZeroing(swerve));
     }
 
     private void configureButtonBindings() {
-        a.whenPressed(() -> Robot.resetAngle());
-        leftTrigger.whenPressed(() -> Robot.resetAngle());
+        a.whenPressed((Runnable) Robot::resetAngle);
     }
 
 
