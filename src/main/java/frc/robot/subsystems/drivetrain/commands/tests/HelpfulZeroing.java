@@ -1,4 +1,4 @@
-package frc.robot.subsystems.drivetrain.tests;
+package frc.robot.subsystems.drivetrain.commands.tests;
 
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
