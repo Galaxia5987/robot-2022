@@ -203,15 +203,6 @@ public class SwerveModule extends SubsystemBase {
     }
 
     /**
-     * Get the encoder reading of the module for testing purposes.
-     *
-     * @return the encoder reading of the module. [ticks]
-     */
-    public int getSelectedSensorPosition() {
-        return (int) angleMotor.getSelectedSensorPosition();
-    }
-
-    /**
      * Stops the drive motor from moving.
      */
     public void stopDriveMotor() {
