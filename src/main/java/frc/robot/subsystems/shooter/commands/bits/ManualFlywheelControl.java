@@ -23,7 +23,7 @@ public class ManualFlywheelControl extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        if(interrupted) {
+        if (interrupted) {
             System.out.println("I've been shanked!");
         } else {
             System.out.println("Someone tried to shank me!");
