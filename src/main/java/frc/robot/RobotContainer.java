@@ -72,7 +72,7 @@ public class RobotContainer {
                         intake,
                         conveyor,
                         shooter,
-                        () -> leftTrigger.get() ? 1 : -1
+                        () -> leftTrigger.get() ? Constants.Conveyor.DEFAULT_POWER : -Constants.Conveyor.DEFAULT_POWER
                 ));
         rightTrigger.whenActive(new DynamicConditionalCommand(
                 () -> !leftTrigger.get(),
