@@ -143,7 +143,7 @@ public class SwerveModule extends SubsystemBase {
      * @param velocity the velocity of the module. [m/s]
      */
     public void setVelocity(double velocity) {
-        double timeInterval = Math.max(Constants.LOOP_PERIOD, currentTime - lastTime);
+        double timeInterval = currentTime - lastTime;
         double targetVelocity = Units.metersPerSecondToRps(velocity, Constants.SwerveDrive.WHEEL_RADIUS);
         double currentVelocity = Units.metersPerSecondToRps(getVelocity(), Constants.SwerveDrive.WHEEL_RADIUS);
 
