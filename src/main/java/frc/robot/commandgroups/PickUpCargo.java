@@ -12,7 +12,7 @@ public class PickUpCargo extends ParallelCommandGroup {
 
     public PickUpCargo(Conveyor conveyor, Intake intake, DoubleSupplier conveyorPower, double intakePower) {
         addCommands(
-                new Convey(conveyorPower, conveyor, () -> true),
+                new Convey(conveyor, conveyorPower, () -> true),
                 new IntakeCargo(intake, () -> true, intakePower)
         );
     }

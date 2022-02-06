@@ -10,7 +10,7 @@ public class ManualFlywheelControl extends CommandBase {
     private final DoubleSupplier output;
     private final Shooter shooter;
 
-    public ManualFlywheelControl(DoubleSupplier output, Shooter shooter) {
+    public ManualFlywheelControl(Shooter shooter, DoubleSupplier output) {
         this.output = output;
         this.shooter = shooter;
         addRequirements(shooter);

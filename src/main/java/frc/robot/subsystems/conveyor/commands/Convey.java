@@ -11,7 +11,7 @@ public class Convey extends CommandBase {
     private final Conveyor conveyor;
     private final BooleanSupplier condition;
 
-    public Convey(DoubleSupplier power, Conveyor conveyor, BooleanSupplier condition) {
+    public Convey(Conveyor conveyor, DoubleSupplier power, BooleanSupplier condition) {
         this.power = power;
         this.conveyor = conveyor;
         this.condition = condition;

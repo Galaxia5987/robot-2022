@@ -22,7 +22,7 @@ public class Outtake extends ParallelCommandGroup {
                    DoubleSupplier conveyorPower) {
         addCommands(
                 new FlapDefaultCommand(conveyor, () -> Conveyor.FlapMode.Open),
-                new Convey(conveyorPower, conveyor, () -> true),
+                new Convey(conveyor, conveyorPower, () -> true),
                 new ConditionalCommand(
                         new Shoot(shooter, () -> 8, OptionalDouble.of(Constants.Shooter.OUTTAKE_POWER)),
                         new IntakeCargo(intake, () -> true, -Constants.Intake.DEFAULT_POWER),

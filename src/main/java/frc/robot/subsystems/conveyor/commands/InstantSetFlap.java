@@ -7,7 +7,7 @@ public class InstantSetFlap extends InstantCommand {
     private final Conveyor conveyor;
     private final Conveyor.FlapMode flapMode;
 
-    public InstantSetFlap(Conveyor.FlapMode flapMode, Conveyor conveyor) {
+    public InstantSetFlap( Conveyor conveyor, Conveyor.FlapMode flapMode) {
         this.flapMode = flapMode;
         this.conveyor = conveyor;
         addRequirements(conveyor);

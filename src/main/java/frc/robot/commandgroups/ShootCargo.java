@@ -33,7 +33,7 @@ public class ShootCargo extends ParallelCommandGroup {
 
         addCommands(
                 new HoodDefaultCommand(hood, () -> Hood.Mode.getValue(distanceFromTarget.getAsDouble() < DISTANCE_FROM_TARGET_DEADBAND)),
-                new Convey(conveyorPower, conveyor, isFlywheelAtSetpoint),
+                new Convey(conveyor, conveyorPower, isFlywheelAtSetpoint),
                 new FlapDefaultCommand(conveyor, () -> Conveyor.FlapMode.getValue(!isFlywheelAtSetpoint.getAsBoolean())),
                 new Shoot(shooter, distanceFromTarget, OptionalDouble.empty())
         );
