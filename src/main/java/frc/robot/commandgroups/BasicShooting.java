@@ -5,6 +5,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
 import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.hood.commands.HoodDefaultCommand;
 import frc.robot.subsystems.hood.commands.InstantChangeAngle;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.Shoot;
@@ -18,7 +19,7 @@ public class BasicShooting extends ParallelCommandGroup {
 
     public BasicShooting(Shooter shooter, Hood hood, Conveyor conveyor, DoubleSupplier distanceFromTarget) {
         addCommands(
-                new InstantChangeAngle(hood, Hood.Mode.getValue(distanceFromTarget.getAsDouble() < DISTANCE_FROM_TARGET_DEADBAND)),
+                new HoodDefaultCommand(hood, () -> Hood.Mode.getValue(distanceFromTarget.getAsDouble() < DISTANCE_FROM_TARGET_DEADBAND)),
                 new Shoot(shooter, distanceFromTarget, OptionalDouble.empty()),
                 new Convey(Constants.Conveyor.DEFAULT_POWER, conveyor, () -> true)
         );
