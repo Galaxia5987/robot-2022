@@ -34,7 +34,7 @@ public class DynamicConditionalCommand extends CommandBase {
     @Override
     public void execute() {
         boolean currentConditionState = condition.getAsBoolean();
-        var toggle = !lastConditionState & currentConditionState;
+        var toggle = !lastConditionState && currentConditionState;
         currentConditionState ^= toggle;
 
         if (currentConditionState) {
