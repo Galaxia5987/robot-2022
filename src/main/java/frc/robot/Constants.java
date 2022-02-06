@@ -82,6 +82,7 @@ public final class Constants {
         public static final double DEFAULT_POWER = 0.5; // power intake will receive on the basic command. [%]
         public static final double POWER_TO_VELOCITY_RATIO = -3 / 16.0; // Ratio of power to velocity. [% / m/s]
         public static final boolean IS_COMPENSATING_VOLTAGE = true;
+        public static final double TIME_BETWEEN_RUNS = 1.0; // time intake will wait before toggling the retractor (for testing only)
     }
 
     public static class Control {
