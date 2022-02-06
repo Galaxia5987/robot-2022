@@ -38,16 +38,12 @@ public class DynamicConditionalCommand extends CommandBase {
         currentConditionState ^= toggle;
 
         if (currentConditionState) {
-            if (onFalseCommand.isScheduled()) {
-                onFalseCommand.end(true);
-            }
+            onFalseCommand.cancel();
             if (!lastConditionState) {
                 onTrueCommand.schedule();
             }
         } else {
-            if (onTrueCommand.isScheduled()) {
-                onTrueCommand.end(true);
-            }
+            onTrueCommand.cancel();
             if (lastConditionState) {
                 onFalseCommand.schedule();
             }
