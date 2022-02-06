@@ -14,7 +14,7 @@ public class DynamicConditionalCommand extends CommandBase {
     private boolean lastIsToggled;
     private boolean lastConditionState;
 
-    public DynamicConditionalCommand(BooleanSupplier condition, Command onTrueCommand, Command onFalseCommand){
+    public DynamicConditionalCommand(BooleanSupplier condition, Command onTrueCommand, Command onFalseCommand) {
         this.condition = condition;
         this.onTrueCommand = onTrueCommand;
         this.onFalseCommand = onFalseCommand;
@@ -34,23 +34,23 @@ public class DynamicConditionalCommand extends CommandBase {
         boolean currentIsToggled = lastConditionState && !currentConditionState;
 
         if (currentIsToggled) {
-            if(onFalseCommand.isScheduled()) {
+            if (onFalseCommand.isScheduled()) {
                 onFalseCommand.end(true);
             }
-            if(!lastIsToggled) {
+            if (!lastIsToggled) {
                 onTrueCommand.schedule();
             }
         } else {
-            if(onTrueCommand.isScheduled()){
+            if (onTrueCommand.isScheduled()) {
                 onTrueCommand.end(true);
             }
-            if(lastIsToggled) {
+            if (lastIsToggled) {
                 onFalseCommand.schedule();
             }
         }
 
-        lastIsToggled = currentIsToggled;
         lastConditionState = currentConditionState;
+        lastIsToggled = currentIsToggled;
     }
 
     @Override

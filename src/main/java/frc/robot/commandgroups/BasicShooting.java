@@ -6,7 +6,6 @@ import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.hood.commands.HoodDefaultCommand;
-import frc.robot.subsystems.hood.commands.InstantChangeAngle;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.Shoot;
 
