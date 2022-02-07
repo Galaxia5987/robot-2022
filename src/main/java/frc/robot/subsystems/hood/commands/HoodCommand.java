@@ -5,23 +5,20 @@ import frc.robot.subsystems.hood.Hood;
 
 import java.util.function.Supplier;
 
-public class HoodDefaultCommand extends CommandBase {
+public class HoodCommand extends CommandBase {
     private final Hood hood;
     private final Supplier<Hood.Mode> modeSupplier;
 
-    public HoodDefaultCommand(Hood hood, Supplier<Hood.Mode> modeSupplier, boolean isInstant) {
+    public HoodCommand(Hood hood, Supplier<Hood.Mode> modeSupplier) {
         this.hood = hood;
         this.modeSupplier = modeSupplier;
         addRequirements(hood);
-
-        if (isInstant) {
-            execute();
-            cancel();
-        }
     }
 
-    public HoodDefaultCommand(Hood hood, Supplier<Hood.Mode> modeSupplier) {
-        this(hood, modeSupplier, false);
+    public HoodCommand(Hood hood, Hood.Mode mode) {
+        this(hood, () -> mode);
+        execute();
+        cancel();
     }
 
     @Override

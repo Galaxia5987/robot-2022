@@ -5,7 +5,7 @@ import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
 import frc.robot.subsystems.conveyor.commands.FlapDefaultCommand;
 import frc.robot.subsystems.hood.Hood;
-import frc.robot.subsystems.hood.commands.HoodDefaultCommand;
+import frc.robot.subsystems.hood.commands.HoodCommand;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.Shoot;
 
@@ -31,7 +31,7 @@ public class ShootCargo extends ParallelCommandGroup {
                         distanceFromTarget.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND);
 
         addCommands(
-                new HoodDefaultCommand(hood, () -> Hood.Mode.getValue(distanceFromTarget.getAsDouble() < DISTANCE_FROM_TARGET_DEADBAND)),
+                new HoodCommand(hood, () -> Hood.Mode.getValue(distanceFromTarget.getAsDouble() < DISTANCE_FROM_TARGET_DEADBAND)),
                 new Convey(conveyor, conveyorPower, isFlywheelAtSetpoint),
                 new FlapDefaultCommand(conveyor, () -> Conveyor.FlapMode.getValue(!isFlywheelAtSetpoint.getAsBoolean())),
                 new Shoot(shooter, distanceFromTarget)
