@@ -36,4 +36,8 @@ public final class Ports {
         public static final int ENCODER_A_CHANNEL = 0;
         public static final int ENCODER_B_CHANNEL = 1;
     }
+
+    public static class Vision {
+        public static final int LEDS = 3;
+    }
 }
