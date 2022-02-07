@@ -28,7 +28,7 @@ public class DriveSlowAccel extends HolonomicDrive {
         else {
             swerveDrive.holonomicDrive(forward, strafe, rotation);
         }
-        log(speeds);
+        SwerveDrive.logSpeeds(speeds);
     }
 
     @Override

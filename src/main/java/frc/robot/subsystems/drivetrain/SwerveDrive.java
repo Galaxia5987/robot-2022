@@ -13,6 +13,7 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.utils.TimeDelayedBoolean;
 import frc.robot.utils.Utils;
+import webapp.FireLog;
 
 
 /**
@@ -67,6 +68,18 @@ public class SwerveDrive extends SubsystemBase {
             FIELD_ORIENTED_INSTANCE = new SwerveDrive(true);
         }
         return FIELD_ORIENTED_INSTANCE;
+    }
+
+    /**
+     * Log the values of the inputs.
+     *
+     * @param speeds the speeds in each axis.
+     */
+    public static void logSpeeds(ChassisSpeeds speeds) {
+        FireLog.log("current_angle", Robot.getAngle().getDegrees());
+        FireLog.log("forward", speeds.vxMetersPerSecond);
+        FireLog.log("strafe", speeds.vyMetersPerSecond);
+        FireLog.log("rotation", speeds.omegaRadiansPerSecond);
     }
 
     /**

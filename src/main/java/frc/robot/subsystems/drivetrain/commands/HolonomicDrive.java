@@ -3,10 +3,8 @@ package frc.robot.subsystems.drivetrain.commands;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.Robot;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.utils.Utils;
-import webapp.FireLog;
 
 import java.util.function.DoubleSupplier;
 
@@ -34,14 +32,7 @@ public class HolonomicDrive extends CommandBase {
         ChassisSpeeds speeds = calculateVelocities();
         swerveDrive.holonomicDrive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
 
-        log(speeds);
-    }
-
-    protected void log(ChassisSpeeds speeds) {
-        FireLog.log("current_angle", Robot.getAngle().getRadians());
-        FireLog.log("forward", speeds.vxMetersPerSecond);
-        FireLog.log("strafe", speeds.vyMetersPerSecond);
-        FireLog.log("rotation", speeds.omegaRadiansPerSecond);
+        SwerveDrive.logSpeeds(speeds);
     }
 
     /**
