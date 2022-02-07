@@ -2,21 +2,22 @@ package frc.robot.subsystems.conveyor.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.conveyor.Conveyor;
+import frc.robot.subsystems.flap.Flap;
 
 import java.util.function.Supplier;
 
 public class FlapCommand extends CommandBase {
-    private final Conveyor conveyor;
-    private final Supplier<Conveyor.FlapMode> flapMode;
+    private final Flap flap;
+    private final Supplier<Flap.FlapMode> flapMode;
 
-    public FlapCommand(Conveyor conveyor, Supplier<Conveyor.FlapMode> flapMode) {
-        this.conveyor = conveyor;
+    public FlapCommand(Flap flap, Supplier<Flap.FlapMode> flapMode) {
+        this.flap = flap;
         this.flapMode = flapMode;
-        addRequirements(conveyor);
+        addRequirements(flap);
     }
 
-    public FlapCommand(Conveyor conveyor, Conveyor.FlapMode flapMode) {
-        this(conveyor, () -> flapMode);
+    public FlapCommand(Flap flap, Flap.FlapMode flapMode) {
+        this(flap, () -> flapMode);
         execute();
         cancel();
     }
@@ -24,14 +25,14 @@ public class FlapCommand extends CommandBase {
     @Override
     public void execute() {
         if (flapMode.get().mode) {
-            conveyor.openFlap();
+            flap.openFlap();
         } else {
-            conveyor.closeFlap();
+            flap.closeFlap();
         }
     }
 
     @Override
     public void end(boolean interrupted) {
-        conveyor.setFlapMode(Conveyor.FlapMode.Closed);
+        flap.setFlapMode(Flap.FlapMode.Closed);
     }
 }

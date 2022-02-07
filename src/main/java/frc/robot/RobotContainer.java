@@ -9,6 +9,7 @@ import frc.robot.commandgroups.Outtake;
 import frc.robot.commandgroups.PickUpCargo;
 import frc.robot.commandgroups.ShootCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
+import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
@@ -26,6 +27,7 @@ public class RobotContainer {
     private final Shooter shooter = Shooter.getInstance();
     private final Hood hood = Hood.getInstance();
     private final Intake intake = Intake.getInstance();
+    private final Flap flap = Flap.getInstance();
     private final SimulateDrivetrain simulateDrivetrain = new SimulateDrivetrain();
     private final PhotonVisionModule visionModule;
 
@@ -71,11 +73,12 @@ public class RobotContainer {
                 new Outtake(
                         intake,
                         conveyor,
+                        flap,
                         shooter,
                         leftTrigger::get
                 ));
         rightTrigger.whileActiveContinuous(
-                new ShootCargo(shooter, hood, conveyor, distanceFromTarget, () -> Constants.Conveyor.DEFAULT_POWER)
+                new ShootCargo(shooter, hood, conveyor, flap, distanceFromTarget, () -> Constants.Conveyor.DEFAULT_POWER)
         );
     }
 

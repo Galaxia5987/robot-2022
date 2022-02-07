@@ -5,6 +5,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
 import frc.robot.subsystems.conveyor.commands.FlapCommand;
+import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.commands.IntakeCargo;
 import frc.robot.subsystems.shooter.Shooter;
@@ -17,10 +18,11 @@ public class Outtake extends ParallelCommandGroup {
 
     public Outtake(Intake intake,
                    Conveyor conveyor,
+                   Flap flap,
                    Shooter shooter,
                    BooleanSupplier condition) {
         addCommands(
-                new FlapCommand(conveyor, Conveyor.FlapMode.Open),
+                new FlapCommand(flap, Flap.FlapMode.Open),
                 new Convey(conveyor, () -> Constants.Conveyor.DEFAULT_POWER * (condition.getAsBoolean() ? 1 : -1)),
                 new DynamicConditionalCommand(
                         condition,

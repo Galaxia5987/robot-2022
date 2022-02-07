@@ -22,7 +22,6 @@ public class Conveyor extends SubsystemBase {
     private final WPI_TalonFX motor = new WPI_TalonFX(Ports.Conveyor.MOTOR);
     private final Deque<String> cargoPositions = new ArrayDeque<>();
     private final ColorSensorV3 colorSensor = new ColorSensorV3(I2C.Port.kMXP);
-    private final Solenoid flap = new Solenoid(PneumaticsModuleType.CTREPCM, SOLENOID);
     private final DigitalInput postFlapBeam = new DigitalInput(Ports.Conveyor.POST_FLAP_BEAM_BREAKER);
     private final DigitalInput preFlapBeam = new DigitalInput(Ports.Conveyor.PRE_FLAP_BEAM_BREAKER);
     private final ColorMatch colorMatch = new ColorMatch();
@@ -114,45 +113,6 @@ public class Conveyor extends SubsystemBase {
      */
     public void setPower(double power) {
         motor.set(power);
-    }
-
-    /**
-     * open the flap
-     */
-    public void openFlap() {
-        flap.set(false);
-    }
-
-    /**
-     * closes the flap
-     */
-    public void closeFlap() {
-        flap.set(true);
-    }
-
-    /**
-     * toggles the flap
-     */
-    public void toggleFlap() {
-        flap.toggle();
-    }
-
-    /**
-     * Gets the current mode of the flap.
-     *
-     * @return the mode of the flap (true or false).
-     */
-    public boolean getFlapMode() {
-        return flap.get();
-    }
-
-    /**
-     * Sets the mode of the flap (open or closed).
-     *
-     * @param flapMode is the enum describing the mode of the flap.
-     */
-    public void setFlapMode(FlapMode flapMode) {
-        flap.set(flapMode.mode);
     }
 
     /**
@@ -267,29 +227,5 @@ public class Conveyor extends SubsystemBase {
         SmartDashboard.putString("First", positions[0]);
         SmartDashboard.putString("Last", positions[1]);
         SmartDashboard.putBoolean("dio", preFlapBeam.get());
-    }
-
-    public enum FlapMode {
-        Open(false),
-        Closed(true);
-
-        public final boolean mode;
-
-        FlapMode(boolean mode) {
-            this.mode = mode;
-        }
-
-        /**
-         * Get a flap mode according to input boolean (true - closed, false - open).
-         *
-         * @param val is the input value.
-         * @return the flap mode as an enum.
-         */
-        public static FlapMode getValue(boolean val) {
-            if (val) {
-                return Closed;
-            }
-            return Open;
-        }
     }
 }
