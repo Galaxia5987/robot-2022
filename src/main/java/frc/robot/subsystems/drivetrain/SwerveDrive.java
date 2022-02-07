@@ -214,7 +214,7 @@ public class SwerveDrive extends SubsystemBase {
 
     /**
      * Sets the state of the modules without optimizing them.
-     * USE ONLY FOR TESTING!
+     * USE ONLY FOR TESTING & TUNING!
      *
      * @param states the states of the modules.
      */
