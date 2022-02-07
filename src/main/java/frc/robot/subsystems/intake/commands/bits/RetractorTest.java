@@ -23,6 +23,8 @@ public class RetractorTest extends CommandBase {
     public void initialize() {
         timer.reset();
         timer.start();
+
+        intake.toggleRetractor();
         previousState = intake.getRetractorState();
     }
 
