@@ -14,7 +14,6 @@ public class CheckShooterAccuracy extends Shoot {
     private final Shooter shooter;
     private final DoubleSupplier distance;
     private final Timer timer = new Timer();
-    private double setpoint;
 
     public CheckShooterAccuracy(Shooter shooter, DoubleSupplier distance, OptionalDouble power) {
         super(shooter, distance, power);
@@ -32,7 +31,7 @@ public class CheckShooterAccuracy extends Shoot {
     public void execute() {
         super.execute();
 
-        setpoint = Shoot.getSetpointVelocity(distance.getAsDouble());
+        double setpoint = Shoot.getSetpointVelocity(distance.getAsDouble());
         double currentVelocity = shooter.getVelocity();
 
         SmartDashboard.putNumber("Setpoint", setpoint);
