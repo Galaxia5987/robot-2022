@@ -1,15 +1,12 @@
 package frc.robot;
 
-import frc.robot.valuetuner.WebConstant;
-import edu.wpi.first.wpilibj.util.Color;
-
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.util.Color;
 import org.photonvision.SimVisionTarget;
-
-import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
 
 public final class Constants {
@@ -40,23 +37,29 @@ public final class Constants {
         public static final double NEUTRAL_DEADBAND = 0.1; // [%]
 
         public static final double OUTPUT_MULTIPLIER = 0.1; // Multiplies the output for manual control in the bits. [%]
+        public static final double OUTTAKE_POWER = 0.2; // Power to give to the shooter when taking balls out. [%]
+        public static final double SHOOTER_VELOCITY_DEADBAND = 1 - 2.95 / 3.0; // Dead band for shooter velocity setpoint. [%]
+        public static double RECOMMENDED_ACCELERATION_TIME = 1.3; // Recommended time for the shooter to get to it's setpoint. [s]
 
         public static TalonFXConfiguration getConfiguration() {
             final TalonFXConfiguration configuration = new TalonFXConfiguration();
             configuration.neutralDeadband = NEUTRAL_DEADBAND;
             return configuration;
         }
+
     }
+
     public static class Conveyor {
-        public static final double POWER = 0.5; // [%]
+        public static final double DEFAULT_POWER = 0.5; // [%]
         public static final int MAX_CARGO_AMOUNT = 2;
         public static final int MIN_PROXIMITY_VALUE = 100; // Minimum distance from the color sensor in order to induce detection (arbitrary bit units).
         public static final Color RED = new Color(0.15, 0.55, 0.3);
         public static final Color BLUE = new Color(0.02, 0.51, 0.44);
         public static final Color GREEN = new Color(0.06, 0.54, 0.39);
-        public static final Color NONE   = new Color(2e-4, 0.94, 0.045);
+        public static final Color NONE = new Color(2e-4, 0.94, 0.045);
+
     }
-	
+
     public static class Vision {
         public static final double CAMERA_HEIGHT = 0.767; // [m]
         public static final double TARGET_HEIGHT_FROM_GROUND = 2.64; // [m]
@@ -76,6 +79,7 @@ public final class Constants {
 
         public static final SimVisionTarget SIM_TARGET_HUB = new SimVisionTarget( // Hub target for vision simulation.
                 HUB_POSE, TARGET_HEIGHT_FROM_GROUND, TARGET_WIDTH, TARGET_HEIGHT);
+
     }
 
     public static class Intake {
@@ -87,9 +91,12 @@ public final class Constants {
 
     public static class Control {
         public static final double RIGHT_TRIGGER_DEADBAND = 0.4; // Deadband for right trigger. [%]
+        public static final double LEFT_TRIGGER_DEADBAND = 0.4; // Deadband for right trigger. [%]
+
     }
 
-    public static class CommandGroups {
-        public static final double SHOOTER_VELOCITY_DEADBAND = 2.95 / 3.0;
+    public static class Hood {
+        public static final double DISTANCE_FROM_TARGET_DEADBAND = 3.5; // [m]
+
     }
 }

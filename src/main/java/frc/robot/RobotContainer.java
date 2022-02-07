@@ -2,19 +2,23 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.subsystems.conveyor.Conveyor;
-import frc.robot.subsystems.conveyor.commands.ConveyorDefaultCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commandgroups.Outtake;
+import frc.robot.commandgroups.PickUpCargo;
+import frc.robot.commandgroups.ShootCargo;
+import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.hood.Hood;
-import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.commands.Shoot;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.utils.PhotonVisionModule;
 import frc.robot.utils.SimulateDrivetrain;
-
 import webapp.Webserver;
 
+import java.util.function.DoubleSupplier;
+
+import static frc.robot.Constants.Control.LEFT_TRIGGER_DEADBAND;
 import static frc.robot.Constants.Control.RIGHT_TRIGGER_DEADBAND;
 
 public class RobotContainer {
@@ -25,11 +29,13 @@ public class RobotContainer {
     private final SimulateDrivetrain simulateDrivetrain = new SimulateDrivetrain();
     private final PhotonVisionModule visionModule;
 
-  // The robot's subsystems and commands are defined here...
+    // The robot's subsystems and commands are defined here...
     private final Conveyor conveyor = Conveyor.getInstance();
     private final XboxController xbox = new XboxController(Ports.Controls.XBOX);
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final JoystickButton b = new JoystickButton(xbox, XboxController.Button.kB.value);
+    private final JoystickButton rb = new JoystickButton(xbox, XboxController.Button.kRightBumper.value);
+    private final Trigger leftTrigger = new Trigger(() -> xbox.getLeftTriggerAxis() > LEFT_TRIGGER_DEADBAND);
     private final Trigger rightTrigger = new Trigger(() -> xbox.getRightTriggerAxis() > RIGHT_TRIGGER_DEADBAND);
 
     /**
@@ -52,11 +58,25 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        shooter.setDefaultCommand(new Shoot(shooter, () -> 4));
-        conveyor.setDefaultCommand(new ConveyorDefaultCommand(conveyor, Constants.Conveyor.POWER));
     }
 
     private void configureButtonBindings() {
+        DoubleSupplier distanceFromTarget = () -> visionModule.getDistance().orElse(0);
+        DoubleSupplier robotVelocity = () -> 4;
+
+        a.whileHeld(
+                new PickUpCargo(conveyor, intake, Constants.Conveyor.DEFAULT_POWER, Constants.Intake.DEFAULT_POWER)
+        );
+        b.whileHeld(
+                new Outtake(
+                        intake,
+                        conveyor,
+                        shooter,
+                        leftTrigger::get
+                ));
+        rightTrigger.whileActiveContinuous(
+                new ShootCargo(shooter, hood, conveyor, distanceFromTarget, () -> Constants.Conveyor.DEFAULT_POWER)
+        );
     }
 
 

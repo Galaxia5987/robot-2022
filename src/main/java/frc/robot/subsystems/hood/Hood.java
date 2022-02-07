@@ -13,16 +13,6 @@ public class Hood extends SubsystemBase {
     private Hood() {
     }
 
-    public enum Mode {
-        ShortDistance(true),
-        LongDistance(false);
-        public final boolean value;
-
-        Mode(boolean value) {
-            this.value = value;
-        }
-    }
-
     /**
      * Gets the instance of the hood subsystem.
      *
@@ -64,5 +54,24 @@ public class Hood extends SubsystemBase {
      */
     public boolean isOpen() {
         return angleChanger.get();
+    }
+
+    public enum Mode {
+        ShortDistance(true),
+        LongDistance(false);
+
+        public final boolean value;
+
+        Mode(boolean value) {
+            this.value = value;
+        }
+
+        public static Mode getValue(boolean val) {
+            if (val) {
+                return ShortDistance;
+            } else {
+                return LongDistance;
+            }
+        }
     }
 }
