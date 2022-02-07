@@ -9,7 +9,6 @@ import frc.robot.subsystems.hood.commands.HoodDefaultCommand;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.Shoot;
 
-import java.util.OptionalDouble;
 import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.Hood.DISTANCE_FROM_TARGET_DEADBAND;

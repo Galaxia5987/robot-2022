@@ -14,7 +14,7 @@ public class FlapDefaultCommand extends CommandBase {
         this.flapMode = flapMode;
         addRequirements(conveyor);
 
-        if(isInstant) {
+        if (isInstant) {
             execute();
             cancel();
         }

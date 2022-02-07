@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.Shoot;
-import frc.robot.utils.Utils;
 
 import java.util.OptionalDouble;
 import java.util.function.DoubleSupplier;

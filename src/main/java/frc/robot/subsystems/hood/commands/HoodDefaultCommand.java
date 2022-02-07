@@ -14,7 +14,7 @@ public class HoodDefaultCommand extends CommandBase {
         this.modeSupplier = modeSupplier;
         addRequirements(hood);
 
-        if(isInstant) {
+        if (isInstant) {
             execute();
             cancel();
         }

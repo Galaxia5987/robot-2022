@@ -5,7 +5,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commandgroups.*;
+import frc.robot.commandgroups.Outtake;
+import frc.robot.commandgroups.PickUpCargo;
+import frc.robot.commandgroups.ShootCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Intake;
@@ -14,8 +16,6 @@ import frc.robot.utils.PhotonVisionModule;
 import frc.robot.utils.SimulateDrivetrain;
 import webapp.Webserver;
 
-import java.util.OptionalDouble;
-import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.Control.LEFT_TRIGGER_DEADBAND;
