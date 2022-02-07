@@ -61,7 +61,7 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        DoubleSupplier distanceFromTarget = () -> visionModule.getDistance().getAsDouble();
+        DoubleSupplier distanceFromTarget = () -> visionModule.getDistance().orElse(0);
         DoubleSupplier robotVelocity = () -> 4;
 
         a.whileHeld(
