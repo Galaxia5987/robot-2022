@@ -1,7 +1,6 @@
 package frc.robot.subsystems.flap.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.flap.Flap;
 
 import java.util.function.Supplier;
@@ -24,7 +23,7 @@ public class FlapCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        if(isInstant) {
+        if (isInstant) {
             execute();
             cancel();
         }

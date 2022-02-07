@@ -7,14 +7,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Ports.Flap.SOLENOID;
 
 public class Flap extends SubsystemBase {
-    private final Solenoid flap = new Solenoid(PneumaticsModuleType.CTREPCM, SOLENOID);
     private static Flap INSTANCE;
+    private final Solenoid flap = new Solenoid(PneumaticsModuleType.CTREPCM, SOLENOID);
 
     public Flap() {
     }
 
     public static Flap getInstance() {
-        if(INSTANCE == null){
+        if (INSTANCE == null) {
             INSTANCE = new Flap();
         }
         return INSTANCE;

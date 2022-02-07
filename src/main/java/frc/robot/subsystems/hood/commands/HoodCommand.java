@@ -23,7 +23,7 @@ public class HoodCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        if(isInstant) {
+        if (isInstant) {
             execute();
             cancel();
         }
