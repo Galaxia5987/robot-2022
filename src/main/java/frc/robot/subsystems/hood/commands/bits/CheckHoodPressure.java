@@ -12,6 +12,7 @@ public class CheckHoodPressure extends CommandBase {
 
     public CheckHoodPressure(Hood hood) {
         this.hood = hood;
+        addRequirements(hood);
     }
 
     @Override
