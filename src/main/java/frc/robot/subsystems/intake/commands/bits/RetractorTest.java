@@ -14,7 +14,7 @@ public class RetractorTest extends CommandBase {
     private boolean previousState;
     private int counter = 0;
 
-    public RetractorTest(int numOfRuns, Intake intake) {
+    public RetractorTest(Intake intake, int numOfRuns) {
         this.numOfRuns = numOfRuns;
         this.intake = intake;
         addRequirements(intake);
