@@ -8,7 +8,6 @@ import frc.robot.subsystems.hood.Hood;
 public class CheckHoodPressure extends CommandBase {
     private final Hood hood;
     private final Timer timer = new Timer();
-    private double lastTime;
 
     public CheckHoodPressure(Hood hood) {
         this.hood = hood;
@@ -18,23 +17,18 @@ public class CheckHoodPressure extends CommandBase {
     public void initialize() {
         timer.reset();
         timer.start();
-
-        lastTime = timer.get();
     }
 
     @Override
     public void execute() {
-        double currentTime = timer.get();
-
-        if(currentTime - lastTime > Constants.Hood.HOOD_PRESSURE_BIT_DELTA_TIME) {
+        if(timer.advanceIfElapsed(Constants.Hood.HOOD_PRESSURE_BIT_DELTA_TIME)) {
             if(hood.isOpen()) {
                 hood.close();
             } else {
                 hood.open();
             }
+            timer.reset();
         }
-
-        lastTime = currentTime;
     }
 
     @Override
