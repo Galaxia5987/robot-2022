@@ -54,9 +54,4 @@ public class CheckShooterAccuracy extends Shoot {
 
         timer.stop();
     }
-
-    @Override
-    public boolean isFinished() {
-        return Utils.deadband(shooter.getVelocity() / setpoint, Constants.Shooter.SHOOTER_VELOCITY_DEADBAND) == 0;
-    }
 }
