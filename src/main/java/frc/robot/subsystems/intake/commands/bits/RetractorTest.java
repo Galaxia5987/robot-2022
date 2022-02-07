@@ -10,7 +10,6 @@ public class RetractorTest extends CommandBase {
     private final Timer timer = new Timer();
     private final Intake intake;
     private final int numOfRuns;
-    private double previousTimeStamp = 0;
     private boolean previousState;
     private int counter = 0;
 
@@ -29,15 +28,16 @@ public class RetractorTest extends CommandBase {
 
     @Override
     public void execute() {
-        double currentTimeStamp = timer.get();
-        if (currentTimeStamp - previousTimeStamp > Constants.Intake.TIME_BETWEEN_RUNS) {
+        if (timer.advanceIfElapsed(Constants.Intake.TIME_BETWEEN_RUNS)) {
             intake.toggleRetractor();
             boolean currentState = intake.getRetractorState();
-            previousTimeStamp = currentTimeStamp;
+
             if (previousState != currentState)
                 System.out.println("run number " + counter + " worked");
+
             previousState = currentState;
             counter++;
+            timer.reset();
         }
     }
 
