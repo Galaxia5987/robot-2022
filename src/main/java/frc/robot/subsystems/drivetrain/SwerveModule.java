@@ -132,7 +132,7 @@ public class SwerveModule extends SubsystemBase {
      * @return the velocity of the wheel. [m/s]
      */
     public double getVelocity() {
-        return driveUnitModel.toVelocity(driveMotor.getSelectedSensorVelocity(0));
+        return driveUnitModel.toVelocity(driveMotor.getSelectedSensorVelocity());
     }
 
     /**
@@ -201,7 +201,7 @@ public class SwerveModule extends SubsystemBase {
      * @param power percent power to give to the angel motor. [%]
      */
     public void setPower(double power) {
-        angleMotor.set(TalonSRXControlMode.PercentOutput, power);
+        angleMotor.set(power);
     }
 
     /**
@@ -222,8 +222,8 @@ public class SwerveModule extends SubsystemBase {
      * Runs the motor at full power (only used for testing purposes).
      */
     public void setMaxOutput() {
-        driveMotor.set(ControlMode.PercentOutput, 1);
-        angleMotor.set(ControlMode.PercentOutput, 1);
+        driveMotor.set(1);
+        angleMotor.set(1);
     }
 
     /**
