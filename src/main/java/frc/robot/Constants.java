@@ -85,7 +85,7 @@ public final class Constants {
     }
 
     public static class Hood {
-        public static final double HOOD_PRESSURE_BIT_DELTA_TIME = 0.1;
+        public static final double HOOD_PRESSURE_BIT_DELTA_TIME = 0.1; // [s]
     }
 
     public static class Control {

@@ -53,6 +53,9 @@ public class Hood extends SubsystemBase {
         angleChanger.set(true);
     }
 
+    /**
+     * Toggles the hood mode.
+     */
     public void toggle() {
         angleChanger.toggle();
     }
