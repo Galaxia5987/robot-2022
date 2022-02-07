@@ -21,7 +21,7 @@ public class Outtake extends ParallelCommandGroup {
                    BooleanSupplier condition) {
         addCommands(
                 new FlapDefaultCommand(conveyor, () -> Conveyor.FlapMode.Open),
-                new Convey(conveyor, Constants.Conveyor.DEFAULT_POWER * (condition.getAsBoolean() ? 1 : -1)),
+                new Convey(conveyor, () -> Constants.Conveyor.DEFAULT_POWER * (condition.getAsBoolean() ? 1 : -1)),
                 new DynamicConditionalCommand(
                         condition,
                         new Shoot(shooter, () -> 8, OptionalDouble.of(Constants.Shooter.OUTTAKE_POWER)),
