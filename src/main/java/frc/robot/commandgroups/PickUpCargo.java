@@ -6,8 +6,6 @@ import frc.robot.subsystems.conveyor.commands.Convey;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.commands.IntakeCargo;
 
-import java.util.function.DoubleSupplier;
-
 public class PickUpCargo extends ParallelCommandGroup {
 
     public PickUpCargo(Conveyor conveyor, Intake intake, double conveyorPower, double intakePower) {
