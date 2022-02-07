@@ -10,7 +10,7 @@ public class Flap extends SubsystemBase {
     private static Flap INSTANCE;
     private final Solenoid flap = new Solenoid(PneumaticsModuleType.CTREPCM, SOLENOID);
 
-    public Flap() {
+    private Flap() {
     }
 
     public static Flap getInstance() {
