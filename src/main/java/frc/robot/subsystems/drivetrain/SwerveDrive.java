@@ -47,7 +47,7 @@ public class SwerveDrive extends SubsystemBase {
 
         headingController.enableContinuousInput(-Math.PI, Math.PI);
         headingController.reset(0, 0);
-        headingController.setTolerance(Constants.SwerveDrive.ALLOWABLE_THETA_ERROR);
+        headingController.setTolerance(Constants.SwerveDrive.ALLOWABLE_HEADING_ERROR);
     }
 
     /**
@@ -88,7 +88,7 @@ public class SwerveDrive extends SubsystemBase {
      */
     public void holonomicDrive(double forward, double strafe, double rotation) {
         if (rotation == 0 || rotationDelay.update(Math.abs(headingController.getGoal().position - Robot.getAngle()
-                        .getRadians()) < Constants.SwerveDrive.ALLOWABLE_THETA_ERROR,
+                        .getRadians()) < Constants.SwerveDrive.ALLOWABLE_HEADING_ERROR,
                 Constants.SwerveDrive.ROTATION_DELAY)) {
             rotation = headingController.calculate(Robot.getAngle().getRadians());
         } else {
@@ -135,8 +135,8 @@ public class SwerveDrive extends SubsystemBase {
     public void setStates(SwerveModuleState[] states) {
         for (SwerveModule module : modules) {
             states[module.getWheel()] = SwerveModuleState.optimize(states[module.getWheel()], module.getAngle());
-            double diff = Utils.deadband(states[module.getWheel()].angle.minus(module.getAngle())
-                    .getRadians(), Constants.SwerveDrive.ALLOWABLE_ANGLE_MOTOR_ACCELERATION_THRESHOLD);
+            double diff = Utils.deadband(states[module.getWheel()].angle.minus(module.getAngle()).getRadians(),
+                    Constants.SwerveDrive.ANGLE_COSINE_DEADBAND);
             module.setAngle(states[module.getWheel()].angle);
             module.setVelocity(states[module.getWheel()].speedMetersPerSecond * Math.cos(diff)); // cos(0) = 1
         }

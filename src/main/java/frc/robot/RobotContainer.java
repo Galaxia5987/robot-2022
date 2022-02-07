@@ -56,15 +56,15 @@ public class RobotContainer {
         PathPlannerTrajectory path = PathPlanner.loadPath("Path", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL, false);
         swerve.resetOdometry(new Pose2d(path.getInitialState().poseMeters.getTranslation(), path.getInitialState().holonomicRotation), path.getInitialState().holonomicRotation);
         Robot.resetAngle(path.getInitialState().holonomicRotation);
-        var thetaController = new ProfiledPIDController(Constants.Autonomous.kPThetaController, 0, 0, Constants.Autonomous.kThetaControllerConstraints);
+        var thetaController = new ProfiledPIDController(Constants.Autonomous.KP_THETA_CONTROLLER, 0, 0, Constants.Autonomous.THETA_CONTROLLER_CONSTRAINTS);
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
         return new PPSwerveControllerCommand(
                 path,
                 swerve::getPose,
                 swerve.getKinematics(),
-                new PIDController(Constants.Autonomous.kPXController, 0, 0),
-                new PIDController(Constants.Autonomous.kPYController, 0, 0),
+                new PIDController(Constants.Autonomous.KP_X_CONTROLLER, 0, 0),
+                new PIDController(Constants.Autonomous.KP_Y_CONTROLLER, 0, 0),
                 thetaController,
                 swerve::setStates
         );
@@ -77,7 +77,6 @@ public class RobotContainer {
      * Initiates the port of team 225s Fire-Logger.
      */
     private void startFireLog() {
-
         try {
             new Webserver();
         } catch (Exception e) {

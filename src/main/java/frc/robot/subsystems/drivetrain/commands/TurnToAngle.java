@@ -39,7 +39,7 @@ public class TurnToAngle extends CommandBase {
     public boolean isFinished() {
         return Math.abs(Robot.getAngle()
                 .minus(targetAngle.get())
-                .getRadians()) < Constants.SwerveDrive.ALLOWABLE_THETA_ERROR;
+                .getRadians()) < Constants.SwerveDrive.ALLOWABLE_HEADING_ERROR;
     }
 
     @Override
