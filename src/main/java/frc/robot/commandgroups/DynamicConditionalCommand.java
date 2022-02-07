@@ -56,6 +56,6 @@ public class DynamicConditionalCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return onFalseCommand.isFinished() & onTrueCommand.isFinished();
+        return onFalseCommand.isFinished() && onTrueCommand.isFinished();
     }
 }
