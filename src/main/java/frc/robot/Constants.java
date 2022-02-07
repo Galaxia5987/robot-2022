@@ -43,6 +43,7 @@ public final class Constants {
         public static final double THETA_KP = 1;
         public static final double THETA_KI = 1;
         public static final double THETA_KD = 1;
+        public static final TrapezoidProfile.Constraints HEADING_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 1.5); // [rads/sec], [rad/sec^2]
 
         // The theta is responsible for the angle of the whole chassis, while the angle is used in the angle motor itself.
         public static final double ALLOWABLE_HEADING_ERROR = Math.toRadians(0.05); // [rad]
@@ -113,7 +114,6 @@ public final class Constants {
     }
 
     public static class Autonomous {
-        public static final TrapezoidProfile.Constraints THETA_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 1.5); // [rads/sec], [rad/sec^2]
         public static final double KP_THETA_CONTROLLER = 2;
         public static final double KP_X_CONTROLLER = 2;
         public static final double KP_Y_CONTROLLER = 2;
