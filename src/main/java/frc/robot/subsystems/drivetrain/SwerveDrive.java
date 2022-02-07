@@ -137,7 +137,7 @@ public class SwerveDrive extends SubsystemBase {
             double diff = Utils.deadband(states[module.getWheel()].angle.minus(module.getAngle()).getRadians(),
                     Constants.SwerveDrive.ANGLE_COSINE_DEADBAND);
             module.setAngle(states[module.getWheel()].angle);
-            module.setVelocity(states[module.getWheel()].speedMetersPerSecond * Math.cos(diff)); // cos(0) = 1
+            module.setVelocity(states[module.getWheel()].speedMetersPerSecond * Math.cos(diff));
         }
     }
 
@@ -148,15 +148,15 @@ public class SwerveDrive extends SubsystemBase {
      */
     public ChassisSpeeds getChassisSpeeds() {
         ChassisSpeeds chassisSpeeds = kinematics.toChassisSpeeds(getStates());
-        if (fieldOriented) {
-            chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                    chassisSpeeds.vxMetersPerSecond,
-                    chassisSpeeds.vyMetersPerSecond,
-                    chassisSpeeds.omegaRadiansPerSecond,
-                    Robot.getAngle()
-            );
+        if (!fieldOriented) {
+            return chassisSpeeds;
         }
-        return chassisSpeeds;
+        return ChassisSpeeds.fromFieldRelativeSpeeds(
+                chassisSpeeds.vxMetersPerSecond,
+                chassisSpeeds.vyMetersPerSecond,
+                chassisSpeeds.omegaRadiansPerSecond,
+                Robot.getAngle()
+        );
     }
 
     /**
