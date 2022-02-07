@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 public class HoodCommand extends CommandBase {
     private final Hood hood;
     private final Supplier<Hood.Mode> modeSupplier;
+    private boolean isInstant = false;
 
     public HoodCommand(Hood hood, Supplier<Hood.Mode> modeSupplier) {
         this.hood = hood;
@@ -17,8 +18,15 @@ public class HoodCommand extends CommandBase {
 
     public HoodCommand(Hood hood, Hood.Mode mode) {
         this(hood, () -> mode);
-        execute();
-        cancel();
+        isInstant = true;
+    }
+
+    @Override
+    public void initialize() {
+        if(isInstant) {
+            execute();
+            cancel();
+        }
     }
 
     @Override

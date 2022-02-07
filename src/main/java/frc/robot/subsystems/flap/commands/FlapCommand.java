@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 public class FlapCommand extends CommandBase {
     private final Flap flap;
     private final Supplier<Flap.FlapMode> flapMode;
+    private boolean isInstant = false;
 
     public FlapCommand(Flap flap, Supplier<Flap.FlapMode> flapMode) {
         this.flap = flap;
@@ -18,8 +19,15 @@ public class FlapCommand extends CommandBase {
 
     public FlapCommand(Flap flap, Flap.FlapMode flapMode) {
         this(flap, () -> flapMode);
-        execute();
-        cancel();
+        isInstant = true;
+    }
+
+    @Override
+    public void initialize() {
+        if(isInstant) {
+            execute();
+            cancel();
+        }
     }
 
     @Override
