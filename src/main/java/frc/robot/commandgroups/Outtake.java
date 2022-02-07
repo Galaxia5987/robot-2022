@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
-import frc.robot.subsystems.conveyor.commands.FlapCommand;
+import frc.robot.subsystems.flap.commands.FlapCommand;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.commands.IntakeCargo;

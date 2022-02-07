@@ -1,4 +1,4 @@
-package frc.robot.subsystems.conveyor.commands;
+package frc.robot.subsystems.flap.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.conveyor.Conveyor;
