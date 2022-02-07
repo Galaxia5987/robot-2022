@@ -10,14 +10,10 @@ import java.util.OptionalDouble;
 import java.util.function.DoubleSupplier;
 
 public class CheckShooterAccuracy extends Shoot {
-    private final Shooter shooter;
-    private final DoubleSupplier distance;
     private final Timer timer = new Timer();
 
     public CheckShooterAccuracy(Shooter shooter, DoubleSupplier distance, OptionalDouble power) {
         super(shooter, distance, power);
-        this.shooter = shooter;
-        this.distance = distance;
     }
 
     @Override

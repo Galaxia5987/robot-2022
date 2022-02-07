@@ -7,8 +7,8 @@ import java.util.OptionalDouble;
 import java.util.function.DoubleSupplier;
 
 public class Shoot extends CommandBase {
-    private final Shooter shooter;
-    private final DoubleSupplier distance;
+    protected final Shooter shooter;
+    protected final DoubleSupplier distance;
     private final OptionalDouble power;
 
     /**
