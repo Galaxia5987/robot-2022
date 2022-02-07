@@ -9,11 +9,19 @@ public class FlapDefaultCommand extends CommandBase {
     private final Conveyor conveyor;
     private final Supplier<Conveyor.FlapMode> flapMode;
 
-    public FlapDefaultCommand(Conveyor conveyor, Supplier<Conveyor.FlapMode> flapMode) {
+    public FlapDefaultCommand(Conveyor conveyor, Supplier<Conveyor.FlapMode> flapMode, boolean isInstant) {
         this.conveyor = conveyor;
         this.flapMode = flapMode;
-
         addRequirements(conveyor);
+
+        if(isInstant) {
+            execute();
+            cancel();
+        }
+    }
+
+    public FlapDefaultCommand(Conveyor conveyor, Supplier<Conveyor.FlapMode> flapMode) {
+        this(conveyor, flapMode, false);
     }
 
     @Override

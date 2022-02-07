@@ -18,6 +18,18 @@ public class Convey extends CommandBase {
         addRequirements(conveyor);
     }
 
+    public Convey(Conveyor conveyor, DoubleSupplier power) {
+        this(conveyor, power, () -> true);
+    }
+
+    public Convey(Conveyor conveyor, double power, BooleanSupplier condition) {
+        this(conveyor, () -> power, condition);
+    }
+
+    public Convey(Conveyor conveyor, double power) {
+        this(conveyor, () -> power, () -> true);
+    }
+
     @Override
     public void execute() {
         if (condition.getAsBoolean()) {

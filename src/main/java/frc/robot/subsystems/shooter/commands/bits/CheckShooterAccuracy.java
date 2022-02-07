@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.Shoot;
+import frc.robot.utils.Utils;
 
 import java.util.OptionalDouble;
 import java.util.function.DoubleSupplier;
@@ -13,6 +14,7 @@ public class CheckShooterAccuracy extends Shoot {
     private final Shooter shooter;
     private final DoubleSupplier distance;
     private final Timer timer = new Timer();
+    private double setpoint;
 
     public CheckShooterAccuracy(Shooter shooter, DoubleSupplier distance, OptionalDouble power) {
         super(shooter, distance, power);
@@ -30,7 +32,7 @@ public class CheckShooterAccuracy extends Shoot {
     public void execute() {
         super.execute();
 
-        double setpoint = Shoot.getSetpointVelocity(distance.getAsDouble());
+        setpoint = Shoot.getSetpointVelocity(distance.getAsDouble());
         double currentVelocity = shooter.getVelocity();
 
         SmartDashboard.putNumber("Setpoint", setpoint);
@@ -49,5 +51,12 @@ public class CheckShooterAccuracy extends Shoot {
         } else {
             System.out.println("The shooter is slow :(");
         }
+
+        timer.stop();
+    }
+
+    @Override
+    public boolean isFinished() {
+        return Utils.deadband(shooter.getVelocity() / setpoint, Constants.Shooter.SHOOTER_VELOCITY_DEADBAND) == 0;
     }
 }

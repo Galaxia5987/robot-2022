@@ -24,6 +24,10 @@ public class Shoot extends CommandBase {
         addRequirements(shooter);
     }
 
+    public Shoot(Shooter shooter, DoubleSupplier distance) {
+        this(shooter, distance, OptionalDouble.empty());
+    }
+
     /**
      * Calculates the velocity setpoint according to the distance from the target.
      * Once the data from the shooter is acquired this function will be changed.

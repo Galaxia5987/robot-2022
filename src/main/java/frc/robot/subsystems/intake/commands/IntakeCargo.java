@@ -20,6 +20,10 @@ public class IntakeCargo extends CommandBase {
         addRequirements(intake);
     }
 
+    public IntakeCargo(Intake intake, double power) {
+        this(intake, () -> true, power);
+    }
+
     @Override
     public void initialize() {
         intake.openRetractor();

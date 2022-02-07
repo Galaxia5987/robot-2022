@@ -13,7 +13,7 @@ import java.util.OptionalDouble;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-import static frc.robot.Constants.CommandGroups.SHOOTER_VELOCITY_DEADBAND;
+import static frc.robot.Constants.Shooter.SHOOTER_VELOCITY_DEADBAND;
 import static frc.robot.Constants.Hood.DISTANCE_FROM_TARGET_DEADBAND;
 
 public class ShootCargo extends ParallelCommandGroup {
@@ -35,7 +35,7 @@ public class ShootCargo extends ParallelCommandGroup {
                 new HoodDefaultCommand(hood, () -> Hood.Mode.getValue(distanceFromTarget.getAsDouble() < DISTANCE_FROM_TARGET_DEADBAND)),
                 new Convey(conveyor, conveyorPower, isFlywheelAtSetpoint),
                 new FlapDefaultCommand(conveyor, () -> Conveyor.FlapMode.getValue(!isFlywheelAtSetpoint.getAsBoolean())),
-                new Shoot(shooter, distanceFromTarget, OptionalDouble.empty())
+                new Shoot(shooter, distanceFromTarget)
         );
     }
 }

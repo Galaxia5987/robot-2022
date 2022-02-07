@@ -139,6 +139,7 @@ public class Shooter extends SubsystemBase {
 
     /**
      * Set the power for the shooter motor.
+     * This should only be used for testing purposes.
      *
      * @param power is the power for the motor. [%]
      */

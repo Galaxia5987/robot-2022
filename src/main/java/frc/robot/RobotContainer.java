@@ -14,6 +14,8 @@ import frc.robot.utils.PhotonVisionModule;
 import frc.robot.utils.SimulateDrivetrain;
 import webapp.Webserver;
 
+import java.util.OptionalDouble;
+import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.Control.LEFT_TRIGGER_DEADBAND;
@@ -59,26 +61,22 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        DoubleSupplier distanceFromTarget = () -> 8;
+        DoubleSupplier distanceFromTarget = () -> visionModule.getDistance().getAsDouble();
         DoubleSupplier robotVelocity = () -> 4;
 
-        a.whileHeld(new DynamicConditionalCommand(
-                () -> !leftTrigger.get(),
-                new PickUpCargo(conveyor, intake, () -> Constants.Conveyor.DEFAULT_POWER, Constants.Intake.DEFAULT_POWER),
-                new BasicPickUp(conveyor, intake, robotVelocity)
-        ));
+        a.whileHeld(
+                new PickUpCargo(conveyor, intake, () -> Constants.Conveyor.DEFAULT_POWER, Constants.Intake.DEFAULT_POWER)
+        );
         b.whileHeld(
                 new Outtake(
                         intake,
                         conveyor,
                         shooter,
-                        () -> leftTrigger.get() ? Constants.Conveyor.DEFAULT_POWER : -Constants.Conveyor.DEFAULT_POWER
+                        leftTrigger::get
                 ));
-        rightTrigger.whenActive(new DynamicConditionalCommand(
-                () -> !leftTrigger.get(),
-                new ShootCargo(shooter, hood, conveyor, distanceFromTarget, () -> Constants.Conveyor.DEFAULT_POWER),
-                new BasicShooting(shooter, hood, conveyor, distanceFromTarget)
-        ));
+        rightTrigger.whileActiveContinuous(
+                new ShootCargo(shooter, hood, conveyor, distanceFromTarget, () -> Constants.Conveyor.DEFAULT_POWER)
+        );
     }
 
 
