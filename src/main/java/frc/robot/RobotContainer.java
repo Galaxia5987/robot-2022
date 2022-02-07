@@ -36,7 +36,7 @@ public class RobotContainer {
     private final JoystickButton b = new JoystickButton(xbox, XboxController.Button.kB.value);
     private final Button rb = new Button(xbox::getRightBumper);
     private final Trigger leftTrigger = new Trigger(() -> xbox.getLeftTriggerAxis() > LEFT_TRIGGER_DEADBAND);
-    private final Trigger rightTrigger = new Trigger(() -> xbox.getLeftTriggerAxis() > RIGHT_TRIGGER_DEADBAND);
+    private final Trigger rightTrigger = new Trigger(() -> xbox.getRightTriggerAxis() > RIGHT_TRIGGER_DEADBAND);
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -61,7 +61,7 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        DoubleSupplier distanceFromTarget = () -> visionModule.getDistance().getAsDouble();
+        DoubleSupplier distanceFromTarget = () -> visionModule.getDistance().orElse(0);
         DoubleSupplier robotVelocity = () -> 4;
 
         a.whileHeld(
