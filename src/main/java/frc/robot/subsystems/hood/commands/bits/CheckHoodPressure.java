@@ -8,6 +8,7 @@ import frc.robot.subsystems.hood.Hood;
 public class CheckHoodPressure extends CommandBase {
     private final Hood hood;
     private final Timer timer = new Timer();
+    private int runCount = 0;
 
     public CheckHoodPressure(Hood hood) {
         this.hood = hood;
@@ -23,6 +24,9 @@ public class CheckHoodPressure extends CommandBase {
     public void execute() {
         if(timer.advanceIfElapsed(Constants.Hood.HOOD_PRESSURE_BIT_DELTA_TIME)) {
             hood.toggle();
+            runCount++;
+
+            System.out.println("The amount of runs passed is " + runCount);
         }
     }
 
