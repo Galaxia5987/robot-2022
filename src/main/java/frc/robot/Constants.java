@@ -94,6 +94,4 @@ public final class Constants {
         public static final double DISTANCE_FROM_TARGET_DEADBAND = 3.5; // [m]
 
     }
-    public static class CommandGroups {
-    }
 }
