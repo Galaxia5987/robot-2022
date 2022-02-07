@@ -64,6 +64,13 @@ public class Intake extends SubsystemBase {
         retractor.toggle();
     }
 
+    /**
+     * Get the retractors current state.
+     */
+    public boolean getRetractorState() {
+        return retractor.get();
+    }
+
     public enum RetractorState {
         OPEN(true),
         CLOSED(false);

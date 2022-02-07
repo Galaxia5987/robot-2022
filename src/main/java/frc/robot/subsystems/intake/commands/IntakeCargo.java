@@ -1,24 +1,27 @@
 package frc.robot.subsystems.intake.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.intake.Intake;
 
 import java.util.function.BooleanSupplier;
 
 /**
- * Intakes only Cargo colored as the robot's alliance color.
+ * Intakes cargo with a certain condition supplier.
  */
 public class IntakeCargo extends CommandBase {
     private final Intake intake;
-    private final BooleanSupplier isAllianceColor;
+    private final BooleanSupplier condition;
     private final double power;
 
-    public IntakeCargo(Intake intake, BooleanSupplier isAllianceColor, double power) {
+    public IntakeCargo(Intake intake, BooleanSupplier condition, double power) {
         this.intake = intake;
-        this.isAllianceColor = isAllianceColor;
+        this.condition = condition;
         this.power = power;
         addRequirements(intake);
+    }
+
+    public IntakeCargo(Intake intake, double power) {
+        this(intake, () -> true, power);
     }
 
     @Override
@@ -27,12 +30,15 @@ public class IntakeCargo extends CommandBase {
     }
 
     /**
-     * If ball is alliance color, ball will be sucked.
+     * If activation boolean supplier returns true, activate the intake.
      */
     @Override
     public void execute() {
-        if (isAllianceColor.getAsBoolean())
+        if (condition.getAsBoolean()) {
             intake.setPower(power);
+        } else {
+            intake.setPower(0);
+        }
     }
 
     /**

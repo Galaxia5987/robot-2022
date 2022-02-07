@@ -4,7 +4,9 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
-import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -15,14 +17,14 @@ import java.util.Arrays;
 import java.util.Deque;
 
 import static frc.robot.Constants.Conveyor.*;
-import static frc.robot.Ports.Conveyor.*;
+import static frc.robot.Ports.Conveyor.IS_COMPENSATING_VOLTAGE;
+import static frc.robot.Ports.Conveyor.MOTOR_INVERSION;
 
 public class Conveyor extends SubsystemBase {
     private static Conveyor INSTANCE = null;
     private final WPI_TalonFX motor = new WPI_TalonFX(Ports.Conveyor.MOTOR);
     private final Deque<String> cargoPositions = new ArrayDeque<>();
     private final ColorSensorV3 colorSensor = new ColorSensorV3(I2C.Port.kMXP);
-    private final Solenoid flap = new Solenoid(PneumaticsModuleType.CTREPCM, SOLENOID);
     private final DigitalInput postFlapBeam = new DigitalInput(Ports.Conveyor.POST_FLAP_BEAM_BREAKER);
     private final DigitalInput preFlapBeam = new DigitalInput(Ports.Conveyor.PRE_FLAP_BEAM_BREAKER);
     private final ColorMatch colorMatch = new ColorMatch();
@@ -93,7 +95,7 @@ public class Conveyor extends SubsystemBase {
      *
      * @return the input of the post-flap beam breaker (true or false).
      */
-    public boolean isPostFlapBeamConnected(){
+    public boolean isPostFlapBeamConnected() {
         return postFlapBeam.get();
     }
 
@@ -117,39 +119,18 @@ public class Conveyor extends SubsystemBase {
     }
 
     /**
-     * open the flap
-     */
-    public void openFlap() {
-        flap.set(false);
-    }
-
-    /**
-     * closes the flap
-     */
-    public void closeFlap() {
-        flap.set(true);
-    }
-
-    /**
-     * toggles the flap
-     */
-    public void toggleFlap() {
-        flap.toggle();
-    }
-
-    /**
-     * Gets the current mode of the flap.
+     * Gets the queue of all the balls in the conveyor.
      *
-     * @return the mode of the flap (true or false).
+     * @return the queue of the balls.
      */
-    public boolean getFlapMode() {
-        return flap.get();
+    public Deque<String> getQueue() {
+        return new ArrayDeque<>(cargoPositions);
     }
 
     /**
      * This function updates the actual positions of the balls based on the following sensors:
      * color sensor, post flap beam, proximity sensor (in the color sensor).
-     *
+     * <p>
      * Logic documentation is included in the function.
      */
     private void updateActualBallPositions() {
@@ -198,7 +179,7 @@ public class Conveyor extends SubsystemBase {
                                     true => remove the first non-invalid value in the queue
                                             add an invalid value at the tail of the queue
          */
-        if(!colorIntake.equals(lastSeenColor)) {
+        if (!colorIntake.equals(lastSeenColor)) {
             if (!colorIntake.equals(DriverStation.Alliance.Invalid) && power > 0 && getCargoCount() != MAX_CARGO_AMOUNT) {
                 cargoPositions.removeFirstOccurrence(DriverStation.Alliance.Invalid.name());
                 cargoPositions.add(colorIntake.name());
@@ -249,16 +230,5 @@ public class Conveyor extends SubsystemBase {
         SmartDashboard.putString("First", positions[0]);
         SmartDashboard.putString("Last", positions[1]);
         SmartDashboard.putBoolean("dio", preFlapBeam.get());
-    }
-
-    public enum FlapMode {
-        Open(true),
-        Closed(false);
-
-        public final boolean mode;
-
-        FlapMode(boolean mode) {
-            this.mode = mode;
-        }
     }
 }

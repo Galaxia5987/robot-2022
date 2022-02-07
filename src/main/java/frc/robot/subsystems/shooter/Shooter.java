@@ -1,7 +1,6 @@
 package frc.robot.subsystems.shooter;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.MathUtil;
@@ -136,6 +135,16 @@ public class Shooter extends SubsystemBase {
         } else {
             motor.setVoltage(MathUtil.clamp(linearSystemLoop.getU(0), -NOMINAL_VOLTAGE, NOMINAL_VOLTAGE));
         }
+    }
+
+    /**
+     * Set the power for the shooter motor.
+     * This should only be used for testing purposes.
+     *
+     * @param power is the power for the motor. [%]
+     */
+    public void setPower(double power) {
+        motor.set(ControlMode.PercentOutput, power);
     }
 
     /**
