@@ -22,12 +22,7 @@ public class CheckHoodPressure extends CommandBase {
     @Override
     public void execute() {
         if(timer.advanceIfElapsed(Constants.Hood.HOOD_PRESSURE_BIT_DELTA_TIME)) {
-            if(hood.isOpen()) {
-                hood.close();
-            } else {
-                hood.open();
-            }
-            timer.reset();
+            hood.toggle();
         }
     }
 
