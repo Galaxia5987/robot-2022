@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
-import frc.robot.subsystems.conveyor.commands.FlapDefaultCommand;
+import frc.robot.subsystems.conveyor.commands.FlapCommand;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.commands.IntakeCargo;
 import frc.robot.subsystems.shooter.Shooter;
@@ -20,7 +20,7 @@ public class Outtake extends ParallelCommandGroup {
                    Shooter shooter,
                    BooleanSupplier condition) {
         addCommands(
-                new FlapDefaultCommand(conveyor, () -> Conveyor.FlapMode.Open),
+                new FlapCommand(conveyor, Conveyor.FlapMode.Open),
                 new Convey(conveyor, () -> Constants.Conveyor.DEFAULT_POWER * (condition.getAsBoolean() ? 1 : -1)),
                 new DynamicConditionalCommand(
                         condition,

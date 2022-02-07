@@ -5,23 +5,20 @@ import frc.robot.subsystems.conveyor.Conveyor;
 
 import java.util.function.Supplier;
 
-public class FlapDefaultCommand extends CommandBase {
+public class FlapCommand extends CommandBase {
     private final Conveyor conveyor;
     private final Supplier<Conveyor.FlapMode> flapMode;
 
-    public FlapDefaultCommand(Conveyor conveyor, Supplier<Conveyor.FlapMode> flapMode, boolean isInstant) {
+    public FlapCommand(Conveyor conveyor, Supplier<Conveyor.FlapMode> flapMode) {
         this.conveyor = conveyor;
         this.flapMode = flapMode;
         addRequirements(conveyor);
-
-        if (isInstant) {
-            execute();
-            cancel();
-        }
     }
 
-    public FlapDefaultCommand(Conveyor conveyor, Supplier<Conveyor.FlapMode> flapMode) {
-        this(conveyor, flapMode, false);
+    public FlapCommand(Conveyor conveyor, Conveyor.FlapMode flapMode) {
+        this(conveyor, () -> flapMode);
+        execute();
+        cancel();
     }
 
     @Override
