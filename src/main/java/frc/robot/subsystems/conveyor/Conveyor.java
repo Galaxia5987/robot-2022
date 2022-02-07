@@ -288,9 +288,8 @@ public class Conveyor extends SubsystemBase {
         public static FlapMode getValue(boolean val) {
             if (val) {
                 return Closed;
-            } else {
-                return Open;
             }
+            return Open;
         }
     }
 }
