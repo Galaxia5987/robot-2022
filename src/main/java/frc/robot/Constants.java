@@ -84,6 +84,10 @@ public final class Constants {
         public static final boolean IS_COMPENSATING_VOLTAGE = true;
     }
 
+    public static class Hood {
+        public static final double HOOD_PRESSURE_BIT_DELTA_TIME = 0.1;
+    }
+
     public static class Control {
         public static final double RIGHT_TRIGGER_DEADBAND = 0.4; // Deadband for right trigger. [%]
     }
