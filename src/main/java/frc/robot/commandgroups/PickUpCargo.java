@@ -10,9 +10,9 @@ import java.util.function.DoubleSupplier;
 
 public class PickUpCargo extends ParallelCommandGroup {
 
-    public PickUpCargo(Conveyor conveyor, Intake intake, DoubleSupplier conveyorPower, double intakePower) {
+    public PickUpCargo(Conveyor conveyor, Intake intake, double conveyorPower, double intakePower) {
         addCommands(
-                new Convey(conveyor, conveyorPower, () -> true),
+                new Convey(conveyor, conveyorPower),
                 new IntakeCargo(intake, () -> true, intakePower)
         );
     }

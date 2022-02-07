@@ -65,7 +65,7 @@ public class RobotContainer {
         DoubleSupplier robotVelocity = () -> 4;
 
         a.whileHeld(
-                new PickUpCargo(conveyor, intake, () -> Constants.Conveyor.DEFAULT_POWER, Constants.Intake.DEFAULT_POWER)
+                new PickUpCargo(conveyor, intake, Constants.Conveyor.DEFAULT_POWER, Constants.Intake.DEFAULT_POWER)
         );
         b.whileHeld(
                 new Outtake(
