@@ -38,7 +38,7 @@ public class SwerveDrive extends SubsystemBase {
     private final TimeDelayedBoolean rotationDelay = new TimeDelayedBoolean();
     private final boolean fieldOriented;
 
-    public SwerveDrive(boolean fieldOriented) {
+    private SwerveDrive(boolean fieldOriented) {
         this.fieldOriented = fieldOriented;
         modules[Constants.SwerveModule.frConfig.wheel()] = new SwerveModule(Constants.SwerveModule.frConfig);
         modules[Constants.SwerveModule.flConfig.wheel()] = new SwerveModule(Constants.SwerveModule.flConfig);
