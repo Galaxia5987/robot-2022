@@ -7,26 +7,20 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.subsystems.drivetrain.SwerveDrive;
-import frc.robot.subsystems.drivetrain.commands.HolonomicDrive;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.commands.AdjustAngle;
-import frc.robot.subsystems.climber.commands.JoystickClimb;
 import frc.robot.subsystems.climber.commands.StopClimber;
-import frc.robot.utils.PhotonVisionModule;
-import frc.robot.utils.SimulateDrivetrain;
-import frc.robot.utils.commands.SimulateDrivetrainDefaultCommand;
+import frc.robot.subsystems.drivetrain.SwerveDrive;
+import frc.robot.subsystems.drivetrain.commands.HolonomicDrive;
 import webapp.Webserver;
 
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final Joystick joystick = new Joystick(Ports.Controls.JOYSTICK);
     private final XboxController xbox = new XboxController(Ports.Controls.XBOX);
-    private final Joystick joystick = new Joystick(Ports.Controls.JOYSTICK);
     private final Joystick joystick2 = new Joystick(Ports.Controls.JOYSTICK2);
     private final SwerveDrive swerve = SwerveDrive.getFieldOrientedInstance();
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
@@ -36,8 +30,6 @@ public class RobotContainer {
     private final JoystickButton y = new JoystickButton(xbox, XboxController.Button.kY.value);
     // The robot's subsystems and commands are defined here...
     private final Climber climber = Climber.getInstance();
-    private final SimulateDrivetrain simulateDrivetrain = new SimulateDrivetrain();
-    private final PhotonVisionModule visionModule;
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.

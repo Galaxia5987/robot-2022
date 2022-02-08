@@ -2,12 +2,15 @@ package frc.robot;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.utils.SwerveModuleConfigBase;
-import frc.robot.valuetuner.WebConstant;
+import org.photonvision.SimVisionTarget;
 
 import static frc.robot.Ports.SwerveDrive.*;
 
@@ -15,8 +18,11 @@ public final class Constants {
     public static final double LOOP_PERIOD = 0.02; // [s]
     public static final int TALON_TIMEOUT = 10; // Waiting period for configurations [ms].
     public static final double NOMINAL_VOLTAGE = 12; // [volts]
+    public static final double FIELD_WIDTH = 8.23; // Width of the field. [m]
+    public static final double FIELD_LENGTH = 16.46; // Length of the field. [m]
     public static final boolean ENABLE_VOLTAGE_COMPENSATION = true;
     public static final boolean ENABLE_CURRENT_LIMIT = true;
+    public static final double SIMULATION_LOOP_PERIOD = 0.02; // [s]
 
     // The order of modules is ALWAYS front-right (fr), front-left (fl), rear-right (rr), rear-left (rl)
     public static final class SwerveDrive {
@@ -126,8 +132,60 @@ public final class Constants {
         public static final double MAX_ACCEL = 1.5; // [m/sec^2]
     }
 
-    public static class ExampleSubsystem {
-        private static final String NAME = ExampleSubsystem.class.getName();
-        public static final WebConstant POWER = WebConstant.of(NAME, "power", 0.5); // [%]
+    public static class Vision {
+        public static final double CAMERA_HEIGHT = 0.767; // [m]
+        public static final double TARGET_HEIGHT_FROM_GROUND = 2.64; // [m]
+        public static final double CAMERA_PITCH = 30; // Pitch of the vision. [deg]
+        public static final double DIAG_FOV = 75; // Diagonal FOV. [deg]
+        public static final double LED_RANGE = 6; // Visible range of LEDs. [m]
+        public static final int CAM_RESOLUTION_WIDTH = 640; // Width of camera resolution. [pixel]
+        public static final int CAM_RESOLUTION_HEIGHT = 480; // Height of camera resolution. [pixel]
+        public static final double MIN_TARGET_AREA = 10; // Minimal area of target. [pixel^2]
+        public static final double TARGET_WIDTH = 1.36; // Width of vision target strip. [m]
+        public static final double TARGET_HEIGHT = 0.05; // Height of the vision target strip. [m]
+
+        public static final Pose2d HUB_POSE = new Pose2d( // Position of the hub relative to the field.
+                new Translation2d(FIELD_LENGTH / 2, FIELD_WIDTH / 2), new Rotation2d());
+        public static final Transform2d CAMERA_TO_ROBOT = new Transform2d(
+                new Translation2d(0.038, 0.171), new Rotation2d()); // Position of the vision relative to the robot.
+
+        public static final SimVisionTarget SIM_TARGET_HUB = new SimVisionTarget( // Hub target for vision simulation.
+                HUB_POSE, TARGET_HEIGHT_FROM_GROUND, TARGET_WIDTH, TARGET_HEIGHT);
+    }
+
+    public static class Climber {
+        public static final double KP = 1.5;
+        public static final double KI = 0;
+        public static final double KD = 0;
+
+        public static final double F_FORWARD_S = 0;
+        public static final double F_FORWARD_COS = 0;
+        public static final double F_FORWARD_V = 0;
+        public static final double F_FORWARD_A = 0;
+
+        public static final double CRUISE_VELOCITY = 0; // [ticks/100ms]
+        public static final double MAXIMAL_ACCELERATION = 0; // [ticks/100ms*sec]
+        public static final boolean VOLTAGE_COMPENSATION = true;
+
+        public static final double MAX_VELOCITY = Math.PI * 2 / 3; // [rad/s]
+
+        public static final double GEAR_RATIO = 292.1;
+
+        public static final double TICKS_PER_RAD = 2048 * GEAR_RATIO / (2 * Math.PI);
+
+        public static final double JOYSTICK_DEADBAND = 0.05; // [%]
+
+        public static final double ARM_ENCODER_DIST_PER_PULSE = 2.0 * Math.PI / 2048;
+        public static final double ARM_MASS = 5.0; // Kilograms
+        public static final double ARM_LENGTH = 0.792; // [m]
+
+        public static final double MAX_ANGLE = Math.toRadians(255); // [radians]
+        public static final double MIN_ANGLE = Math.toRadians(-75); // [radians]
+
+        public static final double STOP_CLIMBER_TIMESTAMP = 149.5; // [s]
+
+        public static final int ZERO_POSITION = 0; // [radians]
+
+        public static final double ZERO_POSITION_TOLERANCE = 0.05; // [radians]
     }
 }
