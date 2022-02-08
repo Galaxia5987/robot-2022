@@ -29,8 +29,8 @@ public class ShootCargo extends ParallelCommandGroup {
         ratio between the current velocity and the setpoint.
          */
         final BooleanSupplier isFlywheelAtSetpoint =
-                () -> (1 - shooter.getVelocity() / Shoot.getSetpointVelocity(
-                        distanceFromTarget.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND);
+                () -> (Math.abs(1 - shooter.getVelocity() / Shoot.getSetpointVelocity(
+                        distanceFromTarget.getAsDouble())) < SHOOTER_VELOCITY_DEADBAND);
 
         addCommands(
                 new HoodCommand(hood, () -> Hood.Mode.getValue(distanceFromTarget.getAsDouble() < DISTANCE_FROM_TARGET_DEADBAND)),
