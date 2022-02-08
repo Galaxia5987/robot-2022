@@ -23,7 +23,7 @@ public class CheckHoodPressure extends CommandBase {
 
     @Override
     public void execute() {
-        if(timer.advanceIfElapsed(Constants.Hood.HOOD_PRESSURE_BIT_DELTA_TIME)) {
+        if (timer.advanceIfElapsed(Constants.Hood.HOOD_PRESSURE_BIT_DELTA_TIME)) {
             hood.toggle();
             runCount++;
 
