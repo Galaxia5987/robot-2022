@@ -3,6 +3,7 @@ package frc.robot.subsystems.conveyor.commands.bits;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
+import frc.robot.subsystems.flap.Flap;
 
 import java.util.function.DoubleSupplier;
 
@@ -10,10 +11,18 @@ public class CheckColorSensor extends Convey {
     private final DoubleSupplier direction;
     private double lastDirection;
     private double maximalNumberOfBalls = 0;
+    private final Flap flap;
 
-    public CheckColorSensor(Conveyor conveyor, DoubleSupplier direction, double power) {
+    public CheckColorSensor(Flap flap, Conveyor conveyor, DoubleSupplier direction, double power) {
         super(conveyor, () -> power * direction.getAsDouble());
         this.direction = direction;
+        this.flap = flap;
+        addRequirements(flap);
+    }
+
+    @Override
+    public void initialize() {
+        flap.closeFlap();
     }
 
     @Override
@@ -46,5 +55,6 @@ public class CheckColorSensor extends Convey {
     @Override
     public void end(boolean interrupted) {
         super.end(interrupted);
+        flap.openFlap();
     }
 }
