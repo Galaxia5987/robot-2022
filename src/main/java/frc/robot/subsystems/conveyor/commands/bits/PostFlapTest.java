@@ -5,11 +5,12 @@ import frc.robot.subsystems.conveyor.Conveyor;
 
 public class PostFlapTest extends CommandBase {
     private final Conveyor conveyor;
-    private int expected = 5;
+    private final double expected;
     private int actual;
 
-    public PostFlapTest(Conveyor conveyor) {
+    public PostFlapTest(Conveyor conveyor, double expected) {
         this.conveyor = conveyor;
+        this.expected = expected;
 
         addRequirements(conveyor);
     }
@@ -20,7 +21,6 @@ public class PostFlapTest extends CommandBase {
         if (!conveyor.isPostFlapBeamConnected()) {
             if (conveyor.isPostFlapBeamConnected()) {
                 actual++;
-                System.out.println(actual);
             }
         }
     }
