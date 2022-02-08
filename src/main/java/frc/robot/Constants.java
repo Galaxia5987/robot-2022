@@ -89,10 +89,6 @@ public final class Constants {
         public static final double TIME_BETWEEN_RUNS = 1.0; // time intake will wait before toggling the retractor (for testing only). [s]
     }
 
-    public static class Hood {
-        public static final double HOOD_PRESSURE_BIT_DELTA_TIME = 0.1; // [s]
-    }
-
     public static class Control {
         public static final double RIGHT_TRIGGER_DEADBAND = 0.4; // Deadband for right trigger. [%]
         public static final double LEFT_TRIGGER_DEADBAND = 0.4; // Deadband for right trigger. [%]
