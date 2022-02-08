@@ -17,8 +17,6 @@ public class TestBallFlow extends SequentialCommandGroup {
     private final Conveyor conveyor;
     private final ShootCargo shootCargo;
     private final PickUpCargo pickUpCargo;
-    private final BooleanSupplier shootCargoIsFinished;
-    private final BooleanSupplier pickUpCargoIsFinished;
 
     public TestBallFlow(Conveyor conveyor, Intake intake, Shooter shooter,
                         PickUpCargo pickUpCargo, BooleanSupplier pickUpCargoIsFinished,
@@ -28,8 +26,6 @@ public class TestBallFlow extends SequentialCommandGroup {
         this.conveyor = conveyor;
         this.shootCargo = shootCargo;
         this.pickUpCargo = pickUpCargo;
-        this.shootCargoIsFinished = shootCargoIsFinished;
-        this.pickUpCargoIsFinished = pickUpCargoIsFinished;
 
         addCommands(
                 pickUpCargo.withInterrupt(pickUpCargoIsFinished),
