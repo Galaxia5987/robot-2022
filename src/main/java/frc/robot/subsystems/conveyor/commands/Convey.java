@@ -7,8 +7,8 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class Convey extends CommandBase {
-    private final DoubleSupplier power;
-    private final Conveyor conveyor;
+    protected final DoubleSupplier power;
+    protected final Conveyor conveyor;
     private final BooleanSupplier condition;
 
     public Convey(Conveyor conveyor, DoubleSupplier power, BooleanSupplier condition) {
