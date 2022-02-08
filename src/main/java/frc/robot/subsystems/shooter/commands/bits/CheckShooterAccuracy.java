@@ -11,6 +11,8 @@ import java.util.function.DoubleSupplier;
 
 public class CheckShooterAccuracy extends Shoot {
     private final Timer timer = new Timer();
+    private double lastVelocity;
+    private double lastTime;
 
     public CheckShooterAccuracy(Shooter shooter, DoubleSupplier distance, OptionalDouble power) {
         super(shooter, distance, power);
@@ -20,18 +22,24 @@ public class CheckShooterAccuracy extends Shoot {
     public void initialize() {
         timer.reset();
         timer.start();
+        lastTime = timer.get();
+        lastVelocity = getSetpointVelocity(distance.getAsDouble());
     }
 
     @Override
     public void execute() {
         super.execute();
 
-        double setpoint = Shoot.getSetpointVelocity(distance.getAsDouble());
+        double setpoint = getSetpointVelocity(distance.getAsDouble());
         double currentVelocity = shooter.getVelocity();
+        double acceleration = (currentVelocity - lastVelocity) / (timer.get() - lastTime);
 
+        SmartDashboard.putNumber("Acceleration", acceleration);
         SmartDashboard.putNumber("Setpoint", setpoint);
         SmartDashboard.putNumber("Current velocity", currentVelocity);
         SmartDashboard.putNumber("Time", timer.get());
+
+        lastTime = timer.get();
     }
 
     @Override
