@@ -255,9 +255,9 @@ public class SwerveDrive extends SubsystemBase {
                 getStates()
         );
 /*
-        headingController.setP(Constants.SwerveDrive.THETA_KP.get());
-        headingController.setI(Constants.SwerveDrive.THETA_KI.get());
-        headingController.setD(Constants.SwerveDrive.THETA_KD.get());
+        headingController.setP(Constants.SwerveDrive.HEADING_KP.get());
+        headingController.setI(Constants.SwerveDrive.HEADING_KI.get());
+        headingController.setD(Constants.SwerveDrive.HEADING_KD.get());
 */
     }
 }
