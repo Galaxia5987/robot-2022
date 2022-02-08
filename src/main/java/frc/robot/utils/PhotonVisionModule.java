@@ -113,7 +113,7 @@ public class PhotonVisionModule extends SubsystemBase {
 
     /**
      * @param on whether to turn on the leds.
-     * Turns the leds on or off.
+     *           Turns the leds on or off.
      */
     public void setLeds(boolean on) {
         leds.set(on);

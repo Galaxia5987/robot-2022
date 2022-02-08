@@ -5,8 +5,7 @@
 package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.SPI;
@@ -24,9 +23,44 @@ import frc.robot.valuetuner.NetworkTableConstant;
 public class Robot extends TimedRobot {
     public static final boolean debug = !DriverStation.isFMSAttached();
     public static final AHRS navx = new AHRS(SPI.Port.kMXP);
+    private static Rotation2d zeroAngle = new Rotation2d();
     public PowerDistribution pdp = new PowerDistribution();
-    private RobotContainer m_robotContainer;
     private Command m_autonomousCommand;
+    private RobotContainer m_robotContainer;
+
+    /**
+     * Gets the current angle of the robot in respect to the start angle.
+     *
+     * @return the current angle of the robot in respect to the start angle.
+     */
+    public static Rotation2d getAngle() {
+        return getRawAngle().minus(zeroAngle);
+    }
+
+    /**
+     * Gets the raw angle from the navx.
+     *
+     * @return the angle of the robot in respect to the angle of the robot initiation time.
+     */
+    public static Rotation2d getRawAngle() {
+        return Robot.navx.getRotation2d();
+    }
+
+    /**
+     * Resets the angle of the navx to the current angle.
+     */
+    public static void resetAngle() {
+        resetAngle(new Rotation2d());
+    }
+
+    /**
+     * Resets the angle of the navx to the current angle.
+     *
+     * @param angle the angle in -180 to 180 degrees coordinate system.
+     */
+    public static void resetAngle(Rotation2d angle) {
+        zeroAngle = getRawAngle().minus(angle);
+    }
 
     /**
      * This function is run when the robot is first started up and should be used for any
@@ -34,6 +68,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
+        navx.reset();
+        resetAngle();
         if (debug) {
             NetworkTableConstant.initializeAllConstants();
         }
@@ -77,7 +113,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousPeriodic() {
-
     }
 
     /**
