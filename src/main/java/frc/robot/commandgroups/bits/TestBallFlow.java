@@ -52,14 +52,4 @@ public class TestBallFlow extends SequentialCommandGroup {
             SmartDashboard.putBoolean("Is pre flap beam connected", conveyor.isPreFlapBeamConnected());
         }
     }
-
-    @Override
-    public void end(boolean interrupted) {
-        super.end(interrupted);
-    }
-
-    @Override
-    public boolean isFinished() {
-        return super.isFinished();
-    }
 }
