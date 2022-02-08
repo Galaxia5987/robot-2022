@@ -32,17 +32,12 @@ public class CheckColorSensor extends Convey {
         var queue = conveyor.getQueue();
         double currentDirection = -direction.getAsDouble();
 
-        if(currentDirection > 0) {
-            SmartDashboard.putString("First", queue.getFirst());
-            SmartDashboard.putString("Last", queue.getLast());
-            SmartDashboard.putNumber("Number of cargo", conveyor.getCargoCount());
-        } else if(currentDirection < 0) {
+        SmartDashboard.putString("First", queue.getFirst());
+        SmartDashboard.putString("Last", queue.getLast());
+        SmartDashboard.putNumber("Number of cargo", conveyor.getCargoCount());
+        if(currentDirection < 0) {
             if (currentDirection != lastDirection) {
                 maximalNumberOfBalls = conveyor.getCargoCount();
-            } else {
-                SmartDashboard.putString("First", queue.getFirst());
-                SmartDashboard.putString("Last", queue.getLast());
-                SmartDashboard.putNumber("Number of cargo", conveyor.getCargoCount());
             }
         } else if(maximalNumberOfBalls > 0) {
             SmartDashboard.putNumberArray("[In, Out]",
