@@ -127,7 +127,7 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     /**
-     * Gets te states of every module.
+     * Gets the states of every module.
      *
      * @return the states of every module.
      */
