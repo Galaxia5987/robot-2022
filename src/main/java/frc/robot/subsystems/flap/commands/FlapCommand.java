@@ -40,6 +40,6 @@ public class FlapCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        flap.setFlapMode(Flap.FlapMode.Closed);
+        flap.closeFlap();
     }
 }
