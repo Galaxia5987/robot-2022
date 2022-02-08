@@ -91,7 +91,7 @@ public final class Constants {
 
     public static class Hood {
         public static final double HOOD_PRESSURE_BIT_DELTA_TIME = 0.1; // [s]
-        public static final double DISTANCE_FROM_TARGET_DEADBAND = 3.5; // [m]
+        public static final double DISTANCE_FROM_TARGET_THRESHOLD = 3.5; // [m]
     }
 
     public static class Control {
