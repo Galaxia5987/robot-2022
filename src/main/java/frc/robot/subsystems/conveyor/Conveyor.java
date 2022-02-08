@@ -110,16 +110,21 @@ public class Conveyor extends SubsystemBase {
     }
 
     /**
+     * Gets the power of the motor.
+     *
+     * @return the power of the motor. [%]
+     */
+    public double getPower() {
+        return motor.get();
+    }
+
+    /**
      * Set motor power.
      *
      * @param power the power to the motor [-1, 1].
      */
     public void setPower(double power) {
         motor.set(power);
-    }
-
-    public double getPower() {
-        return motor.get();
     }
 
     /**
