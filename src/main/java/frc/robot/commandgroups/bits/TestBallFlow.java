@@ -3,9 +3,12 @@ package frc.robot.commandgroups.bits;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.Constants;
 import frc.robot.commandgroups.PickUpCargo;
 import frc.robot.commandgroups.ShootCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
+import frc.robot.subsystems.flap.Flap;
+import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 
@@ -18,14 +21,13 @@ public class TestBallFlow extends SequentialCommandGroup {
     private final ShootCargo shootCargo;
     private final PickUpCargo pickUpCargo;
 
-    public TestBallFlow(Conveyor conveyor, Intake intake, Shooter shooter,
-                        PickUpCargo pickUpCargo, BooleanSupplier pickUpCargoIsFinished,
-                        ShootCargo shootCargo, BooleanSupplier shootCargoIsFinished) {
+    public TestBallFlow(Hood hood, Flap flap, Conveyor conveyor, Intake intake, Shooter shooter,
+                        BooleanSupplier pickUpCargoIsFinished, BooleanSupplier shootCargoIsFinished) {
         this.intake = intake;
         this.shooter = shooter;
         this.conveyor = conveyor;
-        this.shootCargo = shootCargo;
-        this.pickUpCargo = pickUpCargo;
+        this.shootCargo = new ShootCargo(shooter, hood, conveyor, flap, () -> 8, () -> Constants.Conveyor.DEFAULT_POWER);
+        this.pickUpCargo = new PickUpCargo(conveyor, intake, Constants.Conveyor.DEFAULT_POWER, Constants.Intake.DEFAULT_POWER);
 
         addCommands(
                 pickUpCargo.withInterrupt(pickUpCargoIsFinished),
