@@ -19,8 +19,8 @@ public class DriveSlowAcceleration extends HolonomicDrive {
         if (current > magnitude) current = magnitude;
         double alpha = Math.atan2(speeds.vyMetersPerSecond, speeds.vxMetersPerSecond);
 
-        double forward = current * Math.cos(alpha);
-        double strafe = current * Math.sin(alpha);
+        double forward = current * Math.sin(alpha);
+        double strafe = current * Math.cos(alpha);
         double rotation = speeds.omegaRadiansPerSecond;
 
         if (magnitude == 0 && rotation == 0)
