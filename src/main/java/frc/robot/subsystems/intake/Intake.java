@@ -43,6 +43,10 @@ public class Intake extends SubsystemBase {
         motor.set(ControlMode.PercentOutput, power);
     }
 
+    public double getPower() {
+        return motor.get();
+    }
+
     /**
      * Open intake.
      */

@@ -118,6 +118,10 @@ public class Conveyor extends SubsystemBase {
         motor.set(power);
     }
 
+    public double getPower() {
+        return motor.get();
+    }
+
     /**
      * Gets the queue of all the balls in the conveyor.
      *
