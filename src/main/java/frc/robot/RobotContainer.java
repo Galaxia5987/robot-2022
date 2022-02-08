@@ -16,9 +16,9 @@ import webapp.Webserver;
 
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-    public static XboxController xbox = new XboxController(Ports.Controls.XBOX);
-    public static Joystick joystick = new Joystick(Ports.Controls.JOYSTICK);
-    public static Joystick joystick2 = new Joystick(Ports.Controls.JOYSTICK2);
+    private final XboxController xbox = new XboxController(Ports.Controls.XBOX);
+    private final Joystick joystick = new Joystick(Ports.Controls.JOYSTICK);
+    private final Joystick joystick2 = new Joystick(Ports.Controls.JOYSTICK2);
     private final SwerveDrive swerve = SwerveDrive.getFieldOrientedInstance();
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final JoystickButton x = new JoystickButton(xbox, XboxController.Button.kX.value);
