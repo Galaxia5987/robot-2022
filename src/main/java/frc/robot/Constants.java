@@ -40,12 +40,12 @@ public final class Constants {
         public static final double MODEL_TOLERANCE = 0.01;
         public static final double ENCODER_TOLERANCE = 0.01; // [ticks]
 
-        public static final double THETA_KP = 1;
-        public static final double THETA_KI = 1;
-        public static final double THETA_KD = 1;
+        public static final double HEADING_KP = 1;
+        public static final double HEADING_KI = 1;
+        public static final double HEADING_KD = 1;
         public static final TrapezoidProfile.Constraints HEADING_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 1.5); // [rads/sec], [rad/sec^2]
 
-        // The theta is responsible for the angle of the whole chassis, while the angle is used in the angle motor itself.
+        // The heading is responsible for the angle of the whole chassis, while the angle is used in the angle motor itself.
         public static final double ALLOWABLE_HEADING_ERROR = Math.toRadians(0.05); // [rad]
         public static final double ALLOWABLE_ANGLE_ERROR = Math.toRadians(8); // [rad]
         public static final double WHEEL_RADIUS = 0.04688; // [m]
