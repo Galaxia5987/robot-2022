@@ -4,10 +4,10 @@ import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 import java.util.function.DoubleSupplier;
 
-public class DriveSlowAccel extends HolonomicDrive {
+public class DriveSlowAcceleration extends HolonomicDrive {
     private double current = 0;
 
-    public DriveSlowAccel(SwerveDrive swerveDrive, DoubleSupplier forwardSupplier, DoubleSupplier strafeSupplier, DoubleSupplier rotationSupplier) {
+    public DriveSlowAcceleration(SwerveDrive swerveDrive, DoubleSupplier forwardSupplier, DoubleSupplier strafeSupplier, DoubleSupplier rotationSupplier) {
         super(swerveDrive, forwardSupplier, strafeSupplier, rotationSupplier);
     }
 
