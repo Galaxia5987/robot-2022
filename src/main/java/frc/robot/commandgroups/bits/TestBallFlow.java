@@ -36,6 +36,8 @@ public class TestBallFlow extends SequentialCommandGroup {
 
     @Override
     public void execute() {
+        super.execute();
+
         if (pickUpCargo.isScheduled()) {
             SmartDashboard.putNumber("Intake power", intake.getPower());
         } else if (shootCargo.isScheduled()) {
