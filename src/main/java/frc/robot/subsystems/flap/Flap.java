@@ -24,14 +24,14 @@ public class Flap extends SubsystemBase {
      * open the flap
      */
     public void openFlap() {
-        flap.set(false);
+        flap.set(FlapMode.Open.mode);
     }
 
     /**
      * closes the flap
      */
     public void closeFlap() {
-        flap.set(true);
+        flap.set(FlapMode.Closed.mode);
     }
 
     /**
@@ -46,8 +46,8 @@ public class Flap extends SubsystemBase {
      *
      * @return the mode of the flap (true or false).
      */
-    public boolean getFlapMode() {
-        return flap.get();
+    public FlapMode getFlapMode() {
+        return FlapMode.getValue(flap.get());
     }
 
     /**
