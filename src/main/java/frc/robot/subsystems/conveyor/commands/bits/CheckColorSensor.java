@@ -9,9 +9,9 @@ import java.util.function.DoubleSupplier;
 
 public class CheckColorSensor extends Convey {
     private final DoubleSupplier direction;
-    private double lastDirection;
-    private double maximalNumberOfBalls = 0;
     private final Flap flap;
+    private int cargoIn = 0;
+    private int cargoOut = 0;
 
     public CheckColorSensor(Flap flap, Conveyor conveyor, DoubleSupplier direction, double power) {
         super(conveyor, () -> power * direction.getAsDouble());
@@ -35,21 +35,24 @@ public class CheckColorSensor extends Convey {
         SmartDashboard.putString("First", queue.getFirst());
         SmartDashboard.putString("Last", queue.getLast());
         SmartDashboard.putNumber("Number of cargo", conveyor.getCargoCount());
-        if(currentDirection < 0) {
-            if (currentDirection != lastDirection) {
-                maximalNumberOfBalls = conveyor.getCargoCount();
-            }
-        } else if(maximalNumberOfBalls > 0) {
-            SmartDashboard.putNumberArray("[In, Out]",
-                    new double[]{conveyor.getCargoCount(), maximalNumberOfBalls});
+
+        /*
+        The idea behind this logic is to catch when the balls finish coming in,
+        and from this we can know how many balls left (according to the sensors)
+         */
+        if (currentDirection > 0) {
+            cargoIn = conveyor.getCargoCount();
+        } else if (currentDirection < 0) {
+            cargoOut = conveyor.getCargoCount();
         }
 
-        lastDirection = currentDirection;
+        SmartDashboard.putNumberArray("[Cargo in, Cargo out]", new double[]{cargoIn, cargoOut});
     }
 
     @Override
     public void end(boolean interrupted) {
         super.end(interrupted);
+
         flap.openFlap();
     }
 }
