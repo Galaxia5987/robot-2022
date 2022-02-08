@@ -39,7 +39,7 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        swerve.setDefaultCommand(new HolonomicDrive(swerve, () -> xbox.getLeftY(), () -> xbox.getLeftX(), () -> xbox.getRightX()));
+        swerve.setDefaultCommand(new HolonomicDrive(swerve, xbox::getLeftY, () -> -xbox.getLeftX(), xbox::getRightX));
     }
 
     private void configureButtonBindings() {
