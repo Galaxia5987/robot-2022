@@ -94,8 +94,8 @@ public class SwerveModule extends SubsystemBase {
         driveMotor.selectProfileSlot(1, 0);
         driveMotor.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToZero);
 
-        driveMotor.configOpenloopRamp(Constants.SwerveModule.RAMP_RATE, Constants.TALON_TIMEOUT);
-        driveMotor.configClosedloopRamp(Constants.SwerveModule.RAMP_RATE, Constants.TALON_TIMEOUT);
+        driveMotor.configOpenloopRamp(0, Constants.TALON_TIMEOUT);
+        driveMotor.configClosedloopRamp(0, Constants.TALON_TIMEOUT);
 /*
         driveMotor.configNeutralDeadband(Constants.SwerveModule.DRIVE_NEUTRAL_DEADBAND);
         angleMotor.configNeutralDeadband(Constants.SwerveModule.ANGLE_NEUTRAL_DEADBAND);
@@ -193,9 +193,7 @@ public class SwerveModule extends SubsystemBase {
      */
     public void setState(SwerveModuleState state) {
         setVelocity(state.speedMetersPerSecond);
-        if (state.speedMetersPerSecond != 0) {
-            setAngle(state.angle);
-        }
+        setAngle(state.angle);
     }
 
     /**
