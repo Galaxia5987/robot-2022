@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.robot.utils.TimeDelayedBoolean;
 import frc.robot.utils.Utils;
 import webapp.FireLog;
@@ -94,9 +95,9 @@ public class SwerveDrive extends SubsystemBase {
     /**
      * Move the swerve in the specified direction, rotation and velocity.
      *
-     * @param forward  the velocity on the Y-axis. [m/s]
-     * @param strafe   the velocity on the X-axis. [m/s]
-     * @param rotation rhe rotational velocity. [rad/s]
+     * @param forward  the velocity on the X-axis. [m/s]
+     * @param strafe   the velocity on the Y-axis. [m/s]
+     * @param rotation the rotational velocity counter-clockwise positive. [rad/s]
      */
     public void holonomicDrive(double forward, double strafe, double rotation) {
         if (rotation == 0 || rotationDelay.update(Math.abs(headingController.getGoal().position - Robot.getAngle()
@@ -111,6 +112,71 @@ public class SwerveDrive extends SubsystemBase {
                 new ChassisSpeeds(forward, strafe, rotation);
         setStates(kinematics.toSwerveModuleStates(speeds));
     }
+
+    /**
+     * Move the swerve in the specified direction, rotation and velocity.
+     *
+     * @param forward  the velocity on the X-axis. [m/s]
+     * @param strafe   the velocity on the Y-axis. [m/s]
+     * @param rotation the rotational velocity counter-clockwise positive. [rad/s]
+     */
+    public void defaultHolonomicDrive(double forward, double strafe, double rotation) {
+        ChassisSpeeds speeds = fieldOriented ?
+                ChassisSpeeds.fromFieldRelativeSpeeds(forward, strafe, rotation, Robot.getAngle()) :
+                new ChassisSpeeds(forward, strafe, rotation);
+        setStates(kinematics.toSwerveModuleStates(speeds));
+    }
+
+    /**
+     * Move the swerve in the specified direction, rotation and velocity, but the velocities are relative to the error of the modules.
+     *
+     * @param forward  the velocity on the X-axis. [m/s]
+     * @param strafe   the velocity on the Y-axis. [m/s]
+     * @param rotation the rotational velocity counter-clockwise positive. [rad/s]
+     */
+    public void errorRelativeHolonomicDrive(double forward, double strafe, double rotation) {
+        ChassisSpeeds speeds = fieldOriented ?
+                ChassisSpeeds.fromFieldRelativeSpeeds(forward, strafe, rotation, Robot.getAngle()) :
+                new ChassisSpeeds(forward, strafe, rotation);
+        errorRelativeSetStates(kinematics.toSwerveModuleStates(speeds));
+    }
+
+    /**
+     * Set the states of the modules,  but the velocities are relative to the error of the modules.
+     *
+     * @param states the states of the modules.
+     */
+    private void errorRelativeSetStates(SwerveModuleState[] states) {
+        for (SwerveModule module : modules) {
+            states[module.getWheel()] = SwerveModuleState.optimize(states[module.getWheel()], module.getAngle());
+            double diff = Utils.deadband(states[module.getWheel()].angle.minus(module.getAngle()).getRadians(),
+                    Constants.SwerveDrive.ANGLE_COSINE_DEADBAND);
+            module.setAngle(states[module.getWheel()].angle);
+            module.setVelocity(states[module.getWheel()].speedMetersPerSecond * Math.cos(diff));
+        }
+    }
+
+    /**
+     * Check whether all modules have reached their desired angles.
+     *
+     * @param forward  the velocity on the X-axis. [m/s]
+     * @param strafe   the velocity on the Y-axis. [m/s]
+     * @param rotation the rotational velocity counter-clockwise positive. [rad/s]
+     */
+    public boolean haveModulesReachedAngles(double forward, double strafe, double rotation) {
+        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+                forward, strafe, rotation, Robot.getAngle());
+        SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
+        for (int i = 0; i < 4; i++)
+            states[i] = SwerveModuleState.optimize(states[i], getModule(i).getAngle());
+        for (int i = 0; i < 4; i++) {
+            if (!(Math.abs(states[i].angle.minus(getModule(i).getAngle()).getDegrees()) < 10)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     /**
      * Rotates the robot to a desired angle.
@@ -147,10 +213,8 @@ public class SwerveDrive extends SubsystemBase {
     public void setStates(SwerveModuleState[] states) {
         for (SwerveModule module : modules) {
             states[module.getWheel()] = SwerveModuleState.optimize(states[module.getWheel()], module.getAngle());
-            double diff = Utils.deadband(states[module.getWheel()].angle.minus(module.getAngle()).getRadians(),
-                    Constants.SwerveDrive.ANGLE_COSINE_DEADBAND);
             module.setAngle(states[module.getWheel()].angle);
-            module.setVelocity(states[module.getWheel()].speedMetersPerSecond * Math.cos(diff));
+            module.setVelocity(states[module.getWheel()].speedMetersPerSecond);
         }
     }
 
