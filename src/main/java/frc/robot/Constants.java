@@ -53,7 +53,7 @@ public final class Constants {
 
         // The heading is responsible for the angle of the whole chassis, while the angle is used in the angle motor itself.
         public static final double ALLOWABLE_HEADING_ERROR = Math.toRadians(0.05); // [rad]
-        public static final double ALLOWABLE_ANGLE_ERROR = Math.toRadians(8); // [rad]
+        public static final double ALLOWABLE_ANGLE_ERROR = Math.toRadians(3); // [rad]
         public static final double WHEEL_RADIUS = 0.04688; // [m]
 
         public static final double ROBOT_LENGTH = 0.5924; // [m]
