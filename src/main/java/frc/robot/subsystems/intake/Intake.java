@@ -35,6 +35,15 @@ public class Intake extends SubsystemBase {
     }
 
     /**
+     * Gets the power of the intake motor.
+     *
+     * @return the power of the motor. [%]
+     */
+    public double getPower() {
+        return motor.get();
+    }
+
+    /**
      * Sets the power of the intake [%].
      *
      * @param power desired power in percentage.
