@@ -33,6 +33,8 @@ public final class Ports {
         public static final boolean ANGLE_INVERTED_RL = true;
         public static final boolean ANGLE_SENSOR_PHASE_RL = false;
 
+    }
+
     public static class Intake {
         public static final int MOTOR = 11;
         public static final boolean IS_MOTOR_INVERTED = false;

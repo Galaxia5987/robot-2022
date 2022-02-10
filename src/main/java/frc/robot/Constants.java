@@ -1,8 +1,8 @@
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
-import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -10,8 +10,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import frc.robot.utils.SwerveModuleConfigBase;
 import edu.wpi.first.wpilibj.util.Color;
+import frc.robot.utils.SwerveModuleConfigBase;
 import org.photonvision.SimVisionTarget;
 
 import static frc.robot.Ports.SwerveDrive.*;
@@ -67,6 +67,12 @@ public final class Constants {
         public static final double ANGLE_COSINE_DEADBAND = Math.toRadians(10); // [rads]
         public static final double ROTATION_DELAY = 0.1; // [sec]
         public static final int ANGLE_CURVE_STRENGTH = 4;
+        public static final double LOOP_PERIOD = 0.02; // loop period. [s]
+        public static final double g = 9.80665; // Gravity acceleration constant. [m/s^2]
+        public static final double UPPER_TARGET_HEIGHT = 2.64; // Height of upper target. [m]
+        public static final double PEBZNER_HEIGHT = 4.8; // Height of pebzner auditorium. [m]
+        public static final double NOMINAL_VOLTAGE = 12.0; // Nominal voltage. [V]
+        public static final int TALON_TIMEOUT = 10; // Waiting period for configurations. [ms]
         private static final double Rx = SwerveDrive.ROBOT_WIDTH / 2; // [m]
         private static final double Ry = SwerveDrive.ROBOT_LENGTH / 2; // [m]
         // Axis systems
@@ -80,13 +86,7 @@ public final class Constants {
         private static final float MOTION_MAGIC_SAFETY = 0.7f;
         public static final int ANGLE_MOTION_ACCELERATION = Math.round(2800 * MOTION_MAGIC_SAFETY);
         public static final int ANGLE_CRUISE_VELOCITY = Math.round(550 * MOTION_MAGIC_SAFETY);
-    public static final double LOOP_PERIOD = 0.02; // loop period. [s]
-    public static final double g = 9.80665; // Gravity acceleration constant. [m/s^2]
-    public static final double UPPER_TARGET_HEIGHT = 2.64; // Height of upper target. [m]
-    public static final double PEBZNER_HEIGHT = 4.8; // Height of pebzner auditorium. [m]
-    public static final double NOMINAL_VOLTAGE = 12.0; // Nominal voltage. [V]
-    public static final int TALON_TIMEOUT = 10; // Waiting period for configurations. [ms]
-
+    }
 
     public static class Shooter {
         public static final double TICKS_PER_REVOLUTION = 2048; // Ticks per revolution of the shooter motor. [tick]
