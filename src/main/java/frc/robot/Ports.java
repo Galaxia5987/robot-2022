@@ -32,6 +32,34 @@ public final class Ports {
         public static final boolean DRIVE_INVERTED_RL = false;
         public static final boolean ANGLE_INVERTED_RL = true;
         public static final boolean ANGLE_SENSOR_PHASE_RL = false;
+
+    }
+
+    public static class Intake {
+        public static final int MOTOR = 11;
+        public static final boolean IS_MOTOR_INVERTED = false;
+        public static final int SOLENOID = 7;
+    }
+
+    public static class Conveyor {
+        public static final int MOTOR = 21;
+        public static final TalonFXInvertType MOTOR_INVERSION = TalonFXInvertType.Clockwise;
+        public static final boolean IS_COMPENSATING_VOLTAGE = true;
+        public static final int POST_FLAP_BEAM_BREAKER = 1;
+        public static final int PRE_FLAP_BEAM_BREAKER = 0;
+    }
+
+    public static class Flap {
+        public static final int SOLENOID = 0;
+    }
+
+    public static class Shooter {
+        public static final int MOTOR = 31; // Main motor port.
+        public static final TalonFXInvertType INVERSION_TYPE = TalonFXInvertType.CounterClockwise;
+    }
+
+    public static class Hood {
+        public static final int SOLENOID = 4; // Hood solenoid port.
     }
 
     public static class Controls {
