@@ -1,39 +1,35 @@
 package frc.robot.subsystems.conveyor.commands.bits;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.conveyor.Conveyor;
 
 public class PostFlapTest extends CommandBase {
     private final Conveyor conveyor;
-    private final double expected;
-    private boolean isConnected = true;
     private boolean wasConnected = true;
+    private int cargoPassedCount = 0;
 
-    private int actual;
-
-    public PostFlapTest(Conveyor conveyor, double expected) {
+    public PostFlapTest(Conveyor conveyor) {
         this.conveyor = conveyor;
-        this.expected = expected;
 
         addRequirements(conveyor);
     }
 
     @Override
     public void execute() {
-        conveyor.setPower(0.5);
-        isConnected = conveyor.isPostFlapBeamConnected();
+        conveyor.setPower(Constants.Conveyor.DEFAULT_POWER);
+        boolean isConnected = conveyor.isPostFlapBeamConnected();
 
-        if (wasConnected && !isConnected){
-            actual++;
-            System.out.println(actual);
+        if (wasConnected && !isConnected) {
+            cargoPassedCount++;
+            System.out.println("Cargo passed");
         }
         wasConnected = isConnected;
     }
 
     @Override
     public void end(boolean interrupted) {
-        System.out.println("actual:" + " " + actual);
-        System.out.println("expected:" + " " + expected);
-        System.out.println("delta:" + " " + (expected - actual));
+        SmartDashboard.putNumber("Cargo", cargoPassedCount);
     }
 }
