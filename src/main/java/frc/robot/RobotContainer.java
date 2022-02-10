@@ -1,19 +1,20 @@
 package frc.robot;
 
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commandgroups.Outtake;
-import frc.robot.commandgroups.PickUpCargo;
-import frc.robot.commandgroups.ShootCargo;
-import frc.robot.subsystems.conveyor.Conveyor;
-import frc.robot.subsystems.flap.Flap;
-import frc.robot.subsystems.hood.Hood;
-import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.utils.PhotonVisionModule;
-import frc.robot.utils.SimulateDrivetrain;
+import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.commands.AdjustAngle;
+import frc.robot.subsystems.climber.commands.StopClimber;
+import frc.robot.subsystems.drivetrain.SwerveDrive;
+import frc.robot.subsystems.drivetrain.commands.HolonomicDrive;
 import webapp.Webserver;
 
 import java.util.function.DoubleSupplier;
@@ -23,12 +24,17 @@ import static frc.robot.Constants.Control.RIGHT_TRIGGER_DEADBAND;
 
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-    private final Shooter shooter = Shooter.getInstance();
-    private final Hood hood = Hood.getInstance();
-    private final Intake intake = Intake.getInstance();
-    private final Flap flap = Flap.getInstance();
-    private final SimulateDrivetrain simulateDrivetrain = new SimulateDrivetrain();
-    private final PhotonVisionModule visionModule;
+    private final Joystick joystick = new Joystick(Ports.Controls.JOYSTICK);
+    private final XboxController xbox = new XboxController(Ports.Controls.XBOX);
+    private final Joystick joystick2 = new Joystick(Ports.Controls.JOYSTICK2);
+    private final SwerveDrive swerve = SwerveDrive.getFieldOrientedInstance();
+    private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
+    private final JoystickButton x = new JoystickButton(xbox, XboxController.Button.kX.value);
+    private final JoystickButton leftTrigger = new JoystickButton(joystick, Joystick.ButtonType.kTrigger.value);
+    private final JoystickButton b = new JoystickButton(xbox, XboxController.Button.kB.value);
+    private final JoystickButton y = new JoystickButton(xbox, XboxController.Button.kY.value);
+    // The robot's subsystems and commands are defined here...
+    private final Climber climber = Climber.getInstance();
 
     // The robot's subsystems and commands are defined here...
     private final Conveyor conveyor = Conveyor.getInstance();
@@ -43,11 +49,6 @@ public class RobotContainer {
      * The container for the robot.  Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        if (Robot.isSimulation()) {
-            visionModule = new PhotonVisionModule("photonvision", simulateDrivetrain);
-        } else {
-            visionModule = new PhotonVisionModule("photonvision", null);
-        }
         // Configure the button bindings and default commands
         configureDefaultCommands();
 
@@ -59,26 +60,14 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
+        swerve.setDefaultCommand(new HolonomicDrive(swerve, xbox::getLeftY, () -> -xbox.getLeftX(), xbox::getRightX));
     }
 
     private void configureButtonBindings() {
-        DoubleSupplier distanceFromTarget = () -> visionModule.getDistance().orElse(0);
-        DoubleSupplier robotVelocity = () -> 4;
+        a.whenPressed((Runnable) Robot::resetAngle);
+        b.toggleWhenPressed(new StopClimber(climber));
 
-        a.whileHeld(
-                new PickUpCargo(conveyor, intake, Constants.Conveyor.DEFAULT_POWER, Constants.Intake.DEFAULT_POWER)
-        );
-        b.whileHeld(
-                new Outtake(
-                        intake,
-                        conveyor,
-                        flap,
-                        shooter,
-                        leftTrigger::get
-                ));
-        rightTrigger.whileActiveContinuous(
-                new ShootCargo(shooter, hood, conveyor, flap, distanceFromTarget, () -> Constants.Conveyor.DEFAULT_POWER)
-        );
+        a.and(b).and(y).toggleWhenActive(new AdjustAngle(climber));
     }
 
 
@@ -88,10 +77,26 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return null;
+        PathPlannerTrajectory path = PathPlanner.loadPath("Path", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL, false);
+        swerve.resetOdometry(new Pose2d(path.getInitialState().poseMeters.getTranslation(), path.getInitialState().holonomicRotation));
+        Robot.resetAngle(path.getInitialState().holonomicRotation);
+        var thetaController = new ProfiledPIDController(Constants.Autonomous.KP_THETA_CONTROLLER, 0, 0, Constants.SwerveDrive.HEADING_CONTROLLER_CONSTRAINTS);
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+        return new PPSwerveControllerCommand(
+                path,
+                swerve::getPose,
+                swerve.getKinematics(),
+                new PIDController(Constants.Autonomous.KP_X_CONTROLLER, 0, 0),
+                new PIDController(Constants.Autonomous.KP_Y_CONTROLLER, 0, 0),
+                thetaController,
+                swerve::setStates
+        );
     }
 
     /**
+     * Initiates the value tuner.
+     * <p>
      * Initiates the port of team 225s Fire-Logger.
      */
     private void startFireLog() {
