@@ -8,21 +8,19 @@ import frc.robot.subsystems.flap.Flap;
 import java.util.function.DoubleSupplier;
 
 public class CheckColorSensor extends Convey {
-    private final DoubleSupplier direction;
     private final Flap flap;
     private int cargoIn = 0;
     private int cargoOut = 0;
 
-    public CheckColorSensor(Flap flap, Conveyor conveyor, DoubleSupplier direction, double power) {
-        super(conveyor, () -> power * direction.getAsDouble());
-        this.direction = direction;
+    public CheckColorSensor(Flap flap, Conveyor conveyor, double power) {
+        super(conveyor, () -> power);
         this.flap = flap;
         addRequirements(flap);
     }
 
     @Override
     public void initialize() {
-        flap.closeFlap();
+        flap.openFlap();
     }
 
     @Override
@@ -30,23 +28,10 @@ public class CheckColorSensor extends Convey {
         super.execute();
 
         var queue = conveyor.getQueue();
-        double currentDirection = -direction.getAsDouble();
 
         SmartDashboard.putString("First", queue.getFirst());
         SmartDashboard.putString("Last", queue.getLast());
         SmartDashboard.putNumber("Number of cargo", conveyor.getCargoCount());
-
-        /*
-        The idea behind this logic is to catch when the balls finish coming in,
-        and from this we can know how many balls left (according to the sensors)
-         */
-        if (currentDirection > 0) {
-            cargoIn = conveyor.getCargoCount();
-        } else if (currentDirection < 0) {
-            cargoOut = conveyor.getCargoCount();
-        }
-
-        SmartDashboard.putNumberArray("[Cargo in, Cargo out]", new double[]{cargoIn, cargoOut});
     }
 
     @Override
