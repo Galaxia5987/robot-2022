@@ -38,6 +38,6 @@ public class CheckColorSensor extends Convey {
     public void end(boolean interrupted) {
         super.end(interrupted);
 
-        flap.openFlap();
+        flap.closeFlap();
     }
 }
