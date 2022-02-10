@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -9,10 +10,12 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.utils.SwerveModuleConfigBase;
 import org.photonvision.SimVisionTarget;
 
 import static frc.robot.Ports.SwerveDrive.*;
+
 
 public final class Constants {
     public static final double LOOP_PERIOD = 0.02; // [s]
@@ -64,6 +67,12 @@ public final class Constants {
         public static final double ANGLE_COSINE_DEADBAND = Math.toRadians(10); // [rads]
         public static final double ROTATION_DELAY = 0.1; // [sec]
         public static final int ANGLE_CURVE_STRENGTH = 4;
+        public static final double LOOP_PERIOD = 0.02; // loop period. [s]
+        public static final double g = 9.80665; // Gravity acceleration constant. [m/s^2]
+        public static final double UPPER_TARGET_HEIGHT = 2.64; // Height of upper target. [m]
+        public static final double PEBZNER_HEIGHT = 4.8; // Height of pebzner auditorium. [m]
+        public static final double NOMINAL_VOLTAGE = 12.0; // Nominal voltage. [V]
+        public static final int TALON_TIMEOUT = 10; // Waiting period for configurations. [ms]
         private static final double Rx = SwerveDrive.ROBOT_WIDTH / 2; // [m]
         private static final double Ry = SwerveDrive.ROBOT_LENGTH / 2; // [m]
         // Axis systems
@@ -77,6 +86,34 @@ public final class Constants {
         private static final float MOTION_MAGIC_SAFETY = 0.7f;
         public static final int ANGLE_MOTION_ACCELERATION = Math.round(2800 * MOTION_MAGIC_SAFETY);
         public static final int ANGLE_CRUISE_VELOCITY = Math.round(550 * MOTION_MAGIC_SAFETY);
+    }
+
+    public static class Shooter {
+        public static final double TICKS_PER_REVOLUTION = 2048; // Ticks per revolution of the shooter motor. [tick]
+        public static final double WHEEL_RADIUS = 0.1016; // Radius of the wheels. [m]
+
+        public static final double Ka = 1; // Acceleration state space coefficient (placeholder).
+        public static final double Kv = 1; // Velocity state space coefficient (placeholder).
+        public static final double MODEL_TOLERANCE = 10; // Model tolerance for state space.
+        public static final double SENSOR_TOLERANCE = 0.1; // Sensor tolerance for state space.
+        public static final double VELOCITY_TOLERANCE = 0.15; // Velocity tolerance for state space.
+        public static final double COST_LQR = 55; // Cost lqr for state space.
+
+        public static final double J = 0.00218; // Moment of inertia for state space. [kg*m^2]
+        public static final double GEAR_RATIO = 1; // Gear ratio for encoder (placeholder).
+        public static final double NEUTRAL_DEADBAND = 0.1; // [%]
+
+        public static final double OUTPUT_MULTIPLIER = 0.1; // Multiplies the output for manual control in the bits. [%]
+        public static final double OUTTAKE_POWER = 0.2; // Power to give to the shooter when taking balls out. [%]
+        public static final double SHOOTER_VELOCITY_DEADBAND = 1 - 2.95 / 3.0; // Dead band for shooter velocity setpoint. [%]
+        public static double RECOMMENDED_ACCELERATION_TIME = 1.3; // Recommended time for the shooter to get to it's setpoint. [s]
+
+        public static TalonFXConfiguration getConfiguration() {
+            final TalonFXConfiguration configuration = new TalonFXConfiguration();
+            configuration.neutralDeadband = NEUTRAL_DEADBAND;
+            return configuration;
+        }
+
     }
 
     public static final class SwerveModule {
@@ -132,6 +169,17 @@ public final class Constants {
         public static final double MAX_ACCEL = 1.5; // [m/sec^2]
     }
 
+    public static class Conveyor {
+        public static final double DEFAULT_POWER = 0.5; // [%]
+        public static final int MAX_CARGO_AMOUNT = 2;
+        public static final int MIN_PROXIMITY_VALUE = 100; // Minimum distance from the color sensor in order to induce detection (arbitrary bit units).
+        public static final Color RED = new Color(0.15, 0.55, 0.3);
+        public static final Color BLUE = new Color(0.02, 0.51, 0.44);
+        public static final Color GREEN = new Color(0.06, 0.54, 0.39);
+        public static final Color NONE = new Color(2e-4, 0.94, 0.045);
+
+    }
+
     public static class Vision {
         public static final double CAMERA_HEIGHT = 0.767; // [m]
         public static final double TARGET_HEIGHT_FROM_GROUND = 2.64; // [m]
@@ -151,6 +199,7 @@ public final class Constants {
 
         public static final SimVisionTarget SIM_TARGET_HUB = new SimVisionTarget( // Hub target for vision simulation.
                 HUB_POSE, TARGET_HEIGHT_FROM_GROUND, TARGET_WIDTH, TARGET_HEIGHT);
+
     }
 
     public static class Climber {
@@ -187,5 +236,23 @@ public final class Constants {
         public static final int ZERO_POSITION = 0; // [radians]
 
         public static final double ZERO_POSITION_TOLERANCE = 0.05; // [radians]
+    }
+
+    public static class Intake {
+        public static final double DEFAULT_POWER = 0.5; // power intake will receive on the basic command. [%]
+        public static final double POWER_TO_VELOCITY_RATIO = -3 / 16.0; // Ratio of power to velocity. [% / m/s]
+        public static final boolean IS_COMPENSATING_VOLTAGE = true;
+        public static final double TIME_BETWEEN_RUNS = 1.0; // time intake will wait before toggling the retractor (for testing only). [s]
+    }
+
+    public static class Hood {
+        public static final double HOOD_PRESSURE_BIT_DELTA_TIME = 0.1; // [s]
+        public static final double DISTANCE_FROM_TARGET_THRESHOLD = 3.5; // [m]
+    }
+
+    public static class Control {
+        public static final double RIGHT_TRIGGER_DEADBAND = 0.4; // Deadband for right trigger. [%]
+        public static final double LEFT_TRIGGER_DEADBAND = 0.4; // Deadband for right trigger. [%]
+
     }
 }

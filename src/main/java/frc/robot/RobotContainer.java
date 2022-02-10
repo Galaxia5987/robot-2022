@@ -13,23 +13,27 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.commands.AdjustAngle;
 import frc.robot.subsystems.climber.commands.StopClimber;
+import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.HolonomicDrive;
 import webapp.Webserver;
 
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-    private final Joystick joystick = new Joystick(Ports.Controls.JOYSTICK);
     private final XboxController xbox = new XboxController(Ports.Controls.XBOX);
+    private final Joystick joystick = new Joystick(Ports.Controls.JOYSTICK);
     private final Joystick joystick2 = new Joystick(Ports.Controls.JOYSTICK2);
-    private final SwerveDrive swerve = SwerveDrive.getFieldOrientedInstance();
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
-    private final JoystickButton x = new JoystickButton(xbox, XboxController.Button.kX.value);
-    private final JoystickButton leftTrigger = new JoystickButton(joystick, Joystick.ButtonType.kTrigger.value);
     private final JoystickButton b = new JoystickButton(xbox, XboxController.Button.kB.value);
+    private final JoystickButton x = new JoystickButton(xbox, XboxController.Button.kX.value);
     private final JoystickButton y = new JoystickButton(xbox, XboxController.Button.kY.value);
+    private final JoystickButton leftTrigger = new JoystickButton(joystick, Joystick.ButtonType.kTrigger.value);
+
     // The robot's subsystems and commands are defined here...
+    private final SwerveDrive swerve = SwerveDrive.getFieldOrientedInstance();
     private final Climber climber = Climber.getInstance();
+    private final Conveyor conveyor = Conveyor.getInstance();
+
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
