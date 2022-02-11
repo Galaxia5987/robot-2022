@@ -12,6 +12,10 @@ import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.SwerveDrive.VELOCITY_MULTIPLIER;
 
+/*
+    OverpoweredDrive is an assisted driving command that provides a smoother driving experience.
+    It corrects heading drifting, slows acceleration, and waits for wheels to reach their desired rotations before speeding.
+ */
 public class OverpoweredDrive extends HolonomicDrive {
     private final PIDController pidController = new PIDController(Constants.SwerveDrive.HEADING_KP, 0, 0) {{
         enableContinuousInput(-Math.PI, Math.PI);

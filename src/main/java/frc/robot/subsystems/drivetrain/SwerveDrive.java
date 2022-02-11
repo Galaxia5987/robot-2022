@@ -127,7 +127,7 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     /**
-     * Move the swerve in the specified direction, rotation and velocity, but the velocities are relative to the error of the modules.
+     * Move the swerve in the specified direction, rotation and velocity.
      *
      * @param forward  the velocity on the X-axis. [m/s]
      * @param strafe   the velocity on the Y-axis. [m/s]
@@ -141,7 +141,7 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     /**
-     * Set the states of the modules,  but the velocities are relative to the error of the modules.
+     * Set the states of the modules, but the velocities are relative to the angle error of the modules.
      *
      * @param states the states of the modules.
      */
