@@ -4,6 +4,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
@@ -12,9 +13,9 @@ import java.util.function.DoubleSupplier;
 import static frc.robot.Constants.SwerveDrive.VELOCITY_MULTIPLIER;
 
 public class OverpoweredDrive extends HolonomicDrive {
-    PIDController pidController = new PIDController(0.03, 0, 0) {{
-        enableContinuousInput(-180, 180);
-        setTolerance(5);
+    private final PIDController pidController = new PIDController(Constants.SwerveDrive.HEADING_KP, 0, 0) {{
+        enableContinuousInput(-Math.PI, Math.PI);
+        setTolerance(Math.toRadians(Constants.SwerveDrive.ALLOWABLE_HEADING_ERROR));
     }};
     private boolean newSetpoint = false;
     private Rotation2d setpoint;
@@ -56,15 +57,16 @@ public class OverpoweredDrive extends HolonomicDrive {
                 timer.reset();
             }
             // if the time hasn't passed since there was no rotation after there was rotation, keep resetting the setpoint.
-            if (!timer.hasElapsed(0.2)) {
+            if (!timer.hasElapsed(Constants.SwerveDrive.DRIFTING_PERIOD)) {
                 setpoint = Robot.getAngle();
             }
 
 
         } else {
             // if swerveDrive angles were reached don't wait
-            if (swerveDrive.haveModulesReachedAngles(forward, strafe, rotation))
+            if (swerveDrive.haveModulesReachedAngles(forward, strafe, rotation)) {
                 wait = false;
+            }
 
             // if you want acceleration from zero speed, and angles weren't reached
             if (wait) {
@@ -83,7 +85,7 @@ public class OverpoweredDrive extends HolonomicDrive {
                     }
 
                     // if the time hasn't passed since there was no rotation after there was rotation, keep resetting the setpoint.
-                    if (!timer.hasElapsed(0.2)) {
+                    if (!timer.hasElapsed(Constants.SwerveDrive.DRIFTING_PERIOD)) {
                         setpoint = Robot.getAngle();
                     } else {
                         swerveDrive.defaultHolonomicDrive(forward, strafe, pidController.calculate(Robot.getAngle().getDegrees(), setpoint.getDegrees()));
