@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
-import frc.robot.RobotContainer;
 import frc.robot.utils.TimeDelayedBoolean;
 import frc.robot.utils.Utils;
 import webapp.FireLog;
@@ -167,10 +166,9 @@ public class SwerveDrive extends SubsystemBase {
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
                 forward, strafe, rotation, Robot.getAngle());
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
-        for (int i = 0; i < 4; i++)
-            states[i] = SwerveModuleState.optimize(states[i], getModule(i).getAngle());
-        for (int i = 0; i < 4; i++) {
-            if (!(Math.abs(states[i].angle.minus(getModule(i).getAngle()).getDegrees()) < 10)) {
+        for (SwerveModule module : modules) {
+            states[module.getWheel()] = SwerveModuleState.optimize(states[module.getWheel()], module.getAngle());
+            if (!(Math.abs(states[module.getWheel()].angle.minus(module.getAngle()).getDegrees()) < 10)) { // TODO: Remove the magic number
                 return false;
             }
         }
