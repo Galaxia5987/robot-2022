@@ -94,8 +94,7 @@ public class SwerveModule extends SubsystemBase {
         driveMotor.selectProfileSlot(1, 0);
         driveMotor.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToZero);
 
-        driveMotor.configOpenloopRamp(0, Constants.TALON_TIMEOUT);
-        driveMotor.configClosedloopRamp(0, Constants.TALON_TIMEOUT);
+        selectTuneDownMode(true);
 /*
         driveMotor.configNeutralDeadband(Constants.SwerveModule.DRIVE_NEUTRAL_DEADBAND);
         angleMotor.configNeutralDeadband(Constants.SwerveModule.ANGLE_NEUTRAL_DEADBAND);
@@ -249,6 +248,17 @@ public class SwerveModule extends SubsystemBase {
         angleMotor.config_kI(0, ki, Constants.TALON_TIMEOUT);
         angleMotor.config_kD(0, kd, Constants.TALON_TIMEOUT);
         angleMotor.config_kF(0, kf, Constants.TALON_TIMEOUT);
+    }
+
+
+    private void selectTuneDownMode(boolean isUserDefined) {
+        if (isUserDefined) {
+            driveMotor.configOpenloopRamp(0, Constants.TALON_TIMEOUT);
+            driveMotor.configClosedloopRamp(0, Constants.TALON_TIMEOUT);
+        } else {
+            driveMotor.configOpenloopRamp(Constants.SwerveModule.RAMP_RATE, Constants.TALON_TIMEOUT);
+            driveMotor.configClosedloopRamp(Constants.SwerveModule.RAMP_RATE, Constants.TALON_TIMEOUT);
+        }
     }
 
     @Override
