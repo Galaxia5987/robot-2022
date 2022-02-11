@@ -36,7 +36,7 @@ public class Shoot extends CommandBase {
      * @return 15. [rpm]
      */
     public static double getSetpointVelocity(double distance) {
-        return 100;
+        return 6000 * Shooter.velocity.getDouble(0);
     }
 
     @Override
