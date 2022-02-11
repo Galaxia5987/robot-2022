@@ -95,8 +95,8 @@ public class Shooter extends SubsystemBase {
 
         LinearQuadraticRegulator<N1, N1, N1> quadraticRegulator = new LinearQuadraticRegulator<>(
                 flywheel_plant,
-                VecBuilder.fill(VELOCITY_TOLERANCE),
-                VecBuilder.fill(COST_LQR),
+                VecBuilder.fill(QELMS),
+                VecBuilder.fill(RELMS),
                 LOOP_PERIOD);
         quadraticRegulator.latencyCompensate(flywheel_plant, LOOP_PERIOD, Units.millisecondsToSeconds(TALON_TIMEOUT));
 
@@ -165,6 +165,7 @@ public class Shooter extends SubsystemBase {
     public void periodic() {
         lastTime = currentTime;
         currentTime = Timer.getFPGATimestamp();
+        linearSystemLoop.getObserver().reset();
     }
 
     @Override
