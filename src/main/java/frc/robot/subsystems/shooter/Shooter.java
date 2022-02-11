@@ -14,7 +14,10 @@ import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -36,6 +39,10 @@ public class Shooter extends SubsystemBase {
     private TalonFXSimCollection simCollection;
     private double currentTime = 0;
     private double lastTime = 0;
+    private static final ShuffleboardTab tab = Shuffleboard.getTab("Velocity");
+    public static NetworkTableEntry velocity =
+            tab.add("Velocity", 0)
+                    .getEntry();
 
     private Shooter() {
         configureMotor();
