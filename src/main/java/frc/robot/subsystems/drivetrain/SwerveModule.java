@@ -252,13 +252,14 @@ public class SwerveModule extends SubsystemBase {
 
 
     private void selectTuneDownMode(boolean isUserDefined) {
+        double ramp;
         if (isUserDefined) {
-            driveMotor.configOpenloopRamp(0, Constants.TALON_TIMEOUT);
-            driveMotor.configClosedloopRamp(0, Constants.TALON_TIMEOUT);
+            ramp = 0;
         } else {
-            driveMotor.configOpenloopRamp(Constants.SwerveModule.RAMP_RATE, Constants.TALON_TIMEOUT);
-            driveMotor.configClosedloopRamp(Constants.SwerveModule.RAMP_RATE, Constants.TALON_TIMEOUT);
+            ramp = Constants.SwerveModule.RAMP_RATE;
         }
+        driveMotor.configOpenloopRamp(ramp, Constants.TALON_TIMEOUT);
+        driveMotor.configClosedloopRamp(ramp, Constants.TALON_TIMEOUT);
     }
 
     @Override
