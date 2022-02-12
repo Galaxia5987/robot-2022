@@ -29,6 +29,7 @@ import frc.robot.Constants;
 import frc.robot.Ports;
 import frc.robot.Robot;
 import frc.robot.subsystems.UnitModel;
+import frc.robot.utils.Utils;
 
 
 public class Climber extends SubsystemBase {
@@ -225,6 +226,11 @@ public class Climber extends SubsystemBase {
      */
     public void stop() {
         mainMotor.stopMotor();
+    }
+
+    @Override
+    public void periodic() {
+        Utils.putSubsystemCommandToDashboard(getInstance());
     }
 
     /**

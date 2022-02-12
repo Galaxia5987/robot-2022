@@ -8,6 +8,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -247,6 +248,14 @@ public class SwerveDrive extends SubsystemBase {
         }
     }
 
+    private void updateDashboardOdometry() {
+        String outputPosition = getPose().getX() + ", " + getPose().getY();
+        SmartDashboard.putString("robot_position", outputPosition);
+
+        String outputRotation = String.valueOf(Robot.getAngle().getDegrees());
+        SmartDashboard.putString("robot_rotation", outputRotation);
+    }
+
     @Override
     public void periodic() {
         odometry.updateWithTime(
@@ -254,6 +263,8 @@ public class SwerveDrive extends SubsystemBase {
                 Robot.getRawAngle(),
                 getStates()
         );
+        updateDashboardOdometry();
+        Utils.putSubsystemCommandToDashboard(getFieldOrientedInstance());
 /*
         headingController.setP(Constants.SwerveDrive.HEADING_KP.get());
         headingController.setI(Constants.SwerveDrive.HEADING_KI.get());

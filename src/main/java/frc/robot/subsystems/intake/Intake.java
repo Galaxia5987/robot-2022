@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
+import frc.robot.utils.Utils;
 
 import static frc.robot.Constants.Intake.IS_COMPENSATING_VOLTAGE;
 
@@ -78,6 +79,11 @@ public class Intake extends SubsystemBase {
      */
     public boolean getRetractorState() {
         return retractor.get();
+    }
+
+    @Override
+    public void periodic() {
+        Utils.putSubsystemCommandToDashboard(getInstance());
     }
 
     public enum RetractorState {

@@ -158,6 +158,7 @@ public class Shooter extends SubsystemBase {
     public void periodic() {
         lastTime = currentTime;
         currentTime = Timer.getFPGATimestamp();
+        Utils.putSubsystemCommandToDashboard(getInstance());
     }
 
     @Override

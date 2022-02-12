@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Ports;
+import frc.robot.utils.Utils;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;
@@ -217,6 +218,21 @@ public class Conveyor extends SubsystemBase {
         }
     }
 
+    private void putQueueToDashboard() {
+        var colorQueue = new String[]{cargoPositions.getLast(), cargoPositions.getFirst()};
+
+        for(int i = 0; i < colorQueue.length; i++) {
+            var currentColorIndex = (i == 0) ? "first_color" : "last_color";
+            if (colorQueue[i].equals(DriverStation.Alliance.Red.name())) {
+                SmartDashboard.putString(currentColorIndex, "red");
+            } else if (colorQueue[i].equals(DriverStation.Alliance.Blue.name())) {
+                SmartDashboard.putString(currentColorIndex, "blue");
+            } else {
+                SmartDashboard.putString(currentColorIndex, "");
+            }
+        }
+    }
+
     /**
      * removes the string representing the cargo from the list if the cargo is ejected and adds if the cargo is consumed
      */
@@ -224,6 +240,8 @@ public class Conveyor extends SubsystemBase {
     public void periodic() {
         currentProximity = colorSensor.getProximity();
         updateActualBallPositions();
+        putQueueToDashboard();
+        Utils.putSubsystemCommandToDashboard(getInstance());
     }
 
     @Override

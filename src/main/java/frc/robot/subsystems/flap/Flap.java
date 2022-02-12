@@ -3,6 +3,7 @@ package frc.robot.subsystems.flap;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utils.Utils;
 
 import static frc.robot.Ports.Flap.SOLENOID;
 
@@ -57,6 +58,11 @@ public class Flap extends SubsystemBase {
      */
     public void setFlapMode(FlapMode flapMode) {
         flap.set(flapMode.mode);
+    }
+
+    @Override
+    public void periodic() {
+        Utils.putSubsystemCommandToDashboard(getInstance());
     }
 
     public enum FlapMode {

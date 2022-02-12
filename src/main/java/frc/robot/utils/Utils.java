@@ -1,5 +1,10 @@
 package frc.robot.utils;
 
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 public class Utils {
 
     /**
@@ -47,4 +52,9 @@ public class Utils {
         return rpm / 60.0;
     }
 
+    public static void putSubsystemCommandToDashboard(SubsystemBase subsystem) {
+        if (subsystem.getCurrentCommand() != null) {
+            SmartDashboard.putString("active_command", subsystem.getCurrentCommand().getName());
+        }
+    }
 }

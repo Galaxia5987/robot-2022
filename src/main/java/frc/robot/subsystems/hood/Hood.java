@@ -3,6 +3,7 @@ package frc.robot.subsystems.hood;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utils.Utils;
 
 import static frc.robot.Ports.Hood.SOLENOID;
 
@@ -61,6 +62,11 @@ public class Hood extends SubsystemBase {
      */
     public boolean isOpen() {
         return angleChanger.get();
+    }
+
+    @Override
+    public void periodic() {
+        Utils.putSubsystemCommandToDashboard(getInstance());
     }
 
     public enum Mode {
