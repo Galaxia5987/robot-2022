@@ -60,8 +60,8 @@ public final class Constants {
         public static final double ALLOWABLE_ANGLE_ERROR = Math.toRadians(3); // [rad]
         public static final double WHEEL_RADIUS = 0.04688; // [m]
 
-        public static final double ROBOT_LENGTH = 0.5924; // [m]
-        public static final double ROBOT_WIDTH = 0.5924; // [m]
+        public static final double ROBOT_LENGTH = 0.68; // [m]
+        public static final double ROBOT_WIDTH = 0.82; // [m]
 
         // the rotational velocity of the robot, this constant multiplies the rotation output of the joystick
         public static final double JOYSTICK_THRESHOLD = 0.1; // [%]
