@@ -68,12 +68,6 @@ public final class Constants {
         public static final double ANGLE_COSINE_DEADBAND = Math.toRadians(10); // [rads]
         public static final double ROTATION_DELAY = 0.1; // [sec]
         public static final int ANGLE_CURVE_STRENGTH = 4;
-        public static final double LOOP_PERIOD = 0.02; // loop period. [s]
-        public static final double g = 9.80665; // Gravity acceleration constant. [m/s^2]
-        public static final double UPPER_TARGET_HEIGHT = 2.64; // Height of upper target. [m]
-        public static final double PEBZNER_HEIGHT = 4.8; // Height of pebzner auditorium. [m]
-        public static final double NOMINAL_VOLTAGE = 12.0; // Nominal voltage. [V]
-        public static final int TALON_TIMEOUT = 10; // Waiting period for configurations. [ms]
         private static final double Rx = SwerveDrive.ROBOT_WIDTH / 2; // [m]
         private static final double Ry = SwerveDrive.ROBOT_LENGTH / 2; // [m]
         // Axis systems
