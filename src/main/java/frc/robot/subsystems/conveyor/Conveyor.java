@@ -221,7 +221,7 @@ public class Conveyor extends SubsystemBase {
     private void putQueueToDashboard() {
         var colorQueue = new String[]{cargoPositions.getLast(), cargoPositions.getFirst()};
 
-        for(int i = 0; i < colorQueue.length; i++) {
+        for (int i = 0; i < colorQueue.length; i++) {
             var currentColorIndex = (i == 0) ? "first_color" : "last_color";
             if (colorQueue[i].equals(DriverStation.Alliance.Red.name())) {
                 SmartDashboard.putString(currentColorIndex, "red");
