@@ -63,8 +63,8 @@ public final class Constants {
         public static final double ALLOWABLE_ANGLE_ERROR = Math.toRadians(1); // [rad]
         public static final double WHEEL_RADIUS = 0.04688; // [m]
 
-        public static final double ROBOT_LENGTH = 0.5924; // [m]
-        public static final double ROBOT_WIDTH = 0.5924; // [m]
+        public static final double ROBOT_LENGTH = 0.6624; // [m]
+        public static final double ROBOT_WIDTH = 0.5224; // [m]
 
         // the rotational velocity of the robot, this constant multiplies the rotation output of the joystick
         public static final double JOYSTICK_THRESHOLD = 0.1; // [%]
@@ -87,7 +87,7 @@ public final class Constants {
     }
 
     public static final class SwerveModule {
-        public static final int[] ZERO_POSITIONS = {-979, -97, -127, 311}; // fr, fl, rr, rl
+        public static final int[] ZERO_POSITIONS = {382, -93, -25, 321}; // fr, fl, rr, rl
 
         public static final int TRIGGER_THRESHOLD_CURRENT = 2; // [amps]
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]
@@ -114,7 +114,7 @@ public final class Constants {
         public static final SwerveModuleConfigBase rrConfig = new SwerveModuleConfigBase.Builder(2)
                 .configPorts(DRIVE_MOTOR_RR, ANGLE_MOTOR_RR)
                 .configInversions(DRIVE_INVERTED_RR, ANGLE_INVERTED_RR, ANGLE_SENSOR_PHASE_RR)
-                .configAnglePID(0.9911, 0, 0, 4.2)
+                .configAnglePID(1.5, 0.3, 0, 4)
                 .configZeroPosition(ZERO_POSITIONS[2])
                 .configJ(0.115)
                 .enableDebug()
