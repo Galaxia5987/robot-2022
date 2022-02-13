@@ -99,7 +99,7 @@ public class SwerveDrive extends SubsystemBase {
      * @param rotation rhe rotational velocity. [rad/s]
      */
     public void holonomicDrive(double forward, double strafe, double rotation) {
-        if (rotation == 0 || rotationDelay.update(Math.abs(headingController.getGoal().position - Robot.getAngle()
+       if (rotation == 0 && rotationDelay.update(Math.abs(headingController.getGoal().position - Robot.getAngle()
                         .getRadians()) < Constants.SwerveDrive.ALLOWABLE_HEADING_ERROR,
                 Constants.SwerveDrive.ROTATION_DELAY)) {
             rotation = headingController.calculate(Robot.getAngle().getRadians());
