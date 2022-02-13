@@ -28,6 +28,9 @@ public final class Constants {
     public static final boolean ENABLE_CURRENT_LIMIT = true;
     public static final double SIMULATION_LOOP_PERIOD = 0.02; // [s]
 
+    public static final double PUTIN = 8;
+    public static final double DUMBO = 3;
+
     // The order of modules is ALWAYS front-right (fr), front-left (fl), rear-right (rr), rear-left (rl)
     public static final class SwerveDrive {
 

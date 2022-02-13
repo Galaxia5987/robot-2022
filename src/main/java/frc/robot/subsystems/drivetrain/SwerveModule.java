@@ -40,6 +40,8 @@ public class SwerveModule extends SubsystemBase {
     private LinearSystemLoop<N1, N1, N1> stateSpace;
     private double currentTime, lastTime;
     private double lastJ;
+    private double lastQ;
+    private double lastR;
 
     public SwerveModule(SwerveModuleConfigBase config) {
         this.config = config;
@@ -50,6 +52,8 @@ public class SwerveModule extends SubsystemBase {
         stateSpace = constructVelocityLinearSystem(config.j());
         stateSpace.reset(VecBuilder.fill(Units.metersPerSecondToRps(getVelocity(), Constants.SwerveDrive.WHEEL_RADIUS)));
         lastJ = config.j();
+        lastQ = Constants.SwerveDrive.VELOCITY_TOLERANCE.get();
+        lastR = Constants.SwerveDrive.COST_LQR.get();
 
         // configure feedback sensors
         angleMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, Constants.TALON_TIMEOUT);
@@ -119,8 +123,8 @@ public class SwerveModule extends SubsystemBase {
                 Constants.LOOP_PERIOD
         );
         LinearQuadraticRegulator<N1, N1, N1> lqr = new LinearQuadraticRegulator<>(stateSpace,
-                VecBuilder.fill(Constants.SwerveDrive.VELOCITY_TOLERANCE),
-                VecBuilder.fill(Constants.SwerveDrive.COST_LQR),
+                VecBuilder.fill(Constants.SwerveDrive.VELOCITY_TOLERANCE.get()),
+                VecBuilder.fill(Constants.SwerveDrive.COST_LQR.get()),
                 Constants.LOOP_PERIOD // time between loops, DON'T CHANGE
         );
         lqr.latencyCompensate(stateSpace, Constants.LOOP_PERIOD, Constants.TALON_TIMEOUT * 0.001);
@@ -135,6 +139,9 @@ public class SwerveModule extends SubsystemBase {
      * @return the velocity of the wheel. [m/s]
      */
     public double getVelocity() {
+        if (getWheel() == 3) {
+            return driveUnitModel.toVelocity(driveMotor.getSelectedSensorVelocity(1));
+        }
         return driveUnitModel.toVelocity(driveMotor.getSelectedSensorVelocity());
     }
 
@@ -257,10 +264,12 @@ public class SwerveModule extends SubsystemBase {
     public void periodic() {
         if (config.debug()) {
             configPID(config.angleKp(), config.angleKi(), config.angleKd(), config.angleKf());
-            if (config.j() != lastJ) {
+            if (config.j() != lastJ || lastQ != Constants.SwerveDrive.VELOCITY_TOLERANCE.get() || Constants.SwerveDrive.COST_LQR.get() != lastR) {
                 stateSpace = constructVelocityLinearSystem(config.j());
                 stateSpace.reset(VecBuilder.fill(Units.metersPerSecondToRps(getVelocity(), Constants.SwerveDrive.WHEEL_RADIUS)));
                 lastJ = config.j();
+                lastQ = Constants.SwerveDrive.VELOCITY_TOLERANCE.get();
+                lastR = Constants.SwerveDrive.COST_LQR.get();
             }
             FireLog.log("angle " + config.wheel(), getAngle().getDegrees());
             FireLog.log("velocity " + config.wheel(), getVelocity());
