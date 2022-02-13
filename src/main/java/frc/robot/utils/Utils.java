@@ -52,6 +52,11 @@ public class Utils {
         return rpm / 60.0;
     }
 
+    /**
+     * Put input command into the smart dashboard.
+     *
+     * @param subsystem is the subsystem whose command we need to put to dashboard.
+     */
     public static void putSubsystemCommandToDashboard(SubsystemBase subsystem) {
         if (subsystem.getCurrentCommand() != null) {
             SmartDashboard.putString("active_command", subsystem.getCurrentCommand().getName());
