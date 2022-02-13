@@ -12,6 +12,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.utils.SwerveModuleConfigBase;
+import frc.robot.valuetuner.WebConstant;
 import org.photonvision.SimVisionTarget;
 
 import static frc.robot.Ports.SwerveDrive.*;
@@ -43,8 +44,8 @@ public final class Constants {
         public static final int MAX_CURRENT = 15; // [amps]
 
         // State Space
-        public static final double VELOCITY_TOLERANCE = 5; // [rps]
-        public static final double COST_LQR = 11;
+        public static final WebConstant VELOCITY_TOLERANCE = WebConstant.of("Swerve", "q", 5); // [rps]
+        public static final WebConstant COST_LQR = WebConstant.of("Swerve", "r", 15);
         // Note that the values of MODEL_TOLERANCE and ENCODER_TOLERANCE should be a lot smaller (something like 1e-6)
         public static final double MODEL_TOLERANCE = 0.01;
         public static final double ENCODER_TOLERANCE = 0.01; // [ticks]
@@ -56,7 +57,7 @@ public final class Constants {
 
         // The heading is responsible for the angle of the whole chassis, while the angle is used in the angle motor itself.
         public static final double ALLOWABLE_HEADING_ERROR = Math.toRadians(0.05); // [rad]
-        public static final double ALLOWABLE_ANGLE_ERROR = Math.toRadians(8); // [rad]
+        public static final double ALLOWABLE_ANGLE_ERROR = Math.toRadians(1); // [rad]
         public static final double WHEEL_RADIUS = 0.04688; // [m]
 
         public static final double ROBOT_LENGTH = 0.5924; // [m]
@@ -83,9 +84,53 @@ public final class Constants {
                 new Translation2d(-Rx, Ry)
         };
         // angle motion magic
-        private static final float MOTION_MAGIC_SAFETY = 0.7f;
+        public static final float MOTION_MAGIC_SAFETY = 0.65f;
         public static final int ANGLE_MOTION_ACCELERATION = Math.round(2800 * MOTION_MAGIC_SAFETY);
-        public static final int ANGLE_CRUISE_VELOCITY = Math.round(550 * MOTION_MAGIC_SAFETY);
+        public static final int ANGLE_CRUISE_VELOCITY = Math.round(600 * MOTION_MAGIC_SAFETY);
+    }
+
+    public static final class SwerveModule {
+        public static final int[] ZERO_POSITIONS = {-979, -97, -127, 311}; // fr, fl, rr, rl
+
+        public static final int TRIGGER_THRESHOLD_CURRENT = 2; // [amps]
+        public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]
+        public static final double RAMP_RATE = 1; // seconds from neutral to max
+
+        public static final SwerveModuleConfigBase frConfig = new SwerveModuleConfigBase.Builder(0)
+                .configPorts(DRIVE_MOTOR_FR, ANGLE_MOTOR_FR)
+                .configInversions(DRIVE_INVERTED_FR, ANGLE_INVERTED_FR, ANGLE_SENSOR_PHASE_FR)
+                .configAnglePID(4.5, 0.0045, 1, 0)
+                .configZeroPosition(ZERO_POSITIONS[0])
+                .configJ(0.115)
+                .enableDebug()
+                .build();
+
+        public static final SwerveModuleConfigBase flConfig = new SwerveModuleConfigBase.Builder(1)
+                .configPorts(DRIVE_MOTOR_FL, ANGLE_MOTOR_FL)
+                .configInversions(DRIVE_INVERTED_FL, ANGLE_INVERTED_FL, ANGLE_SENSOR_PHASE_FL)
+                .configAnglePID(13, 0.0045, 0, 0)
+                .configZeroPosition(ZERO_POSITIONS[1])
+                .configJ(0.115)
+                .enableDebug()
+                .build();
+
+        public static final SwerveModuleConfigBase rrConfig = new SwerveModuleConfigBase.Builder(2)
+                .configPorts(DRIVE_MOTOR_RR, ANGLE_MOTOR_RR)
+                .configInversions(DRIVE_INVERTED_RR, ANGLE_INVERTED_RR, ANGLE_SENSOR_PHASE_RR)
+                .configAnglePID(0.9911, 0, 0, 4.2)
+                .configZeroPosition(ZERO_POSITIONS[2])
+                .configJ(0.115)
+                .enableDebug()
+                .build();
+
+        public static final SwerveModuleConfigBase rlConfig = new SwerveModuleConfigBase.Builder(3)
+                .configPorts(DRIVE_MOTOR_RL, ANGLE_MOTOR_RL)
+                .configInversions(DRIVE_INVERTED_RL, ANGLE_INVERTED_RL, ANGLE_SENSOR_PHASE_RL)
+                .configAnglePID(10, 0.004, 0, 0)
+                .configZeroPosition(ZERO_POSITIONS[3])
+                .configJ(0.115)
+                .enableDebug()
+                .build();
     }
 
     public static class Shooter {
@@ -114,46 +159,6 @@ public final class Constants {
             return configuration;
         }
 
-    }
-
-    public static final class SwerveModule {
-        public static final int[] ZERO_POSITIONS = {-3697, 538, -1813, -1950}; // fr, fl, rr, rl
-
-        public static final int TRIGGER_THRESHOLD_CURRENT = 2; // [amps]
-        public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]
-        public static final double RAMP_RATE = 1; // seconds from neutral to max
-
-        public static final SwerveModuleConfigBase frConfig = new SwerveModuleConfigBase.Builder(0)
-                .configPorts(DRIVE_MOTOR_FR, ANGLE_MOTOR_FR)
-                .configInversions(DRIVE_INVERTED_FR, ANGLE_INVERTED_FR, ANGLE_SENSOR_PHASE_FR)
-                .configAnglePID(4.5, 0.0045, 1, 0)
-                .configZeroPosition(ZERO_POSITIONS[0])
-                .configJ(0.115)
-                .build();
-
-        public static final SwerveModuleConfigBase flConfig = new SwerveModuleConfigBase.Builder(1)
-                .configPorts(DRIVE_MOTOR_FL, ANGLE_MOTOR_FL)
-                .configInversions(DRIVE_INVERTED_FL, ANGLE_INVERTED_FL, ANGLE_SENSOR_PHASE_FL)
-                .configAnglePID(13, 0.0045, 0, 0)
-                .configZeroPosition(ZERO_POSITIONS[1])
-                .configJ(0.115)
-                .build();
-
-        public static final SwerveModuleConfigBase rrConfig = new SwerveModuleConfigBase.Builder(2)
-                .configPorts(DRIVE_MOTOR_RR, ANGLE_MOTOR_RR)
-                .configInversions(DRIVE_INVERTED_RR, ANGLE_INVERTED_RR, ANGLE_SENSOR_PHASE_RR)
-                .configAnglePID(8, 0.004, 0, 0)
-                .configZeroPosition(ZERO_POSITIONS[2])
-                .configJ(0.115)
-                .build();
-
-        public static final SwerveModuleConfigBase rlConfig = new SwerveModuleConfigBase.Builder(3)
-                .configPorts(DRIVE_MOTOR_RL, ANGLE_MOTOR_RL)
-                .configInversions(DRIVE_INVERTED_RL, ANGLE_INVERTED_RL, ANGLE_SENSOR_PHASE_RL)
-                .configAnglePID(10, 0.004, 0, 0)
-                .configZeroPosition(ZERO_POSITIONS[3])
-                .configJ(0.115)
-                .build();
     }
 
     public static class Autonomous {
