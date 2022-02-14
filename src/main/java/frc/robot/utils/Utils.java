@@ -47,4 +47,26 @@ public class Utils {
         return rpm / 60.0;
     }
 
+    /**
+     * This function is a series of parabolas designed to smooth the input of the joystick.
+     * Warning! This might not work well because the derivative of the output graph isn't continuous.
+     *
+     * @param joystickAcceleration is the change in the output of the joystick. [% / s]
+     * @param joystickValue        is the value on which the smoothing function is applied. [%]
+     * @return the smoothed value.
+     */
+    public static double smoothingFunction(double joystickAcceleration, double joystickValue) {
+        final double kParabolaConstant = 0.75;
+        double a, b = -1, c;
+
+        if (joystickAcceleration < 0) {
+            a = kParabolaConstant;
+            c = (joystickValue < 0) ? 0 : 1;
+        } else {
+            a = -kParabolaConstant;
+            c = (joystickValue < 0) ? -1 : 0;
+        }
+
+        return a * Math.pow(joystickValue, 2) + b * joystickValue + c;
+    }
 }
