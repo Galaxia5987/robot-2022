@@ -99,13 +99,13 @@ public class SwerveDrive extends SubsystemBase {
      * @param rotation the rotational velocity counter-clockwise positive. [rad/s]
      */
     public void holonomicDrive(double forward, double strafe, double rotation) {
-        if (rotation == 0 || rotationDelay.update(Math.abs(headingController.getGoal().position - Robot.getAngle()
-                        .getRadians()) < Constants.SwerveDrive.ALLOWABLE_HEADING_ERROR,
-                Constants.SwerveDrive.ROTATION_DELAY)) {
-            rotation = headingController.calculate(Robot.getAngle().getRadians());
-        } else {
-            headingController.setGoal(Robot.getAngle().getRadians());
-        }
+//        if (rotation == 0 || rotationDelay.update(Math.abs(headingController.getGoal().position - Robot.getAngle()
+//                        .getRadians()) < Constants.SwerveDrive.ALLOWABLE_HEADING_ERROR,
+//                Constants.SwerveDrive.ROTATION_DELAY)) {
+//            rotation = headingController.calculate(Robot.getAngle().getRadians());
+//        } else {
+//            headingController.setGoal(Robot.getAngle().getRadians());
+//        }
         ChassisSpeeds speeds = fieldOriented ?
                 ChassisSpeeds.fromFieldRelativeSpeeds(forward, strafe, rotation, Robot.getAngle()) :
                 new ChassisSpeeds(forward, strafe, rotation);
@@ -212,7 +212,7 @@ public class SwerveDrive extends SubsystemBase {
         for (SwerveModule module : modules) {
             states[module.getWheel()] = SwerveModuleState.optimize(states[module.getWheel()], module.getAngle());
             module.setAngle(states[module.getWheel()].angle);
-            module.setVelocity(states[module.getWheel()].speedMetersPerSecond);
+//            module.setVelocity(states[module.getWheel()].speedMetersPerSecond);
         }
     }
 

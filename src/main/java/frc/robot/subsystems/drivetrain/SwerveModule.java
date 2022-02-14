@@ -81,9 +81,14 @@ public class SwerveModule extends SubsystemBase {
         configPID(config.angleKp(), config.angleKi(), config.angleKd(), config.angleKf());
         angleMotor.config_IntegralZone(0, 5);
         angleMotor.configAllowableClosedloopError(0, angleUnitModel.toTicks(Constants.SwerveDrive.ALLOWABLE_ANGLE_ERROR));
-
+//        if (getWheel() == 2) {
+//            angleMotor.configMotionAcceleration(Constants.SwerveDrive.ANGLE_MOTION_ACCELERATION * 100);
+//            angleMotor.configMotionCruiseVelocity(Constants.SwerveDrive.ANGLE_CRUISE_VELOCITY * 100);
+//        } else {
         angleMotor.configMotionAcceleration(Constants.SwerveDrive.ANGLE_MOTION_ACCELERATION);
         angleMotor.configMotionCruiseVelocity(Constants.SwerveDrive.ANGLE_CRUISE_VELOCITY);
+//        }
+
         angleMotor.configMotionSCurveStrength(Constants.SwerveDrive.ANGLE_CURVE_STRENGTH);
 
         // set voltage compensation and saturation
@@ -255,11 +260,14 @@ public class SwerveModule extends SubsystemBase {
         double ramp;
         if (isUserDefined) {
             ramp = 0;
+            angleMotor.configOpenloopRamp(0, Constants.TALON_TIMEOUT);
+            angleMotor.configClosedloopRamp(0, Constants.TALON_TIMEOUT);
         } else {
             ramp = Constants.SwerveModule.RAMP_RATE;
         }
         driveMotor.configOpenloopRamp(ramp, Constants.TALON_TIMEOUT);
         driveMotor.configClosedloopRamp(ramp, Constants.TALON_TIMEOUT);
+
     }
 
     @Override

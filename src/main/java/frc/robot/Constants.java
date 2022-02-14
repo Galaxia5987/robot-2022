@@ -67,13 +67,7 @@ public final class Constants {
         public static final double JOYSTICK_THRESHOLD = 0.1; // [%]
         public static final double ANGLE_COSINE_DEADBAND = Math.toRadians(10); // [rads]
         public static final double ROTATION_DELAY = 0.1; // [sec]
-        public static final int ANGLE_CURVE_STRENGTH = 4;
-        public static final double LOOP_PERIOD = 0.02; // loop period. [s]
-        public static final double g = 9.80665; // Gravity acceleration constant. [m/s^2]
-        public static final double UPPER_TARGET_HEIGHT = 2.64; // Height of upper target. [m]
-        public static final double PEBZNER_HEIGHT = 4.8; // Height of pebzner auditorium. [m]
-        public static final double NOMINAL_VOLTAGE = 12.0; // Nominal voltage. [V]
-        public static final int TALON_TIMEOUT = 10; // Waiting period for configurations. [ms]
+        public static final int ANGLE_CURVE_STRENGTH = 1;
         private static final double Rx = SwerveDrive.ROBOT_WIDTH / 2; // [m]
         private static final double Ry = SwerveDrive.ROBOT_LENGTH / 2; // [m]
         // Axis systems
@@ -85,8 +79,8 @@ public final class Constants {
         };
         // angle motion magic
         private static final float MOTION_MAGIC_SAFETY = 0.7f;
-        public static final int ANGLE_MOTION_ACCELERATION = Math.round(2800 * MOTION_MAGIC_SAFETY);
-        public static final int ANGLE_CRUISE_VELOCITY = Math.round(550 * MOTION_MAGIC_SAFETY);
+        public static final int ANGLE_MOTION_ACCELERATION = (int) Math.round(550 * 2.5 * MOTION_MAGIC_SAFETY);
+        public static final int ANGLE_CRUISE_VELOCITY = (int) Math.round(2800 * 1.5 * MOTION_MAGIC_SAFETY);
 
         public static final double DRIFTING_PERIOD = 0.2; // expected period the robot will change its rotation even after commanded to stop. [s]
     }
@@ -120,7 +114,7 @@ public final class Constants {
     }
 
     public static final class SwerveModule {
-        public static final int[] ZERO_POSITIONS = {-3697, 538, -1813, -1950}; // fr, fl, rr, rl
+        public static final int[] ZERO_POSITIONS = {-635,-1108,-1052,-733}; // fr, fl, rr, rl
 
         public static final int TRIGGER_THRESHOLD_CURRENT = 2; // [amps]
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]
@@ -129,7 +123,7 @@ public final class Constants {
         public static final SwerveModuleConfigBase frConfig = new SwerveModuleConfigBase.Builder(0)
                 .configPorts(DRIVE_MOTOR_FR, ANGLE_MOTOR_FR)
                 .configInversions(DRIVE_INVERTED_FR, ANGLE_INVERTED_FR, ANGLE_SENSOR_PHASE_FR)
-                .configAnglePID(4.5, 0.0045, 1, 0)
+                .configAnglePID(6, 0, 0, 0)
                 .configZeroPosition(ZERO_POSITIONS[0])
                 .configJ(0.115)
                 .build();
@@ -137,7 +131,7 @@ public final class Constants {
         public static final SwerveModuleConfigBase flConfig = new SwerveModuleConfigBase.Builder(1)
                 .configPorts(DRIVE_MOTOR_FL, ANGLE_MOTOR_FL)
                 .configInversions(DRIVE_INVERTED_FL, ANGLE_INVERTED_FL, ANGLE_SENSOR_PHASE_FL)
-                .configAnglePID(13, 0.0045, 0, 0)
+                .configAnglePID(6, 0, 0, 0)
                 .configZeroPosition(ZERO_POSITIONS[1])
                 .configJ(0.115)
                 .build();
@@ -145,7 +139,7 @@ public final class Constants {
         public static final SwerveModuleConfigBase rrConfig = new SwerveModuleConfigBase.Builder(2)
                 .configPorts(DRIVE_MOTOR_RR, ANGLE_MOTOR_RR)
                 .configInversions(DRIVE_INVERTED_RR, ANGLE_INVERTED_RR, ANGLE_SENSOR_PHASE_RR)
-                .configAnglePID(8, 0.004, 0, 0)
+                .configAnglePID(6, 0, 0, 0.01)
                 .configZeroPosition(ZERO_POSITIONS[2])
                 .configJ(0.115)
                 .build();
@@ -153,7 +147,7 @@ public final class Constants {
         public static final SwerveModuleConfigBase rlConfig = new SwerveModuleConfigBase.Builder(3)
                 .configPorts(DRIVE_MOTOR_RL, ANGLE_MOTOR_RL)
                 .configInversions(DRIVE_INVERTED_RL, ANGLE_INVERTED_RL, ANGLE_SENSOR_PHASE_RL)
-                .configAnglePID(10, 0.004, 0, 0)
+                .configAnglePID(6, 0, 0, 0)
                 .configZeroPosition(ZERO_POSITIONS[3])
                 .configJ(0.115)
                 .build();

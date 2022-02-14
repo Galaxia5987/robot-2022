@@ -10,12 +10,15 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commandgroups.PickUpCargo;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.commands.AdjustAngle;
 import frc.robot.subsystems.climber.commands.StopClimber;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.HolonomicDrive;
+import frc.robot.subsystems.drivetrain.commands.OverpoweredDrive;
+import frc.robot.subsystems.intake.Intake;
 import webapp.Webserver;
 
 public class RobotContainer {
@@ -31,8 +34,9 @@ public class RobotContainer {
 
     // The robot's subsystems and commands are defined here...
     private final SwerveDrive swerve = SwerveDrive.getFieldOrientedInstance();
-    private final Climber climber = Climber.getInstance();
-    private final Conveyor conveyor = Conveyor.getInstance();
+    //    private final Climber climber = Climber.getInstance();
+//    private final Conveyor conveyor = Conveyor.getInstance();
+//    private final Intake intake = Intake.getInstance();
 
 
     /**
@@ -50,14 +54,17 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        swerve.setDefaultCommand(new HolonomicDrive(swerve, xbox::getLeftY, () -> -xbox.getLeftX(), xbox::getRightX));
+//        swerve.setDefaultCommand(new HolonomicDrive(swerve, xbox::getLeftY, () -> -xbox.getLeftX(), xbox::getRightX));
+//        swerve.setDefaultCommand(new OverpoweredDrive(swerve, () -> -xbox.getLeftY(), () -> -xbox.getLeftX(), () -> -xbox.getRightX()));
+        swerve.setDefaultCommand(new HolonomicDrive(swerve, () -> -xbox.getLeftY(), () -> -xbox.getLeftX(), () -> -xbox.getRightX()));
     }
 
     private void configureButtonBindings() {
         a.whenPressed((Runnable) Robot::resetAngle);
-        b.toggleWhenPressed(new StopClimber(climber));
+//        b.whenHeld(new PickUpCargo(conveyor, intake, 0.5, 0.5));
+//        b.toggleWhenPressed(new StopClimber(climber));
 
-        a.and(b).and(y).toggleWhenActive(new AdjustAngle(climber));
+//        a.and(b).and(y).toggleWhenActive(new AdjustAngle(climber));
     }
 
 
