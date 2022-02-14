@@ -50,7 +50,7 @@ public final class Constants {
         public static final double MODEL_TOLERANCE = 0.01;
         public static final double ENCODER_TOLERANCE = 0.01; // [ticks]
 
-        public static final double HEADING_KP = 1.718873;
+        public static final double HEADING_KP = 0.1125;
         public static final double HEADING_KI = 1;
         public static final double HEADING_KD = 1;
         public static final TrapezoidProfile.Constraints HEADING_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 1.5); // [rads/sec], [rad/sec^2]
@@ -79,8 +79,10 @@ public final class Constants {
         };
         // angle motion magic
         private static final float MOTION_MAGIC_SAFETY = 0.7f;
-        public static final int ANGLE_MOTION_ACCELERATION = (int) Math.round(550 * 2.5 * MOTION_MAGIC_SAFETY);
-        public static final int ANGLE_CRUISE_VELOCITY = (int) Math.round(2800 * 1.5 * MOTION_MAGIC_SAFETY);
+//        public static final int ANGLE_MOTION_ACCELERATION = (int) Math.round(550 * 2.5 * MOTION_MAGIC_SAFETY);
+//        public static final int ANGLE_CRUISE_VELOCITY = (int) Math.round(2800 * 1.5 * MOTION_MAGIC_SAFETY);
+        public static final int ANGLE_MOTION_ACCELERATION = (int) 1300;
+        public static final int ANGLE_CRUISE_VELOCITY = (int) 400;
 
         public static final double DRIFTING_PERIOD = 0.2; // expected period the robot will change its rotation even after commanded to stop. [s]
     }
@@ -118,7 +120,7 @@ public final class Constants {
 
         public static final int TRIGGER_THRESHOLD_CURRENT = 2; // [amps]
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]
-        public static final double RAMP_RATE = 1; // seconds from neutral to max
+        public static final double RAMP_RATE = 0; // seconds from neutral to max
 
         public static final SwerveModuleConfigBase frConfig = new SwerveModuleConfigBase.Builder(0)
                 .configPorts(DRIVE_MOTOR_FR, ANGLE_MOTOR_FR)
@@ -139,7 +141,7 @@ public final class Constants {
         public static final SwerveModuleConfigBase rrConfig = new SwerveModuleConfigBase.Builder(2)
                 .configPorts(DRIVE_MOTOR_RR, ANGLE_MOTOR_RR)
                 .configInversions(DRIVE_INVERTED_RR, ANGLE_INVERTED_RR, ANGLE_SENSOR_PHASE_RR)
-                .configAnglePID(6, 0, 0, 0.01)
+                .configAnglePID(6, 0, 0, 0)
                 .configZeroPosition(ZERO_POSITIONS[2])
                 .configJ(0.115)
                 .build();

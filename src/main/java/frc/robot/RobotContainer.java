@@ -56,11 +56,12 @@ public class RobotContainer {
     private void configureDefaultCommands() {
 //        swerve.setDefaultCommand(new HolonomicDrive(swerve, xbox::getLeftY, () -> -xbox.getLeftX(), xbox::getRightX));
 //        swerve.setDefaultCommand(new OverpoweredDrive(swerve, () -> -xbox.getLeftY(), () -> -xbox.getLeftX(), () -> -xbox.getRightX()));
-        swerve.setDefaultCommand(new HolonomicDrive(swerve, () -> -xbox.getLeftY(), () -> -xbox.getLeftX(), () -> -xbox.getRightX()));
+        swerve.setDefaultCommand(new OverpoweredDrive(swerve, () -> -joystick.getY(), () -> -joystick.getX(), () -> -joystick2.getX()));
+//        swerve.setDefaultCommand(new HolonomicDrive(swerve, () -> -xbox.getLeftY(), xbox::getLeftX, () -> -xbox.getRightX()));
     }
 
     private void configureButtonBindings() {
-        a.whenPressed((Runnable) Robot::resetAngle);
+        leftTrigger.whenPressed((Runnable) Robot::resetAngle);
 //        b.whenHeld(new PickUpCargo(conveyor, intake, 0.5, 0.5));
 //        b.toggleWhenPressed(new StopClimber(climber));
 

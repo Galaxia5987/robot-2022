@@ -151,7 +151,7 @@ public class SwerveDrive extends SubsystemBase {
             double diff = Utils.deadband(states[module.getWheel()].angle.minus(module.getAngle()).getRadians(),
                     Constants.SwerveDrive.ANGLE_COSINE_DEADBAND);
             module.setAngle(states[module.getWheel()].angle);
-            module.setVelocity(states[module.getWheel()].speedMetersPerSecond * Math.cos(diff));
+            module.setVelocity(states[module.getWheel()].speedMetersPerSecond * Math.cos(diff) * 1.25);
         }
     }
 
@@ -212,7 +212,7 @@ public class SwerveDrive extends SubsystemBase {
         for (SwerveModule module : modules) {
             states[module.getWheel()] = SwerveModuleState.optimize(states[module.getWheel()], module.getAngle());
             module.setAngle(states[module.getWheel()].angle);
-//            module.setVelocity(states[module.getWheel()].speedMetersPerSecond);
+            module.setVelocity(states[module.getWheel()].speedMetersPerSecond);
         }
     }
 
