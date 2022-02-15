@@ -53,6 +53,7 @@ public class Utils {
     }
 
     public static double smoothing(double val) {
-        return joystickFilter.calculate(val);
+        double filteredValue = joystickFilter.calculate(val);
+        return (Math.sin(Math.PI / 2 * (filteredValue - 1)) + 1) * Math.signum(filteredValue);
     }
 }
