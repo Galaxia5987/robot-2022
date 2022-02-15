@@ -1,6 +1,7 @@
 package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -19,6 +20,7 @@ public class Intake extends SubsystemBase {
         motor.setInverted(Ports.Intake.IS_MOTOR_INVERTED);
         motor.enableVoltageCompensation(IS_COMPENSATING_VOLTAGE);
         motor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
+        motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 15, 0.25, 0.02), Constants.TALON_TIMEOUT);
     }
 
 
