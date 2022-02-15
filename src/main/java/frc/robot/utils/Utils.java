@@ -1,6 +1,11 @@
 package frc.robot.utils;
 
+import edu.wpi.first.math.filter.LinearFilter;
+import frc.robot.Constants;
+
 public class Utils {
+    private static final LinearFilter joystickFilter = LinearFilter.movingAverage(
+            Constants.Control.JOYSTICK_FILTER_TAP);
 
     /**
      * Sets the value of the joystick to 0 if the value is less than the threshold.
@@ -47,4 +52,7 @@ public class Utils {
         return rpm / 60.0;
     }
 
+    public static double smoothing(double val) {
+        return joystickFilter.calculate(val);
+    }
 }
