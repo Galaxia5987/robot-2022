@@ -52,7 +52,14 @@ public class Utils {
         return rpm / 60.0;
     }
 
-    public static double smoothing(double val) {
+    /**
+     * This smoothing function includes a simple averaging linear filter,
+     * and a regular smoothing mathematical function for an extra smooth experience.
+     * 
+     * @param val is the input parameter of the joystick. [%]
+     * @return the premium smoothed value. [%]
+     */
+    public static double joystickSmoothing(double val) {
         double filteredValue = joystickFilter.calculate(val);
         return (Math.sin(Math.PI / 2 * (filteredValue - 1)) + 1) * Math.signum(filteredValue);
     }
