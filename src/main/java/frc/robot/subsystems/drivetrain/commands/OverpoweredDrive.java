@@ -74,7 +74,7 @@ public class OverpoweredDrive extends HolonomicDrive {
 
             // if you want acceleration from zero speed, and angles weren't reached
             if (wait) {
-                swerveDrive.errorRelativeHolonomicDrive(forward, strafe, rotation);
+                swerveDrive.errorRelativeHolonomicDrive(Math.cos(alpha) * magnitude, Math.sin(alpha) * magnitude, rotation);
                 setpoint = Robot.getAngle();
                 newSetpoint = true;
 
@@ -97,7 +97,7 @@ public class OverpoweredDrive extends HolonomicDrive {
                     }
 
                 } else {
-                    swerveDrive.defaultHolonomicDrive(forward, strafe, rotation * (1 + magnitude / (VELOCITY_MULTIPLIER * 4)));
+                    swerveDrive.defaultHolonomicDrive(forward, strafe, rotation * (1 + (current / VELOCITY_MULTIPLIER) / Constants.SwerveDrive.ROTATIONAL_ADDITION_RESTRAINT));
                     setpoint = Robot.getAngle();
                 }
             }

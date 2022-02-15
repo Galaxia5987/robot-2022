@@ -68,6 +68,7 @@ public final class Constants {
         public static final double ANGLE_COSINE_DEADBAND = Math.toRadians(10); // [rads]
         public static final double ROTATION_DELAY = 0.1; // [sec]
         public static final int ANGLE_CURVE_STRENGTH = 1;
+        public static final double ROTATIONAL_ADDITION_RESTRAINT = 3 ;
         private static final double Rx = SwerveDrive.ROBOT_WIDTH / 2; // [m]
         private static final double Ry = SwerveDrive.ROBOT_LENGTH / 2; // [m]
         // Axis systems
@@ -79,7 +80,7 @@ public final class Constants {
         };
         // angle motion magic
         private static final float MOTION_MAGIC_SAFETY = 0.7f;
-//        public static final int ANGLE_MOTION_ACCELERATION = (int) Math.round(550 * 2.5 * MOTION_MAGIC_SAFETY);
+        //        public static final int ANGLE_MOTION_ACCELERATION = (int) Math.round(550 * 2.5 * MOTION_MAGIC_SAFETY);
 //        public static final int ANGLE_CRUISE_VELOCITY = (int) Math.round(2800 * 1.5 * MOTION_MAGIC_SAFETY);
         public static final int ANGLE_MOTION_ACCELERATION = (int) 1300;
         public static final int ANGLE_CRUISE_VELOCITY = (int) 400;
@@ -116,7 +117,7 @@ public final class Constants {
     }
 
     public static final class SwerveModule {
-        public static final int[] ZERO_POSITIONS = {-635,-1108,-1052,-733}; // fr, fl, rr, rl
+        public static final int[] ZERO_POSITIONS = {-635, -1108, -1052, -733}; // fr, fl, rr, rl
 
         public static final int TRIGGER_THRESHOLD_CURRENT = 2; // [amps]
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]

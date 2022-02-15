@@ -148,10 +148,9 @@ public class SwerveDrive extends SubsystemBase {
     private void errorRelativeSetStates(SwerveModuleState[] states) {
         for (SwerveModule module : modules) {
             states[module.getWheel()] = SwerveModuleState.optimize(states[module.getWheel()], module.getAngle());
-            double diff = Utils.deadband(states[module.getWheel()].angle.minus(module.getAngle()).getRadians(),
-                    Constants.SwerveDrive.ANGLE_COSINE_DEADBAND);
+            double diff = states[module.getWheel()].angle.minus(module.getAngle()).getRadians();
             module.setAngle(states[module.getWheel()].angle);
-            module.setVelocity(states[module.getWheel()].speedMetersPerSecond * Math.cos(diff) * Constants.SwerveDrive.SMOOTHING_MULTIPLIER);
+            module.setVelocity(states[module.getWheel()].speedMetersPerSecond * Math.cos(diff));
         }
     }
 
@@ -168,7 +167,7 @@ public class SwerveDrive extends SubsystemBase {
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
         for (SwerveModule module : modules) {
             states[module.getWheel()] = SwerveModuleState.optimize(states[module.getWheel()], module.getAngle());
-            if (!(Math.abs(states[module.getWheel()].angle.minus(module.getAngle()).getDegrees()) < 10)) { // TODO: Remove the magic number
+            if (!(Math.abs(states[module.getWheel()].angle.minus(module.getAngle()).getDegrees()) < 7)) { // TODO: Remove the magic number
                 return false;
             }
         }
