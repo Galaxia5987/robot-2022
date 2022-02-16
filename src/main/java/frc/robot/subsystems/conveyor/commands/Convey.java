@@ -1,5 +1,6 @@
 package frc.robot.subsystems.conveyor.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.conveyor.Conveyor;
 
@@ -10,6 +11,7 @@ public class Convey extends CommandBase {
     protected final DoubleSupplier power;
     protected final Conveyor conveyor;
     private final BooleanSupplier condition;
+    private double maximalProximity = 0;
 
     public Convey(Conveyor conveyor, DoubleSupplier power, BooleanSupplier condition) {
         this.power = power;
@@ -31,12 +33,22 @@ public class Convey extends CommandBase {
     }
 
     @Override
+    public void initialize() {
+        maximalProximity = 0;
+    }
+
+    @Override
     public void execute() {
         if (condition.getAsBoolean()) {
+            SmartDashboard.putNumber("Conveyor power", power.getAsDouble());
             conveyor.setPower(power.getAsDouble());
+            conveyor.setCommandPower(power.getAsDouble());
         } else {
             conveyor.setPower(0);
         }
+
+        maximalProximity = Math.max(maximalProximity, conveyor.getProximityValue());
+        System.out.println("Maximal proximity " + maximalProximity);
     }
 
     @Override

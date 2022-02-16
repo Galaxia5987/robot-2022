@@ -173,10 +173,9 @@ public final class Constants {
         public static final double DEFAULT_POWER = 0.5; // [%]
         public static final int MAX_CARGO_AMOUNT = 2;
         public static final int MIN_PROXIMITY_VALUE = 100; // Minimum distance from the color sensor in order to induce detection (arbitrary bit units).
-        public static final Color RED = new Color(0.15, 0.55, 0.3);
-        public static final Color BLUE = new Color(0.02, 0.51, 0.44);
-        public static final Color GREEN = new Color(0.06, 0.54, 0.39);
-        public static final Color NONE = new Color(2e-4, 0.94, 0.045);
+        public static final Color RED = new Color(0.19, 0.49, 0.32);
+        public static final Color BLUE = new Color(2.4e-4, 0.51, 0.487);
+        public static final Color NONE = new Color(2.4e-4, 0.52, 0.4);
 
     }
 
@@ -239,7 +238,7 @@ public final class Constants {
     }
 
     public static class Intake {
-        public static final double DEFAULT_POWER = 0.5; // power intake will receive on the basic command. [%]
+        public static final double DEFAULT_POWER = 1; // power intake will receive on the basic command. [%]
         public static final double POWER_TO_VELOCITY_RATIO = -3 / 16.0; // Ratio of power to velocity. [% / m/s]
         public static final boolean IS_COMPENSATING_VOLTAGE = true;
         public static final double TIME_BETWEEN_RUNS = 1.0; // time intake will wait before toggling the retractor (for testing only). [s]
