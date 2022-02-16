@@ -2,7 +2,6 @@ package frc.robot.subsystems.climber;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.VecBuilder;
@@ -10,9 +9,11 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
-import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -38,44 +39,57 @@ public class Climber extends SubsystemBase {
     private final UnitModel unitModelPosition = new UnitModel(Constants.Climber.TICKS_PER_RAD);
     private final DutyCycleEncoder dutyCycleEncoder = new DutyCycleEncoder(Ports.Climber.DUTY);
 
-    private final PIDController controller = new PIDController(Constants.Climber.KP, Constants.Climber.KI, Constants.Climber.KD);
-    private final ArmFeedforward feedforward = new ArmFeedforward(Constants.Climber.F_FORWARD_S, Constants.Climber.F_FORWARD_COS, Constants.Climber.F_FORWARD_V, Constants.Climber.F_FORWARD_A);
-    private final DCMotor armGearbox = DCMotor.getFalcon500(2);
-
-
-    private final SingleJointedArmSim armSim =
-            new SingleJointedArmSim(
-                    armGearbox,
-                    Constants.Climber.GEAR_RATIO,
-                    SingleJointedArmSim.estimateMOI(Constants.Climber.ARM_LENGTH, Constants.Climber.ARM_MASS),
-                    Constants.Climber.ARM_LENGTH,
-                    Constants.Climber.MIN_ANGLE,
-                    Constants.Climber.MAX_ANGLE,
-                    Constants.Climber.ARM_MASS,
-                    true,
-                    VecBuilder.fill(Constants.Climber.ARM_ENCODER_DIST_PER_PULSE)
-            );
-
-
-    private final Mechanism2d mechanism2d = new Mechanism2d(60, 60);
-    private final MechanismRoot2d armPivot = mechanism2d.getRoot("ArmPivot", 30, 30);
-    private final MechanismLigament2d armTower =
-            armPivot.append(new MechanismLigament2d("ArmTower", 30, -90));
-
-    private final MechanismLigament2d arm =
-            armPivot.append(
-                    new MechanismLigament2d(
-                            "Arm",
-                            30,
-                            Units.radiansToDegrees(armSim.getAngleRads()),
-                            6,
-                            new Color8Bit(Color.kYellow)));
+    private final PIDController controller;
+    private final SingleJointedArmSim armSim;
+    private final ArmFeedforward feedforward;
+    private final DCMotor armGearbox;
+    private final MechanismLigament2d arm;
 
 
     private Climber() {
         if (Robot.isSimulation()) {
+
+            controller = new PIDController(Constants.Climber.KP, Constants.Climber.KI, Constants.Climber.KD);
+            feedforward = new ArmFeedforward(Constants.Climber.F_FORWARD_S, Constants.Climber.F_FORWARD_COS, Constants.Climber.F_FORWARD_V, Constants.Climber.F_FORWARD_A);
+            armGearbox = DCMotor.getFalcon500(2);
+
+
+            armSim =
+                    new SingleJointedArmSim(
+                            armGearbox,
+                            Constants.Climber.GEAR_RATIO,
+                            SingleJointedArmSim.estimateMOI(Constants.Climber.ARM_LENGTH, Constants.Climber.ARM_MASS),
+                            Constants.Climber.ARM_LENGTH,
+                            Constants.Climber.MIN_ANGLE,
+                            Constants.Climber.MAX_ANGLE,
+                            Constants.Climber.ARM_MASS,
+                            true,
+                            VecBuilder.fill(Constants.Climber.ARM_ENCODER_DIST_PER_PULSE)
+                    );
+
+
+            Mechanism2d mechanism2d = new Mechanism2d(60, 60);
+            MechanismRoot2d armPivot = mechanism2d.getRoot("ArmPivot", 30, 30);
+            MechanismLigament2d armTower =
+                    armPivot.append(new MechanismLigament2d("ArmTower", 30, -90));
+
+             arm =
+                    armPivot.append(
+                            new MechanismLigament2d(
+                                    "Arm",
+                                    30,
+                                    Units.radiansToDegrees(armSim.getAngleRads()),
+                                    6,
+                                    new Color8Bit(Color.kYellow)));
+
             SmartDashboard.putData("Arm sim", mechanism2d);
             armTower.setColor(new Color8Bit(Color.kBlue));
+        } else {
+            controller = null;
+            armSim = null;
+            feedforward = null;
+            armGearbox = null;
+            arm = null;
         }
 
         /*
