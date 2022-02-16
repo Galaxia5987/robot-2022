@@ -49,7 +49,7 @@ public class RobotContainer {
 //    private final SwerveDrive swerve = SwerveDrive.getFieldOrientedInstance();
 //    private final Intake intake = Intake.getInstance();
     private final Conveyor conveyor = Conveyor.getInstance();
-//    private final Flap flap = Flap.getInstance();
+    private final Flap flap = Flap.getInstance();
     private final Shooter shooter = Shooter.getInstance();
 //    private final Climber climber = Climber.getInstance();
     private final Hood hood = Hood.getInstance();
@@ -74,14 +74,7 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
 //        b.whileHeld(new Convey(conveyor, Constants.Conveyor.DEFAULT_POWER));
-        a.whileHeld(new ShootCargo(
-                shooter,
-                hood,
-                conveyor,
-                () -> SmartDashboard.getNumber("set_velocity", 0),
-//                () -> 1,
-                () -> 1
-        ));
+
     }
 
 

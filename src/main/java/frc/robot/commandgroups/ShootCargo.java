@@ -21,7 +21,7 @@ public class ShootCargo extends ParallelCommandGroup {
     public ShootCargo(Shooter shooter,
                       Hood hood,
                       Conveyor conveyor,
-//                      Flap flap,
+                      Flap flap,
                       DoubleSupplier distanceFromTarget,
                       DoubleSupplier conveyorPower) {
         /*
@@ -32,10 +32,10 @@ public class ShootCargo extends ParallelCommandGroup {
                 () -> Math.abs(Shoot.getSetpointVelocity(distanceFromTarget.getAsDouble()) - shooter.getVelocity()) < SHOOTER_VELOCITY_DEADBAND;
 
         addCommands(
-//                new HoodCommand(hood, () -> Hood.Mode.getValue(distanceFromTarget.getAsDouble() < DISTANCE_FROM_TARGET_THRESHOLD)),
+                new HoodCommand(hood, () -> Hood.Mode.getValue(distanceFromTarget.getAsDouble() < DISTANCE_FROM_TARGET_THRESHOLD)),
                 new HoodCommand(hood, () -> Hood.Mode.LongDistance),
                 new Convey(conveyor, conveyorPower, isFlywheelAtSetpoint),
-//                new FlapCommand(flap, () -> Flap.FlapMode.getValue(!isFlywheelAtSetpoint.getAsBoolean())),
+                new FlapCommand(flap, () -> Flap.FlapMode.getValue(!isFlywheelAtSetpoint.getAsBoolean())),
                 new Shoot(shooter, distanceFromTarget)
         );
     }
