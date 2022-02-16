@@ -31,6 +31,10 @@ import static frc.robot.Ports.Shooter.INVERSION_TYPE;
 import static frc.robot.Ports.Shooter.MOTOR;
 
 public class Shooter extends SubsystemBase {
+    private static final ShuffleboardTab tab = Shuffleboard.getTab("Velocity");
+    public static NetworkTableEntry velocity =
+            tab.add("Velocity", 0)
+                    .getEntry();
     private static Shooter INSTANCE;
     private final UnitModel unitModel = new UnitModel(TICKS_PER_REVOLUTION);
     private final WPI_TalonFX motor = new WPI_TalonFX(MOTOR);
@@ -39,10 +43,6 @@ public class Shooter extends SubsystemBase {
     private TalonFXSimCollection simCollection;
     private double currentTime = 0;
     private double lastTime = 0;
-    private static final ShuffleboardTab tab = Shuffleboard.getTab("Velocity");
-    public static NetworkTableEntry velocity =
-            tab.add("Velocity", 0)
-                    .getEntry();
 
     private Shooter() {
         configureMotor();

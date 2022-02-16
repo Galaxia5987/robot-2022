@@ -1,6 +1,5 @@
 package frc.robot.subsystems.shooter.commands.bits;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.Shoot;
 import webapp.FireLog;
