@@ -19,6 +19,7 @@ import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.HolonomicDrive;
 import frc.robot.subsystems.drivetrain.commands.OverpoweredDrive;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.utils.SmoothedInput;
 import frc.robot.utils.Utils;
 import webapp.Webserver;
 
@@ -57,9 +58,9 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        DoubleSupplier joystickLeftY = () -> Utils.joystickSmoothing(-joystick.getY());
-        DoubleSupplier joystickLeftX = () -> Utils.joystickSmoothing(-joystick.getX());
-        DoubleSupplier joystickRightX = () -> Utils.joystickSmoothing(-joystick2.getX());
+        SmoothedInput joystickLeftY = () -> -joystick.getY();
+        SmoothedInput joystickLeftX = () -> -joystick.getY();
+        SmoothedInput joystickRightX = () -> -joystick.getY();
 //        swerve.setDefaultCommand(new HolonomicDrive(swerve, xbox::getLeftY, () -> -xbox.getLeftX(), xbox::getRightX));
 //        swerve.setDefaultCommand(new OverpoweredDrive(swerve, () -> -xbox.getLeftY(), () -> -xbox.getLeftX(), () -> -xbox.getRightX()));
         swerve.setDefaultCommand(new OverpoweredDrive(swerve, joystickLeftY, joystickLeftX, joystickRightX));

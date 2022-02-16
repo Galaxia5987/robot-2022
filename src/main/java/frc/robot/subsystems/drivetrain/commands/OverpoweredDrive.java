@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
+import frc.robot.utils.SmoothedInput;
 
 import java.util.function.DoubleSupplier;
 
@@ -29,6 +30,10 @@ public class OverpoweredDrive extends HolonomicDrive {
 
     public OverpoweredDrive(SwerveDrive swerveDrive, DoubleSupplier forwardSupplier, DoubleSupplier strafeSupplier, DoubleSupplier rotationSupplier) {
         super(swerveDrive, forwardSupplier, strafeSupplier, rotationSupplier);
+    }
+
+    public OverpoweredDrive(SwerveDrive swerveDrive, SmoothedInput forwardSupplier, SmoothedInput strafeSupplier, SmoothedInput rotationSupplier) {
+        super(swerveDrive, forwardSupplier::smoothed, strafeSupplier::smoothed, rotationSupplier::smoothed);
     }
 
     @Override

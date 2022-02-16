@@ -4,8 +4,7 @@ import edu.wpi.first.math.filter.LinearFilter;
 import frc.robot.Constants;
 
 public class Utils {
-    private static final LinearFilter joystickFilter = LinearFilter.movingAverage(
-            Constants.Control.JOYSTICK_FILTER_TAP);
+
 
     /**
      * Sets the value of the joystick to 0 if the value is less than the threshold.
@@ -50,17 +49,5 @@ public class Utils {
      */
     public static double rpmToRps(double rpm) {
         return rpm / 60.0;
-    }
-
-    /**
-     * This smoothing function includes a simple averaging linear filter,
-     * and a regular smoothing mathematical function for an extra smooth experience.
-     * 
-     * @param val is the input parameter of the joystick. [%]
-     * @return the premium smoothed value. [%]
-     */
-    public static double joystickSmoothing(double val) {
-        double filteredValue = joystickFilter.calculate(val);
-        return Math.pow(Math.abs(filteredValue), Constants.Control.JOYSTICK_SMOOTHING_EXPONENT) * Math.signum(filteredValue);
     }
 }
