@@ -13,8 +13,7 @@ public class Shoot extends CommandBase {
     protected final Shooter shooter;
     protected final DoubleSupplier distance;
     private final OptionalDouble power;
-
-
+    
     public Shoot(Shooter shooter, double power) {
         this.shooter = shooter;
         this.distance = () -> 8;
@@ -24,7 +23,7 @@ public class Shoot extends CommandBase {
 
     public Shoot(Shooter shooter, DoubleSupplier distance) {
         this.shooter = shooter;
-        this.distance = () -> 8;
+        this.distance = distance;
         this.power = OptionalDouble.empty();
         addRequirements(shooter);
     }
