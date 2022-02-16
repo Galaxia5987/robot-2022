@@ -42,7 +42,6 @@ public class Climber extends SubsystemBase {
     private final PIDController controller;
     private final SingleJointedArmSim armSim;
     private final ArmFeedforward feedforward;
-    private final DCMotor armGearbox;
     private final MechanismLigament2d arm;
 
 
@@ -51,7 +50,7 @@ public class Climber extends SubsystemBase {
 
             controller = new PIDController(Constants.Climber.KP, Constants.Climber.KI, Constants.Climber.KD);
             feedforward = new ArmFeedforward(Constants.Climber.F_FORWARD_S, Constants.Climber.F_FORWARD_COS, Constants.Climber.F_FORWARD_V, Constants.Climber.F_FORWARD_A);
-            armGearbox = DCMotor.getFalcon500(2);
+            DCMotor armGearbox = DCMotor.getFalcon500(2);
 
 
             armSim =
@@ -88,7 +87,6 @@ public class Climber extends SubsystemBase {
             controller = null;
             armSim = null;
             feedforward = null;
-            armGearbox = null;
             arm = null;
         }
 
