@@ -93,15 +93,6 @@ public final class Constants {
         public static final double TICKS_PER_REVOLUTION = 2048; // Ticks per revolution of the shooter motor. [tick]
         public static final double WHEEL_RADIUS = 0.1016; // Radius of the wheels. [m]
 
-        public static final double Ka = 1; // Acceleration state space coefficient (placeholder).
-        public static final double Kv = 1; // Velocity state space coefficient (placeholder).
-        public static final double MODEL_TOLERANCE = 1e6; // Model tolerance for state space.
-        public static final double SENSOR_TOLERANCE = 1e-6; // Sensor tolerance for state space.
-//        public static final double QELMS = 1; // Velocity tolerance for state space.
-//        public static final double RELMS = 10; // Cost lqr for state space.
-//
-//        public static final double J = 0.00718; // Moment of inertia for state space. [kg*m^2]
-        public static final double GEAR_RATIO = 1; // Gear ratio for encoder (placeholder).
         public static final double NEUTRAL_DEADBAND = 0.1; // [%]
         public static final WebConstant kP = WebConstant.of("Shooter", "kP", 0.73);
         public static final WebConstant kI = WebConstant.of("Shooter", "kI", 0);

@@ -38,7 +38,6 @@ public class Shooter extends SubsystemBase {
     private static Shooter INSTANCE;
     private final UnitModel unitModel = new UnitModel(TICKS_PER_REVOLUTION);
     private final WPI_TalonFX motor = new WPI_TalonFX(MOTOR);
-//    private final LinearSystemLoop<N1, N1, N1> linearSystemLoop;
     private FlywheelSim flywheelSim;
     private TalonFXSimCollection simCollection;
     private double currentTime = 0;
@@ -46,7 +45,6 @@ public class Shooter extends SubsystemBase {
 
     private Shooter() {
         configureMotor();
-//        linearSystemLoop = configStateSpace(true);
         if (Robot.isSimulation()) {
             simCollection = motor.getSimCollection();
         }
@@ -70,52 +68,6 @@ public class Shooter extends SubsystemBase {
     }
 
     /**
-     * State space configuration function. Note that there are 2 different configurations.
-     *
-     * @param isInertiaBased is the configuration for the state space.
-     *                       If the value is true, the state space is based off of an inertia model.
-     *                       Otherwise, the state space is based off of a voltage equation model.
-     * @return the linear system loop (based on the type).
-     */
-    private LinearSystemLoop<N1, N1, N1> configStateSpace(boolean isInertiaBased) {
-//        final DCMotor motor = DCMotor.getFalcon500(1);
-//
-//        LinearSystem<N1, N1, N1> flywheel_plant;
-//        if (isInertiaBased) {
-//            flywheel_plant = LinearSystemId.createFlywheelSystem(motor, J, GEAR_RATIO);
-//        } else {
-//            flywheel_plant = LinearSystemId.identifyVelocitySystem(Kv, Ka);
-//        }
-//        if (Robot.isSimulation()) {
-//            flywheelSim = new FlywheelSim(
-//                    flywheel_plant,
-//                    motor,
-//                    GEAR_RATIO);
-//        }
-//
-//        LinearQuadraticRegulator<N1, N1, N1> quadraticRegulator = new LinearQuadraticRegulator<>(
-//                flywheel_plant,
-//                VecBuilder.fill(QELMS),
-//                VecBuilder.fill(RELMS),
-//                LOOP_PERIOD);
-//        quadraticRegulator.latencyCompensate(flywheel_plant, LOOP_PERIOD, Units.millisecondsToSeconds(TALON_TIMEOUT));
-//
-//        KalmanFilter<N1, N1, N1> kalmanFilter = new KalmanFilter<>(
-//                Nat.N1(), Nat.N1(),
-//                flywheel_plant,
-//                VecBuilder.fill(MODEL_TOLERANCE),
-//                VecBuilder.fill(SENSOR_TOLERANCE),
-//                LOOP_PERIOD);
-//
-//        return new LinearSystemLoop<>(
-//                flywheel_plant,
-//                quadraticRegulator,
-//                kalmanFilter,
-//                NOMINAL_VOLTAGE, LOOP_PERIOD);
-        return null;
-    }
-
-    /**
      * Gets the velocity of the motor.
      *
      * @return the velocity of the motor. [rpm]
@@ -133,16 +85,6 @@ public class Shooter extends SubsystemBase {
      * @param velocity is the velocity setpoint. [rpm]
      */
     public void setVelocity(double velocity) {
-//        linearSystemLoop.setNextR(VecBuilder.fill(Units.rotationsToRadians(Utils.rpmToRps(velocity))));
-//        linearSystemLoop.correct(VecBuilder.fill(Units.rotationsToRadians(Utils.rpmToRps(getVelocity()))));
-//        linearSystemLoop.predict(currentTime - lastTime);
-//        if (Robot.isSimulation()) {
-//            SmartDashboard.putNumber("ve", velocity);
-//            flywheelSim.setInputVoltage(MathUtil.clamp(linearSystemLoop.getU(0), -NOMINAL_VOLTAGE, NOMINAL_VOLTAGE));
-//            simCollection.setIntegratedSensorVelocity(unitModel.toTicks100ms(Utils.rpmToRps(flywheelSim.getAngularVelocityRPM())));
-//        } else {
-//            motor.setVoltage(MathUtil.clamp(linearSystemLoop.getU(0), -NOMINAL_VOLTAGE, NOMINAL_VOLTAGE));
-//        }
         motor.set(ControlMode.Velocity, unitModel.toTicks100ms(Utils.rpmToRps(velocity)));
     }
 
@@ -172,7 +114,6 @@ public class Shooter extends SubsystemBase {
         motor.config_kI(0, kI.get());
         motor.config_kD(0, kD.get());
         motor.config_kF(0, kF.get());
-//        linearSystemLoop.getObserver().reset();
     }
 
     @Override
