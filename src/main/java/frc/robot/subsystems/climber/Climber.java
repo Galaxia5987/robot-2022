@@ -37,7 +37,7 @@ public class Climber extends SubsystemBase {
     private final WPI_TalonFX auxMotor = new WPI_TalonFX(Ports.Climber.AUX);
     private final Solenoid stopper = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Climber.STOPPER);
     private final UnitModel unitModelPosition = new UnitModel(Constants.Climber.TICKS_PER_RAD);
-    private final DutyCycleEncoder dutyCycleEncoder = new DutyCycleEncoder(Ports.Climber.DUTY);
+    private final DutyCycleEncoder dutyCycleEncoder = new DutyCycleEncoder(Ports.Climber.ENCODER);
 
     private final PIDController controller;
     private final SingleJointedArmSim armSim;

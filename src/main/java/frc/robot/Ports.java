@@ -75,7 +75,7 @@ public final class Ports {
         public static final int MAIN = 41;
         public static final int AUX = 42;
         public static final int STOPPER = 0;
-        public static final int DUTY = 3;
+        public static final int ENCODER = 3;
 
         public static final boolean SENSOR_PHASE = true;
 
