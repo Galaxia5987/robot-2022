@@ -1,7 +1,10 @@
 package frc.robot.subsystems.shooter.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.shooter.Shooter;
+import webapp.FireLog;
 
 import java.util.OptionalDouble;
 import java.util.function.DoubleSupplier;
@@ -36,7 +39,8 @@ public class Shoot extends CommandBase {
      * @return 15. [rpm]
      */
     public static double getSetpointVelocity(double distance) {
-        return 6000 * distance;
+//        System.out.println(SmartDashboard.getNumber("set_velocity",0));
+        return distance;
     }
 
     @Override
@@ -46,6 +50,14 @@ public class Shoot extends CommandBase {
         } else {
             shooter.setPower(power.getAsDouble());
         }
+
+        SmartDashboard.putNumber("something_velocity", shooter.getVelocity());
+        if ((1 - shooter.getVelocity() / getSetpointVelocity(distance.getAsDouble())) < Constants.Shooter.SHOOTER_VELOCITY_DEADBAND) {
+            System.out.println("Percent error to setpoint = " + (1 - shooter.getVelocity() / getSetpointVelocity(distance.getAsDouble())));
+            System.out.println("Percent error deadband = " + Constants.Shooter.SHOOTER_VELOCITY_DEADBAND);
+        }
+        FireLog.log("Shooter velocity", shooter.getVelocity());
+        FireLog.log("Shooter setpoint", getSetpointVelocity(distance.getAsDouble()));
     }
 
     @Override

@@ -18,7 +18,7 @@ public class TestBallFlow extends SequentialCommandGroup {
     private final Intake intake;
     private final Shooter shooter;
     private final Conveyor conveyor;
-    private final ShootCargo shootCargo;
+//    private final ShootCargo shootCargo;
     private final PickUpCargo pickUpCargo;
 
     public TestBallFlow(Hood hood, Flap flap, Conveyor conveyor, Intake intake, Shooter shooter,
@@ -26,13 +26,13 @@ public class TestBallFlow extends SequentialCommandGroup {
         this.intake = intake;
         this.shooter = shooter;
         this.conveyor = conveyor;
-        this.shootCargo = new ShootCargo(shooter, hood, conveyor, flap, () -> 8, () -> Constants.Conveyor.DEFAULT_POWER);
-        this.pickUpCargo = new PickUpCargo(conveyor, intake, Constants.Conveyor.DEFAULT_POWER, Constants.Intake.DEFAULT_POWER);
+//        this.shootCargo = new ShootCargo(shooter, hood, conveyor, flap, () -> 8, () -> Constants.Conveyor.DEFAULT_POWER);
+        this.pickUpCargo = new PickUpCargo(conveyor, intake, Constants.Conveyor.DEFAULT_POWER.get(), Constants.Intake.DEFAULT_POWER);
 
         addCommands(
-                pickUpCargo.withInterrupt(pickUpCargoIsFinished),
-                new WaitCommand(5),
-                shootCargo.withInterrupt(shootCargoIsFinished)
+//                pickUpCargo.withInterrupt(pickUpCargoIsFinished),
+//                new WaitCommand(5),
+//                shootCargo.withInterrupt(shootCargoIsFinished)
         );
     }
 
@@ -42,7 +42,7 @@ public class TestBallFlow extends SequentialCommandGroup {
 
         if (pickUpCargo.isScheduled()) {
             SmartDashboard.putNumber("Intake power", intake.getPower());
-        } else if (shootCargo.isScheduled()) {
+//        } else if (shootCargo.isScheduled()) {
             SmartDashboard.putBoolean("Is post flap beam connected", conveyor.isPostFlapBeamConnected());
             SmartDashboard.putNumber("Shooter velocity", shooter.getVelocity());
         }

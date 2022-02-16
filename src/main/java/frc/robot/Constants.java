@@ -12,6 +12,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.utils.SwerveModuleConfigBase;
+import frc.robot.valuetuner.WebConstant;
 import org.photonvision.SimVisionTarget;
 
 import static frc.robot.Ports.SwerveDrive.*;
@@ -96,16 +97,20 @@ public final class Constants {
         public static final double Kv = 1; // Velocity state space coefficient (placeholder).
         public static final double MODEL_TOLERANCE = 1e6; // Model tolerance for state space.
         public static final double SENSOR_TOLERANCE = 1e-6; // Sensor tolerance for state space.
-        public static final double QELMS = 1; // Velocity tolerance for state space.
-        public static final double RELMS = 10; // Cost lqr for state space.
-
-        public static final double J = 0.00718; // Moment of inertia for state space. [kg*m^2]
+//        public static final double QELMS = 1; // Velocity tolerance for state space.
+//        public static final double RELMS = 10; // Cost lqr for state space.
+//
+//        public static final double J = 0.00718; // Moment of inertia for state space. [kg*m^2]
         public static final double GEAR_RATIO = 1; // Gear ratio for encoder (placeholder).
         public static final double NEUTRAL_DEADBAND = 0.1; // [%]
+        public static final WebConstant kP = WebConstant.of("Shooter", "kP", 0.73);
+        public static final WebConstant kI = WebConstant.of("Shooter", "kI", 0);
+        public static final WebConstant kD = WebConstant.of("Shooter", "kD", 0);
+        public static final WebConstant kF = WebConstant.of("Shooter", "kf", 0.055);
 
         public static final double OUTPUT_MULTIPLIER = 0.1; // Multiplies the output for manual control in the bits. [%]
         public static final double OUTTAKE_POWER = 0.2; // Power to give to the shooter when taking balls out. [%]
-        public static final double SHOOTER_VELOCITY_DEADBAND = 1 - 2.95 / 3.0; // Dead band for shooter velocity setpoint. [%]
+        public static final double SHOOTER_VELOCITY_DEADBAND = 10; // Dead band for shooter velocity setpoint. [rpm]
         public static double RECOMMENDED_ACCELERATION_TIME = 1.3; // Recommended time for the shooter to get to it's setpoint. [s]
 
         public static TalonFXConfiguration getConfiguration() {
@@ -170,7 +175,7 @@ public final class Constants {
     }
 
     public static class Conveyor {
-        public static final double DEFAULT_POWER = 0.5; // [%]
+        public static final WebConstant DEFAULT_POWER = WebConstant.of("Shooter", "Default velocity", 0.5); // [%]
         public static final int MAX_CARGO_AMOUNT = 2;
         public static final int MIN_PROXIMITY_VALUE = 100; // Minimum distance from the color sensor in order to induce detection (arbitrary bit units).
         public static final Color RED = new Color(0.19, 0.49, 0.32);
