@@ -14,7 +14,10 @@ import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -28,6 +31,10 @@ import static frc.robot.Ports.Shooter.INVERSION_TYPE;
 import static frc.robot.Ports.Shooter.MOTOR;
 
 public class Shooter extends SubsystemBase {
+    private static final ShuffleboardTab tab = Shuffleboard.getTab("Velocity");
+    public static NetworkTableEntry velocity =
+            tab.add("Velocity", 0)
+                    .getEntry();
     private static Shooter INSTANCE;
     private final UnitModel unitModel = new UnitModel(TICKS_PER_REVOLUTION);
     private final WPI_TalonFX motor = new WPI_TalonFX(MOTOR);
@@ -88,8 +95,8 @@ public class Shooter extends SubsystemBase {
 
         LinearQuadraticRegulator<N1, N1, N1> quadraticRegulator = new LinearQuadraticRegulator<>(
                 flywheel_plant,
-                VecBuilder.fill(VELOCITY_TOLERANCE),
-                VecBuilder.fill(COST_LQR),
+                VecBuilder.fill(QELMS),
+                VecBuilder.fill(RELMS),
                 LOOP_PERIOD);
         quadraticRegulator.latencyCompensate(flywheel_plant, LOOP_PERIOD, Units.millisecondsToSeconds(TALON_TIMEOUT));
 
@@ -158,6 +165,7 @@ public class Shooter extends SubsystemBase {
     public void periodic() {
         lastTime = currentTime;
         currentTime = Timer.getFPGATimestamp();
+        linearSystemLoop.getObserver().reset();
     }
 
     @Override

@@ -16,6 +16,8 @@ import frc.robot.subsystems.climber.commands.StopClimber;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.HolonomicDrive;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.commands.Shoot;
 import webapp.Webserver;
 
 public class RobotContainer {
@@ -33,7 +35,7 @@ public class RobotContainer {
     private final SwerveDrive swerve = SwerveDrive.getFieldOrientedInstance();
     private final Climber climber = Climber.getInstance();
     private final Conveyor conveyor = Conveyor.getInstance();
-
+    private final Shooter shooter = Shooter.getInstance();
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -50,14 +52,15 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        swerve.setDefaultCommand(new HolonomicDrive(swerve, xbox::getLeftY, () -> -xbox.getLeftX(), xbox::getRightX));
+        shooter.setDefaultCommand(new Shoot(shooter, () -> 8));
+//        swerve.setDefaultCommand(new HolonomicDrive(swerve, xbox::getLeftY, () -> -xbox.getLeftX(), xbox::getRightX));
     }
 
     private void configureButtonBindings() {
-        a.whenPressed((Runnable) Robot::resetAngle);
-        b.toggleWhenPressed(new StopClimber(climber));
-
-        a.and(b).and(y).toggleWhenActive(new AdjustAngle(climber));
+//        a.whenPressed((Runnable) Robot::resetAngle);
+//        b.toggleWhenPressed(new StopClimber(climber));
+//
+//        a.and(b).and(y).toggleWhenActive(new AdjustAngle(climber));
     }
 
 
@@ -67,21 +70,22 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        PathPlannerTrajectory path = PathPlanner.loadPath("Path", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL, false);
-        swerve.resetOdometry(new Pose2d(path.getInitialState().poseMeters.getTranslation(), path.getInitialState().holonomicRotation));
-        Robot.resetAngle(path.getInitialState().holonomicRotation);
-        var thetaController = new ProfiledPIDController(Constants.Autonomous.KP_THETA_CONTROLLER, 0, 0, Constants.SwerveDrive.HEADING_CONTROLLER_CONSTRAINTS);
-        thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-        return new PPSwerveControllerCommand(
-                path,
-                swerve::getPose,
-                swerve.getKinematics(),
-                new PIDController(Constants.Autonomous.KP_X_CONTROLLER, 0, 0),
-                new PIDController(Constants.Autonomous.KP_Y_CONTROLLER, 0, 0),
-                thetaController,
-                swerve::setStates
-        );
+//        PathPlannerTrajectory path = PathPlanner.loadPath("Path", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL, false);
+//        swerve.resetOdometry(new Pose2d(path.getInitialState().poseMeters.getTranslation(), path.getInitialState().holonomicRotation));
+//        Robot.resetAngle(path.getInitialState().holonomicRotation);
+//        var thetaController = new ProfiledPIDController(Constants.Autonomous.KP_THETA_CONTROLLER, 0, 0, Constants.SwerveDrive.HEADING_CONTROLLER_CONSTRAINTS);
+//        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+//
+//        return new PPSwerveControllerCommand(
+//                path,
+//                swerve::getPose,
+//                swerve.getKinematics(),
+//                new PIDController(Constants.Autonomous.KP_X_CONTROLLER, 0, 0),
+//                new PIDController(Constants.Autonomous.KP_Y_CONTROLLER, 0, 0),
+//                thetaController,
+//                swerve::setStates
+//        );
+        return null;
     }
 
     /**
