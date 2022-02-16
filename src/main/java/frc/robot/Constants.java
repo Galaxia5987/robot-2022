@@ -254,5 +254,6 @@ public final class Constants {
         public static final double RIGHT_TRIGGER_DEADBAND = 0.4; // Deadband for right trigger. [%]
         public static final double LEFT_TRIGGER_DEADBAND = 0.4; // Deadband for right trigger. [%]
         public static final int JOYSTICK_FILTER_TAP = 5;
+        public static final double JOYSTICK_SMOOTHING_EXPONENT = 1.7;
     }
 }
