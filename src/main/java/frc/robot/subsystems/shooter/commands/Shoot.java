@@ -14,21 +14,19 @@ public class Shoot extends CommandBase {
     protected final DoubleSupplier distance;
     private final OptionalDouble power;
 
-    /**
-     * Constructor.
-     *
-     * @param shooter  is the shooter subsystem.
-     * @param distance is the distance of the robot from the target. [rpm]
-     */
-    public Shoot(Shooter shooter, DoubleSupplier distance, OptionalDouble power) {
+
+    public Shoot(Shooter shooter, double power) {
         this.shooter = shooter;
-        this.distance = distance;
-        this.power = power;
+        this.distance = () -> 8;
+        this.power = OptionalDouble.of(power);
         addRequirements(shooter);
     }
 
     public Shoot(Shooter shooter, DoubleSupplier distance) {
-        this(shooter, distance, OptionalDouble.empty());
+        this.shooter = shooter;
+        this.distance = () -> 8;
+        this.power = OptionalDouble.empty();
+        addRequirements(shooter);
     }
 
     /**
@@ -39,7 +37,6 @@ public class Shoot extends CommandBase {
      * @return 15. [rpm]
      */
     public static double getSetpointVelocity(double distance) {
-//        System.out.println(SmartDashboard.getNumber("set_velocity",0));
         return distance;
     }
 
@@ -52,10 +49,6 @@ public class Shoot extends CommandBase {
         }
 
         SmartDashboard.putNumber("something_velocity", shooter.getVelocity());
-        if ((1 - shooter.getVelocity() / getSetpointVelocity(distance.getAsDouble())) < Constants.Shooter.SHOOTER_VELOCITY_DEADBAND) {
-            System.out.println("Percent error to setpoint = " + (1 - shooter.getVelocity() / getSetpointVelocity(distance.getAsDouble())));
-            System.out.println("Percent error deadband = " + Constants.Shooter.SHOOTER_VELOCITY_DEADBAND);
-        }
         FireLog.log("Shooter velocity", shooter.getVelocity());
         FireLog.log("Shooter setpoint", getSetpointVelocity(distance.getAsDouble()));
     }

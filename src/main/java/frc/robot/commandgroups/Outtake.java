@@ -26,7 +26,7 @@ public class Outtake extends ParallelCommandGroup {
                 new Convey(conveyor, () -> Constants.Conveyor.DEFAULT_POWER.get() * (condition.getAsBoolean() ? 1 : -1)),
                 new DynamicConditionalCommand(
                         condition,
-                        new Shoot(shooter, () -> 8, OptionalDouble.of(Constants.Shooter.OUTTAKE_POWER)),
+                        new Shoot(shooter, Constants.Shooter.OUTTAKE_POWER),
                         new IntakeCargo(intake, -Constants.Intake.DEFAULT_POWER)
                 )
         );
