@@ -22,11 +22,11 @@ public class OverpoweredDrive extends HolonomicDrive {
         enableContinuousInput(-Math.PI, Math.PI);
         setTolerance(Math.toRadians(Constants.SwerveDrive.ALLOWABLE_HEADING_ERROR));
     }};
+    private final Timer timer = new Timer();
     private boolean newSetpoint = false;
     private Rotation2d setpoint;
     private boolean wait = false;
     private double current = 0;
-    private final Timer timer = new Timer();
 
     public OverpoweredDrive(SwerveDrive swerveDrive, DoubleSupplier forwardSupplier, DoubleSupplier strafeSupplier, DoubleSupplier rotationSupplier) {
         super(swerveDrive, forwardSupplier, strafeSupplier, rotationSupplier);
