@@ -69,12 +69,9 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-//        hood.setDefaultCommand(new HoodCommand(hood, Hood.Mode.ShortDistance));
     }
 
     private void configureButtonBindings() {
-//        b.whileHeld(new Convey(conveyor, Constants.Conveyor.DEFAULT_POWER));
-
     }
 
 
