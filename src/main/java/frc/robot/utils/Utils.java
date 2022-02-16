@@ -61,6 +61,6 @@ public class Utils {
      */
     public static double joystickSmoothing(double val) {
         double filteredValue = joystickFilter.calculate(val);
-        return (Math.pow(Math.abs(filteredValue), Constants.Control.JOYSTICK_SMOOTHING_EXPONENT)) * Math.signum(filteredValue);
+        return Math.pow(Math.abs(filteredValue), Constants.Control.JOYSTICK_SMOOTHING_EXPONENT) * Math.signum(filteredValue);
     }
 }
