@@ -24,7 +24,7 @@ public class TryVelocities extends SequentialCommandGroup {
     private boolean lastRunSuccessful;
     private boolean lastShoot;
 
-    private double velocity;
+    private double shooterVelocity;
 
     public TryVelocities(Conveyor conveyor, Shooter shooter, Hood hood, Flap flap,
                          BooleanSupplier wasRunSuccessful, BooleanSupplier wasRunUnsuccessful, BooleanSupplier shoot,
@@ -49,16 +49,23 @@ public class TryVelocities extends SequentialCommandGroup {
 
         addCommands(
                 new WaitUntilCommand(() -> getOutputs()[2]),
-                new ShootCargo(shooter, hood, conveyor, flap, Constants.Conveyor.DEFAULT_POWER::get, () -> distanceFromTarget, velocity),
+                new ShootCargo(shooter, hood, conveyor, flap, Constants.Conveyor.DEFAULT_POWER::get, () -> distanceFromTarget, shooterVelocity),
                 new WaitUntilCommand(isFinished)
         );
 
-        if (getOutputs()[1]) {
-            System.out.println("The velocity that worked is " + velocity);
-            cancel();
-        } else if (getOutputs()[0]) {
-            velocity += 50;
+        if (getOutputs()[0]) {
+            shooterVelocity += 50;
         }
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        System.out.println("The velocity that got to the target is " + shooterVelocity);
+    }
+
+    @Override
+    public boolean isFinished() {
+        return getOutputs()[1];
     }
 
     private boolean[] getOutputs() {
