@@ -12,25 +12,25 @@ import frc.robot.subsystems.shooter.Shooter;
 import java.util.function.BooleanSupplier;
 
 public class TryVelocities extends SequentialCommandGroup {
-    private final BooleanSupplier wasRunUnsuccessful;
-    private final BooleanSupplier wasRunSuccessful;
+    private final BooleanSupplier buttonRunUnsuccessful;
+    private final BooleanSupplier buttonRunSuccessful;
     private final BooleanSupplier shoot;
     private final Conveyor conveyor;
     private final Shooter shooter;
     private final Hood hood;
     private final Flap flap;
     private final double distanceFromTarget;
-    private boolean lastRunUnsuccessful;
-    private boolean lastRunSuccessful;
-    private boolean lastShoot;
+    private boolean lastButtonRunUnsuccessful;
+    private boolean lastButtonRunSuccessful;
+    private boolean lastButtonShoot;
 
     private double shooterVelocity;
 
     public TryVelocities(Conveyor conveyor, Shooter shooter, Hood hood, Flap flap,
-                         BooleanSupplier wasRunSuccessful, BooleanSupplier wasRunUnsuccessful, BooleanSupplier shoot,
+                         BooleanSupplier buttonRunSuccessful, BooleanSupplier buttonRunUnsuccessful, BooleanSupplier shoot,
                          double distanceFromTarget) {
-        this.wasRunUnsuccessful = wasRunUnsuccessful;
-        this.wasRunSuccessful = wasRunSuccessful;
+        this.buttonRunUnsuccessful = buttonRunUnsuccessful;
+        this.buttonRunSuccessful = buttonRunSuccessful;
         this.shoot = shoot;
         this.conveyor = conveyor;
         this.shooter = shooter;
@@ -41,20 +41,12 @@ public class TryVelocities extends SequentialCommandGroup {
 
     @Override
     public void execute() {
-        lastRunUnsuccessful = wasRunUnsuccessful.getAsBoolean();
-        lastRunSuccessful = wasRunSuccessful.getAsBoolean();
-        lastShoot = shoot.getAsBoolean();
+        lastButtonRunUnsuccessful = buttonRunUnsuccessful.getAsBoolean();
+        lastButtonRunSuccessful = buttonRunSuccessful.getAsBoolean();
+        lastButtonShoot = shoot.getAsBoolean();
 
-        BooleanSupplier isFinished = () -> (getOutputs()[0] || getOutputs()[1]);
-
-        addCommands(
-                new WaitUntilCommand(() -> getOutputs()[2]),
-                new ShootCargo(shooter, hood, conveyor, flap, Constants.Conveyor.DEFAULT_POWER::get, () -> distanceFromTarget, shooterVelocity),
-                new WaitUntilCommand(isFinished)
-        );
-
-        if (getOutputs()[0]) {
-            shooterVelocity += 50;
+        if(getOutputs()[2]) {
+            addCommandsForNextVelocity();
         }
     }
 
@@ -69,14 +61,23 @@ public class TryVelocities extends SequentialCommandGroup {
     }
 
     private boolean[] getOutputs() {
-        var toggleRunUnsuccessful = !lastRunUnsuccessful && wasRunUnsuccessful.getAsBoolean();
-        var toggleRunSuccessful = !lastRunSuccessful && wasRunSuccessful.getAsBoolean();
-        var toggleShoot = !lastShoot && shoot.getAsBoolean();
+        var toggleRunUnsuccessful = !lastButtonRunUnsuccessful && buttonRunUnsuccessful.getAsBoolean();
+        var toggleRunSuccessful = !lastButtonRunSuccessful && buttonRunSuccessful.getAsBoolean();
+        var toggleShoot = !lastButtonShoot && shoot.getAsBoolean();
 
-        var outputRunUnsuccessful = toggleRunUnsuccessful ^ wasRunUnsuccessful.getAsBoolean();
-        var outputRunSuccessful = toggleRunSuccessful ^ wasRunSuccessful.getAsBoolean();
-        var outputShoot = toggleShoot ^ shoot.getAsBoolean();
+        return new boolean[]{toggleRunUnsuccessful, toggleRunSuccessful, toggleShoot};
+    }
 
-        return new boolean[]{outputRunUnsuccessful, outputRunSuccessful, outputShoot};
+    private void addCommandsForNextVelocity() {
+        BooleanSupplier isFinished = () -> (getOutputs()[0] || getOutputs()[1]);
+
+        addCommands(
+                new ShootCargo(shooter, hood, conveyor, flap, Constants.Conveyor.DEFAULT_POWER::get, () -> distanceFromTarget, shooterVelocity),
+                new WaitUntilCommand(isFinished).andThen(() -> {
+                    if(getOutputs()[0]) {
+                        shooterVelocity += 50;
+                    }
+                })
+        );
     }
 }
