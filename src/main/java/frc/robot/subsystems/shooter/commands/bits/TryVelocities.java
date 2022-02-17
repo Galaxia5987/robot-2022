@@ -23,7 +23,7 @@ public class TryVelocities extends SequentialCommandGroup {
     private boolean lastButtonRunUnsuccessful;
     private boolean lastButtonRunSuccessful;
     private boolean lastButtonShoot;
-
+    private boolean addShot = false;
     private double shooterVelocity;
 
     public TryVelocities(Conveyor conveyor, Shooter shooter, Hood hood, Flap flap,
@@ -37,21 +37,27 @@ public class TryVelocities extends SequentialCommandGroup {
         this.hood = hood;
         this.flap = flap;
         this.distanceFromTarget = distanceFromTarget;
+        addCommandsForNextVelocity();
     }
 
     @Override
     public void execute() {
+        super.execute();
         lastButtonRunUnsuccessful = buttonRunUnsuccessful.getAsBoolean();
         lastButtonRunSuccessful = buttonRunSuccessful.getAsBoolean();
         lastButtonShoot = shoot.getAsBoolean();
 
-        if(getOutputs()[2]) {
+        if (getOutputs()[2]) {
+            addShot = !addShot;
+        }
+        if (addShot) {
             addCommandsForNextVelocity();
         }
     }
 
     @Override
     public void end(boolean interrupted) {
+        super.end(interrupted);
         System.out.println("The velocity that got to the target is " + shooterVelocity);
     }
 
@@ -72,9 +78,11 @@ public class TryVelocities extends SequentialCommandGroup {
         BooleanSupplier isFinished = () -> (getOutputs()[0] || getOutputs()[1]);
 
         addCommands(
-                new ShootCargo(shooter, hood, conveyor, flap, Constants.Conveyor.DEFAULT_POWER::get, () -> distanceFromTarget, shooterVelocity),
+                new ShootCargo(shooter, hood, conveyor, flap,
+                        Constants.Conveyor.DEFAULT_POWER::get, () -> distanceFromTarget, shooterVelocity)
+                        .withInterrupt(() -> getOutputs()[2]),
                 new WaitUntilCommand(isFinished).andThen(() -> {
-                    if(getOutputs()[0]) {
+                    if (getOutputs()[0]) {
                         shooterVelocity += 50;
                     }
                 })
