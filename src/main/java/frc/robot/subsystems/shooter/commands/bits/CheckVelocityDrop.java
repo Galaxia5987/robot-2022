@@ -4,7 +4,6 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.Shoot;
 import webapp.FireLog;
 
-import java.util.OptionalDouble;
 import java.util.function.DoubleSupplier;
 
 public class CheckVelocityDrop extends Shoot {

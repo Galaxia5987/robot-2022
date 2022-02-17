@@ -10,7 +10,6 @@ import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.shooter.Shooter;
 
 import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
 
 public class TryVelocities extends SequentialCommandGroup {
     private final BooleanSupplier wasRunUnsuccessful;
@@ -24,7 +23,7 @@ public class TryVelocities extends SequentialCommandGroup {
     private boolean lastRunUnsuccessful;
     private boolean lastRunSuccessful;
     private boolean lastShoot;
-    
+
     private double velocity;
 
     public TryVelocities(Conveyor conveyor, Shooter shooter, Hood hood, Flap flap,
@@ -45,9 +44,9 @@ public class TryVelocities extends SequentialCommandGroup {
         lastRunUnsuccessful = wasRunUnsuccessful.getAsBoolean();
         lastRunSuccessful = wasRunSuccessful.getAsBoolean();
         lastShoot = shoot.getAsBoolean();
-        
+
         BooleanSupplier isFinished = () -> (getOutputs()[0] || getOutputs()[1]);
-        
+
         addCommands(
                 new WaitUntilCommand(() -> getOutputs()[2]),
                 new ShootCargo(shooter, hood, conveyor, flap, Constants.Conveyor.DEFAULT_POWER::get, () -> distanceFromTarget, velocity),
@@ -61,7 +60,7 @@ public class TryVelocities extends SequentialCommandGroup {
             velocity += 50;
         }
     }
-    
+
     private boolean[] getOutputs() {
         var toggleRunUnsuccessful = !lastRunUnsuccessful && wasRunUnsuccessful.getAsBoolean();
         var toggleRunSuccessful = !lastRunSuccessful && wasRunSuccessful.getAsBoolean();
@@ -70,7 +69,7 @@ public class TryVelocities extends SequentialCommandGroup {
         var outputRunUnsuccessful = toggleRunUnsuccessful ^ wasRunUnsuccessful.getAsBoolean();
         var outputRunSuccessful = toggleRunSuccessful ^ wasRunSuccessful.getAsBoolean();
         var outputShoot = toggleShoot ^ shoot.getAsBoolean();
-        
+
         return new boolean[]{outputRunUnsuccessful, outputRunSuccessful, outputShoot};
     }
 }

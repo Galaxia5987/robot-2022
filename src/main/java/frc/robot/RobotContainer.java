@@ -1,39 +1,14 @@
 package frc.robot;
 
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.commands.PPSwerveControllerCommand;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commandgroups.PickUpCargo;
-import frc.robot.commandgroups.ShootCargo;
-import frc.robot.subsystems.climber.Climber;
-import frc.robot.subsystems.climber.commands.AdjustAngle;
-import frc.robot.subsystems.climber.commands.StopClimber;
 import frc.robot.subsystems.conveyor.Conveyor;
-import frc.robot.subsystems.conveyor.commands.Convey;
-import frc.robot.subsystems.drivetrain.SwerveDrive;
-import frc.robot.subsystems.drivetrain.commands.HolonomicDrive;
 import frc.robot.subsystems.flap.Flap;
-import frc.robot.subsystems.flap.commands.FlapCommand;
 import frc.robot.subsystems.hood.Hood;
-import frc.robot.subsystems.hood.commands.HoodCommand;
-import frc.robot.subsystems.hood.commands.bits.CheckHoodPressure;
-import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.intake.commands.IntakeCargo;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.commands.Shoot;
 import webapp.Webserver;
-
-import java.util.OptionalDouble;
 
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
@@ -51,7 +26,7 @@ public class RobotContainer {
     private final Conveyor conveyor = Conveyor.getInstance();
     private final Flap flap = Flap.getInstance();
     private final Shooter shooter = Shooter.getInstance();
-//    private final Climber climber = Climber.getInstance();
+    //    private final Climber climber = Climber.getInstance();
     private final Hood hood = Hood.getInstance();
 
     /**

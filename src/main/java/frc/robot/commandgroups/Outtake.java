@@ -11,7 +11,6 @@ import frc.robot.subsystems.intake.commands.IntakeCargo;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.Shoot;
 
-import java.util.OptionalDouble;
 import java.util.function.BooleanSupplier;
 
 public class Outtake extends ParallelCommandGroup {

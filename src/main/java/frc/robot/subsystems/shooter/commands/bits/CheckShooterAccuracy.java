@@ -6,7 +6,6 @@ import frc.robot.Constants;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.Shoot;
 
-import java.util.OptionalDouble;
 import java.util.function.DoubleSupplier;
 
 public class CheckShooterAccuracy extends Shoot {

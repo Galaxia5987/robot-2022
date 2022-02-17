@@ -2,7 +2,6 @@ package frc.robot.subsystems.shooter.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.shooter.Shooter;
 import webapp.FireLog;
 
@@ -13,7 +12,7 @@ public class Shoot extends CommandBase {
     protected final Shooter shooter;
     protected final DoubleSupplier distance;
     private final OptionalDouble power;
-    
+
     public Shoot(Shooter shooter, double power) {
         this.shooter = shooter;
         this.distance = () -> 8;
