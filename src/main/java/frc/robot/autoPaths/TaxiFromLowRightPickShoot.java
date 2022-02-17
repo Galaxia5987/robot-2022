@@ -5,6 +5,7 @@ import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commandgroups.PickUpCargo;
@@ -19,11 +20,12 @@ import frc.robot.subsystems.shooter.Shooter;
 import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 
-public class Path4 extends SequentialCommandGroup {
+public class TaxiFromLowRightPickShoot extends SequentialCommandGroup {
     private DoubleSupplier distanceFromTarget;
     private DoubleSupplier conveyorPower;
 
-    public Path4(Shooter shooter, SwerveDrive swerveDrive, Conveyor conveyor, Intake intake, Hood hood, Flap flap) {
+    // Taxi from low right, pick up low cargo, shoot, go near low tarmac.(4)
+    public TaxiFromLowRightPickShoot(Shooter shooter, SwerveDrive swerveDrive, Conveyor conveyor, Intake intake, Hood hood, Flap flap) {
         var rotationPID = new ProfiledPIDController(Constants.Autonomous.KP_THETA_CONTROLLER, 0, 0, new TrapezoidProfile.Constraints(Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL));
         rotationPID.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -37,13 +39,15 @@ public class Path4 extends SequentialCommandGroup {
                 swerveDrive::setStates,
                 swerveDrive);
 
-        addCommands(createCommand.apply("p1 - Taxi from low right and pickup low cargo(4.1)"));
-        addCommands(new PickUpCargo(
+        new ParallelCommandGroup((createCommand.apply("p1 - Taxi from low right and pickup low cargo(4.1)")),
+                new PickUpCargo(
                 conveyor,
                 intake,
                 Constants.Conveyor.DEFAULT_POWER,
                 Constants.Intake.DEFAULT_POWER
-        ));
+                ));
+
+
         addCommands(new ShootCargo(
                 shooter,
                 hood,
@@ -52,7 +56,8 @@ public class Path4 extends SequentialCommandGroup {
                 distanceFromTarget,
                 conveyorPower
         ));
-        addCommands(createCommand.apply("p1 - Going to low tarmac(3.2.1)"));
+
+        addCommands(createCommand.apply("p1 - Going to low tarmac(4.2.1)"));
     }
 }
 
