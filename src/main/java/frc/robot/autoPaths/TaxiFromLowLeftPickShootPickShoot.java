@@ -20,12 +20,12 @@ import frc.robot.subsystems.shooter.Shooter;
 import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 
-public class TaxiFromUpUPPickShoot extends SequentialCommandGroup {
+public class TaxiFromLowLeftPickShootPickShoot extends SequentialCommandGroup {
     private DoubleSupplier distanceFromTarget;
     private DoubleSupplier conveyorPower;
 
-    // Taxi from up up tarmac, pickup up cargo, shoot, park near up tarmac.(5)
-    public TaxiFromUpUPPickShoot(Shooter shooter, SwerveDrive swerveDrive, Conveyor conveyor, Intake intake, Hood hood, Flap flap) {
+    // Taxi from low left tarmac, pickup middle cargo, shoot, pick up low cargo, shoot, park in low tarmac.(6)
+    public TaxiFromLowLeftPickShootPickShoot(Shooter shooter, SwerveDrive swerveDrive, Conveyor conveyor, Intake intake, Hood hood, Flap flap) {
         var rotationPID = new ProfiledPIDController(Constants.Autonomous.KP_THETA_CONTROLLER, 0, 0, new TrapezoidProfile.Constraints(Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL));
         rotationPID.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -39,7 +39,7 @@ public class TaxiFromUpUPPickShoot extends SequentialCommandGroup {
                 swerveDrive::setStates,
                 swerveDrive);
 
-        new ParallelCommandGroup((createCommand.apply("p1 - Taxi from up up to up cargo and pickup up cargo(5.1)")),
+        new ParallelCommandGroup((createCommand.apply("p2 - Taxi from low left tarmac and pickup middle cargo(6.1)")),
                 new PickUpCargo(
                         conveyor,
                         intake,
@@ -55,6 +55,22 @@ public class TaxiFromUpUPPickShoot extends SequentialCommandGroup {
                 distanceFromTarget,
                 conveyorPower));
 
-        addCommands(createCommand.apply("p1 - Going to up tarmac(5.2.2)"));
+        new ParallelCommandGroup((createCommand.apply("p2 - Picking up low cargo(6.2)")),
+                new PickUpCargo(
+                        conveyor,
+                        intake,
+                        Constants.Conveyor.DEFAULT_POWER,
+                        Constants.Intake.DEFAULT_POWER
+                ));
+
+        addCommands(new ShootCargo(
+                shooter,
+                hood,
+                conveyor,
+                flap,
+                distanceFromTarget,
+                conveyorPower));
+
+        addCommands(createCommand.apply("p2 - Going to low tarmac(6.3.1)"));
     }
 }
