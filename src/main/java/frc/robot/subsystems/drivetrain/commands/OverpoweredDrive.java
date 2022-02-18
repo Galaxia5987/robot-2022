@@ -32,10 +32,6 @@ public class OverpoweredDrive extends HolonomicDrive {
         super(swerveDrive, forwardSupplier, strafeSupplier, rotationSupplier);
     }
 
-    public OverpoweredDrive(SwerveDrive swerveDrive, SmoothedInput forwardSupplier, SmoothedInput strafeSupplier, SmoothedInput rotationSupplier) {
-        super(swerveDrive, forwardSupplier::smoothed, strafeSupplier::smoothed, rotationSupplier::smoothed);
-    }
-
     @Override
     public void execute() {
         ChassisSpeeds speeds = calculateVelocities();

@@ -50,10 +50,15 @@ public class RobotContainer {
     private void configureDefaultCommands() {
         SmoothedInput joystickLeftY = () -> -joystick.getY();
         SmoothedInput joystickLeftX = () -> -joystick.getY();
-        SmoothedInput joystickRightX = () -> -joystick.getY();
+        SmoothedInput joystickRightX = () -> -joystick2.getY();
 //        swerve.setDefaultCommand(new HolonomicDrive(swerve, xbox::getLeftY, () -> -xbox.getLeftX(), xbox::getRightX));
 //        swerve.setDefaultCommand(new OverpoweredDrive(swerve, () -> -xbox.getLeftY(), () -> -xbox.getLeftX(), () -> -xbox.getRightX()));
-        swerve.setDefaultCommand(new OverpoweredDrive(swerve, joystickLeftY, joystickLeftX, joystickRightX));
+        swerve.setDefaultCommand(new OverpoweredDrive(
+                swerve,
+                () -> joystickLeftY.smoothed(Constants.Control.JOYSTICK_XY_SMOOTHING_EXPONENT),
+                () -> joystickLeftX.smoothed(Constants.Control.JOYSTICK_XY_SMOOTHING_EXPONENT),
+                () -> joystickRightX.smoothed(Constants.Control.JOYSTICK_OMEGA_SMOOTHING_EXPONENT)
+        ));
 //        swerve.setDefaultCommand(new HolonomicDrive(swerve, () -> -xbox.getLeftY(), xbox::getLeftX, () -> -xbox.getRightX()));
     }
 
