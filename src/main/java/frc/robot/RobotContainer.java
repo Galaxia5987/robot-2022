@@ -10,15 +10,9 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commandgroups.PickUpCargo;
-import frc.robot.subsystems.climber.Climber;
-import frc.robot.subsystems.climber.commands.AdjustAngle;
-import frc.robot.subsystems.climber.commands.StopClimber;
-import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
-import frc.robot.subsystems.drivetrain.commands.HolonomicDrive;
 import frc.robot.subsystems.drivetrain.commands.OverpoweredDrive;
-import frc.robot.subsystems.intake.Intake;
+import frc.robot.utils.SmoothedInput;
 import webapp.Webserver;
 
 public class RobotContainer {
@@ -54,9 +48,17 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
+        SmoothedInput joystickLeftY = () -> -joystick.getY();
+        SmoothedInput joystickLeftX = () -> -joystick.getY();
+        SmoothedInput joystickRightX = () -> -joystick2.getY();
 //        swerve.setDefaultCommand(new HolonomicDrive(swerve, xbox::getLeftY, () -> -xbox.getLeftX(), xbox::getRightX));
 //        swerve.setDefaultCommand(new OverpoweredDrive(swerve, () -> -xbox.getLeftY(), () -> -xbox.getLeftX(), () -> -xbox.getRightX()));
-        swerve.setDefaultCommand(new OverpoweredDrive(swerve, () -> -joystick.getY(), () -> -joystick.getX(), () -> -joystick2.getX()));
+        swerve.setDefaultCommand(new OverpoweredDrive(
+                swerve,
+                () -> joystickLeftY.smoothed(Constants.Control.JOYSTICK_XY_SMOOTHING_EXPONENT),
+                () -> joystickLeftX.smoothed(Constants.Control.JOYSTICK_XY_SMOOTHING_EXPONENT),
+                () -> joystickRightX.smoothed(Constants.Control.JOYSTICK_OMEGA_SMOOTHING_EXPONENT)
+        ));
 //        swerve.setDefaultCommand(new HolonomicDrive(swerve, () -> -xbox.getLeftY(), xbox::getLeftX, () -> -xbox.getRightX()));
     }
 
