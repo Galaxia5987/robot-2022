@@ -48,7 +48,7 @@ public class Helicopter extends SubsystemBase {
     private Helicopter() {
         if (Robot.isSimulation()) {
 
-            controller = new PIDController(Constants.Helicopter.KP, Constants.Helicopter.KI, Constants.Helicopter.KD);
+            controller = new PIDController(Constants.Helicopter.KP.get(), Constants.Helicopter.KI.get(), Constants.Helicopter.KD.get());
             feedforward = new ArmFeedforward(Constants.Helicopter.F_FORWARD_S, Constants.Helicopter.F_FORWARD_COS, Constants.Helicopter.F_FORWARD_V, Constants.Helicopter.F_FORWARD_A);
             DCMotor armGearbox = DCMotor.getFalcon500(2);
 
@@ -109,9 +109,9 @@ public class Helicopter extends SubsystemBase {
          */
         mainMotor.configMotionCruiseVelocity(Constants.Helicopter.CRUISE_VELOCITY);
         mainMotor.configMotionAcceleration(Constants.Helicopter.MAXIMAL_ACCELERATION);
-        mainMotor.config_kP(0, Constants.Helicopter.KP, Constants.TALON_TIMEOUT);
-        mainMotor.config_kI(0, Constants.Helicopter.KI, Constants.TALON_TIMEOUT);
-        mainMotor.config_kD(0, Constants.Helicopter.KD, Constants.TALON_TIMEOUT);
+        mainMotor.config_kP(0, Constants.Helicopter.KP.get(), Constants.TALON_TIMEOUT);
+        mainMotor.config_kI(0, Constants.Helicopter.KI.get(), Constants.TALON_TIMEOUT);
+        mainMotor.config_kD(0, Constants.Helicopter.KD.get(), Constants.TALON_TIMEOUT);
 
 
         auxMotor.follow(mainMotor);
@@ -162,6 +162,10 @@ public class Helicopter extends SubsystemBase {
         } else {
             mainMotor.set(ControlMode.Velocity, unitModelPosition.toTicks100ms(velocity));
         }
+    }
+
+    public void vroomVroom(double power) {
+        mainMotor.set(ControlMode.PercentOutput, power);
     }
 
     /**
@@ -226,6 +230,13 @@ public class Helicopter extends SubsystemBase {
      */
     public void stop() {
         mainMotor.stopMotor();
+    }
+
+    @Override
+    public void periodic() {
+        mainMotor.config_kP(0, Constants.Helicopter.KP.get(), Constants.TALON_TIMEOUT);
+        mainMotor.config_kI(0, Constants.Helicopter.KI.get(), Constants.TALON_TIMEOUT);
+        mainMotor.config_kD(0, Constants.Helicopter.KD.get(), Constants.TALON_TIMEOUT);
     }
 
     /**

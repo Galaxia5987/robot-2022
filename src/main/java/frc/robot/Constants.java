@@ -12,6 +12,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.utils.SwerveModuleConfigBase;
+import frc.robot.valuetuner.WebConstant;
 import org.photonvision.SimVisionTarget;
 
 import static frc.robot.Ports.SwerveDrive.*;
@@ -202,9 +203,9 @@ public final class Constants {
     }
 
     public static class Helicopter {
-        public static final double KP = 1.5;
-        public static final double KI = 0;
-        public static final double KD = 0;
+        public static final WebConstant KP = WebConstant.of("Helicopter", "Kp", 1.5);
+        public static final WebConstant KI = WebConstant.of("Helicopter", "Ki", 0);
+        public static final WebConstant KD = WebConstant.of("Helicopter", "Kd", 0);
 
         public static final double F_FORWARD_S = 0;
         public static final double F_FORWARD_COS = 0;
