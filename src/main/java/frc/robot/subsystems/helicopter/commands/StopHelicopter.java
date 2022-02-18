@@ -22,6 +22,8 @@ public class StopHelicopter extends InstantCommand {
             if (!notReady) {
                 helicopter.toggleStopper();
             }
+        } else {
+            helicopter.toggleStopper();
         }
     }
 
