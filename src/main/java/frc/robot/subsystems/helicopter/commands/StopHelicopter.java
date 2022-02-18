@@ -1,18 +1,18 @@
-package frc.robot.subsystems.climber.commands;
+package frc.robot.subsystems.helicopter.commands;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Robot;
-import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.helicopter.Helicopter;
 
 
-public class StopClimber extends InstantCommand {
-    private final Climber climber;
+public class StopHelicopter extends InstantCommand {
+    private final Helicopter helicopter;
 
-    public StopClimber(Climber climber) {
-        this.climber = climber;
+    public StopHelicopter(Helicopter helicopter) {
+        this.helicopter = helicopter;
 
-        addRequirements(climber);
+        addRequirements(helicopter);
     }
 
     @Override
@@ -20,13 +20,13 @@ public class StopClimber extends InstantCommand {
         if (Robot.isReal() && !Robot.debug) {
             boolean notReady = DriverStation.isAutonomous();
             if (!notReady) {
-                climber.toggleStopper();
+                helicopter.toggleStopper();
             }
         }
     }
 
     @Override
     public void end(boolean interrupted) {
-        climber.stop();
+        helicopter.stop();
     }
 }

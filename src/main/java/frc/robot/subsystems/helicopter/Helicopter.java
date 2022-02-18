@@ -1,4 +1,4 @@
-package frc.robot.subsystems.climber;
+package frc.robot.subsystems.helicopter;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
@@ -31,9 +31,9 @@ import frc.robot.Robot;
 import frc.robot.subsystems.UnitModel;
 
 
-public class Climber extends SubsystemBase {
+public class Helicopter extends SubsystemBase {
 
-    private static Climber INSTANCE = null;
+    private static Helicopter INSTANCE = null;
 
     private final WPI_TalonFX mainMotor = new WPI_TalonFX(Ports.Climber.MAIN);
     private final WPI_TalonFX auxMotor = new WPI_TalonFX(Ports.Climber.AUX);
@@ -77,7 +77,7 @@ public class Climber extends SubsystemBase {
                             new Color8Bit(Color.kYellow)));
 
 
-    private Climber() {
+    private Helicopter() {
         if (Robot.isSimulation()) {
             SmartDashboard.putData("Arm sim", mechanism2d);
             encoder.setDistancePerPulse(Constants.Climber.ARM_ENCODER_DIST_PER_PULSE);
@@ -134,9 +134,9 @@ public class Climber extends SubsystemBase {
     /**
      * @return the object Climber.
      */
-    public static Climber getInstance() {
+    public static Helicopter getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new Climber();
+            INSTANCE = new Helicopter();
         }
         return INSTANCE;
     }

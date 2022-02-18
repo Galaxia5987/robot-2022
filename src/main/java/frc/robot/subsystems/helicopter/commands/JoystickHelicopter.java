@@ -1,9 +1,9 @@
-package frc.robot.subsystems.climber.commands;
+package frc.robot.subsystems.helicopter.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.helicopter.Helicopter;
 import frc.robot.utils.Utils;
 
 import java.util.function.DoubleSupplier;
@@ -12,22 +12,22 @@ import java.util.function.DoubleSupplier;
  * parameters: Climber the climber, BooleanSupplier stop, DoubleSupplier joystickOutput.
  * This command let the driver control the climb movement by moving Xbox joystick.
  */
-public class JoystickClimb extends CommandBase {
-    private final Climber climber;
+public class JoystickHelicopter extends CommandBase {
+    private final Helicopter helicopter;
     private final DoubleSupplier joystickOutput;
 
-    public JoystickClimb(Climber climber, DoubleSupplier joystickOutput) {
-        this.climber = climber;
+    public JoystickHelicopter(Helicopter helicopter, DoubleSupplier joystickOutput) {
+        this.helicopter = helicopter;
         this.joystickOutput = joystickOutput;
 
-        addRequirements(climber);
+        addRequirements(helicopter);
     }
 
 
     @Override
     public void execute() {
         double climbVelocity = Utils.deadband(joystickOutput.getAsDouble(), Constants.Climber.JOYSTICK_DEADBAND) * Constants.Climber.MAX_VELOCITY;
-        climber.setVelocity(climbVelocity);
+        helicopter.setVelocity(climbVelocity);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class JoystickClimb extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        climber.stop();
-        climber.setStopperMode(false);
+        helicopter.stop();
+        helicopter.setStopperMode(false);
     }
 }
