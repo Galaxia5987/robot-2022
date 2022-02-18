@@ -9,7 +9,7 @@ import frc.robot.utils.Utils;
 import java.util.function.DoubleSupplier;
 
 /**
- * parameters: Climber the climber, BooleanSupplier stop, DoubleSupplier joystickOutput.
+ * parameters: Helicopter the helicopter, BooleanSupplier stop, DoubleSupplier joystickOutput.
  * This command let the driver control the climb movement by moving Xbox joystick.
  */
 public class JoystickHelicopter extends CommandBase {
@@ -26,13 +26,13 @@ public class JoystickHelicopter extends CommandBase {
 
     @Override
     public void execute() {
-        double climbVelocity = Utils.deadband(joystickOutput.getAsDouble(), Constants.Climber.JOYSTICK_DEADBAND) * Constants.Climber.MAX_VELOCITY;
+        double climbVelocity = Utils.deadband(joystickOutput.getAsDouble(), Constants.Helicopter.JOYSTICK_DEADBAND) * Constants.Helicopter.MAX_VELOCITY;
         helicopter.setVelocity(climbVelocity);
     }
 
     @Override
     public boolean isFinished() {
-        return Timer.getFPGATimestamp() > Constants.Climber.STOP_CLIMBER_TIMESTAMP;
+        return Timer.getFPGATimestamp() > Constants.Helicopter.STOP_HELICOPTER_TIMESTAMP;
     }
 
     @Override

@@ -35,29 +35,29 @@ public class Helicopter extends SubsystemBase {
 
     private static Helicopter INSTANCE = null;
 
-    private final WPI_TalonFX mainMotor = new WPI_TalonFX(Ports.Climber.MAIN);
-    private final WPI_TalonFX auxMotor = new WPI_TalonFX(Ports.Climber.AUX);
-    private final Solenoid stopper = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Climber.STOPPER);
-    private final UnitModel unitModelPosition = new UnitModel(Constants.Climber.TICKS_PER_RAD);
+    private final WPI_TalonFX mainMotor = new WPI_TalonFX(Ports.Helicopter.MAIN);
+    private final WPI_TalonFX auxMotor = new WPI_TalonFX(Ports.Helicopter.AUX);
+    private final Solenoid stopper = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Helicopter.STOPPER);
+    private final UnitModel unitModelPosition = new UnitModel(Constants.Helicopter.TICKS_PER_RAD);
 
 
-    private final PIDController controller = new PIDController(Constants.Climber.KP, Constants.Climber.KI, Constants.Climber.KD);
-    private final ArmFeedforward feedforward = new ArmFeedforward(Constants.Climber.F_FORWARD_S, Constants.Climber.F_FORWARD_COS, Constants.Climber.F_FORWARD_V, Constants.Climber.F_FORWARD_A);
-    private final Encoder encoder = new Encoder(Ports.Climber.ENCODER_A_CHANNEL, Ports.Climber.ENCODER_B_CHANNEL);
+    private final PIDController controller = new PIDController(Constants.Helicopter.KP, Constants.Helicopter.KI, Constants.Helicopter.KD);
+    private final ArmFeedforward feedforward = new ArmFeedforward(Constants.Helicopter.F_FORWARD_S, Constants.Helicopter.F_FORWARD_COS, Constants.Helicopter.F_FORWARD_V, Constants.Helicopter.F_FORWARD_A);
+    private final Encoder encoder = new Encoder(Ports.Helicopter.ENCODER_A_CHANNEL, Ports.Helicopter.ENCODER_B_CHANNEL);
     private final DCMotor armGearbox = DCMotor.getFalcon500(2);
 
 
     private final SingleJointedArmSim armSim =
             new SingleJointedArmSim(
                     armGearbox,
-                    Constants.Climber.GEAR_RATIO,
-                    SingleJointedArmSim.estimateMOI(Constants.Climber.ARM_LENGTH, Constants.Climber.ARM_MASS),
-                    Constants.Climber.ARM_LENGTH,
-                    Constants.Climber.MIN_ANGLE,
-                    Constants.Climber.MAX_ANGLE,
-                    Constants.Climber.ARM_MASS,
+                    Constants.Helicopter.GEAR_RATIO,
+                    SingleJointedArmSim.estimateMOI(Constants.Helicopter.ARM_LENGTH, Constants.Helicopter.ARM_MASS),
+                    Constants.Helicopter.ARM_LENGTH,
+                    Constants.Helicopter.MIN_ANGLE,
+                    Constants.Helicopter.MAX_ANGLE,
+                    Constants.Helicopter.ARM_MASS,
                     true,
-                    VecBuilder.fill(Constants.Climber.ARM_ENCODER_DIST_PER_PULSE)
+                    VecBuilder.fill(Constants.Helicopter.ARM_ENCODER_DIST_PER_PULSE)
             );
 
     private final EncoderSim encoderSim = new EncoderSim(encoder);
@@ -80,7 +80,7 @@ public class Helicopter extends SubsystemBase {
     private Helicopter() {
         if (Robot.isSimulation()) {
             SmartDashboard.putData("Arm sim", mechanism2d);
-            encoder.setDistancePerPulse(Constants.Climber.ARM_ENCODER_DIST_PER_PULSE);
+            encoder.setDistancePerPulse(Constants.Helicopter.ARM_ENCODER_DIST_PER_PULSE);
             armTower.setColor(new Color8Bit(Color.kBlue));
         }
 
@@ -89,7 +89,7 @@ public class Helicopter extends SubsystemBase {
         /*
          Set sensor phase.
          */
-        mainMotor.setSensorPhase(Ports.Climber.SENSOR_PHASE);
+        mainMotor.setSensorPhase(Ports.Helicopter.SENSOR_PHASE);
         /*
          Set the right motor on Brake mode.
          */
@@ -98,25 +98,25 @@ public class Helicopter extends SubsystemBase {
         /*
          Setting the motor to go clockwise.
          */
-        mainMotor.setInverted(Ports.Climber.IS_MAIN_INVERTED);
+        mainMotor.setInverted(Ports.Helicopter.IS_MAIN_INVERTED);
 
         /*
          config PID velocity for main motor.
          */
-        mainMotor.configMotionCruiseVelocity(Constants.Climber.CRUISE_VELOCITY);
-        mainMotor.configMotionAcceleration(Constants.Climber.MAXIMAL_ACCELERATION);
-        mainMotor.config_kP(0, Constants.Climber.KP, Constants.TALON_TIMEOUT);
-        mainMotor.config_kI(0, Constants.Climber.KI, Constants.TALON_TIMEOUT);
-        mainMotor.config_kD(0, Constants.Climber.KD, Constants.TALON_TIMEOUT);
+        mainMotor.configMotionCruiseVelocity(Constants.Helicopter.CRUISE_VELOCITY);
+        mainMotor.configMotionAcceleration(Constants.Helicopter.MAXIMAL_ACCELERATION);
+        mainMotor.config_kP(0, Constants.Helicopter.KP, Constants.TALON_TIMEOUT);
+        mainMotor.config_kI(0, Constants.Helicopter.KI, Constants.TALON_TIMEOUT);
+        mainMotor.config_kD(0, Constants.Helicopter.KD, Constants.TALON_TIMEOUT);
 
 
         auxMotor.follow(mainMotor);
 
-        mainMotor.enableVoltageCompensation(Constants.Climber.VOLTAGE_COMPENSATION);
+        mainMotor.enableVoltageCompensation(Constants.Helicopter.VOLTAGE_COMPENSATION);
 
         mainMotor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
 
-        auxMotor.enableVoltageCompensation(Constants.Climber.VOLTAGE_COMPENSATION);
+        auxMotor.enableVoltageCompensation(Constants.Helicopter.VOLTAGE_COMPENSATION);
 
         auxMotor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
 
@@ -128,11 +128,11 @@ public class Helicopter extends SubsystemBase {
         /*
          Setting the motor to go clockwise.
          */
-        auxMotor.setInverted(Ports.Climber.IS_AUX_INVERTED);
+        auxMotor.setInverted(Ports.Helicopter.IS_AUX_INVERTED);
     }
 
     /**
-     * @return the object Climber.
+     * @return the object Helicpter.
      */
     public static Helicopter getInstance() {
         if (INSTANCE == null) {
@@ -164,7 +164,7 @@ public class Helicopter extends SubsystemBase {
     }
 
     /**
-     * Set climber position to zero.
+     * Set Helicpter position to zero.
      * Zero is the balanced position of the arms.
      */
     public void setAngleZero() {
@@ -173,10 +173,10 @@ public class Helicopter extends SubsystemBase {
     }
 
     /**
-     * @return the absolute position of the Climber.
+     * @return the absolute position of the Helicpter.
      */
     public double getAbsolutePosition() {
-        return unitModelPosition.toUnits(mainMotor.getSelectedSensorPosition(1) - Constants.Climber.ZERO_POSITION);
+        return unitModelPosition.toUnits(mainMotor.getSelectedSensorPosition(1) - Constants.Helicopter.ZERO_POSITION);
     }
 
 

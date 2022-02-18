@@ -71,7 +71,7 @@ public final class Ports {
     /*
      left motor's data, right motor's data.
      */
-    public static class Climber {
+    public static class Helicopter {
         public static final int MAIN = 41;
         public static final int AUX = 42;
         public static final int STOPPER = 0;

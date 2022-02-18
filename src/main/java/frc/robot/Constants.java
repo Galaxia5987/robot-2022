@@ -201,7 +201,7 @@ public final class Constants {
 
     }
 
-    public static class Climber {
+    public static class Helicopter {
         public static final double KP = 1.5;
         public static final double KI = 0;
         public static final double KD = 0;
@@ -230,7 +230,7 @@ public final class Constants {
         public static final double MAX_ANGLE = Math.toRadians(255); // [radians]
         public static final double MIN_ANGLE = Math.toRadians(-75); // [radians]
 
-        public static final double STOP_CLIMBER_TIMESTAMP = 149.5; // [s]
+        public static final double STOP_HELICOPTER_TIMESTAMP = 149.5; // [s]
 
         public static final int ZERO_POSITION = 0; // [radians]
 
