@@ -44,7 +44,7 @@ public class OverpoweredDrive extends HolonomicDrive {
         double magnitude = Math.hypot(forward, strafe);
         double alpha = Math.atan2(strafe, forward);
         if (magnitude == 0) current = 0;
-        current += magnitude / 5;
+        current += magnitude / 10;
         if (current > magnitude) current = magnitude;
         forward = Math.cos(alpha) * current;
         strafe = Math.sin(alpha) * current;
