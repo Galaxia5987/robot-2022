@@ -166,7 +166,7 @@ public class SwerveDrive extends SubsystemBase {
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
         for (SwerveModule module : modules) {
             states[module.getWheel()] = SwerveModuleState.optimize(states[module.getWheel()], module.getAngle());
-            if (!(Math.abs(states[module.getWheel()].angle.minus(module.getAngle()).getDegrees()) < 7)) { // TODO: Remove the magic number
+            if (!(Math.abs(states[module.getWheel()].angle.minus(module.getAngle()).getDegrees()) < 3)) { // TODO: Remove the magic number
                 return false;
             }
         }
