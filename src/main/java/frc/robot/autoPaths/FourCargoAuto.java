@@ -25,7 +25,8 @@ public class FourCargoAuto extends SequentialCommandGroup {
     private DoubleSupplier distanceFromTarget;
     private DoubleSupplier conveyorPower;
 
-    // Taxi from low right tarmac, pickup low cargo, shoot, pickup middle cargo, go to terminal, pickup cargo, park near low tarmac, shoot.
+    // Taxi from low right tarmac, pickup low cargo, shoot, pickup middle cargo,
+    // go to terminal, pickup cargo, park near low tarmac, shoot.(9)
     public FourCargoAuto(Shooter shooter, SwerveDrive swerveDrive, Conveyor conveyor, Intake intake, Hood hood, Flap flap) {
 
         var rotationPID = new ProfiledPIDController(Constants.Autonomous.KP_THETA_CONTROLLER, 0, 0, new TrapezoidProfile.Constraints(Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL));

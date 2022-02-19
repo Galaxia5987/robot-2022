@@ -27,7 +27,7 @@ public class FiveCargoAuto extends SequentialCommandGroup {
 
     /* Taxi from low right tarmac, pickup low cargo, shoot, pickup middle cargo,
      go to terminal, pickup cargo from terminal, go to shooting position, shoot, pickup up cargo,
-     park near up tarmac, shoot.
+     park near up tarmac, shoot.(10)
      */
     public FiveCargoAuto(Shooter shooter, SwerveDrive swerveDrive, Conveyor conveyor, Intake intake, Hood hood, Flap flap) {
 
