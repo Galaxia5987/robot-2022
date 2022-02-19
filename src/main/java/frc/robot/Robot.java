@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.subsystems.intake.Intake;
 import frc.robot.valuetuner.NetworkTableConstant;
 
 /**
@@ -138,6 +140,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void disabledInit() {
+        Intake.getInstance().closeRetractor();
     }
 
     /**
