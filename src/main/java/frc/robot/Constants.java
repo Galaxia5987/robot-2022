@@ -60,8 +60,8 @@ public final class Constants {
         public static final double ALLOWABLE_ANGLE_ERROR = Math.toRadians(3); // [rad]
         public static final double WHEEL_RADIUS = 0.04688; // [m]
 
-        public static final double ROBOT_LENGTH = 0.68; // [m]
-        public static final double ROBOT_WIDTH = 0.82; // [m]
+        public static final double ROBOT_LENGTH = 0.64; // [m]
+        public static final double ROBOT_WIDTH = 0.53; // [m]
 
         // the rotational velocity of the robot, this constant multiplies the rotation output of the joystick
         public static final double JOYSTICK_THRESHOLD = 0.1; // [%]
@@ -74,8 +74,8 @@ public final class Constants {
         public static final int ANGLE_MOTION_ACCELERATION = 1300;
         public static final int ANGLE_CRUISE_VELOCITY = 400;
         public static final double DRIFTING_PERIOD = 0.2; // expected period the robot will change its rotation even after commanded to stop. [s]
-        private static final double Rx = SwerveDrive.ROBOT_WIDTH / 2; // [m]
-        private static final double Ry = SwerveDrive.ROBOT_LENGTH / 2; // [m]
+        private static final double Rx = SwerveDrive.ROBOT_LENGTH / 2; // [m]
+        private static final double Ry = SwerveDrive.ROBOT_WIDTH / 2; // [m]
         // Axis systems
         public static final Translation2d[] SWERVE_POSITIONS = new Translation2d[]{
                 new Translation2d(Rx, -Ry),
