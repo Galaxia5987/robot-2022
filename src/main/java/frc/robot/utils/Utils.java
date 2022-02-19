@@ -2,6 +2,7 @@ package frc.robot.utils;
 
 public class Utils {
 
+
     /**
      * Sets the value of the joystick to 0 if the value is less than the threshold.
      *
@@ -46,5 +47,4 @@ public class Utils {
     public static double rpmToRps(double rpm) {
         return rpm / 60.0;
     }
-
 }

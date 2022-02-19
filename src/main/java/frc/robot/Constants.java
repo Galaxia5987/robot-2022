@@ -3,7 +3,6 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -69,7 +68,12 @@ public final class Constants {
         public static final double ANGLE_COSINE_DEADBAND = Math.toRadians(10); // [rads]
         public static final double ROTATION_DELAY = 0.1; // [sec]
         public static final int ANGLE_CURVE_STRENGTH = 1;
-        public static final double ROTATIONAL_ADDITION_RESTRAINT = 3 ;
+        public static final double ROTATIONAL_ADDITION_RESTRAINT = 3;
+        //        public static final int ANGLE_MOTION_ACCELERATION = (int) Math.round(550 * 2.5 * MOTION_MAGIC_SAFETY);
+//        public static final int ANGLE_CRUISE_VELOCITY = (int) Math.round(2800 * 1.5 * MOTION_MAGIC_SAFETY);
+        public static final int ANGLE_MOTION_ACCELERATION = 1300;
+        public static final int ANGLE_CRUISE_VELOCITY = 400;
+        public static final double DRIFTING_PERIOD = 0.2; // expected period the robot will change its rotation even after commanded to stop. [s]
         private static final double Rx = SwerveDrive.ROBOT_WIDTH / 2; // [m]
         private static final double Ry = SwerveDrive.ROBOT_LENGTH / 2; // [m]
         // Axis systems
@@ -81,12 +85,6 @@ public final class Constants {
         };
         // angle motion magic
         private static final float MOTION_MAGIC_SAFETY = 0.7f;
-        //        public static final int ANGLE_MOTION_ACCELERATION = (int) Math.round(550 * 2.5 * MOTION_MAGIC_SAFETY);
-//        public static final int ANGLE_CRUISE_VELOCITY = (int) Math.round(2800 * 1.5 * MOTION_MAGIC_SAFETY);
-        public static final int ANGLE_MOTION_ACCELERATION = (int) 1300;
-        public static final int ANGLE_CRUISE_VELOCITY = (int) 400;
-
-        public static final double DRIFTING_PERIOD = 0.2; // expected period the robot will change its rotation even after commanded to stop. [s]
     }
 
     public static class Shooter {
@@ -248,6 +246,8 @@ public final class Constants {
     public static class Control {
         public static final double RIGHT_TRIGGER_DEADBAND = 0.4; // Deadband for right trigger. [%]
         public static final double LEFT_TRIGGER_DEADBAND = 0.4; // Deadband for right trigger. [%]
-
+        public static final int JOYSTICK_FILTER_TAP = 8;
+        public static final double JOYSTICK_XY_SMOOTHING_EXPONENT = 1.5;
+        public static final double JOYSTICK_OMEGA_SMOOTHING_EXPONENT = 1.5;
     }
 }

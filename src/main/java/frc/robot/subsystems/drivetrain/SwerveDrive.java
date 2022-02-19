@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.utils.TimeDelayedBoolean;
-import frc.robot.utils.Utils;
 import webapp.FireLog;
 
 

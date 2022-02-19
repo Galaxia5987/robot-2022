@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
+import frc.robot.utils.SmoothedInput;
 
 import java.util.function.DoubleSupplier;
 
@@ -21,11 +22,11 @@ public class OverpoweredDrive extends HolonomicDrive {
         enableContinuousInput(-Math.PI, Math.PI);
         setTolerance(Math.toRadians(Constants.SwerveDrive.ALLOWABLE_HEADING_ERROR));
     }};
+    private final Timer timer = new Timer();
     private boolean newSetpoint = false;
     private Rotation2d setpoint;
     private boolean wait = false;
     private double current = 0;
-    private final Timer timer = new Timer();
 
     public OverpoweredDrive(SwerveDrive swerveDrive, DoubleSupplier forwardSupplier, DoubleSupplier strafeSupplier, DoubleSupplier rotationSupplier) {
         super(swerveDrive, forwardSupplier, strafeSupplier, rotationSupplier);
@@ -39,7 +40,7 @@ public class OverpoweredDrive extends HolonomicDrive {
         double magnitude = Math.hypot(forward, strafe);
         double alpha = Math.atan2(strafe, forward);
         if (magnitude == 0) current = 0;
-        current += magnitude / 5;
+        current += magnitude / 10;
         if (current > magnitude) current = magnitude;
         forward = Math.cos(alpha) * current;
         strafe = Math.sin(alpha) * current;
