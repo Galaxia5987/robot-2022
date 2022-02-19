@@ -255,7 +255,7 @@ public class SwerveDrive extends SubsystemBase {
      * Resets the odometry.
      */
     public void resetOdometry() {
-        resetOdometry(new Pose2d());
+        resetOdometry(new Pose2d(), new Rotation2d());
     }
 
     /**
@@ -263,8 +263,8 @@ public class SwerveDrive extends SubsystemBase {
      *
      * @param pose the current pose.
      */
-    public void resetOdometry(Pose2d pose) {
-        odometry.resetPosition(pose, Robot.getRawAngle());
+    public void resetOdometry(Pose2d pose, Rotation2d angle) {
+        odometry.resetPosition(pose, angle);
     }
 
     /**
@@ -311,9 +311,10 @@ public class SwerveDrive extends SubsystemBase {
     public void periodic() {
         odometry.updateWithTime(
                 Timer.getFPGATimestamp(),
-                Robot.getRawAngle(),
+                Robot.getAngle(),
                 getStates()
         );
+        System.out.println(getPose());
 /*
         headingController.setP(Constants.SwerveDrive.HEADING_KP.get());
         headingController.setI(Constants.SwerveDrive.HEADING_KI.get());

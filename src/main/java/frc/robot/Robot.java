@@ -69,7 +69,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        navx.reset();
+//        navx.reset();
         resetAngle();
         if (debug) {
             NetworkTableConstant.initializeAllConstants();
