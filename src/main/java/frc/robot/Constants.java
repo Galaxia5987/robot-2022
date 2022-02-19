@@ -3,6 +3,7 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -30,7 +31,7 @@ public final class Constants {
 
     // The order of modules is ALWAYS front-right (fr), front-left (fl), rear-right (rr), rear-left (rl)
     public static final class SwerveDrive {
-
+        public static final double SMOOTHING_MULTIPLIER = 1.25;
         public static final double VELOCITY_MULTIPLIER = 2.2;
         public static final double ROTATION_MULTIPLIER = 2;
 
@@ -50,30 +51,25 @@ public final class Constants {
         public static final double MODEL_TOLERANCE = 0.01;
         public static final double ENCODER_TOLERANCE = 0.01; // [ticks]
 
-        public static final double HEADING_KP = 1;
+        public static final double HEADING_KP = 0.1125;
         public static final double HEADING_KI = 1;
         public static final double HEADING_KD = 1;
         public static final TrapezoidProfile.Constraints HEADING_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 1.5); // [rads/sec], [rad/sec^2]
 
         // The heading is responsible for the angle of the whole chassis, while the angle is used in the angle motor itself.
-        public static final double ALLOWABLE_HEADING_ERROR = Math.toRadians(0.05); // [rad]
-        public static final double ALLOWABLE_ANGLE_ERROR = Math.toRadians(8); // [rad]
+        public static final double ALLOWABLE_HEADING_ERROR = Math.toRadians(5); // [rad]
+        public static final double ALLOWABLE_ANGLE_ERROR = Math.toRadians(3); // [rad]
         public static final double WHEEL_RADIUS = 0.04688; // [m]
 
-        public static final double ROBOT_LENGTH = 0.5924; // [m]
-        public static final double ROBOT_WIDTH = 0.5924; // [m]
+        public static final double ROBOT_LENGTH = 0.68; // [m]
+        public static final double ROBOT_WIDTH = 0.82; // [m]
 
         // the rotational velocity of the robot, this constant multiplies the rotation output of the joystick
         public static final double JOYSTICK_THRESHOLD = 0.1; // [%]
         public static final double ANGLE_COSINE_DEADBAND = Math.toRadians(10); // [rads]
         public static final double ROTATION_DELAY = 0.1; // [sec]
-        public static final int ANGLE_CURVE_STRENGTH = 4;
-        public static final double LOOP_PERIOD = 0.02; // loop period. [s]
-        public static final double g = 9.80665; // Gravity acceleration constant. [m/s^2]
-        public static final double UPPER_TARGET_HEIGHT = 2.64; // Height of upper target. [m]
-        public static final double PEBZNER_HEIGHT = 4.8; // Height of pebzner auditorium. [m]
-        public static final double NOMINAL_VOLTAGE = 12.0; // Nominal voltage. [V]
-        public static final int TALON_TIMEOUT = 10; // Waiting period for configurations. [ms]
+        public static final int ANGLE_CURVE_STRENGTH = 1;
+        public static final double ROTATIONAL_ADDITION_RESTRAINT = 3 ;
         private static final double Rx = SwerveDrive.ROBOT_WIDTH / 2; // [m]
         private static final double Ry = SwerveDrive.ROBOT_LENGTH / 2; // [m]
         // Axis systems
@@ -85,8 +81,12 @@ public final class Constants {
         };
         // angle motion magic
         private static final float MOTION_MAGIC_SAFETY = 0.7f;
-        public static final int ANGLE_MOTION_ACCELERATION = Math.round(2800 * MOTION_MAGIC_SAFETY);
-        public static final int ANGLE_CRUISE_VELOCITY = Math.round(550 * MOTION_MAGIC_SAFETY);
+        //        public static final int ANGLE_MOTION_ACCELERATION = (int) Math.round(550 * 2.5 * MOTION_MAGIC_SAFETY);
+//        public static final int ANGLE_CRUISE_VELOCITY = (int) Math.round(2800 * 1.5 * MOTION_MAGIC_SAFETY);
+        public static final int ANGLE_MOTION_ACCELERATION = (int) 1300;
+        public static final int ANGLE_CRUISE_VELOCITY = (int) 400;
+
+        public static final double DRIFTING_PERIOD = 0.2; // expected period the robot will change its rotation even after commanded to stop. [s]
     }
 
     public static class Shooter {
@@ -113,16 +113,16 @@ public final class Constants {
     }
 
     public static final class SwerveModule {
-        public static final int[] ZERO_POSITIONS = {-3697, 538, -1813, -1950}; // fr, fl, rr, rl
+        public static final int[] ZERO_POSITIONS = {-635, -1108, -1052, -733}; // fr, fl, rr, rl
 
         public static final int TRIGGER_THRESHOLD_CURRENT = 2; // [amps]
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]
-        public static final double RAMP_RATE = 1; // seconds from neutral to max
+        public static final double RAMP_RATE = 0; // seconds from neutral to max
 
         public static final SwerveModuleConfigBase frConfig = new SwerveModuleConfigBase.Builder(0)
                 .configPorts(DRIVE_MOTOR_FR, ANGLE_MOTOR_FR)
                 .configInversions(DRIVE_INVERTED_FR, ANGLE_INVERTED_FR, ANGLE_SENSOR_PHASE_FR)
-                .configAnglePID(4.5, 0.0045, 1, 0)
+                .configAnglePID(6, 0, 0, 0)
                 .configZeroPosition(ZERO_POSITIONS[0])
                 .configJ(0.115)
                 .build();
@@ -130,7 +130,7 @@ public final class Constants {
         public static final SwerveModuleConfigBase flConfig = new SwerveModuleConfigBase.Builder(1)
                 .configPorts(DRIVE_MOTOR_FL, ANGLE_MOTOR_FL)
                 .configInversions(DRIVE_INVERTED_FL, ANGLE_INVERTED_FL, ANGLE_SENSOR_PHASE_FL)
-                .configAnglePID(13, 0.0045, 0, 0)
+                .configAnglePID(6, 0, 0, 0)
                 .configZeroPosition(ZERO_POSITIONS[1])
                 .configJ(0.115)
                 .build();
@@ -138,7 +138,7 @@ public final class Constants {
         public static final SwerveModuleConfigBase rrConfig = new SwerveModuleConfigBase.Builder(2)
                 .configPorts(DRIVE_MOTOR_RR, ANGLE_MOTOR_RR)
                 .configInversions(DRIVE_INVERTED_RR, ANGLE_INVERTED_RR, ANGLE_SENSOR_PHASE_RR)
-                .configAnglePID(8, 0.004, 0, 0)
+                .configAnglePID(6, 0, 0, 0)
                 .configZeroPosition(ZERO_POSITIONS[2])
                 .configJ(0.115)
                 .build();
@@ -146,7 +146,7 @@ public final class Constants {
         public static final SwerveModuleConfigBase rlConfig = new SwerveModuleConfigBase.Builder(3)
                 .configPorts(DRIVE_MOTOR_RL, ANGLE_MOTOR_RL)
                 .configInversions(DRIVE_INVERTED_RL, ANGLE_INVERTED_RL, ANGLE_SENSOR_PHASE_RL)
-                .configAnglePID(10, 0.004, 0, 0)
+                .configAnglePID(6, 0, 0, 0)
                 .configZeroPosition(ZERO_POSITIONS[3])
                 .configJ(0.115)
                 .build();

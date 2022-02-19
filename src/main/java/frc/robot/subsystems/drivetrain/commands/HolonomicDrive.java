@@ -30,7 +30,7 @@ public class HolonomicDrive extends CommandBase {
     @Override
     public void execute() {
         ChassisSpeeds speeds = calculateVelocities();
-        swerveDrive.holonomicDrive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
+        swerveDrive.holonomicDrive(speeds.vyMetersPerSecond, speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond);
 
         SwerveDrive.logSpeeds(speeds);
     }
@@ -40,15 +40,15 @@ public class HolonomicDrive extends CommandBase {
      */
     protected ChassisSpeeds calculateVelocities() {
         // get the values
-        double forward = Utils.deadband(forwardSupplier.getAsDouble(), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
-        double strafe = Utils.deadband(strafeSupplier.getAsDouble(), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
+        double forward = forwardSupplier.getAsDouble(); // vx
+        double strafe = strafeSupplier.getAsDouble(); // vy
         double rotation = Utils.rotationalDeadband(rotationSupplier.getAsDouble(), Constants.SwerveDrive.JOYSTICK_THRESHOLD) * Constants.SwerveDrive.ROTATION_MULTIPLIER;
 
         // recalculate - update based on the angle and the magnitude
-        double alpha = Math.atan2(forward, strafe); // direction of movement
-        double magnitude = Math.hypot(forward, strafe) * Constants.SwerveDrive.VELOCITY_MULTIPLIER;
-        forward = Math.sin(alpha) * magnitude;
-        strafe = Math.cos(alpha) * magnitude;
+        double alpha = Math.atan2(strafe, forward); // direction of movement
+        double magnitude = Utils.deadband(Math.hypot(forward, strafe) * Constants.SwerveDrive.VELOCITY_MULTIPLIER, Constants.SwerveDrive.JOYSTICK_THRESHOLD);
+        forward = Math.cos(alpha) * magnitude;
+        strafe = Math.sin(alpha) * magnitude;
         return new ChassisSpeeds(forward, strafe, rotation);
     }
 
