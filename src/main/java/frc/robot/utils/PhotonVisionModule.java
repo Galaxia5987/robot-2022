@@ -69,6 +69,14 @@ public class PhotonVisionModule extends SubsystemBase {
         return OptionalDouble.empty();
     }
 
+    public OptionalDouble getYaw() {
+        var results = camera.getLatestResult();
+        if (results.hasTargets()) {
+            return OptionalDouble.of(results.getBestTarget().getYaw());
+        }
+        return OptionalDouble.empty();
+    }
+
     /**
      * Estimates the camera translation relative to the target.
      *
@@ -131,6 +139,11 @@ public class PhotonVisionModule extends SubsystemBase {
      */
     public boolean getLedsState() {
         return leds.get();
+    }
+
+    @Override
+    public void periodic() {
+        System.out.println("distance= {" + (getDistance().orElse(0) + (TARGET_RADIUS)) + "}");
     }
 
     @Override

@@ -41,7 +41,7 @@ public class Shoot extends CommandBase {
     @Override
     public void execute() {
         if (power.isEmpty()) {
-            shooter.setVelocity(getSetpointVelocity(distance.getAsDouble()));
+            shooter.setVelocity(distance.getAsDouble());
         } else {
             shooter.setPower(power.getAsDouble());
         }

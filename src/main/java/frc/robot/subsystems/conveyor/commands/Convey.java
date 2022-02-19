@@ -39,6 +39,7 @@ public class Convey extends CommandBase {
 
     @Override
     public void execute() {
+        SmartDashboard.putBoolean("cond", condition.getAsBoolean());
         if (condition.getAsBoolean()) {
             SmartDashboard.putNumber("Conveyor power", power.getAsDouble());
             conveyor.setPower(power.getAsDouble());
@@ -46,6 +47,7 @@ public class Convey extends CommandBase {
         } else {
             conveyor.setPower(0);
         }
+        SmartDashboard.putNumber("Conveyor p", conveyor.getPower());
 
         maximalProximity = Math.max(maximalProximity, conveyor.getProximityValue());
         System.out.println("Maximal proximity " + maximalProximity);

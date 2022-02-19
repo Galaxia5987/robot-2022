@@ -99,7 +99,7 @@ public final class Constants {
 
         public static final double OUTPUT_MULTIPLIER = 0.1; // Multiplies the output for manual control in the bits. [%]
         public static final double OUTTAKE_POWER = 0.2; // Power to give to the shooter when taking balls out. [%]
-        public static final double SHOOTER_VELOCITY_DEADBAND = 10; // Dead band for shooter velocity setpoint. [rpm]
+        public static final double SHOOTER_VELOCITY_DEADBAND = 30; // Dead band for shooter velocity setpoint. [rpm]
         public static double RECOMMENDED_ACCELERATION_TIME = 1.3; // Recommended time for the shooter to get to it's setpoint. [s]
 
         public static TalonFXConfiguration getConfiguration() {
@@ -111,7 +111,7 @@ public final class Constants {
     }
 
     public static final class SwerveModule {
-        public static final int[] ZERO_POSITIONS = {-635, -1108, -1052, -733}; // fr, fl, rr, rl
+        public static final int[] ZERO_POSITIONS = {377, -90, -28, -698}; // fr, fl, rr, rl
 
         public static final int TRIGGER_THRESHOLD_CURRENT = 2; // [amps]
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]
@@ -173,10 +173,10 @@ public final class Constants {
 
     }
 
-    public static class Vision {
-        public static final double CAMERA_HEIGHT = 0.767; // [m]
-        public static final double TARGET_HEIGHT_FROM_GROUND = 2.64; // [m]
-        public static final double CAMERA_PITCH = 30; // Pitch of the vision. [deg]
+    public static class Vision { //TODO: change for competition
+        public static final double CAMERA_HEIGHT = 0.73; // [m]
+        public static final double TARGET_HEIGHT_FROM_GROUND = 2.62; // [m]
+        public static final double CAMERA_PITCH = 33; // Pitch of the vision. [deg]
         public static final double DIAG_FOV = 75; // Diagonal FOV. [deg]
         public static final double LED_RANGE = 6; // Visible range of LEDs. [m]
         public static final int CAM_RESOLUTION_WIDTH = 640; // Width of camera resolution. [pixel]
@@ -184,6 +184,7 @@ public final class Constants {
         public static final double MIN_TARGET_AREA = 10; // Minimal area of target. [pixel^2]
         public static final double TARGET_WIDTH = 1.36; // Width of vision target strip. [m]
         public static final double TARGET_HEIGHT = 0.05; // Height of the vision target strip. [m]
+        public static final double TARGET_RADIUS = 0.678;
 
         public static final Pose2d HUB_POSE = new Pose2d( // Position of the hub relative to the field.
                 new Translation2d(FIELD_LENGTH / 2, FIELD_WIDTH / 2), new Rotation2d());

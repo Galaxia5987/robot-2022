@@ -1,5 +1,7 @@
 package frc.robot.utils;
 
+import edu.wpi.first.math.filter.LinearFilter;
+
 public class Utils {
 
 
@@ -46,5 +48,10 @@ public class Utils {
      */
     public static double rpmToRps(double rpm) {
         return rpm / 60.0;
+    }
+
+    public static double smoothed(double value, double exponent, LinearFilter joystickFilter) {
+        double filteredValue = joystickFilter.calculate(value);
+        return Math.pow(Math.abs(filteredValue), exponent) * Math.signum(filteredValue);
     }
 }
