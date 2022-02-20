@@ -39,11 +39,11 @@ public class ShootCargo extends ParallelCommandGroup {
                       DoubleSupplier distanceFromTarget,
                       double velocity) {
         final BooleanSupplier isFlywheelAtSetpoint =
-                () -> Math.abs(velocity - shooter.getVelocity()) < SHOOTER_VELOCITY_DEADBAND;
+                () -> Math.abs(velocity - shooter.getVelocity()) < SHOOTER_VELOCITY_DEADBAND.get();
 
         addCommands(
 //                new HoodCommand(hood, () -> Hood.Mode.getValue(distanceFromTarget.getAsDouble() < DISTANCE_FROM_TARGET_THRESHOLD)),
-                new Convey(conveyor, conveyorPower, () -> Math.abs(velocity - shooter.getVelocity()) < SHOOTER_VELOCITY_DEADBAND),
+                new Convey(conveyor, conveyorPower, isFlywheelAtSetpoint),
 //                new FlapCommand(flap, () -> Flap.FlapMode.getValue(!isFlywheelAtSetpoint.getAsBoolean())),
                 new Shoot(shooter, distanceFromTarget)
         );

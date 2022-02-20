@@ -99,7 +99,7 @@ public final class Constants {
 
         public static final double OUTPUT_MULTIPLIER = 0.1; // Multiplies the output for manual control in the bits. [%]
         public static final double OUTTAKE_POWER = 0.2; // Power to give to the shooter when taking balls out. [%]
-        public static final double SHOOTER_VELOCITY_DEADBAND = 30; // Dead band for shooter velocity setpoint. [rpm]
+        public static final WebConstant SHOOTER_VELOCITY_DEADBAND = WebConstant.of("Shooter", "Velocity deadband", 30); // Dead band for shooter velocity setpoint. [rpm]
         public static double RECOMMENDED_ACCELERATION_TIME = 1.3; // Recommended time for the shooter to get to it's setpoint. [s]
 
         public static TalonFXConfiguration getConfiguration() {
@@ -170,7 +170,12 @@ public final class Constants {
         public static final Color RED = new Color(0.19, 0.49, 0.32);
         public static final Color BLUE = new Color(2.4e-4, 0.51, 0.487);
         public static final Color NONE = new Color(2.4e-4, 0.52, 0.4);
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final double kF = 0;
 
+        public static final double TICKS_PER_UNIT = 2048 * 2;
     }
 
     public static class Vision { //TODO: change for competition
@@ -233,7 +238,7 @@ public final class Constants {
     }
 
     public static class Intake {
-        public static final double DEFAULT_POWER = 1; // power intake will receive on the basic command. [%]
+        public static final double DEFAULT_POWER = 0.5; // power intake will receive on the basic command. [%]
         public static final double POWER_TO_VELOCITY_RATIO = -3 / 16.0; // Ratio of power to velocity. [% / m/s]
         public static final boolean IS_COMPENSATING_VOLTAGE = true;
         public static final double TIME_BETWEEN_RUNS = 1.0; // time intake will wait before toggling the retractor (for testing only). [s]

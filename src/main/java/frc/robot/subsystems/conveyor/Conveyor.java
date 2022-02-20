@@ -1,5 +1,6 @@
 package frc.robot.subsystems.conveyor;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
@@ -10,12 +11,15 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Ports;
+import frc.robot.subsystems.UnitModel;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
 
 import static frc.robot.Constants.Conveyor.*;
+import static frc.robot.Constants.TALON_TIMEOUT;
 import static frc.robot.Ports.Conveyor.IS_COMPENSATING_VOLTAGE;
 import static frc.robot.Ports.Conveyor.MOTOR_INVERSION;
 
@@ -27,6 +31,7 @@ public class Conveyor extends SubsystemBase {
     private final DigitalInput postFlapBeam = new DigitalInput(Ports.Conveyor.POST_FLAP_BEAM_BREAKER);
     private final DigitalInput preFlapBeam = new DigitalInput(Ports.Conveyor.PRE_FLAP_BEAM_BREAKER);
     private final ColorMatch colorMatch = new ColorMatch();
+    private final UnitModel unitModel = new UnitModel(Constants.Conveyor.TICKS_PER_UNIT);
     private DriverStation.Alliance lastSeenColor = DriverStation.Alliance.Invalid;
     private boolean wasPostFlapBeamConnected = true;
     private int currentProximity = 0;
@@ -35,11 +40,16 @@ public class Conveyor extends SubsystemBase {
     private Conveyor() {
         motor.setInverted(MOTOR_INVERSION);
         motor.enableVoltageCompensation(IS_COMPENSATING_VOLTAGE);
+        motor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
         colorMatch.addColorMatch(RED);
         colorMatch.addColorMatch(BLUE);
         colorMatch.addColorMatch(NONE);
         cargoPositions.add(DriverStation.Alliance.Invalid.name());
         cargoPositions.add(DriverStation.Alliance.Invalid.name());
+        motor.config_kP(0, kP, TALON_TIMEOUT);
+        motor.config_kI(0, kI, TALON_TIMEOUT);
+        motor.config_kD(0, kD, TALON_TIMEOUT);
+        motor.config_kF(0, kF, TALON_TIMEOUT);
     }
 
     /**
@@ -124,6 +134,14 @@ public class Conveyor extends SubsystemBase {
      */
     public void setPower(double power) {
         motor.set(power);
+    }
+
+    public double getVelocity() {
+        return unitModel.toVelocity(motor.getSelectedSensorVelocity()) * 60;
+    }
+
+    public void setVelocity(double velocity) {
+        motor.set(ControlMode.Velocity, unitModel.toTicks100ms(velocity / 60));
     }
 
     public void setCommandPower(double commandPower) {
