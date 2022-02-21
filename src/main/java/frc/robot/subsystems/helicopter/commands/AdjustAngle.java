@@ -20,7 +20,7 @@ public class AdjustAngle extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return Math.abs(helicopter.getAbsolutePosition()) <= Constants.Helicopter.ZERO_POSITION_TOLERANCE;
+        return Math.abs(helicopter.getAbsolutePosition()) <= Constants.Helicopter.POSITION_TOLERANCE;
     }
 
     @Override
