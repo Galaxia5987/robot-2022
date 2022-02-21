@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -174,7 +175,7 @@ public class Helicopter extends SubsystemBase {
      */
     public void setAngleZero() {
         double angle = getAbsolutePosition();
-        setPosition(getPosition() - angle);
+        setPosition(getPosition().minus(new Rotation2d(angle)));
     }
 
     /**
@@ -188,17 +189,20 @@ public class Helicopter extends SubsystemBase {
     /**
      * @return get motors position. [rad]
      */
-    public double getPosition() {
-        return unitModelPosition.toUnits(mainMotor.getSelectedSensorPosition(0));
+    public Rotation2d getPosition() {
+        return new Rotation2d(Math.IEEEremainder(unitModelPosition.toUnits(mainMotor.getSelectedSensorPosition(0)), Math.PI*2));
     }
 
     /**
      * @param position the position of the motors. [rad]
      */
-    public void setPosition(double position) {
-        mainMotor.set(ControlMode.MotionMagic, unitModelPosition.toTicks(position),
-                DemandType.ArbitraryFeedForward, feedforward.calculate(getPosition(), getVelocity()));
-    }
+    public void setPosition(Rotation2d position) {
+        var currentPosition = getPosition();
+        var error = position.minus(currentPosition);
+        Rotation2d minMove = new Rotation2d(Math.IEEEremainder(unitModelPosition.toTicks(error), Math.PI *2));
+        mainMotor.set(ControlMode.MotionMagic, unitModelPosition.toTicks(minMove),
+              DemandType.ArbitraryFeedForward, feedforward.calculate(getPosition().getRadians(), getVelocity()));
+}
 
     /**
      * Get the stopper's mode.
@@ -250,7 +254,7 @@ public class Helicopter extends SubsystemBase {
 
         RoboRioSim.setVInVoltage(
                 BatterySim.calculateDefaultBatteryLoadedVoltage(armSim.getCurrentDrawAmps()));
-        mainMotor.getSimCollection().setIntegratedSensorRawPosition(unitModelPosition.toTicks(armSim.getAngleRads()));
+        mainMotor.getSimCollection().setIntegratedSensorRawPosition(unitModelPosition.toTicks(new Rotation2d(armSim.getAngleRads())));
         arm.setAngle(Units.radiansToDegrees(armSim.getAngleRads()));
     }
 }
