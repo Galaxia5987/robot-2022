@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
 public class UnitModel {
     private final double ticksPerUnit;
 
@@ -23,7 +25,7 @@ public class UnitModel {
      * @param units the given units
      * @return the corresponding number of ticks
      */
-    public int toTicks(double units) {
+    public int toTicks(Rotation2d units) {
         return (int) (ticksPerUnit * units);
     }
 
