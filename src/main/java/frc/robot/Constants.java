@@ -234,7 +234,11 @@ public final class Constants {
 
         public static final int ZERO_POSITION = 0; // [radians]
 
-        public static final double ZERO_POSITION_TOLERANCE = 0.05; // [radians]
+        public static final double POSITION_TOLERANCE = 0.015; // [radians]
+
+        public static final double SECOND_RUNG = 0; // [radians]
+        public static final double THIRD_RUNG = 0; // [radians]
+
     }
 
     public static class Intake {
