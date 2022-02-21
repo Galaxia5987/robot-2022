@@ -6,6 +6,7 @@ import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -70,20 +71,37 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        PathPlannerTrajectory path = PathPlanner.loadPath("Path", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL, false);
-        swerve.resetOdometry(new Pose2d(path.getInitialState().poseMeters.getTranslation(), path.getInitialState().holonomicRotation));
-        Robot.resetAngle(path.getInitialState().holonomicRotation);
-        var thetaController = new ProfiledPIDController(Constants.Autonomous.KP_THETA_CONTROLLER, 0, 0, Constants.SwerveDrive.HEADING_CONTROLLER_CONSTRAINTS);
-        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+//        PathPlannerTrajectory path = PathPlanner.loadPath("Path", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL, false);
+//        swerve.resetOdometry(new Pose2d(path.getInitialState().poseMeters.getTranslation(), path.getInitialState().holonomicRotation));
+//        Robot.resetAngle(path.getInitialState().holonomicRotation);
+//        var thetaController = new ProfiledPIDController(Constants.Autonomous.KP_THETA_CONTROLLER, 0, 0, Constants.SwerveDrive.HEADING_CONTROLLER_CONSTRAINTS);
+//        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+//
+//        return new PPSwerveControllerCommand(
+//                path,
+//                swerve::getPose,
+//                swerve.getKinematics(),
+//                new PIDController(Constants.Autonomous.KP_X_CONTROLLER, 0, 0),
+//                new PIDController(Constants.Autonomous.KP_Y_CONTROLLER, 0, 0),
+//                thetaController,
+//                swerve::setStates
+//        );
 
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("why tho", 3, 1.5);
+        Robot.resetAngle(trajectory.getInitialState().holonomicRotation);
+        swerve.resetOdometry(trajectory.getInitialState().poseMeters, trajectory.getInitialState().holonomicRotation);
+//        SmartDashboard.putNumber("trajectory_time", trajectory.getTotalTimeSeconds());
         return new PPSwerveControllerCommand(
-                path,
+                trajectory,
                 swerve::getPose,
                 swerve.getKinematics(),
-                new PIDController(Constants.Autonomous.KP_X_CONTROLLER, 0, 0),
-                new PIDController(Constants.Autonomous.KP_Y_CONTROLLER, 0, 0),
-                thetaController,
-                swerve::setStates
+                new PIDController(3, 0, 0),
+                new PIDController(3, 0, 0),
+                new ProfiledPIDController(7, 0, 0, new TrapezoidProfile.Constraints(4, 3.2)) {{
+                    enableContinuousInput(-Math.PI, Math.PI);
+                }},
+                (swerve::setStates),
+                swerve
         );
     }
 
