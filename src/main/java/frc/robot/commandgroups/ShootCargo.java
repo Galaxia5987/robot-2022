@@ -18,32 +18,20 @@ import static frc.robot.Constants.Shooter.SHOOTER_VELOCITY_DEADBAND;
 
 public class ShootCargo extends ParallelCommandGroup {
 
+
     public ShootCargo(Shooter shooter,
                       Hood hood,
                       Conveyor conveyor,
 //                      Flap flap,
                       DoubleSupplier conveyorPower,
                       DoubleSupplier distanceFromTarget) {
-        /*
-        This boolean supplier uses a deadband for the shooter velocity by turning it into the
-        ratio between the current velocity and the setpoint.
-         */
-        this(shooter, hood, conveyor, /*flap,*/ conveyorPower, distanceFromTarget, Shoot.getSetpointVelocity(distanceFromTarget.getAsDouble()));
-    }
-
-    public ShootCargo(Shooter shooter,
-                      Hood hood,
-                      Conveyor conveyor,
-//                      Flap flap,
-                      DoubleSupplier conveyorPower,
-                      DoubleSupplier distanceFromTarget,
-                      double velocity) {
-        final BooleanSupplier isFlywheelAtSetpoint =
-                () -> Math.abs(velocity - shooter.getVelocity()) < SHOOTER_VELOCITY_DEADBAND;
+        DoubleSupplier velocity = () -> Shoot.getSetpointVelocity(distanceFromTarget.getAsDouble());
+        BooleanSupplier isFlywheelAtSetpoint =
+                () -> Math.abs(velocity.getAsDouble() - shooter.getVelocity()) < SHOOTER_VELOCITY_DEADBAND;
 
         addCommands(
 //                new HoodCommand(hood, () -> Hood.Mode.getValue(distanceFromTarget.getAsDouble() < DISTANCE_FROM_TARGET_THRESHOLD)),
-                new Convey(conveyor, conveyorPower, () -> Math.abs(velocity - shooter.getVelocity()) < SHOOTER_VELOCITY_DEADBAND),
+                new Convey(conveyor, conveyorPower, isFlywheelAtSetpoint),
 //                new FlapCommand(flap, () -> Flap.FlapMode.getValue(!isFlywheelAtSetpoint.getAsBoolean())),
                 new Shoot(shooter, distanceFromTarget)
         );
