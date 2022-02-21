@@ -77,13 +77,6 @@ public class FiveCargoAuto extends SequentialCommandGroup {
                 Constants.Intake.DEFAULT_POWER
         ));
 
-        addCommands(new ShootCargo(
-                shooter,
-                hood,
-                conveyor,
-                flap,
-                distanceFromTarget,
-                conveyorPower));
 
         addCommands(createCommand.apply("p4 - Shooting position(10.4)"));
 
@@ -94,6 +87,7 @@ public class FiveCargoAuto extends SequentialCommandGroup {
                 flap,
                 distanceFromTarget,
                 conveyorPower));
+
 
         addCommands(createCommand.apply("p4 - Pickup up cargo(10.5)"));
 
