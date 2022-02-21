@@ -239,6 +239,7 @@ public final class Constants {
 
         public static final double SECOND_RUNG = 0; // [radians]
         public static final double THIRD_RUNG = 0; // [radians]
+        public static final double RUNG_SEPARATION = 0; // [radians]
 
     }
 
