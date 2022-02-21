@@ -10,12 +10,14 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.autoPaths.FiveCargoAuto;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.commands.AdjustAngle;
 import frc.robot.subsystems.climber.commands.StopClimber;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.HolonomicDrive;
+import frc.robot.subsystems.shooter.Shooter;
 import webapp.Webserver;
 
 public class RobotContainer {
@@ -56,6 +58,7 @@ public class RobotContainer {
     private void configureButtonBindings() {
         a.whenPressed((Runnable) Robot::resetAngle);
         b.toggleWhenPressed(new StopClimber(climber));
+
 
         a.and(b).and(y).toggleWhenActive(new AdjustAngle(climber));
     }
