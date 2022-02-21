@@ -8,33 +8,47 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
+import java.util.OptionalDouble;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.SwerveDrive.VELOCITY_MULTIPLIER;
 
-/*
-    OverpoweredDrive is an assisted driving command that provides a smoother driving experience.
-    It corrects heading drifting, slows acceleration, and waits for wheels to reach their desired rotations before speeding.
- */
-public class OverpoweredDrive extends HolonomicDrive {
+public class DriveAndAdjustWithVision extends HolonomicDrive {
     private final PIDController pidController = new PIDController(Constants.SwerveDrive.HEADING_KP, 0, 0) {{
         enableContinuousInput(-Math.PI, Math.PI);
         setTolerance(Constants.SwerveDrive.ALLOWABLE_HEADING_ERROR);
     }};
+
+    private final PIDController adjustController = new PIDController(Constants.SwerveDrive.HEADING_KP, 0, 0) {{
+        enableContinuousInput(-Math.PI, Math.PI);
+        setTolerance(Constants.SwerveDrive.ALLOWABLE_HEADING_ERROR);
+    }};
     private final Timer driftingTimer = new Timer();
+    private final Timer sampleYawTimer = new Timer();
     private boolean newSetpoint = false;
     private Rotation2d setpoint;
     private boolean wait = false;
     private double current = 0;
+    private Rotation2d target;
+    private final OptionalDouble yawSupplier;
+    private final BooleanSupplier condition;
+    private final DoubleSupplier distanceSupplier;
 
-    public OverpoweredDrive(SwerveDrive swerveDrive, DoubleSupplier forwardSupplier, DoubleSupplier strafeSupplier, DoubleSupplier rotationSupplier) {
+    public DriveAndAdjustWithVision(SwerveDrive swerveDrive, DoubleSupplier forwardSupplier, DoubleSupplier strafeSupplier, DoubleSupplier rotationSupplier, OptionalDouble yawSupplier, BooleanSupplier condition, DoubleSupplier distanceSupplier) {
         super(swerveDrive, forwardSupplier, strafeSupplier, rotationSupplier);
+        this.yawSupplier = yawSupplier;
+        this.condition = condition;
+        this.distanceSupplier = distanceSupplier;
+        target = Robot.getAngle();
     }
 
     @Override
     public void initialize() {
         driftingTimer.reset();
         driftingTimer.start();
+        sampleYawTimer.reset();
+        sampleYawTimer.start();
     }
 
     @Override
@@ -56,7 +70,8 @@ public class OverpoweredDrive extends HolonomicDrive {
             newSetpoint = true;
         }
 
-        if (magnitude == 0 && rotation == 0) {
+        // if there is no reason to drive
+        if (magnitude == 0 && rotation == 0 && !condition.getAsBoolean()) {
             swerveDrive.terminate();
             wait = true;
 
@@ -71,6 +86,21 @@ public class OverpoweredDrive extends HolonomicDrive {
             }
 
         } else {
+
+            // if you want to adjust to the target
+            if (condition.getAsBoolean()) {
+                if (yawSupplier.isEmpty()) {
+                    rotation = Constants.SwerveDrive.ROTATION_MULTIPLIER / 2;
+                } else {
+                    if (sampleYawTimer.hasElapsed(Constants.SwerveDrive.SAMPLE_YAW_PERIOD)) {
+                        Rotation2d offset = new Rotation2d(Math.atan2(Math.toRadians(-Math.signum(yawSupplier.getAsDouble()) * Constants.Shooter.CARGO_OFFSET), distanceSupplier.getAsDouble()));
+                        target = Robot.getAngle().minus(Rotation2d.fromDegrees(yawSupplier.getAsDouble()).plus(offset));
+                        sampleYawTimer.reset();
+                    }
+                    rotation = adjustController.calculate(Robot.getAngle().getRadians(), target.getRadians());
+                }
+            }
+
             // if swerveDrive angles were reached don't wait
             if (swerveDrive.haveModulesReachedAngles(forward, strafe, rotation)) {
                 wait = false;

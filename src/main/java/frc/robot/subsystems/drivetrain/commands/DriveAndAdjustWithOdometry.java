@@ -1,45 +1,45 @@
 package frc.robot.subsystems.drivetrain.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
+import java.util.OptionalDouble;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.SwerveDrive.VELOCITY_MULTIPLIER;
 
-/*
-    OverpoweredDrive is an assisted driving command that provides a smoother driving experience.
-    It corrects heading drifting, slows acceleration, and waits for wheels to reach their desired rotations before speeding.
- */
-public class VisionDrive extends HolonomicDrive {
+public class DriveAndAdjustWithOdometry extends HolonomicDrive {
     private final PIDController pidController = new PIDController(Constants.SwerveDrive.HEADING_KP, 0, 0) {{
         enableContinuousInput(-Math.PI, Math.PI);
         setTolerance(Math.toRadians(Constants.SwerveDrive.ALLOWABLE_HEADING_ERROR));
     }};
-
-    private final PIDController aimController = new PIDController(0.3, 0, 0) {{
-        enableContinuousInput(-Math.PI, Math.PI);
-        setTolerance(Math.toRadians(1));
-    }};
-
-    private final Timer timer = new Timer();
-    private final BooleanSupplier aimSupplier;
+    private final Timer driftingTimer = new Timer();
+    private final Timer sampleYawTimer = new Timer();
     private boolean newSetpoint = false;
     private Rotation2d setpoint;
     private boolean wait = false;
     private double current = 0;
-    private DoubleSupplier yawSupplier;
+    private final BooleanSupplier condition;
 
-    public VisionDrive(SwerveDrive swerveDrive, DoubleSupplier forwardSupplier, DoubleSupplier strafeSupplier, DoubleSupplier rotationSupplier, BooleanSupplier aimSupplier, DoubleSupplier yawSupplier) {
+    public DriveAndAdjustWithOdometry(SwerveDrive swerveDrive, DoubleSupplier forwardSupplier, DoubleSupplier strafeSupplier, DoubleSupplier rotationSupplier, BooleanSupplier condition) {
         super(swerveDrive, forwardSupplier, strafeSupplier, rotationSupplier);
-        this.aimSupplier = aimSupplier;
-        this.yawSupplier = yawSupplier;
+        this.condition = condition;
+    }
+
+    @Override
+    public void initialize() {
+        driftingTimer.reset();
+        driftingTimer.start();
+        sampleYawTimer.reset();
+        sampleYawTimer.start();
     }
 
     @Override
@@ -61,23 +61,37 @@ public class VisionDrive extends HolonomicDrive {
             newSetpoint = true;
         }
 
-        if (magnitude == 0 && rotation == 0) {
+        // if there is no reason to drive
+        if (magnitude == 0 && rotation == 0 && !condition.getAsBoolean()) {
             swerveDrive.terminate();
             wait = true;
 
             // if there is no rotation after there was rotation, start the timer.
             if (newSetpoint) {
                 newSetpoint = false;
-                timer.start();
-                timer.reset();
+                driftingTimer.reset();
             }
             // if the time hasn't passed since there was no rotation after there was rotation, keep resetting the setpoint.
-            if (!timer.hasElapsed(Constants.SwerveDrive.DRIFTING_PERIOD)) {
+            if (!driftingTimer.hasElapsed(Constants.SwerveDrive.DRIFTING_PERIOD)) {
                 setpoint = Robot.getAngle();
             }
 
-
         } else {
+
+            // if you want to adjust to the target
+            if (condition.getAsBoolean()) {
+                Translation2d swerveTranslation = swerveDrive.getPose().getTranslation();
+                Translation2d targetTranslation = new Translation2d(3, 3);
+                Translation2d diff = targetTranslation.minus(swerveTranslation);
+                double angle = Math.atan2(diff.getY(), diff.getX());
+                if (Math.abs(Robot.getAngle().minus(new Rotation2d(angle - Constants.Shooter.CARGO_OFFSET)).getRadians()) < Math.abs(Robot.getAngle().minus(new Rotation2d(angle + Constants.Shooter.CARGO_OFFSET)).getRadians())) {
+                    angle -= Constants.Shooter.CARGO_OFFSET;
+                } else {
+                    angle += Constants.Shooter.CARGO_OFFSET;
+                }
+                rotation = pidController.calculate(Robot.getAngle().getRadians(), angle);
+            }
+
             // if swerveDrive angles were reached don't wait
             if (swerveDrive.haveModulesReachedAngles(forward, strafe, rotation)) {
                 wait = false;
@@ -95,16 +109,14 @@ public class VisionDrive extends HolonomicDrive {
                     // if there is no rotation after there was rotation, start the timer.
                     if (newSetpoint) {
                         newSetpoint = false;
-                        timer.start();
-                        timer.reset();
+                        driftingTimer.reset();
                     }
 
                     // if the time hasn't passed since there was no rotation after there was rotation, keep resetting the setpoint.
-                    if (!timer.hasElapsed(Constants.SwerveDrive.DRIFTING_PERIOD)) {
+                    if (!driftingTimer.hasElapsed(Constants.SwerveDrive.DRIFTING_PERIOD)) {
                         setpoint = Robot.getAngle();
                     } else {
-                        swerveDrive.defaultHolonomicDrive(forward, strafe, pidController.calculate(Robot.getAngle().getDegrees(), setpoint.getDegrees()));
-                        System.out.println(pidController.calculate(Robot.getAngle().getDegrees(), setpoint.getDegrees()));
+                        swerveDrive.defaultHolonomicDrive(forward, strafe, pidController.calculate(Robot.getAngle().getRadians(), setpoint.getRadians()));
                     }
 
                 } else {
