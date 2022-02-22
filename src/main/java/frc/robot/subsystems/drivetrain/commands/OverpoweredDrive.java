@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
-import frc.robot.utils.SmoothedInput;
 
 import java.util.function.DoubleSupplier;
 
@@ -20,9 +19,9 @@ import static frc.robot.Constants.SwerveDrive.VELOCITY_MULTIPLIER;
 public class OverpoweredDrive extends HolonomicDrive {
     private final PIDController pidController = new PIDController(Constants.SwerveDrive.HEADING_KP, 0, 0) {{
         enableContinuousInput(-Math.PI, Math.PI);
-        setTolerance(Math.toRadians(Constants.SwerveDrive.ALLOWABLE_HEADING_ERROR));
+        setTolerance(Constants.SwerveDrive.ALLOWABLE_HEADING_ERROR);
     }};
-    private final Timer timer = new Timer();
+    private final Timer driftingTimer = new Timer();
     private boolean newSetpoint = false;
     private Rotation2d setpoint;
     private boolean wait = false;
@@ -30,6 +29,12 @@ public class OverpoweredDrive extends HolonomicDrive {
 
     public OverpoweredDrive(SwerveDrive swerveDrive, DoubleSupplier forwardSupplier, DoubleSupplier strafeSupplier, DoubleSupplier rotationSupplier) {
         super(swerveDrive, forwardSupplier, strafeSupplier, rotationSupplier);
+    }
+
+    @Override
+    public void initialize() {
+        driftingTimer.reset();
+        driftingTimer.start();
     }
 
     @Override
@@ -58,14 +63,12 @@ public class OverpoweredDrive extends HolonomicDrive {
             // if there is no rotation after there was rotation, start the timer.
             if (newSetpoint) {
                 newSetpoint = false;
-                timer.start();
-                timer.reset();
+                driftingTimer.reset();
             }
             // if the time hasn't passed since there was no rotation after there was rotation, keep resetting the setpoint.
-            if (!timer.hasElapsed(Constants.SwerveDrive.DRIFTING_PERIOD)) {
+            if (!driftingTimer.hasElapsed(Constants.SwerveDrive.DRIFTING_PERIOD)) {
                 setpoint = Robot.getAngle();
             }
-
 
         } else {
             // if swerveDrive angles were reached don't wait
@@ -85,16 +88,14 @@ public class OverpoweredDrive extends HolonomicDrive {
                     // if there is no rotation after there was rotation, start the timer.
                     if (newSetpoint) {
                         newSetpoint = false;
-                        timer.start();
-                        timer.reset();
+                        driftingTimer.reset();
                     }
 
                     // if the time hasn't passed since there was no rotation after there was rotation, keep resetting the setpoint.
-                    if (!timer.hasElapsed(Constants.SwerveDrive.DRIFTING_PERIOD)) {
+                    if (!driftingTimer.hasElapsed(Constants.SwerveDrive.DRIFTING_PERIOD)) {
                         setpoint = Robot.getAngle();
                     } else {
-                        swerveDrive.defaultHolonomicDrive(forward, strafe, pidController.calculate(Robot.getAngle().getDegrees(), setpoint.getDegrees()));
-                        System.out.println(pidController.calculate(Robot.getAngle().getDegrees(), setpoint.getDegrees()));
+                        swerveDrive.defaultHolonomicDrive(forward, strafe, pidController.calculate(Robot.getAngle().getRadians(), setpoint.getRadians()));
                     }
 
                 } else {
