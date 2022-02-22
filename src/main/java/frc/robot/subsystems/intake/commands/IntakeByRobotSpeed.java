@@ -32,7 +32,7 @@ public class IntakeByRobotSpeed extends CommandBase {
      */
     @Override
     public void execute() {
-        intake.setPower(DEFAULT_POWER + (robotVelocity.getAsDouble() * POWER_TO_VELOCITY_RATIO));
+        intake.setPower(DEFAULT_POWER.get() + (robotVelocity.getAsDouble() * POWER_TO_VELOCITY_RATIO));
     }
 
     /**

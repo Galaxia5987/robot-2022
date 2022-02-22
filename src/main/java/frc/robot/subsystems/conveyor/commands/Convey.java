@@ -41,9 +41,11 @@ public class Convey extends CommandBase {
     public void execute() {
         SmartDashboard.putBoolean("cond", condition.getAsBoolean());
         if (condition.getAsBoolean()) {
-            SmartDashboard.putNumber("Conveyor power", power.getAsDouble());
-            conveyor.setPower(power.getAsDouble());
-            conveyor.setCommandPower(power.getAsDouble());
+            double powerValue = power.getAsDouble();
+            SmartDashboard.putNumber("Conveyor power", powerValue);
+            if (powerValue != 0) {
+                conveyor.setPower(power.getAsDouble());
+            }
         } else {
             conveyor.setPower(0);
         }

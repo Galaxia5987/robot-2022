@@ -164,7 +164,7 @@ public final class Constants {
     }
 
     public static class Conveyor {
-        public static final WebConstant DEFAULT_POWER = WebConstant.of("Shooter", "Default velocity", 0.5); // [%]
+        public static final WebConstant DEFAULT_POWER = WebConstant.of("Conveyor", "Default velocity", 0.5); // [%]
         public static final int MAX_CARGO_AMOUNT = 2;
         public static final int MIN_PROXIMITY_VALUE = 100; // Minimum distance from the color sensor in order to induce detection (arbitrary bit units).
         public static final Color RED = new Color(0.19, 0.49, 0.32);
@@ -181,7 +181,7 @@ public final class Constants {
     public static class Vision { //TODO: change for competition
         public static final double CAMERA_HEIGHT = 0.73; // [m]
         public static final double TARGET_HEIGHT_FROM_GROUND = 2.62; // [m]
-        public static final double CAMERA_PITCH = 33; // Pitch of the vision. [deg]
+        public static final double CAMERA_PITCH = 36.2; // Pitch of the vision. [deg]
         public static final double DIAG_FOV = 75; // Diagonal FOV. [deg]
         public static final double LED_RANGE = 6; // Visible range of LEDs. [m]
         public static final int CAM_RESOLUTION_WIDTH = 640; // Width of camera resolution. [pixel]
@@ -238,7 +238,7 @@ public final class Constants {
     }
 
     public static class Intake {
-        public static final double DEFAULT_POWER = 0.5; // power intake will receive on the basic command. [%]
+        public static final WebConstant DEFAULT_POWER = WebConstant.of("Intake", "power", 1.0); // power intake will receive on the basic command. [%]
         public static final double POWER_TO_VELOCITY_RATIO = -3 / 16.0; // Ratio of power to velocity. [% / m/s]
         public static final boolean IS_COMPENSATING_VOLTAGE = true;
         public static final double TIME_BETWEEN_RUNS = 1.0; // time intake will wait before toggling the retractor (for testing only). [s]
