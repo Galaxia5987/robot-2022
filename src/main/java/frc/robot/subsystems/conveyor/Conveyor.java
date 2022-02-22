@@ -134,6 +134,7 @@ public class Conveyor extends SubsystemBase {
      */
     public void setPower(double power) {
         motor.set(power);
+        this.commandPower = power;
     }
 
     public double getVelocity() {
@@ -142,10 +143,6 @@ public class Conveyor extends SubsystemBase {
 
     public void setVelocity(double velocity) {
         motor.set(ControlMode.Velocity, unitModel.toTicks100ms(velocity / 60));
-    }
-
-    public void setCommandPower(double commandPower) {
-        this.commandPower = commandPower;
     }
 
     /**
