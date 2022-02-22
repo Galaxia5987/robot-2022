@@ -126,6 +126,11 @@ public class Conveyor extends SubsystemBase {
         motor.set(power);
     }
 
+    /**
+     * This function is used to set the power given to the conveyor by the command.
+     *
+     * @param commandPower is the power given (units are irrelevant).
+     */
     public void setCommandPower(double commandPower) {
         this.commandPower = commandPower;
     }
@@ -174,14 +179,14 @@ public class Conveyor extends SubsystemBase {
                         false => remove the head of the queue
                     add an invalid value to the tail of the queue
          */
-//        if (isPostFlapBeamConnected && !wasPostFlapBeamConnected && commandPower > 0) {
-//            if (getCargoCount() == 1) {
-//                cargoPositions.removeFirstOccurrence(getFirstNotInvalid());
-//            } else {
-//                cargoPositions.removeFirst();
-//            }
-//            cargoPositions.add(DriverStation.Alliance.Invalid.name());
-//        }
+        if (isPostFlapBeamConnected && !wasPostFlapBeamConnected && commandPower > 0) {
+            if (getCargoCount() == 1) {
+                cargoPositions.removeFirstOccurrence(getFirstNotInvalid());
+            } else {
+                cargoPositions.removeFirst();
+            }
+            cargoPositions.add(DriverStation.Alliance.Invalid.name());
+        }
 
         /*
         Condition: if the current input of the color sensor isn't equal to the last

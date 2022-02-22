@@ -34,7 +34,7 @@ public class VisionDrive extends HolonomicDrive {
     private Rotation2d setpoint;
     private boolean wait = false;
     private double current = 0;
-    private DoubleSupplier yawSupplier;
+    private final DoubleSupplier yawSupplier;
 
     public VisionDrive(SwerveDrive swerveDrive, DoubleSupplier forwardSupplier, DoubleSupplier strafeSupplier, DoubleSupplier rotationSupplier, BooleanSupplier aimSupplier, DoubleSupplier yawSupplier) {
         super(swerveDrive, forwardSupplier, strafeSupplier, rotationSupplier);

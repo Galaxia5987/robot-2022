@@ -10,15 +10,15 @@ public class CheckVelocityDrop extends Shoot {
     private double lastVelocity;
     private double maximalDrop = 0;
 
-    public CheckVelocityDrop(Shooter shooter, DoubleSupplier distance) {
-        super(shooter, distance);
+    public CheckVelocityDrop(Shooter shooter, DoubleSupplier setpointVelocity) {
+        super(shooter, setpointVelocity);
     }
 
     @Override
     public void execute() {
         super.execute();
         double velocity = shooter.getVelocity();
-        double setpoint = getSetpointVelocity(distance.getAsDouble());
+        double setpoint = setpointVelocity.getAsDouble();
         maximalDrop = Math.max(maximalDrop, lastVelocity - velocity);
 
         FireLog.log("Setpoint", setpoint);

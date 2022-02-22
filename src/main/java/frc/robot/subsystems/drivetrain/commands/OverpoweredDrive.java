@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
-import frc.robot.utils.SmoothedInput;
 
 import java.util.function.DoubleSupplier;
 
@@ -39,12 +38,16 @@ public class OverpoweredDrive extends HolonomicDrive {
         double strafe = speeds.vyMetersPerSecond;
         double magnitude = Math.hypot(forward, strafe);
         double alpha = Math.atan2(strafe, forward);
-        if (magnitude == 0) current = 0;
+        double rotation = speeds.omegaRadiansPerSecond;
+
+        if (magnitude == 0)
+            current = 0;
         current += magnitude / 20;
-        if (current > magnitude) current = magnitude;
+        if (current > magnitude)
+            current = magnitude;
+
         forward = Math.cos(alpha) * current;
         strafe = Math.sin(alpha) * current;
-        double rotation = speeds.omegaRadiansPerSecond;
 
         if (rotation != 0) {
             setpoint = Robot.getAngle();

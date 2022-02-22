@@ -22,14 +22,14 @@ public class CheckShooterAccuracy extends Shoot {
         timer.reset();
         timer.start();
         lastTime = timer.get();
-        lastVelocity = getSetpointVelocity(distance.getAsDouble());
+        lastVelocity = getSetpointVelocity(setpointVelocity.getAsDouble());
     }
 
     @Override
     public void execute() {
         super.execute();
 
-        double setpoint = getSetpointVelocity(distance.getAsDouble());
+        double setpoint = getSetpointVelocity(setpointVelocity.getAsDouble());
         double currentVelocity = shooter.getVelocity();
         double acceleration = (currentVelocity - lastVelocity) / (timer.get() - lastTime);
 

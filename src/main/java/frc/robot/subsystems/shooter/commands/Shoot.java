@@ -10,19 +10,19 @@ import java.util.function.DoubleSupplier;
 
 public class Shoot extends CommandBase {
     protected final Shooter shooter;
-    protected final DoubleSupplier distance;
+    protected final DoubleSupplier setpointVelocity;
     private final OptionalDouble power;
 
     public Shoot(Shooter shooter, double power) {
         this.shooter = shooter;
-        this.distance = () -> 8;
+        this.setpointVelocity = () -> 8;
         this.power = OptionalDouble.of(power);
         addRequirements(shooter);
     }
 
-    public Shoot(Shooter shooter, DoubleSupplier distance) {
+    public Shoot(Shooter shooter, DoubleSupplier setpointVelocity) {
         this.shooter = shooter;
-        this.distance = distance;
+        this.setpointVelocity = setpointVelocity;
         this.power = OptionalDouble.empty();
         addRequirements(shooter);
     }
@@ -32,7 +32,7 @@ public class Shoot extends CommandBase {
      * Once the data from the shooter is acquired this function will be changed.
      *
      * @param distance is the distance from the target. [m]
-     * @return 15. [rpm]
+     * @return the setpoint from the shooter util (for now). [rpm]
      */
     public static double getSetpointVelocity(double distance) {
         return distance;
@@ -41,14 +41,14 @@ public class Shoot extends CommandBase {
     @Override
     public void execute() {
         if (power.isEmpty()) {
-            shooter.setVelocity(distance.getAsDouble());
+            shooter.setVelocity(setpointVelocity.getAsDouble());
         } else {
             shooter.setPower(power.getAsDouble());
         }
 
-        SmartDashboard.putNumber("something_velocity", shooter.getVelocity());
+        SmartDashboard.putNumber("something_velocity", shooter.getVelocity()); // Used in the shooter util
         FireLog.log("Shooter velocity", shooter.getVelocity());
-        FireLog.log("Shooter setpoint", getSetpointVelocity(distance.getAsDouble()));
+        FireLog.log("Shooter setpoint", getSetpointVelocity(setpointVelocity.getAsDouble()));
     }
 
     @Override
