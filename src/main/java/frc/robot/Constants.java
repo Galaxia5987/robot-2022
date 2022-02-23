@@ -50,7 +50,7 @@ public final class Constants {
         public static final double MODEL_TOLERANCE = 0.01;
         public static final double ENCODER_TOLERANCE = 0.01; // [ticks]
 
-        public static final double HEADING_KP = 0.1125;
+        public static final double HEADING_KP = 5;
         public static final double HEADING_KI = 1;
         public static final double HEADING_KD = 1;
         public static final TrapezoidProfile.Constraints HEADING_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 1.5); // [rads/sec], [rad/sec^2]
@@ -74,6 +74,7 @@ public final class Constants {
         public static final int ANGLE_MOTION_ACCELERATION = 1300;
         public static final int ANGLE_CRUISE_VELOCITY = 400;
         public static final double DRIFTING_PERIOD = 0.2; // expected period the robot will change its rotation even after commanded to stop. [s]
+        public static final double SAMPLE_YAW_PERIOD = 0.5; // expected period the robot will change its rotation even after commanded to stop. [s]
         private static final double Rx = SwerveDrive.ROBOT_LENGTH / 2; // [m]
         private static final double Ry = SwerveDrive.ROBOT_WIDTH / 2; // [m]
         // Axis systems
@@ -85,6 +86,10 @@ public final class Constants {
         };
         // angle motion magic
         private static final float MOTION_MAGIC_SAFETY = 0.7f;
+
+        public static final double ADJUST_CONTROLLER_KP = 15;
+        public static final double ADJUST_CONTROLLER_KI = 0.2;
+        public static final double ADJUST_CONTROLLER_TOLERANCE = Math.toRadians(0.5);
     }
 
     public static class Shooter {
@@ -107,6 +112,8 @@ public final class Constants {
             configuration.neutralDeadband = NEUTRAL_DEADBAND;
             return configuration;
         }
+
+        public static double CARGO_OFFSET = 0; // Desired offset from the middle of the target where you want the cargo to hit. [deg]
 
     }
 
