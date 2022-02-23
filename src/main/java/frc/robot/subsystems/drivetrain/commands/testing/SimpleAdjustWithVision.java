@@ -42,6 +42,7 @@ public class SimpleAdjustWithVision extends CommandBase {
 
     @Override
     public void execute() {
+        System.out.println(condition.getAsBoolean() + " " + yawSupplier.getAsDouble() + " " + distanceSupplier.getAsDouble());
         double rotation = Utils.deadband(rotationSupplier.getAsDouble(), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
         if (rotation == 0 && !condition.getAsBoolean()) {
             swerveDrive.terminate();
@@ -54,7 +55,6 @@ public class SimpleAdjustWithVision extends CommandBase {
                     last = true;
                 }
                 rotation = adjustController.calculate(Robot.getAngle().getRadians(), target.getRadians());
-                System.out.println(condition.getAsBoolean() + " " + yawSupplier.getAsDouble() + " " + distanceSupplier.getAsDouble());
             } else {
                 last = false;
             }

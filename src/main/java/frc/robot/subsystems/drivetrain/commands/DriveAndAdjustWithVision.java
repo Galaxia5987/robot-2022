@@ -8,10 +8,10 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
-import java.util.OptionalDouble;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import static frc.robot.Constants.SwerveDrive.ADJUST_CONTROLLER_KI;
 import static frc.robot.Constants.SwerveDrive.VELOCITY_MULTIPLIER;
 
 public class DriveAndAdjustWithVision extends HolonomicDrive {
@@ -20,22 +20,22 @@ public class DriveAndAdjustWithVision extends HolonomicDrive {
         setTolerance(Constants.SwerveDrive.ALLOWABLE_HEADING_ERROR);
     }};
 
-    private final PIDController adjustController = new PIDController(Constants.SwerveDrive.HEADING_KP, 0, 0) {{
+    private final PIDController adjustController = new PIDController(Constants.SwerveDrive.ADJUST_CONTROLLER_KP, 0, 0) {{
         enableContinuousInput(-Math.PI, Math.PI);
         setTolerance(Constants.SwerveDrive.ALLOWABLE_HEADING_ERROR);
     }};
     private final Timer driftingTimer = new Timer();
     private final Timer sampleYawTimer = new Timer();
+    private final DoubleSupplier yawSupplier;
+    private final BooleanSupplier condition;
+    private final DoubleSupplier distanceSupplier;
     private boolean newSetpoint = false;
     private Rotation2d setpoint;
     private boolean wait = false;
     private double current = 0;
     private Rotation2d target;
-    private final OptionalDouble yawSupplier;
-    private final BooleanSupplier condition;
-    private final DoubleSupplier distanceSupplier;
 
-    public DriveAndAdjustWithVision(SwerveDrive swerveDrive, DoubleSupplier forwardSupplier, DoubleSupplier strafeSupplier, DoubleSupplier rotationSupplier, OptionalDouble yawSupplier, BooleanSupplier condition, DoubleSupplier distanceSupplier) {
+    public DriveAndAdjustWithVision(SwerveDrive swerveDrive, DoubleSupplier forwardSupplier, DoubleSupplier strafeSupplier, DoubleSupplier rotationSupplier, DoubleSupplier yawSupplier, BooleanSupplier condition, DoubleSupplier distanceSupplier) {
         super(swerveDrive, forwardSupplier, strafeSupplier, rotationSupplier);
         this.yawSupplier = yawSupplier;
         this.condition = condition;
@@ -89,8 +89,8 @@ public class DriveAndAdjustWithVision extends HolonomicDrive {
 
             // if you want to adjust to the target
             if (condition.getAsBoolean()) {
-                if (yawSupplier.isEmpty()) {
-                    rotation = Constants.SwerveDrive.ROTATION_MULTIPLIER / 2;
+                if (yawSupplier.getAsDouble() == -100) {
+                    rotation = Constants.SwerveDrive.ROTATION_MULTIPLIER /  2;
                 } else {
                     if (sampleYawTimer.hasElapsed(Constants.SwerveDrive.SAMPLE_YAW_PERIOD)) {
                         Rotation2d offset = new Rotation2d(Math.atan2(Math.toRadians(-Math.signum(yawSupplier.getAsDouble()) * Constants.Shooter.CARGO_OFFSET), distanceSupplier.getAsDouble()));
