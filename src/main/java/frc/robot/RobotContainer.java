@@ -5,13 +5,17 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commandgroups.PickUpCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
+import frc.robot.subsystems.conveyor.commands.Convey;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
-import frc.robot.subsystems.drivetrain.commands.testing.SimpleAdjustWithVision;
+import frc.robot.subsystems.drivetrain.commands.DriveAndAdjustWithVision;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.hood.commands.HoodCommand;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.commands.Shoot;
 import frc.robot.utils.PhotonVisionModule;
 import webapp.Webserver;
 
@@ -26,7 +30,7 @@ public class RobotContainer {
     private final JoystickButton y = new JoystickButton(xbox, XboxController.Button.kY.value);
     private final JoystickButton leftTrigger = new JoystickButton(joystick, Joystick.ButtonType.kTrigger.value);
     private final JoystickButton rightTrigger = new JoystickButton(joystick2, Joystick.ButtonType.kTrigger.value);
-    private final JoystickButton rightButton = new JoystickButton(joystick2, 6);
+    //    private final JoystickButton rightButton = new JoystickButton(joystick2, 6);
     private final Trigger trigger = new Trigger(() -> xbox.getRightTriggerAxis() > Constants.Control.RIGHT_TRIGGER_DEADBAND);
     // The robot's subsystems and commands are defined here...
     private final SwerveDrive swerve = SwerveDrive.getFieldOrientedInstance();
@@ -54,11 +58,19 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        swerve.setDefaultCommand(new SimpleAdjustWithVision(swerve, () -> -joystick2.getX(), () -> rightTrigger.get(), () -> photonVisionModule.getYaw().orElse(0), () -> photonVisionModule.getDistance().orElse(0)));
+//        swerve.setDefaultCommand(new OverpoweredDrive(swerve, () -> -joystick.getY(), () -> -joystick.getX(), () -> -joystick2.getX()));
+//        swerve.setDefaultCommand(new SimpleAdjustWithVision(swerve, () -> -joystick2.getX(), ()-> rightTrigger.get(), () -> photonVisionModule.getYaw().orElse(0), () -> photonVisionModule.getDistance().orElse(-Constants.Vision.TARGET_WIDTH / 2)));
+        swerve.setDefaultCommand(new DriveAndAdjustWithVision(swerve, () -> -joystick.getY(), () -> -joystick.getX(), () -> -joystick2.getX(), () -> photonVisionModule.getYaw().orElse(-100), () -> rightTrigger.get(), () -> photonVisionModule.getDistance().orElse(-Constants.Vision.TARGET_WIDTH / 2)));
 
     }
 
     private void configureButtonBindings() {
+        a.whileHeld(new Shoot(shooter, hood, () -> photonVisionModule.getDistance().orElse(-Constants.Vision.TARGET_WIDTH / 2) + Constants.Vision.TARGET_WIDTH / 2));
+        b.whileHeld(new Convey(conveyor, Constants.Conveyor.SHOOT_POWER));
+        x.whileHeld(new PickUpCargo(conveyor, intake, Constants.Conveyor.DEFAULT_POWER.get(), Constants.Intake.DEFAULT_POWER::get));
+        y.whenPressed(new HoodCommand(hood, Hood.Mode.ShortDistance));
+//        rightTrigger.whileHeld(new SimpleAdjustWithVision(swerve, () -> -joystick2.getX(), () -> true, () -> photonVisionModule.getYaw().orElse(0) ,() -> photonVisionModule.getDistance().orElse(-Constants.Vision.TARGET_WIDTH / 2) + Constants.Vision.TARGET_WIDTH / 2));
+        leftTrigger.whenPressed(flap::toggleFlap);
 //        b.whenPressed(hood::toggle);
 //        x.whenPressed(flap::toggleFlap);
 //        y.whileHeld(new Convey(conveyor, -Constants.Conveyor.DEFAULT_POWER.get()));
