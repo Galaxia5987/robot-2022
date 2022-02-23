@@ -72,6 +72,9 @@ public class Conveyor extends SubsystemBase {
         ColorMatchResult result = colorMatch.matchClosestColor(color);
         Color resultColor = result.color;
 
+        SmartDashboard.putNumberArray("Barel-Color", new double[]{resultColor.red, resultColor.green, resultColor.blue});
+        SmartDashboard.putNumber("Barel-confidence", result.confidence);
+
         if (resultColor == RED) {
             return DriverStation.Alliance.Red;
         } else if (resultColor == BLUE) {
@@ -189,14 +192,14 @@ public class Conveyor extends SubsystemBase {
                         false => remove the head of the queue
                     add an invalid value to the tail of the queue
          */
-//        if (isPostFlapBeamConnected && !wasPostFlapBeamConnected && commandPower > 0) {
-//            if (getCargoCount() == 1) {
-//                cargoPositions.removeFirstOccurrence(getFirstNotInvalid());
-//            } else {
-//                cargoPositions.removeFirst();
-//            }
-//            cargoPositions.add(DriverStation.Alliance.Invalid.name());
-//        }
+        if (isPostFlapBeamConnected && !wasPostFlapBeamConnected && commandPower > 0) {
+            if (getCargoCount() == 1) {
+                cargoPositions.removeFirstOccurrence(getFirstNotInvalid());
+            } else {
+                cargoPositions.removeFirst();
+            }
+            cargoPositions.add(DriverStation.Alliance.Invalid.name());
+        }
 
         /*
         Condition: if the current input of the color sensor isn't equal to the last
@@ -249,7 +252,6 @@ public class Conveyor extends SubsystemBase {
         var color = colorSensor.getColor();
         var alliance = getColor();
         SmartDashboard.putNumberArray("color", new double[]{color.red, color.green, color.blue});
-//        System.out.println(Arrays.toString(new double[]{color.red, color.green, color.blue}));
         SmartDashboard.putString("detected-color", alliance.name());
         String[] positions = cargoPositions.toArray(String[]::new);
         SmartDashboard.putStringArray("position", positions);

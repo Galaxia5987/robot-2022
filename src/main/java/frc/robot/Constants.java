@@ -75,6 +75,9 @@ public final class Constants {
         public static final int ANGLE_CRUISE_VELOCITY = 400;
         public static final double DRIFTING_PERIOD = 0.2; // expected period the robot will change its rotation even after commanded to stop. [s]
         public static final double SAMPLE_YAW_PERIOD = 0.1; // expected period the robot will change its rotation even after commanded to stop. [s]
+        public static final double ADJUST_CONTROLLER_KP = 10;
+        public static final WebConstant ADJUST_CONTROLLER_KI = WebConstant.of("Drivetrain", "KI_bruh", 0.2);
+        public static final double ADJUST_CONTROLLER_TOLERANCE = Math.toRadians(0.5);
         private static final double Rx = SwerveDrive.ROBOT_LENGTH / 2; // [m]
         private static final double Ry = SwerveDrive.ROBOT_WIDTH / 2; // [m]
         // Axis systems
@@ -86,10 +89,6 @@ public final class Constants {
         };
         // angle motion magic
         private static final float MOTION_MAGIC_SAFETY = 0.7f;
-
-        public static final double ADJUST_CONTROLLER_KP = 10;
-        public static final double ADJUST_CONTROLLER_KI = 0.2;
-        public static final double ADJUST_CONTROLLER_TOLERANCE = Math.toRadians(0.5);
     }
 
     public static class Shooter {
@@ -106,14 +105,13 @@ public final class Constants {
         public static final double OUTTAKE_POWER = 0.2; // Power to give to the shooter when taking balls out. [%]
         public static final WebConstant SHOOTER_VELOCITY_DEADBAND = WebConstant.of("Shooter", "Velocity deadband", 30); // Dead band for shooter velocity setpoint. [rpm]
         public static double RECOMMENDED_ACCELERATION_TIME = 1.3; // Recommended time for the shooter to get to it's setpoint. [s]
+        public static double CARGO_OFFSET = 0.15; // Desired offset from the middle of the target where you want the cargo to hit. [m]
 
         public static TalonFXConfiguration getConfiguration() {
             final TalonFXConfiguration configuration = new TalonFXConfiguration();
             configuration.neutralDeadband = NEUTRAL_DEADBAND;
             return configuration;
         }
-
-        public static double CARGO_OFFSET = 0.15; // Desired offset from the middle of the target where you want the cargo to hit. [m]
 
     }
 
@@ -175,7 +173,7 @@ public final class Constants {
         public static final int MAX_CARGO_AMOUNT = 2;
         public static final int MIN_PROXIMITY_VALUE = 100; // Minimum distance from the color sensor in order to induce detection (arbitrary bit units).
         public static final Color RED = new Color(0.19, 0.49, 0.32);
-        public static final Color BLUE = new Color(2.4e-4, 0.51, 0.487);
+        public static final Color BLUE = new Color(2.4e-4, 0.53, 0.487);
         public static final Color NONE = new Color(2.4e-4, 0.52, 0.4);
         public static final double kP = 0;
         public static final double kI = 0;
@@ -183,7 +181,7 @@ public final class Constants {
         public static final double kF = 0;
 
         public static final double TICKS_PER_UNIT = 2048 * 2;
-        public static final double SHOOT_POWER = 0.1;
+        public static final double SHOOT_POWER = 0.5;
     }
 
     public static class Vision { //TODO: change for competition
@@ -246,7 +244,7 @@ public final class Constants {
     }
 
     public static class Intake {
-        public static final WebConstant DEFAULT_POWER = WebConstant.of("Intake", "power", 1.0); // power intake will receive on the basic command. [%]
+        public static final WebConstant DEFAULT_POWER = WebConstant.of("Intake", "power", 0.6); // power intake will receive on the basic command. [%]
         public static final double POWER_TO_VELOCITY_RATIO = -3 / 16.0; // Ratio of power to velocity. [% / m/s]
         public static final boolean IS_COMPENSATING_VOLTAGE = true;
         public static final double TIME_BETWEEN_RUNS = 1.0; // time intake will wait before toggling the retractor (for testing only). [s]
@@ -254,7 +252,8 @@ public final class Constants {
 
     public static class Hood {
         public static final double HOOD_PRESSURE_BIT_DELTA_TIME = 0.1; // [s]
-        public static final double DISTANCE_FROM_TARGET_THRESHOLD = 3.5; // [m]
+        public static final double DISTANCE_FROM_TARGET_THRESHOLD = 2.78; // [m]
+        public static final double MIN_DISTANCE = 1.6;
     }
 
     public static class Control {
@@ -263,5 +262,9 @@ public final class Constants {
         public static final int JOYSTICK_FILTER_TAP = 8;
         public static final double JOYSTICK_XY_SMOOTHING_EXPONENT = 1.5;
         public static final double JOYSTICK_OMEGA_SMOOTHING_EXPONENT = 1.5;
+    }
+
+    public static class Flap {
+        public static final double FLAP_DELAY = 0.4; // [sec]
     }
 }

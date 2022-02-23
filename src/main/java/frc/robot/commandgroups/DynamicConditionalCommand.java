@@ -50,12 +50,14 @@ public class DynamicConditionalCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        onTrueCommand.end(interrupted);
-        onFalseCommand.end(interrupted);
+        onTrueCommand.cancel();
+        onFalseCommand.cancel();
     }
 
     @Override
     public boolean isFinished() {
         return onFalseCommand.isFinished() && onTrueCommand.isFinished();
     }
+
+
 }

@@ -20,7 +20,7 @@ public class DriveAndAdjustWithVision extends HolonomicDrive {
         setTolerance(Constants.SwerveDrive.ALLOWABLE_HEADING_ERROR);
     }};
 
-    private final PIDController adjustController = new PIDController(Constants.SwerveDrive.ADJUST_CONTROLLER_KP, 0, 0) {{
+    private final PIDController adjustController = new PIDController(Constants.SwerveDrive.ADJUST_CONTROLLER_KP, Constants.SwerveDrive.ADJUST_CONTROLLER_KI.get(), 0) {{
         enableContinuousInput(-Math.PI, Math.PI);
         setTolerance(Constants.SwerveDrive.ALLOWABLE_HEADING_ERROR);
     }};

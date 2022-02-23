@@ -18,7 +18,7 @@ public class CheckColorSensor extends Convey {
 
     @Override
     public void initialize() {
-        flap.openFlap();
+        flap.allowShooting();
     }
 
     @Override
@@ -36,6 +36,6 @@ public class CheckColorSensor extends Convey {
     public void end(boolean interrupted) {
         super.end(interrupted);
 
-        flap.closeFlap();
+        flap.blockShooter();
     }
 }

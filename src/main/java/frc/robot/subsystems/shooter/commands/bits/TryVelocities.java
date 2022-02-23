@@ -78,8 +78,8 @@ public class TryVelocities extends SequentialCommandGroup {
         BooleanSupplier isFinished = () -> (getOutputs()[0] || getOutputs()[1]);
 
         addCommands(
-                new ShootCargo(shooter, hood, conveyor, /*flap,*/
-                        Constants.Conveyor.DEFAULT_POWER::get, () -> distanceFromTarget, shooterVelocity)
+                new ShootCargo(shooter, hood, conveyor, flap,
+                        Constants.Conveyor.DEFAULT_POWER::get, () -> distanceFromTarget)
                         .withInterrupt(() -> getOutputs()[2]),
                 new WaitUntilCommand(isFinished).andThen(() -> {
                     if (getOutputs()[0]) {

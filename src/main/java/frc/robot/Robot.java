@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.intake.Intake;
-import frc.robot.utils.PhotonVisionModule;
 import frc.robot.valuetuner.NetworkTableConstant;
 
 /**
@@ -140,6 +140,7 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
         Intake.getInstance().closeRetractor();
+        Flap.getInstance().blockShooter();
     }
 
     /**

@@ -144,7 +144,7 @@ public class PhotonVisionModule extends SubsystemBase {
 
     @Override
     public void periodic() {
-//        System.out.println("distance= {" + (getDistance().orElse(0) + (TARGET_RADIUS)) + "}");
+        System.out.println("distance= {" + (getDistance().orElse(0) + (TARGET_RADIUS)) + "}");
     }
 
     @Override
