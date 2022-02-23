@@ -87,7 +87,8 @@ public final class Constants {
         // angle motion magic
         private static final float MOTION_MAGIC_SAFETY = 0.7f;
 
-        public static final double ADJUST_CONTROLLER_KP = 5;
+        public static final double ADJUST_CONTROLLER_KP = 15;
+        public static final double ADJUST_CONTROLLER_KI = 0.2;
         public static final double ADJUST_CONTROLLER_TOLERANCE = Math.toRadians(0.5);
     }
 
@@ -112,7 +113,7 @@ public final class Constants {
             return configuration;
         }
 
-        public static double CARGO_OFFSET = 3; // Desired offset from the middle of the target where you want the cargo to hit. [deg]
+        public static double CARGO_OFFSET = 0; // Desired offset from the middle of the target where you want the cargo to hit. [deg]
 
     }
 
@@ -182,7 +183,7 @@ public final class Constants {
     public static class Vision { //TODO: change for competition
         public static final double CAMERA_HEIGHT = 0.73; // [m]
         public static final double TARGET_HEIGHT_FROM_GROUND = 2.62; // [m]
-        public static final double CAMERA_PITCH = 33; // Pitch of the vision. [deg]
+        public static final double CAMERA_PITCH = 36.2; // Pitch of the vision. [deg]
         public static final double DIAG_FOV = 75; // Diagonal FOV. [deg]
         public static final double LED_RANGE = 6; // Visible range of LEDs. [m]
         public static final int CAM_RESOLUTION_WIDTH = 640; // Width of camera resolution. [pixel]

@@ -8,7 +8,6 @@ import frc.robot.Robot;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.utils.Utils;
 
-import java.util.OptionalDouble;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -16,17 +15,17 @@ public class SimpleAdjustWithVision extends CommandBase {
     private final SwerveDrive swerveDrive;
     private final DoubleSupplier rotationSupplier;
     private final BooleanSupplier condition;
-    private Rotation2d target;
-    private final OptionalDouble yawSupplier;
-    private final PIDController adjustController = new PIDController(Constants.SwerveDrive.ADJUST_CONTROLLER_KP, 0, 0) {{
+    private final DoubleSupplier yawSupplier;
+    private final PIDController adjustController = new PIDController(Constants.SwerveDrive.ADJUST_CONTROLLER_KP, Constants.SwerveDrive.ADJUST_CONTROLLER_KI, 0) {{
         enableContinuousInput(-Math.PI, Math.PI);
-        setTolerance(Math.toRadians(Constants.SwerveDrive.ADJUST_CONTROLLER_TOLERANCE));
+        setTolerance(Constants.SwerveDrive.ADJUST_CONTROLLER_TOLERANCE);
     }};
-    private boolean last = false;
     private final DoubleSupplier distanceSupplier;
+    private Rotation2d target;
+    private boolean last = false;
 
 
-    public SimpleAdjustWithVision(SwerveDrive swerveDrive, DoubleSupplier rotationSupplier, BooleanSupplier condition, OptionalDouble yawSupplier, DoubleSupplier distanceSupplier) {
+    public SimpleAdjustWithVision(SwerveDrive swerveDrive, DoubleSupplier rotationSupplier, BooleanSupplier condition, DoubleSupplier yawSupplier, DoubleSupplier distanceSupplier) {
         this.swerveDrive = swerveDrive;
         this.rotationSupplier = rotationSupplier;
         this.condition = condition;
@@ -44,16 +43,18 @@ public class SimpleAdjustWithVision extends CommandBase {
     @Override
     public void execute() {
         double rotation = Utils.deadband(rotationSupplier.getAsDouble(), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
-        if (rotation == 0 && !condition.getAsBoolean())
+        if (rotation == 0 && !condition.getAsBoolean()) {
             swerveDrive.terminate();
-        else {
+            last = false;
+        } else {
             if (condition.getAsBoolean()) {
                 if (!last) {
                     Rotation2d offset = new Rotation2d(Math.atan2(Math.toRadians(-Math.signum(yawSupplier.getAsDouble()) * Constants.Shooter.CARGO_OFFSET), distanceSupplier.getAsDouble()));
                     target = Robot.getAngle().minus(Rotation2d.fromDegrees(yawSupplier.getAsDouble()).plus(offset));
-                    rotation = adjustController.calculate(Robot.getAngle().getRadians(), target.getRadians());
                     last = true;
                 }
+                rotation = adjustController.calculate(Robot.getAngle().getRadians(), target.getRadians());
+                System.out.println(condition.getAsBoolean() + " " + yawSupplier.getAsDouble() + " " + distanceSupplier.getAsDouble());
             } else {
                 last = false;
             }

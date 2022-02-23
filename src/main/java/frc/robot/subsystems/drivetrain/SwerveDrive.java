@@ -314,7 +314,6 @@ public class SwerveDrive extends SubsystemBase {
                 Robot.getAngle(),
                 getStates()
         );
-        System.out.println(getPose());
 /*
         headingController.setP(Constants.SwerveDrive.HEADING_KP.get());
         headingController.setI(Constants.SwerveDrive.HEADING_KI.get());
