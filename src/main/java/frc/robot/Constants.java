@@ -113,16 +113,7 @@ public final class Constants {
             return configuration;
         }
 
-        public static double CARGO_OFFSET = 0; // Desired offset from the middle of the target where you want the cargo to hit. [deg]
-
-        public static double[][] distanceVelocityPairs = new double[][] {
-                {1.78,3600},
-                {1.93, 3620},
-                {2.12, 3700},
-                {2.36, 3800},
-                {2.54, 3900},
-                {2.74, 4000}
-        };
+        public static double CARGO_OFFSET = 0.15; // Desired offset from the middle of the target where you want the cargo to hit. [m]
 
     }
 

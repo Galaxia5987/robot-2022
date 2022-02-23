@@ -4,6 +4,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
@@ -11,7 +12,6 @@ import frc.robot.subsystems.drivetrain.SwerveDrive;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-import static frc.robot.Constants.SwerveDrive.ADJUST_CONTROLLER_KI;
 import static frc.robot.Constants.SwerveDrive.VELOCITY_MULTIPLIER;
 
 public class DriveAndAdjustWithVision extends HolonomicDrive {
@@ -90,10 +90,11 @@ public class DriveAndAdjustWithVision extends HolonomicDrive {
             // if you want to adjust to the target
             if (condition.getAsBoolean()) {
                 if (yawSupplier.getAsDouble() == -100) {
-                    rotation = Constants.SwerveDrive.ROTATION_MULTIPLIER /  2;
+                    rotation = Constants.SwerveDrive.ROTATION_MULTIPLIER / 2;
                 } else {
                     if (sampleYawTimer.hasElapsed(Constants.SwerveDrive.SAMPLE_YAW_PERIOD)) {
-                        Rotation2d offset = new Rotation2d(Math.atan2(Math.toRadians(-Math.signum(yawSupplier.getAsDouble()) * Constants.Shooter.CARGO_OFFSET), distanceSupplier.getAsDouble()));
+                        Rotation2d offset = new Rotation2d(Math.atan2(-Math.signum(yawSupplier.getAsDouble()) * Constants.Shooter.CARGO_OFFSET, distanceSupplier.getAsDouble()));
+                        SmartDashboard.putNumber("offset", offset.getDegrees());
                         target = Robot.getAngle().minus(Rotation2d.fromDegrees(yawSupplier.getAsDouble()).plus(offset));
                         sampleYawTimer.reset();
                     }
