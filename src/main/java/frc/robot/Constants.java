@@ -74,7 +74,7 @@ public final class Constants {
         public static final int ANGLE_MOTION_ACCELERATION = 1300;
         public static final int ANGLE_CRUISE_VELOCITY = 400;
         public static final double DRIFTING_PERIOD = 0.2; // expected period the robot will change its rotation even after commanded to stop. [s]
-        public static final double SAMPLE_YAW_PERIOD = 0.5; // expected period the robot will change its rotation even after commanded to stop. [s]
+        public static final double SAMPLE_YAW_PERIOD = 0.1; // expected period the robot will change its rotation even after commanded to stop. [s]
         private static final double Rx = SwerveDrive.ROBOT_LENGTH / 2; // [m]
         private static final double Ry = SwerveDrive.ROBOT_WIDTH / 2; // [m]
         // Axis systems
@@ -87,7 +87,7 @@ public final class Constants {
         // angle motion magic
         private static final float MOTION_MAGIC_SAFETY = 0.7f;
 
-        public static final double ADJUST_CONTROLLER_KP = 15;
+        public static final double ADJUST_CONTROLLER_KP = 10;
         public static final double ADJUST_CONTROLLER_KI = 0.2;
         public static final double ADJUST_CONTROLLER_TOLERANCE = Math.toRadians(0.5);
     }
@@ -114,6 +114,15 @@ public final class Constants {
         }
 
         public static double CARGO_OFFSET = 0; // Desired offset from the middle of the target where you want the cargo to hit. [deg]
+
+        public static double[][] distanceVelocityPairs = new double[][] {
+                {1.78,3600},
+                {1.93, 3620},
+                {2.12, 3700},
+                {2.36, 3800},
+                {2.54, 3900},
+                {2.74, 4000}
+        };
 
     }
 
@@ -183,6 +192,7 @@ public final class Constants {
         public static final double kF = 0;
 
         public static final double TICKS_PER_UNIT = 2048 * 2;
+        public static final double SHOOT_POWER = 0.1;
     }
 
     public static class Vision { //TODO: change for competition
