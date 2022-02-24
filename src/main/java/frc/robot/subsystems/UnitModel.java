@@ -25,7 +25,7 @@ public class UnitModel {
      * @param units the given units
      * @return the corresponding number of ticks
      */
-    public int toTicks(Rotation2d units) {
+    public int toTicks(double units) {
         return (int) (ticksPerUnit * units);
     }
 

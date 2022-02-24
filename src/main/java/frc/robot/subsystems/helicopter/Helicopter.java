@@ -199,8 +199,8 @@ public class Helicopter extends SubsystemBase {
     public void setPosition(Rotation2d position) {
         var currentPosition = getPosition();
         var error = position.minus(currentPosition);
-        Rotation2d minMove = new Rotation2d(Math.IEEEremainder(unitModelPosition.toTicks(error), Math.PI *2));
-        mainMotor.set(ControlMode.MotionMagic, unitModelPosition.toTicks(minMove),
+        Rotation2d minMove = new Rotation2d(Math.IEEEremainder(unitModelPosition.toTicks(error.getRadians()), Math.PI *2));
+        mainMotor.set(ControlMode.MotionMagic, unitModelPosition.toTicks(minMove.getRadians()),
               DemandType.ArbitraryFeedForward, feedforward.calculate(getPosition().getRadians(), getVelocity()));
 }
 
@@ -254,7 +254,7 @@ public class Helicopter extends SubsystemBase {
 
         RoboRioSim.setVInVoltage(
                 BatterySim.calculateDefaultBatteryLoadedVoltage(armSim.getCurrentDrawAmps()));
-        mainMotor.getSimCollection().setIntegratedSensorRawPosition(unitModelPosition.toTicks(new Rotation2d(armSim.getAngleRads())));
+        mainMotor.getSimCollection().setIntegratedSensorRawPosition(unitModelPosition.toTicks(armSim.getAngleRads()));
         arm.setAngle(Units.radiansToDegrees(armSim.getAngleRads()));
     }
 }
