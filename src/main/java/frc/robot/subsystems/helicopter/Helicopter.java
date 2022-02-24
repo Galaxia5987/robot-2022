@@ -1,4 +1,4 @@
-package frc.robot.subsystems.climber;
+package frc.robot.subsystems.helicopter;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -29,15 +30,15 @@ import frc.robot.Robot;
 import frc.robot.subsystems.UnitModel;
 
 
-public class Climber extends SubsystemBase {
+public class Helicopter extends SubsystemBase {
 
-    private static Climber INSTANCE = null;
+    private static Helicopter INSTANCE = null;
 
-    private final WPI_TalonFX mainMotor = new WPI_TalonFX(Ports.Climber.MAIN);
-    private final WPI_TalonFX auxMotor = new WPI_TalonFX(Ports.Climber.AUX);
-    private final Solenoid stopper = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Climber.STOPPER);
-    private final UnitModel unitModelPosition = new UnitModel(Constants.Climber.TICKS_PER_RAD);
-    private final DutyCycleEncoder dutyCycleEncoder = new DutyCycleEncoder(Ports.Climber.ENCODER);
+    private final WPI_TalonFX mainMotor = new WPI_TalonFX(Ports.Helicopter.MAIN);
+    private final WPI_TalonFX auxMotor = new WPI_TalonFX(Ports.Helicopter.AUX);
+    private final Solenoid stopper = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Helicopter.STOPPER);
+    private final UnitModel unitModelPosition = new UnitModel(Constants.Helicopter.TICKS_PER_RAD);
+    private final DutyCycleEncoder dutyCycleEncoder = new DutyCycleEncoder(Ports.Helicopter.ENCODER);
 
     private final PIDController controller;
     private final SingleJointedArmSim armSim;
@@ -45,25 +46,25 @@ public class Climber extends SubsystemBase {
     private final MechanismLigament2d arm;
 
 
-    private Climber() {
+    private Helicopter() {
         if (Robot.isSimulation()) {
 
-            controller = new PIDController(Constants.Climber.KP, Constants.Climber.KI, Constants.Climber.KD);
-            feedforward = new ArmFeedforward(Constants.Climber.F_FORWARD_S, Constants.Climber.F_FORWARD_COS, Constants.Climber.F_FORWARD_V, Constants.Climber.F_FORWARD_A);
+            controller = new PIDController(Constants.Helicopter.KP.get(), Constants.Helicopter.KI.get(), Constants.Helicopter.KD.get());
+            feedforward = new ArmFeedforward(Constants.Helicopter.F_FORWARD_S, Constants.Helicopter.F_FORWARD_COS, Constants.Helicopter.F_FORWARD_V, Constants.Helicopter.F_FORWARD_A);
             DCMotor armGearbox = DCMotor.getFalcon500(2);
 
 
             armSim =
                     new SingleJointedArmSim(
                             armGearbox,
-                            Constants.Climber.GEAR_RATIO,
-                            SingleJointedArmSim.estimateMOI(Constants.Climber.ARM_LENGTH, Constants.Climber.ARM_MASS),
-                            Constants.Climber.ARM_LENGTH,
-                            Constants.Climber.MIN_ANGLE,
-                            Constants.Climber.MAX_ANGLE,
-                            Constants.Climber.ARM_MASS,
+                            Constants.Helicopter.GEAR_RATIO,
+                            SingleJointedArmSim.estimateMOI(Constants.Helicopter.ARM_LENGTH, Constants.Helicopter.ARM_MASS),
+                            Constants.Helicopter.ARM_LENGTH,
+                            Constants.Helicopter.MIN_ANGLE,
+                            Constants.Helicopter.MAX_ANGLE,
+                            Constants.Helicopter.ARM_MASS,
                             true,
-                            VecBuilder.fill(Constants.Climber.ARM_ENCODER_DIST_PER_PULSE)
+                            VecBuilder.fill(Constants.Helicopter.ARM_ENCODER_DIST_PER_PULSE)
                     );
 
 
@@ -72,7 +73,7 @@ public class Climber extends SubsystemBase {
             MechanismLigament2d armTower =
                     armPivot.append(new MechanismLigament2d("ArmTower", 30, -90));
 
-             arm =
+            arm =
                     armPivot.append(
                             new MechanismLigament2d(
                                     "Arm",
@@ -93,7 +94,7 @@ public class Climber extends SubsystemBase {
         /*
          Set sensor phase.
          */
-        mainMotor.setSensorPhase(Ports.Climber.SENSOR_PHASE);
+        mainMotor.setSensorPhase(Ports.Helicopter.SENSOR_PHASE);
         /*
          Set the right motor on Brake mode.
          */
@@ -102,25 +103,25 @@ public class Climber extends SubsystemBase {
         /*
          Setting the motor to go clockwise.
          */
-        mainMotor.setInverted(Ports.Climber.IS_MAIN_INVERTED);
+        mainMotor.setInverted(Ports.Helicopter.IS_MAIN_INVERTED);
 
         /*
          config PID velocity for main motor.
          */
-        mainMotor.configMotionCruiseVelocity(Constants.Climber.CRUISE_VELOCITY);
-        mainMotor.configMotionAcceleration(Constants.Climber.MAXIMAL_ACCELERATION);
-        mainMotor.config_kP(0, Constants.Climber.KP, Constants.TALON_TIMEOUT);
-        mainMotor.config_kI(0, Constants.Climber.KI, Constants.TALON_TIMEOUT);
-        mainMotor.config_kD(0, Constants.Climber.KD, Constants.TALON_TIMEOUT);
+        mainMotor.configMotionCruiseVelocity(Constants.Helicopter.CRUISE_VELOCITY);
+        mainMotor.configMotionAcceleration(Constants.Helicopter.MAXIMAL_ACCELERATION);
+        mainMotor.config_kP(0, Constants.Helicopter.KP.get(), Constants.TALON_TIMEOUT);
+        mainMotor.config_kI(0, Constants.Helicopter.KI.get(), Constants.TALON_TIMEOUT);
+        mainMotor.config_kD(0, Constants.Helicopter.KD.get(), Constants.TALON_TIMEOUT);
 
 
         auxMotor.follow(mainMotor);
 
-        mainMotor.enableVoltageCompensation(Constants.Climber.VOLTAGE_COMPENSATION);
+        mainMotor.enableVoltageCompensation(Constants.Helicopter.VOLTAGE_COMPENSATION);
 
         mainMotor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
 
-        auxMotor.enableVoltageCompensation(Constants.Climber.VOLTAGE_COMPENSATION);
+        auxMotor.enableVoltageCompensation(Constants.Helicopter.VOLTAGE_COMPENSATION);
 
         auxMotor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
 
@@ -132,15 +133,15 @@ public class Climber extends SubsystemBase {
         /*
          Setting the motor to go clockwise.
          */
-        auxMotor.setInverted(Ports.Climber.IS_AUX_INVERTED);
+        auxMotor.setInverted(Ports.Helicopter.IS_AUX_INVERTED);
     }
 
     /**
-     * @return the object Climber.
+     * @return the object Helicopter.
      */
-    public static Climber getInstance() {
+    public static Helicopter getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new Climber();
+            INSTANCE = new Helicopter();
         }
         return INSTANCE;
     }
@@ -164,37 +165,44 @@ public class Climber extends SubsystemBase {
         }
     }
 
+    public void vroomVroom(double power) {
+        mainMotor.set(ControlMode.PercentOutput, power);
+    }
+
     /**
-     * Set climber position to zero.
+     * Set Helicopter position to zero.
      * Zero is the balanced position of the arms.
      */
     public void setAngleZero() {
         double angle = getAbsolutePosition();
-        setPosition(getPosition() - angle);
+        setPosition(getPosition().minus(new Rotation2d(angle)));
     }
 
     /**
-     * @return the absolute position of the Climber.
+     * @return the absolute position of the Helicopter.
      */
     public double getAbsolutePosition() {
-        return unitModelPosition.toUnits(dutyCycleEncoder.getDistance() - Constants.Climber.ZERO_POSITION);
+        return unitModelPosition.toUnits(dutyCycleEncoder.getDistance() - Constants.Helicopter.ZERO_POSITION);
     }
 
 
     /**
      * @return get motors position. [rad]
      */
-    public double getPosition() {
-        return unitModelPosition.toUnits(mainMotor.getSelectedSensorPosition(0));
+    public Rotation2d getPosition() {
+        return new Rotation2d(Math.IEEEremainder(unitModelPosition.toUnits(mainMotor.getSelectedSensorPosition(0)), Math.PI*2));
     }
 
     /**
      * @param position the position of the motors. [rad]
      */
-    public void setPosition(double position) {
-        mainMotor.set(ControlMode.MotionMagic, unitModelPosition.toTicks(position),
-                DemandType.ArbitraryFeedForward, feedforward.calculate(getPosition(), getVelocity()));
-    }
+    public void setPosition(Rotation2d position) {
+        var currentPosition = getPosition();
+        var error = position.minus(currentPosition);
+        Rotation2d minMove = new Rotation2d(Math.IEEEremainder(unitModelPosition.toTicks(error.getRadians()), Math.PI *2));
+        mainMotor.set(ControlMode.MotionMagic, unitModelPosition.toTicks(minMove.getRadians()),
+              DemandType.ArbitraryFeedForward, feedforward.calculate(getPosition().getRadians(), getVelocity()));
+}
 
     /**
      * Get the stopper's mode.
@@ -226,6 +234,13 @@ public class Climber extends SubsystemBase {
      */
     public void stop() {
         mainMotor.stopMotor();
+    }
+
+    @Override
+    public void periodic() {
+        mainMotor.config_kP(0, Constants.Helicopter.KP.get(), Constants.TALON_TIMEOUT);
+        mainMotor.config_kI(0, Constants.Helicopter.KI.get(), Constants.TALON_TIMEOUT);
+        mainMotor.config_kD(0, Constants.Helicopter.KD.get(), Constants.TALON_TIMEOUT);
     }
 
     /**
