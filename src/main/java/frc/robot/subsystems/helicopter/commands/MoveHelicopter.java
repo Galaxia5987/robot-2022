@@ -1,5 +1,6 @@
 package frc.robot.subsystems.helicopter.commands;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.helicopter.Helicopter;
@@ -17,7 +18,7 @@ public class MoveHelicopter extends CommandBase {
 
     @Override
     public void execute() {
-        helicopter.setPosition(desiredRad);
+        helicopter.setPosition(new Rotation2d(desiredRad));
     }
 
     @Override
