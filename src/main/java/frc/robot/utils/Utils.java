@@ -1,6 +1,9 @@
 package frc.robot.utils;
 
+import edu.wpi.first.math.filter.LinearFilter;
+
 public class Utils {
+
 
     /**
      * Sets the value of the joystick to 0 if the value is less than the threshold.
@@ -47,4 +50,8 @@ public class Utils {
         return rpm / 60.0;
     }
 
+    public static double smoothed(double value, double exponent, LinearFilter joystickFilter) {
+        double filteredValue = joystickFilter.calculate(value);
+        return Math.pow(Math.abs(filteredValue), exponent) * Math.signum(filteredValue);
+    }
 }

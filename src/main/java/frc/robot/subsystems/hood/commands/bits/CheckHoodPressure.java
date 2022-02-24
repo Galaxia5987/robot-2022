@@ -23,11 +23,13 @@ public class CheckHoodPressure extends CommandBase {
 
     @Override
     public void execute() {
-        if (timer.advanceIfElapsed(Constants.Hood.HOOD_PRESSURE_BIT_DELTA_TIME)) {
+        if (timer.hasElapsed(Constants.Hood.HOOD_PRESSURE_BIT_DELTA_TIME)) {
             hood.toggle();
             runCount++;
 
             System.out.println("The amount of runs passed is " + runCount);
+
+            timer.reset();
         }
     }
 

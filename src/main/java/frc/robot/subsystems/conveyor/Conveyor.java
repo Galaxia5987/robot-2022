@@ -1,5 +1,6 @@
 package frc.robot.subsystems.conveyor;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
@@ -10,13 +11,15 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Ports;
+import frc.robot.subsystems.UnitModel;
 
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.Deque;
 
 import static frc.robot.Constants.Conveyor.*;
+import static frc.robot.Constants.TALON_TIMEOUT;
 import static frc.robot.Ports.Conveyor.IS_COMPENSATING_VOLTAGE;
 import static frc.robot.Ports.Conveyor.MOTOR_INVERSION;
 
@@ -28,6 +31,7 @@ public class Conveyor extends SubsystemBase {
     private final DigitalInput postFlapBeam = new DigitalInput(Ports.Conveyor.POST_FLAP_BEAM_BREAKER);
     private final DigitalInput preFlapBeam = new DigitalInput(Ports.Conveyor.PRE_FLAP_BEAM_BREAKER);
     private final ColorMatch colorMatch = new ColorMatch();
+    private final UnitModel unitModel = new UnitModel(Constants.Conveyor.TICKS_PER_UNIT);
     private DriverStation.Alliance lastSeenColor = DriverStation.Alliance.Invalid;
     private boolean wasPostFlapBeamConnected = true;
     private int currentProximity = 0;
@@ -36,11 +40,16 @@ public class Conveyor extends SubsystemBase {
     private Conveyor() {
         motor.setInverted(MOTOR_INVERSION);
         motor.enableVoltageCompensation(IS_COMPENSATING_VOLTAGE);
+        motor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
         colorMatch.addColorMatch(RED);
         colorMatch.addColorMatch(BLUE);
         colorMatch.addColorMatch(NONE);
         cargoPositions.add(DriverStation.Alliance.Invalid.name());
         cargoPositions.add(DriverStation.Alliance.Invalid.name());
+        motor.config_kP(0, kP, TALON_TIMEOUT);
+        motor.config_kI(0, kI, TALON_TIMEOUT);
+        motor.config_kD(0, kD, TALON_TIMEOUT);
+        motor.config_kF(0, kF, TALON_TIMEOUT);
     }
 
     /**
@@ -62,6 +71,9 @@ public class Conveyor extends SubsystemBase {
         Color color = colorSensor.getColor();
         ColorMatchResult result = colorMatch.matchClosestColor(color);
         Color resultColor = result.color;
+
+        SmartDashboard.putNumberArray("Barel-Color", new double[]{resultColor.red, resultColor.green, resultColor.blue});
+        SmartDashboard.putNumber("Barel-confidence", result.confidence);
 
         if (resultColor == RED) {
             return DriverStation.Alliance.Red;
@@ -125,10 +137,15 @@ public class Conveyor extends SubsystemBase {
      */
     public void setPower(double power) {
         motor.set(power);
+        this.commandPower = power;
     }
 
-    public void setCommandPower(double commandPower) {
-        this.commandPower = commandPower;
+    public double getVelocity() {
+        return unitModel.toVelocity(motor.getSelectedSensorVelocity()) * 60;
+    }
+
+    public void setVelocity(double velocity) {
+        motor.set(ControlMode.Velocity, unitModel.toTicks100ms(velocity / 60));
     }
 
     /**
@@ -175,14 +192,14 @@ public class Conveyor extends SubsystemBase {
                         false => remove the head of the queue
                     add an invalid value to the tail of the queue
          */
-//        if (isPostFlapBeamConnected && !wasPostFlapBeamConnected && commandPower > 0) {
-//            if (getCargoCount() == 1) {
-//                cargoPositions.removeFirstOccurrence(getFirstNotInvalid());
-//            } else {
-//                cargoPositions.removeFirst();
-//            }
-//            cargoPositions.add(DriverStation.Alliance.Invalid.name());
-//        }
+        if (isPostFlapBeamConnected && !wasPostFlapBeamConnected && commandPower > 0) {
+            if (getCargoCount() == 1) {
+                cargoPositions.removeFirstOccurrence(getFirstNotInvalid());
+            } else {
+                cargoPositions.removeFirst();
+            }
+            cargoPositions.add(DriverStation.Alliance.Invalid.name());
+        }
 
         /*
         Condition: if the current input of the color sensor isn't equal to the last
@@ -235,7 +252,6 @@ public class Conveyor extends SubsystemBase {
         var color = colorSensor.getColor();
         var alliance = getColor();
         SmartDashboard.putNumberArray("color", new double[]{color.red, color.green, color.blue});
-//        System.out.println(Arrays.toString(new double[]{color.red, color.green, color.blue}));
         SmartDashboard.putString("detected-color", alliance.name());
         String[] positions = cargoPositions.toArray(String[]::new);
         SmartDashboard.putStringArray("position", positions);
@@ -245,6 +261,8 @@ public class Conveyor extends SubsystemBase {
         SmartDashboard.putBoolean("postBeam", postFlapBeam.get());
         SmartDashboard.putBoolean("isConnectedColor", colorSensor.isConnected());
         SmartDashboard.putNumber("proximity", colorSensor.getProximity());
+//        SmartDashboard.putNumber("sensor-blue", colorSensor.getBlue());
+//        SmartDashboard.putNumber("sensor-red", colorSensor.getRed());
 
     }
 
@@ -263,6 +281,7 @@ public class Conveyor extends SubsystemBase {
         SmartDashboard.putBoolean("dio", preFlapBeam.get());
         SmartDashboard.putBoolean("isConnectedColor", colorSensor.isConnected());
         SmartDashboard.putNumber("proximity", colorSensor.getProximity());
+
 
     }
 }

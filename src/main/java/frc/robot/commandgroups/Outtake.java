@@ -6,29 +6,38 @@ import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.flap.commands.FlapCommand;
+import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.commands.IntakeCargo;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.Shoot;
 
-import java.util.OptionalDouble;
 import java.util.function.BooleanSupplier;
 
 public class Outtake extends ParallelCommandGroup {
+
+    private final Intake intake;
+    private final Conveyor conveyor;
+    private final Shooter shooter;
 
     public Outtake(Intake intake,
                    Conveyor conveyor,
                    Flap flap,
                    Shooter shooter,
+                   Hood hood,
                    BooleanSupplier condition) {
+        this.intake = intake;
+        this.conveyor = conveyor;
+        this.shooter = shooter;
         addCommands(
                 new FlapCommand(flap, Flap.FlapMode.Open),
-                new Convey(conveyor, () -> Constants.Conveyor.DEFAULT_POWER * (condition.getAsBoolean() ? 1 : -1)),
+                new Convey(conveyor, () -> Constants.Conveyor.DEFAULT_POWER.get() * (condition.getAsBoolean() ? 1 : -1)),
                 new DynamicConditionalCommand(
                         condition,
-                        new Shoot(shooter, () -> 8, OptionalDouble.of(Constants.Shooter.OUTTAKE_POWER)),
-                        new IntakeCargo(intake, -Constants.Intake.DEFAULT_POWER)
+                        new Shoot(shooter, hood, Constants.Shooter.OUTTAKE_POWER),
+                        new IntakeCargo(intake, () -> -Constants.Intake.DEFAULT_POWER.get())
                 )
         );
     }
+
 }

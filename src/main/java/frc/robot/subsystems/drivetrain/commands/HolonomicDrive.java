@@ -1,5 +1,6 @@
 package frc.robot.subsystems.drivetrain.commands;
 
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -17,6 +18,9 @@ public class HolonomicDrive extends CommandBase {
     protected final DoubleSupplier forwardSupplier;
     protected final DoubleSupplier strafeSupplier;
     protected final DoubleSupplier rotationSupplier;
+    private final LinearFilter joystickFilter = LinearFilter.movingAverage(
+            Constants.Control.JOYSTICK_FILTER_TAP);
+
 
     public HolonomicDrive(SwerveDrive swerveDrive, DoubleSupplier forwardSupplier, DoubleSupplier strafeSupplier, DoubleSupplier rotationSupplier) {
         this.swerveDrive = swerveDrive;
@@ -30,7 +34,7 @@ public class HolonomicDrive extends CommandBase {
     @Override
     public void execute() {
         ChassisSpeeds speeds = calculateVelocities();
-        swerveDrive.holonomicDrive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
+        swerveDrive.holonomicDrive(speeds.vyMetersPerSecond, speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond);
 
         SwerveDrive.logSpeeds(speeds);
     }
@@ -40,15 +44,19 @@ public class HolonomicDrive extends CommandBase {
      */
     protected ChassisSpeeds calculateVelocities() {
         // get the values
-        double forward = Utils.deadband(forwardSupplier.getAsDouble(), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
-        double strafe = Utils.deadband(strafeSupplier.getAsDouble(), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
+        double forward = forwardSupplier.getAsDouble(); // vx
+        double strafe = strafeSupplier.getAsDouble(); // vy
+
         double rotation = Utils.rotationalDeadband(rotationSupplier.getAsDouble(), Constants.SwerveDrive.JOYSTICK_THRESHOLD) * Constants.SwerveDrive.ROTATION_MULTIPLIER;
 
         // recalculate - update based on the angle and the magnitude
-        double alpha = Math.atan2(forward, strafe); // direction of movement
+        double alpha = Math.atan2(strafe, forward); // direction of movement
         double magnitude = Math.hypot(forward, strafe) * Constants.SwerveDrive.VELOCITY_MULTIPLIER;
-        forward = Math.sin(alpha) * magnitude;
-        strafe = Math.cos(alpha) * magnitude;
+        magnitude = Utils.smoothed(magnitude, Constants.Control.JOYSTICK_OMEGA_SMOOTHING_EXPONENT, joystickFilter);
+        magnitude = Utils.deadband(magnitude, Constants.SwerveDrive.JOYSTICK_THRESHOLD);
+
+        forward = Math.cos(alpha) * magnitude;
+        strafe = Math.sin(alpha) * magnitude;
         return new ChassisSpeeds(forward, strafe, rotation);
     }
 

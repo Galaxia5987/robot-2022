@@ -9,26 +9,26 @@ public final class Ports {
         public static final int DRIVE_MOTOR_FR = 1;
         public static final int ANGLE_MOTOR_FR = 2;
         public static final boolean DRIVE_INVERTED_FR = false;
-        public static final boolean ANGLE_INVERTED_FR = false;
-        public static final boolean ANGLE_SENSOR_PHASE_FR = true;
+        public static final boolean ANGLE_INVERTED_FR = true;
+        public static final boolean ANGLE_SENSOR_PHASE_FR = false;
 
         // front left
-        public static final int DRIVE_MOTOR_FL = 5;
-        public static final int ANGLE_MOTOR_FL = 6;
+        public static final int DRIVE_MOTOR_FL = 3;
+        public static final int ANGLE_MOTOR_FL = 4;
         public static final boolean DRIVE_INVERTED_FL = false;
-        public static final boolean ANGLE_INVERTED_FL = true;
-        public static final boolean ANGLE_SENSOR_PHASE_FL = false;
+        public static final boolean ANGLE_INVERTED_FL = false;
+        public static final boolean ANGLE_SENSOR_PHASE_FL = true;
 
         // rear right
-        public static final int DRIVE_MOTOR_RR = 3;
-        public static final int ANGLE_MOTOR_RR = 4;
+        public static final int DRIVE_MOTOR_RR = 5;
+        public static final int ANGLE_MOTOR_RR = 6;
         public static final boolean DRIVE_INVERTED_RR = false;
         public static final boolean ANGLE_INVERTED_RR = true;
         public static final boolean ANGLE_SENSOR_PHASE_RR = false;
 
         // rear left
-        public static final int DRIVE_MOTOR_RL = 6;
-        public static final int ANGLE_MOTOR_RL = 7;
+        public static final int DRIVE_MOTOR_RL = 7;
+        public static final int ANGLE_MOTOR_RL = 8;
         public static final boolean DRIVE_INVERTED_RL = false;
         public static final boolean ANGLE_INVERTED_RL = true;
         public static final boolean ANGLE_SENSOR_PHASE_RL = false;
@@ -45,8 +45,8 @@ public final class Ports {
         public static final int MOTOR = 21;
         public static final TalonFXInvertType MOTOR_INVERSION = TalonFXInvertType.Clockwise;
         public static final boolean IS_COMPENSATING_VOLTAGE = true;
-        public static final int POST_FLAP_BEAM_BREAKER = 9;
-        public static final int PRE_FLAP_BEAM_BREAKER = 8;
+        public static final int POST_FLAP_BEAM_BREAKER = 7;
+        public static final int PRE_FLAP_BEAM_BREAKER = 6;
     }
 
     public static class Flap {
@@ -90,6 +90,6 @@ public final class Ports {
     }
 
     public static class Vision {
-        public static final int LEDS = 3;
+        public static final int LEDS = 4;
     }
 }
