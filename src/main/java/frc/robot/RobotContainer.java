@@ -1,5 +1,11 @@
 package frc.robot;
 
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -7,14 +13,12 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commandgroups.Outtake;
 import frc.robot.commandgroups.PickUpCargo;
-import frc.robot.commandgroups.ShootCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
-import frc.robot.subsystems.conveyor.commands.Convey;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
-import frc.robot.subsystems.drivetrain.commands.DriveAndAdjustWithVision;
+import frc.robot.subsystems.drivetrain.commands.OverpoweredDrive;
+import frc.robot.subsystems.drivetrain.commands.tuning.DriveForward;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.hood.Hood;
-import frc.robot.subsystems.hood.commands.HoodCommand;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.utils.PhotonVisionModule;
@@ -63,15 +67,16 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        swerve.setDefaultCommand(new DriveAndAdjustWithVision(swerve, () -> -joystick.getY(), () -> -joystick.getX(), () -> -joystick2.getX(), () -> photonVisionModule.getYaw().orElse(-100), () -> rightTrigger.get(), () -> photonVisionModule.getDistance().orElse(-Constants.Vision.TARGET_WIDTH / 2)));
-
+        swerve.setDefaultCommand(new OverpoweredDrive(swerve, () -> -joystick.getY(), () -> -joystick.getX(), () -> -joystick2.getX()));
+//        swerve.setDefaultCommand(new DriveForward(swerve));
     }
 
     private void configureButtonBindings() {
         DoubleSupplier distanceSupplier = () -> photonVisionModule.getDistance().orElse(-Constants.Vision.TARGET_WIDTH / 2) + Constants.Vision.TARGET_WIDTH / 2;
-        rt.whileActiveContinuous(new ShootCargo(shooter, hood, conveyor, flap, () -> Constants.Conveyor.SHOOT_POWER, distanceSupplier));
+//        rt.whileActiveContinuous(new ShootCargo(shooter, hood, conveyor, flap, () -> Constants.Conveyor.SHOOT_POWER, distanceSupplier));
         lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, Constants.Conveyor.DEFAULT_POWER.get(), Constants.Intake.DEFAULT_POWER::get));
-        a.whileHeld(new Outtake(intake, conveyor, flap, shooter, hood, () -> false));
+        rt.whileActiveContinuous(new Outtake(intake, conveyor, flap, shooter, hood, () -> false));
+        x.whenPressed(intake::toggleRetractor);
 
         leftTrigger.whenPressed(() -> Robot.resetAngle());
     }
@@ -83,7 +88,19 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return null;
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("New Path", 2, 1);
+        var thetaController = new ProfiledPIDController(Constants.Autonomous.KP_THETA_CONTROLLER, 0, 0, new TrapezoidProfile.Constraints(2, 1));
+        swerve.resetOdometry(trajectory.getInitialPose(), Robot.getAngle());
+        return new PPSwerveControllerCommand(trajectory, swerve::getPose, swerve.getKinematics(),
+                new PIDController(Constants.Autonomous.KP_X_CONTROLLER, 0, 0),
+                new PIDController(Constants.Autonomous.KP_Y_CONTROLLER, 0, 0),
+                thetaController,
+                states -> {
+                    System.out.println(swerve.getPose());
+                    swerve.setStates(states);
+                },
+                swerve
+        );
     }
 
     /**

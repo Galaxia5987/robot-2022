@@ -14,7 +14,6 @@ import frc.robot.Robot;
 import frc.robot.utils.TimeDelayedBoolean;
 import webapp.FireLog;
 
-
 /**
  * The {@code SwerveDrive} Subsystem is responsible for the integration of modules together in order to move the robot honolomicaly.
  * The class contains several convenient methods for controlling the robot and retrieving information about his state.
@@ -311,7 +310,7 @@ public class SwerveDrive extends SubsystemBase {
     public void periodic() {
         odometry.updateWithTime(
                 Timer.getFPGATimestamp(),
-                Robot.getAngle(),
+                Robot.getRawAngle(),
                 getStates()
         );
 /*
@@ -321,3 +320,4 @@ public class SwerveDrive extends SubsystemBase {
 */
     }
 }
+

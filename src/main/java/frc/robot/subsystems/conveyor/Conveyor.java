@@ -261,6 +261,8 @@ public class Conveyor extends SubsystemBase {
         SmartDashboard.putBoolean("postBeam", postFlapBeam.get());
         SmartDashboard.putBoolean("isConnectedColor", colorSensor.isConnected());
         SmartDashboard.putNumber("proximity", colorSensor.getProximity());
+//        SmartDashboard.putNumber("sensor-blue", colorSensor.getBlue());
+//        SmartDashboard.putNumber("sensor-red", colorSensor.getRed());
 
     }
 
@@ -279,6 +281,7 @@ public class Conveyor extends SubsystemBase {
         SmartDashboard.putBoolean("dio", preFlapBeam.get());
         SmartDashboard.putBoolean("isConnectedColor", colorSensor.isConnected());
         SmartDashboard.putNumber("proximity", colorSensor.getProximity());
+
 
     }
 }

@@ -31,14 +31,14 @@ public final class Constants {
     // The order of modules is ALWAYS front-right (fr), front-left (fl), rear-right (rr), rear-left (rl)
     public static final class SwerveDrive {
         public static final double SMOOTHING_MULTIPLIER = 1.25;
-        public static final double VELOCITY_MULTIPLIER = 2.2;
-        public static final double ROTATION_MULTIPLIER = 2;
+        public static final double VELOCITY_MULTIPLIER = 3.5;
+        public static final double ROTATION_MULTIPLIER = 4;
 
         public static final int TICKS_PER_ROTATION_DRIVE_MOTOR = 2048;
         public static final int TICKS_PER_ROTATION_ANGLE_MOTOR = 1024;
         public static final double GEAR_RATIO_DRIVE_MOTOR = 7.5;
         public static final double GEAR_RATIO_ANGLE_MOTOR = 1;
-        public static final double DRIVE_MOTOR_TICKS_PER_METER = GEAR_RATIO_DRIVE_MOTOR * TICKS_PER_ROTATION_DRIVE_MOTOR / (4 * 0.0254 * Math.PI);
+        public static final double DRIVE_MOTOR_TICKS_PER_METER = GEAR_RATIO_DRIVE_MOTOR * TICKS_PER_ROTATION_DRIVE_MOTOR / (0.11 * Math.PI); // 4 * 0.0254
         public static final double ANGLE_MOTOR_TICKS_PER_RADIAN = GEAR_RATIO_ANGLE_MOTOR * TICKS_PER_ROTATION_ANGLE_MOTOR / (2 * Math.PI);
 
         public static final int MAX_CURRENT = 15; // [amps]
@@ -51,8 +51,8 @@ public final class Constants {
         public static final double ENCODER_TOLERANCE = 0.01; // [ticks]
 
         public static final double HEADING_KP = 5;
-        public static final double HEADING_KI = 1;
-        public static final double HEADING_KD = 1;
+        public static final double HEADING_KI = 0;
+        public static final double HEADING_KD = 0;
         public static final TrapezoidProfile.Constraints HEADING_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 1.5); // [rads/sec], [rad/sec^2]
 
         // The heading is responsible for the angle of the whole chassis, while the angle is used in the angle motor itself.
@@ -60,17 +60,14 @@ public final class Constants {
         public static final double ALLOWABLE_ANGLE_ERROR = Math.toRadians(3); // [rad]
         public static final double WHEEL_RADIUS = 0.04688; // [m]
 
-        public static final double ROBOT_LENGTH = 0.64; // [m]
-        public static final double ROBOT_WIDTH = 0.53; // [m]
+        public static final double ROBOT_LENGTH = 0.6624; // [m]
+        public static final double ROBOT_WIDTH = 0.5224; // [m]
 
         // the rotational velocity of the robot, this constant multiplies the rotation output of the joystick
         public static final double JOYSTICK_THRESHOLD = 0.1; // [%]
         public static final double ANGLE_COSINE_DEADBAND = Math.toRadians(10); // [rads]
-        public static final double ROTATION_DELAY = 0.1; // [sec]
         public static final int ANGLE_CURVE_STRENGTH = 1;
         public static final double ROTATIONAL_ADDITION_RESTRAINT = 3;
-        //        public static final int ANGLE_MOTION_ACCELERATION = (int) Math.round(550 * 2.5 * MOTION_MAGIC_SAFETY);
-//        public static final int ANGLE_CRUISE_VELOCITY = (int) Math.round(2800 * 1.5 * MOTION_MAGIC_SAFETY);
         public static final int ANGLE_MOTION_ACCELERATION = 1300;
         public static final int ANGLE_CRUISE_VELOCITY = 400;
         public static final double DRIFTING_PERIOD = 0.2; // expected period the robot will change its rotation even after commanded to stop. [s]
@@ -87,8 +84,6 @@ public final class Constants {
                 new Translation2d(-Rx, -Ry),
                 new Translation2d(-Rx, Ry)
         };
-        // angle motion magic
-        private static final float MOTION_MAGIC_SAFETY = 0.7f;
     }
 
     public static class Shooter {
@@ -116,7 +111,7 @@ public final class Constants {
     }
 
     public static final class SwerveModule {
-        public static final int[] ZERO_POSITIONS = {-633, -75, -28, -689}; // fr, fl, rr, rl
+        public static final int[] ZERO_POSITIONS = {379, 935, 999, 314}; // fr, fl, rr, rl
 
         public static final int TRIGGER_THRESHOLD_CURRENT = 2; // [amps]
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]
@@ -128,6 +123,7 @@ public final class Constants {
                 .configAnglePID(6, 0, 0, 0)
                 .configZeroPosition(ZERO_POSITIONS[0])
                 .configJ(0.115)
+                .enableDebug()
                 .build();
 
         public static final SwerveModuleConfigBase flConfig = new SwerveModuleConfigBase.Builder(1)
@@ -156,9 +152,9 @@ public final class Constants {
     }
 
     public static class Autonomous {
-        public static final double KP_THETA_CONTROLLER = 2;
-        public static final double KP_X_CONTROLLER = 2;
-        public static final double KP_Y_CONTROLLER = 2;
+        public static final double KP_THETA_CONTROLLER = 0;
+        public static final double KP_X_CONTROLLER = 1.6;
+        public static final double KP_Y_CONTROLLER = 0;
 
         public static final Matrix<N3, N1> stateStdDevs = VecBuilder.fill(0, 0, 0);
         public static final Matrix<N1, N1> localMeasurementStdDevs = VecBuilder.fill(0);
