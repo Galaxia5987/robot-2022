@@ -53,7 +53,9 @@ public final class Constants {
         public static final double HEADING_KP = 5;
         public static final double HEADING_KI = 0;
         public static final double HEADING_KD = 0;
+//        public static final TrapezoidProfile.Constraints HEADING_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(4, 3.2); // [rads/sec], [rad/sec^2]
         public static final TrapezoidProfile.Constraints HEADING_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(4, 3.2); // [rads/sec], [rad/sec^2]
+//        public static final TrapezoidProfile.Constraints HEADING_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(4, 3.2); // [rads/sec], [rad/sec^2]
 
         // The heading is responsible for the angle of the whole chassis, while the angle is used in the angle motor itself.
         public static final double ALLOWABLE_HEADING_ERROR = Math.toRadians(5); // [rad]
@@ -122,7 +124,7 @@ public final class Constants {
                 .configInversions(DRIVE_INVERTED_FR, ANGLE_INVERTED_FR, ANGLE_SENSOR_PHASE_FR)
                 .configAnglePID(6, 0, 0, 0)
                 .configZeroPosition(ZERO_POSITIONS[0])
-                .configJ(0.115)
+                .configJ(0.115).enableDebug()
                 .build();
 
         public static final SwerveModuleConfigBase flConfig = new SwerveModuleConfigBase.Builder(1)
@@ -159,8 +161,8 @@ public final class Constants {
         public static final Matrix<N1, N1> localMeasurementStdDevs = VecBuilder.fill(0);
         public static final Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0, 0, 0);
 
-        public static final double MAX_VEL = 1.5; // [m/sec]
-        public static final double MAX_ACCEL = 0.75; // [m/sec^2]
+        public static final double MAX_VEL = 3; // [m/sec] 4.1
+        public static final double MAX_ACCEL = 1.5; // [m/sec^2] 2.14
     }
 
     public static class Conveyor {
