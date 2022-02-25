@@ -20,12 +20,12 @@ import frc.robot.subsystems.shooter.Shooter;
 import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 
-public class TaxiFromUpUPPickShoot extends SequentialCommandGroup {
+public class TaxiFromUpUpPickShoot extends SequentialCommandGroup {
     private DoubleSupplier distanceFromTarget;
     private DoubleSupplier conveyorPower;
 
     // Taxi from up up tarmac, pickup up cargo, shoot, park near up tarmac.(5)
-    public TaxiFromUpUPPickShoot(Shooter shooter, SwerveDrive swerveDrive, Conveyor conveyor, Intake intake, Hood hood, Flap flap) {
+    public TaxiFromUpUpPickShoot(Shooter shooter, SwerveDrive swerveDrive, Conveyor conveyor, Intake intake, Hood hood, Flap flap) {
         var rotationPID = new ProfiledPIDController(Constants.Autonomous.KP_THETA_CONTROLLER, 0, 0, new TrapezoidProfile.Constraints(Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL));
         rotationPID.enableContinuousInput(-Math.PI, Math.PI);
 
