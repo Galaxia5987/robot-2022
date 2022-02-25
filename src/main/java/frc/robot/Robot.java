@@ -27,7 +27,7 @@ public class Robot extends TimedRobot {
     public static final boolean debug = !DriverStation.isFMSAttached();
     public static final AHRS navx = new AHRS(SPI.Port.kMXP);
     private static Rotation2d zeroAngle = new Rotation2d();
-    private static Rotation2d startAngle = new Rotation2d();
+//    private static Rotation2d startAngle = new Rotation2d();
     public PowerDistribution pdp = new PowerDistribution();
     private Command m_autonomousCommand;
     private RobotContainer m_robotContainer;
@@ -47,7 +47,7 @@ public class Robot extends TimedRobot {
      * @return the angle of the robot in respect to the angle of the robot initiation time.
      */
     public static Rotation2d getRawAngle() {
-        return Robot.navx.getRotation2d().minus(startAngle);
+        return Robot.navx.getRotation2d();
     }
 
     /**
@@ -72,7 +72,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        startAngle = Robot.navx.getRotation2d();
+//        startAngle = Robot.navx.getRotation2d();
         resetAngle();
         if (debug) {
             NetworkTableConstant.initializeAllConstants();
@@ -89,7 +89,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
-        System.out.println(SwerveDrive.getFieldOrientedInstance().getPose());
+//        System.out.println(SwerveDrive.getFieldOrientedInstance().getPose());
         CommandScheduler.getInstance().run();
     }
 

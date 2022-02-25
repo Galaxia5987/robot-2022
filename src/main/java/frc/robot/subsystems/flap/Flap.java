@@ -24,14 +24,14 @@ public class Flap extends SubsystemBase {
      * open the flap
      */
     public void allowShooting() {
-        flap.set(FlapMode.Open.mode);
+        flap.set(FlapMode.ALLOW_SHOOTING.mode);
     }
 
     /**
      * closes the flap
      */
     public void blockShooter() {
-        flap.set(FlapMode.Closed.mode);
+        flap.set(FlapMode.STOP_CARGO.mode);
     }
 
     /**
@@ -60,8 +60,8 @@ public class Flap extends SubsystemBase {
     }
 
     public enum FlapMode {
-        Open(true),
-        Closed(false);
+        ALLOW_SHOOTING(true),
+        STOP_CARGO(false);
 
         public final boolean mode;
 
@@ -77,9 +77,9 @@ public class Flap extends SubsystemBase {
          */
         public static FlapMode getValue(boolean val) {
             if (!val) {
-                return Closed;
+                return STOP_CARGO;
             }
-            return Open;
+            return ALLOW_SHOOTING;
         }
     }
 }
