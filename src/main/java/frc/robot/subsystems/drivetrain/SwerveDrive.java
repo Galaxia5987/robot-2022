@@ -208,8 +208,7 @@ public class SwerveDrive extends SubsystemBase {
     public void setStates(SwerveModuleState[] states) {
         for (SwerveModule module : modules) {
             states[module.getWheel()] = SwerveModuleState.optimize(states[module.getWheel()], module.getAngle());
-            module.setAngle(states[module.getWheel()].angle);
-            module.setVelocity(states[module.getWheel()].speedMetersPerSecond);
+            module.setState(states[module.getWheel()]);
         }
     }
 
@@ -263,7 +262,7 @@ public class SwerveDrive extends SubsystemBase {
      * @param pose the current pose.
      */
     public void resetOdometry(Pose2d pose, Rotation2d angle) {
-        odometry.resetPosition(pose, angle);
+        odometry.resetPosition(new Pose2d(pose.getTranslation(), angle), angle);
     }
 
     /**
@@ -310,7 +309,7 @@ public class SwerveDrive extends SubsystemBase {
     public void periodic() {
         odometry.updateWithTime(
                 Timer.getFPGATimestamp(),
-                Robot.getRawAngle(),
+                Robot.getAngle(),
                 getStates()
         );
 /*
