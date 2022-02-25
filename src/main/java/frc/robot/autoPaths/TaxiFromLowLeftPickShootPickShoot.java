@@ -53,8 +53,9 @@ public class TaxiFromLowLeftPickShootPickShoot extends SequentialCommandGroup {
                 hood,
                 conveyor,
                 flap,
-                distanceFromTarget,
-                conveyorPower).withTimeout(3));
+                conveyorPower,
+                distanceFromTarget)
+                .withTimeout(3));
 
         addCommands(new ParallelCommandGroup((createCommand.apply("p2 - Picking up low cargo(6.2)")),
                 new PickUpCargo(
@@ -70,8 +71,9 @@ public class TaxiFromLowLeftPickShootPickShoot extends SequentialCommandGroup {
                 hood,
                 conveyor,
                 flap,
-                distanceFromTarget,
-                conveyorPower).withTimeout(3));
+                conveyorPower,
+                distanceFromTarget)
+                .withTimeout(3));
 
         addCommands(createCommand.apply("p2 - Going to low tarmac(6.3.1)"));
     }

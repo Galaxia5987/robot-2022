@@ -54,8 +54,9 @@ public class TaxiFromUpUpPickShootTerminalShoot extends SequentialCommandGroup {
                 hood,
                 conveyor,
                 flap,
-                distanceFromTarget,
-                conveyorPower).withTimeout(3));
+                conveyorPower,
+                distanceFromTarget)
+                .withTimeout(3));
 
         addCommands((createCommand.apply("p2 - Going to terminal(8.2)")));
 
@@ -75,8 +76,9 @@ public class TaxiFromUpUpPickShootTerminalShoot extends SequentialCommandGroup {
                 hood,
                 conveyor,
                 flap,
-                distanceFromTarget,
-                conveyorPower).withTimeout(3));
+                conveyorPower,
+                distanceFromTarget)
+                .withTimeout(3));
     }
 
 }
