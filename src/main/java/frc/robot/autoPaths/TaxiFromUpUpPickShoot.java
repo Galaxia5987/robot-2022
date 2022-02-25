@@ -39,13 +39,13 @@ public class TaxiFromUpUPPickShoot extends SequentialCommandGroup {
                 swerveDrive::setStates,
                 swerveDrive);
 
-        new ParallelCommandGroup((createCommand.apply("p1 - Taxi from up up to up cargo and pickup up cargo(5.1)")),
+        addCommands(new ParallelCommandGroup((createCommand.apply("p1 - Taxi from up up to up cargo and pickup up cargo(5.1)")),
                 new PickUpCargo(
                         conveyor,
                         intake,
                         Constants.Conveyor.DEFAULT_POWER,
                         Constants.Intake.DEFAULT_POWER
-                ));
+                ).withTimeout(3)));
 
         addCommands(new ShootCargo(
                 shooter,
@@ -53,7 +53,7 @@ public class TaxiFromUpUPPickShoot extends SequentialCommandGroup {
                 conveyor,
                 flap,
                 distanceFromTarget,
-                conveyorPower));
+                conveyorPower).withTimeout(3));
 
         addCommands(createCommand.apply("p1 - Going to up tarmac(5.2.2)"));
     }
