@@ -45,9 +45,10 @@ public class FourCargoAuto extends SequentialCommandGroup {
         addCommands(new ParallelCommandGroup((createCommand.apply("p3 - Taxi from low right tarmac and pickup low cargo(9.1)")),
                 new PickUpCargo(
                         conveyor,
+                        flap,
                         intake,
-                        Constants.Conveyor.DEFAULT_POWER,
-                        Constants.Intake.DEFAULT_POWER
+                        Constants.Conveyor.DEFAULT_POWER.get(),
+                        Constants.Intake.DEFAULT_POWER::get
                 ).withTimeout(3)));
 
         addCommands(new ShootCargo(
@@ -61,18 +62,20 @@ public class FourCargoAuto extends SequentialCommandGroup {
         addCommands(new ParallelCommandGroup((createCommand.apply("p3 - Pickup middle cargo(9.2)")),
                 new PickUpCargo(
                         conveyor,
+                        flap,
                         intake,
-                        Constants.Conveyor.DEFAULT_POWER,
-                        Constants.Intake.DEFAULT_POWER
+                        Constants.Conveyor.DEFAULT_POWER.get(),
+                        Constants.Intake.DEFAULT_POWER::get
                 ).withTimeout(3)));
 
         addCommands((createCommand.apply("p3 - Going to terminal(9.3)")));
 
         addCommands(new PickUpCargo(
                 conveyor,
+                flap,
                 intake,
-                Constants.Conveyor.DEFAULT_POWER,
-                Constants.Intake.DEFAULT_POWER
+                Constants.Conveyor.DEFAULT_POWER.get(),
+                Constants.Intake.DEFAULT_POWER::get
         ).withTimeout(3));
 
 

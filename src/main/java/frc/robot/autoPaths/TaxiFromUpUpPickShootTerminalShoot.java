@@ -43,9 +43,10 @@ public class TaxiFromUpUpPickShootTerminalShoot extends SequentialCommandGroup {
         addCommands(new ParallelCommandGroup((createCommand.apply("p2 - Taxi from up up tarmac and going to up cargo(8.1)")),
                 new PickUpCargo(
                         conveyor,
+                        flap,
                         intake,
-                        Constants.Conveyor.DEFAULT_POWER,
-                        Constants.Intake.DEFAULT_POWER
+                        Constants.Conveyor.DEFAULT_POWER.get(),
+                        Constants.Intake.DEFAULT_POWER::get
                 )));
 
         addCommands(new ShootCargo(
@@ -60,9 +61,10 @@ public class TaxiFromUpUpPickShootTerminalShoot extends SequentialCommandGroup {
 
                addCommands(new PickUpCargo(
                         conveyor,
+                        flap,
                         intake,
-                        Constants.Conveyor.DEFAULT_POWER,
-                        Constants.Intake.DEFAULT_POWER
+                        Constants.Conveyor.DEFAULT_POWER.get(),
+                        Constants.Intake.DEFAULT_POWER::get
                 ).withTimeout(3));
 
 

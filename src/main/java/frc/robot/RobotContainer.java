@@ -5,20 +5,20 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.autoPaths.FiveCargoAuto;
-import frc.robot.subsystems.climber.Climber;
-import frc.robot.subsystems.climber.commands.AdjustAngle;
-import frc.robot.subsystems.climber.commands.StopClimber;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
-import frc.robot.subsystems.drivetrain.commands.HolonomicDrive;
+import frc.robot.subsystems.drivetrain.commands.OverpoweredDrive;
+import frc.robot.subsystems.flap.Flap;
+import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.utils.PhotonVisionModule;
 import webapp.Webserver;
 
 import java.util.function.DoubleSupplier;
@@ -71,14 +71,9 @@ public class RobotContainer {
     private void configureButtonBindings() {
         DoubleSupplier distanceSupplier = () -> photonVisionModule.getDistance().orElse(-Constants.Vision.TARGET_WIDTH / 2) + Constants.Vision.TARGET_WIDTH / 2;
 //        rt.whileActiveContinuous(new ShootCargo(shooter, hood, conveyor, flap, () -> Constants.Conveyor.SHOOT_POWER, distanceSupplier));
-        lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, Constants.Conveyor.DEFAULT_POWER.get(), Constants.Intake.DEFAULT_POWER::get));
-        rt.whileActiveContinuous(new Outtake(intake, conveyor, flap, shooter, hood, () -> false));
         x.whenPressed(intake::toggleRetractor);
 
-
-        a.and(b).and(y).toggleWhenActive(new AdjustAngle(climber));
     }
-
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
