@@ -2,15 +2,12 @@ package frc.robot;
 
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.commands.PPSwerveControllerCommand;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.autoPaths.TaxiFromLowLeftPickShoot;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.OverpoweredDrive;
@@ -44,7 +41,6 @@ public class RobotContainer {
     private final Conveyor conveyor = Conveyor.getInstance();
     private final Flap flap = Flap.getInstance();
     private final Shooter shooter = Shooter.getInstance();
-    //    private final Climber climber = Climber.getInstance();
     private final Hood hood = Hood.getInstance();
     private final PhotonVisionModule photonVisionModule = new PhotonVisionModule("photonvision", null);
 //    private final DigitalOutput digitalOutput = new DigitalOutput(4);
@@ -71,7 +67,7 @@ public class RobotContainer {
     private void configureButtonBindings() {
         DoubleSupplier distanceSupplier = () -> photonVisionModule.getDistance().orElse(-Constants.Vision.TARGET_WIDTH / 2) + Constants.Vision.TARGET_WIDTH / 2;
 //        rt.whileActiveContinuous(new ShootCargo(shooter, hood, conveyor, flap, () -> Constants.Conveyor.SHOOT_POWER, distanceSupplier));
-        x.whenPressed(intake::toggleRetractor);
+        a.whenPressed(photonVisionModule::toggleLeds);
 
     }
 
@@ -97,22 +93,16 @@ public class RobotContainer {
 //                swerve::setStates
 //        );
 
-        PathPlannerTrajectory trajectory = PathPlanner.loadPath("why tho", 3, 1.5);
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("p1 - Taxi from low left and pickup middle cargo(3.1)", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL);
         Robot.resetAngle(trajectory.getInitialState().holonomicRotation);
         swerve.resetOdometry(trajectory.getInitialState().poseMeters, trajectory.getInitialState().holonomicRotation);
-//        SmartDashboard.putNumber("trajectory_time", trajectory.getTotalTimeSeconds());
-        return new PPSwerveControllerCommand(
-                trajectory,
-                swerve::getPose,
-                swerve.getKinematics(),
-                new PIDController(3, 0, 0),
-                new PIDController(3, 0, 0),
-                new ProfiledPIDController(7, 0, 0, new TrapezoidProfile.Constraints(4, 3.2)) {{
-                    enableContinuousInput(-Math.PI, Math.PI);
-                }},
-                (swerve::setStates),
-                swerve
-        );
+        return new TaxiFromLowLeftPickShoot(shooter,
+                swerve,
+                conveyor,
+                intake,
+                hood,
+                flap,
+                photonVisionModule);
     }
 
     /**

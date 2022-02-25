@@ -5,7 +5,9 @@ import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commandgroups.PickUpCargo;
@@ -16,6 +18,7 @@ import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.utils.PhotonVisionModule;
 
 import java.util.function.DoubleSupplier;
 import java.util.function.Function;
@@ -25,7 +28,9 @@ public class TaxiFromLowLeftPickShoot extends SequentialCommandGroup {
     private DoubleSupplier conveyorPower;
 
     // Taxi from low left, pick up middle cargo, shoot, park between tarmacs.(3)
-    public TaxiFromLowLeftPickShoot(Shooter shooter, SwerveDrive swerveDrive, Conveyor conveyor, Intake intake, Hood hood, Flap flap) {
+    public TaxiFromLowLeftPickShoot(Shooter shooter, SwerveDrive swerveDrive, Conveyor conveyor, Intake intake, Hood hood, Flap flap, PhotonVisionModule module) {
+        distanceFromTarget = () -> module.getDistance().orElse(-Constants.Vision.TARGET_RADIUS) + -Constants.Vision.TARGET_RADIUS;
+        conveyorPower = Constants.Conveyor.DEFAULT_POWER::get;
         var rotationPID = new ProfiledPIDController(Constants.Autonomous.KP_THETA_CONTROLLER, 0, 0, new TrapezoidProfile.Constraints(Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL));
         rotationPID.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -38,6 +43,8 @@ public class TaxiFromLowLeftPickShoot extends SequentialCommandGroup {
                 rotationPID,
                 swerveDrive::setStates,
                 swerveDrive);
+
+        addCommands(new InstantCommand(() -> module.setLeds(true)));
 
        addCommands(new ParallelCommandGroup((createCommand.apply("p1 - Taxi from low left and pickup middle cargo(3.1)")),
                 new PickUpCargo(
