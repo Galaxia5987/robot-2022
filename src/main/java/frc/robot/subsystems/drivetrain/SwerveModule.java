@@ -81,9 +81,9 @@ public class SwerveModule extends SubsystemBase {
         configPID(config.angleKp(), config.angleKi(), config.angleKd(), config.angleKf());
         angleMotor.config_IntegralZone(0, 5);
         angleMotor.configAllowableClosedloopError(0, angleUnitModel.toTicks(Constants.SwerveDrive.ALLOWABLE_ANGLE_ERROR));
-
         angleMotor.configMotionAcceleration(Constants.SwerveDrive.ANGLE_MOTION_ACCELERATION);
         angleMotor.configMotionCruiseVelocity(Constants.SwerveDrive.ANGLE_CRUISE_VELOCITY);
+
         angleMotor.configMotionSCurveStrength(Constants.SwerveDrive.ANGLE_CURVE_STRENGTH);
 
         // set voltage compensation and saturation
@@ -94,8 +94,7 @@ public class SwerveModule extends SubsystemBase {
         driveMotor.selectProfileSlot(1, 0);
         driveMotor.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToZero);
 
-        driveMotor.configOpenloopRamp(Constants.SwerveModule.RAMP_RATE, Constants.TALON_TIMEOUT);
-        driveMotor.configClosedloopRamp(Constants.SwerveModule.RAMP_RATE, Constants.TALON_TIMEOUT);
+        selectTuneDownMode(true);
 /*
         driveMotor.configNeutralDeadband(Constants.SwerveModule.DRIVE_NEUTRAL_DEADBAND);
         angleMotor.configNeutralDeadband(Constants.SwerveModule.ANGLE_NEUTRAL_DEADBAND);
@@ -193,9 +192,7 @@ public class SwerveModule extends SubsystemBase {
      */
     public void setState(SwerveModuleState state) {
         setVelocity(state.speedMetersPerSecond);
-        if (state.speedMetersPerSecond != 0) {
-            setAngle(state.angle);
-        }
+        setAngle(state.angle);
     }
 
     /**
@@ -251,6 +248,21 @@ public class SwerveModule extends SubsystemBase {
         angleMotor.config_kI(0, ki, Constants.TALON_TIMEOUT);
         angleMotor.config_kD(0, kd, Constants.TALON_TIMEOUT);
         angleMotor.config_kF(0, kf, Constants.TALON_TIMEOUT);
+    }
+
+
+    private void selectTuneDownMode(boolean isUserDefined) {
+        double ramp;
+        if (isUserDefined) {
+            ramp = 0;
+            angleMotor.configOpenloopRamp(0, Constants.TALON_TIMEOUT);
+            angleMotor.configClosedloopRamp(0, Constants.TALON_TIMEOUT);
+        } else {
+            ramp = Constants.SwerveModule.RAMP_RATE;
+        }
+        driveMotor.configOpenloopRamp(ramp, Constants.TALON_TIMEOUT);
+        driveMotor.configClosedloopRamp(ramp, Constants.TALON_TIMEOUT);
+
     }
 
     @Override

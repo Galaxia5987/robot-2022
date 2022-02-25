@@ -21,22 +21,33 @@ import frc.robot.subsystems.drivetrain.commands.HolonomicDrive;
 import frc.robot.subsystems.shooter.Shooter;
 import webapp.Webserver;
 
+import java.util.function.DoubleSupplier;
+
 public class RobotContainer {
+    private static final Joystick joystick = new Joystick(Ports.Controls.JOYSTICK);
+    private static final Joystick joystick2 = new Joystick(Ports.Controls.JOYSTICK2);
     // The robot's subsystems and commands are defined here...
     private final XboxController xbox = new XboxController(Ports.Controls.XBOX);
-    private final Joystick joystick = new Joystick(Ports.Controls.JOYSTICK);
-    private final Joystick joystick2 = new Joystick(Ports.Controls.JOYSTICK2);
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final JoystickButton b = new JoystickButton(xbox, XboxController.Button.kB.value);
     private final JoystickButton x = new JoystickButton(xbox, XboxController.Button.kX.value);
     private final JoystickButton y = new JoystickButton(xbox, XboxController.Button.kY.value);
+    private final JoystickButton lb = new JoystickButton(xbox, XboxController.Button.kLeftBumper.value);
     private final JoystickButton leftTrigger = new JoystickButton(joystick, Joystick.ButtonType.kTrigger.value);
-
+    private final JoystickButton rightTrigger = new JoystickButton(joystick2, Joystick.ButtonType.kTrigger.value);
+    //    private final JoystickButton rightButton = new JoystickButton(joystick2, 6);
+    private final Trigger rt = new Trigger(() -> xbox.getRightTriggerAxis() > Constants.Control.RIGHT_TRIGGER_DEADBAND);
+    private final Trigger lt = new Trigger(() -> xbox.getLeftTriggerAxis() > Constants.Control.RIGHT_TRIGGER_DEADBAND);
     // The robot's subsystems and commands are defined here...
     private final SwerveDrive swerve = SwerveDrive.getFieldOrientedInstance();
-    private final Climber climber = Climber.getInstance();
+    private final Intake intake = Intake.getInstance();
     private final Conveyor conveyor = Conveyor.getInstance();
-
+    private final Flap flap = Flap.getInstance();
+    private final Shooter shooter = Shooter.getInstance();
+    //    private final Climber climber = Climber.getInstance();
+    private final Hood hood = Hood.getInstance();
+    private final PhotonVisionModule photonVisionModule = new PhotonVisionModule("photonvision", null);
+//    private final DigitalOutput digitalOutput = new DigitalOutput(4);
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -53,12 +64,16 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        swerve.setDefaultCommand(new HolonomicDrive(swerve, xbox::getLeftY, () -> -xbox.getLeftX(), xbox::getRightX));
+        swerve.setDefaultCommand(new OverpoweredDrive(swerve, () -> -joystick.getY(), () -> -joystick.getX(), () -> -joystick2.getX()));
+//        swerve.setDefaultCommand(new DriveForward(swerve));
     }
 
     private void configureButtonBindings() {
-        a.whenPressed((Runnable) Robot::resetAngle);
-        b.toggleWhenPressed(new StopClimber(climber));
+        DoubleSupplier distanceSupplier = () -> photonVisionModule.getDistance().orElse(-Constants.Vision.TARGET_WIDTH / 2) + Constants.Vision.TARGET_WIDTH / 2;
+//        rt.whileActiveContinuous(new ShootCargo(shooter, hood, conveyor, flap, () -> Constants.Conveyor.SHOOT_POWER, distanceSupplier));
+        lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, Constants.Conveyor.DEFAULT_POWER.get(), Constants.Intake.DEFAULT_POWER::get));
+        rt.whileActiveContinuous(new Outtake(intake, conveyor, flap, shooter, hood, () -> false));
+        x.whenPressed(intake::toggleRetractor);
 
 
         a.and(b).and(y).toggleWhenActive(new AdjustAngle(climber));

@@ -31,15 +31,6 @@ public class FlapCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if (flapMode.get().mode) {
-            flap.openFlap();
-        } else {
-            flap.closeFlap();
-        }
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        flap.closeFlap();
+        flap.setFlapMode(flapMode.get());
     }
 }

@@ -5,12 +5,10 @@ import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
 import frc.robot.subsystems.flap.Flap;
 
-import java.util.function.DoubleSupplier;
-
 public class CheckColorSensor extends Convey {
     private final Flap flap;
-    private int cargoIn = 0;
-    private int cargoOut = 0;
+    private final int cargoIn = 0;
+    private final int cargoOut = 0;
 
     public CheckColorSensor(Flap flap, Conveyor conveyor, double power) {
         super(conveyor, () -> power);
@@ -20,7 +18,7 @@ public class CheckColorSensor extends Convey {
 
     @Override
     public void initialize() {
-        flap.openFlap();
+        flap.allowShooting();
     }
 
     @Override
@@ -38,6 +36,6 @@ public class CheckColorSensor extends Convey {
     public void end(boolean interrupted) {
         super.end(interrupted);
 
-        flap.closeFlap();
+        flap.blockShooter();
     }
 }

@@ -1,24 +1,21 @@
 package frc.robot.subsystems.intake;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
 
-import static frc.robot.Constants.Intake.IS_COMPENSATING_VOLTAGE;
-
 public class Intake extends SubsystemBase {
     private static Intake INSTANCE;
-    private final WPI_TalonSRX motor = new WPI_TalonSRX(Ports.Intake.MOTOR);
+    private final CANSparkMax motor = new CANSparkMax(Ports.Intake.MOTOR, CANSparkMaxLowLevel.MotorType.kBrushless);
     private final Solenoid retractor = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Intake.SOLENOID);
 
     private Intake() {
         motor.setInverted(Ports.Intake.IS_MOTOR_INVERTED);
-        motor.enableVoltageCompensation(IS_COMPENSATING_VOLTAGE);
-        motor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
+        motor.enableVoltageCompensation(Constants.NOMINAL_VOLTAGE);
     }
 
 
@@ -49,7 +46,7 @@ public class Intake extends SubsystemBase {
      * @param power desired power in percentage.
      */
     public void setPower(double power) {
-        motor.set(ControlMode.PercentOutput, power);
+        motor.set(power);
     }
 
     /**
