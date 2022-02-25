@@ -42,13 +42,13 @@ public class FourCargoAuto extends SequentialCommandGroup {
                 swerveDrive::setStates,
                 swerveDrive);
 
-        new ParallelCommandGroup((createCommand.apply("p3 - Taxi from low right tarmac and pickup low cargo(9.1)")),
+        addCommands(new ParallelCommandGroup((createCommand.apply("p3 - Taxi from low right tarmac and pickup low cargo(9.1)")),
                 new PickUpCargo(
                         conveyor,
                         intake,
                         Constants.Conveyor.DEFAULT_POWER,
                         Constants.Intake.DEFAULT_POWER
-                ));
+                ).withTimeout(3)));
 
         addCommands(new ShootCargo(
                 shooter,
@@ -56,15 +56,15 @@ public class FourCargoAuto extends SequentialCommandGroup {
                 conveyor,
                 flap,
                 distanceFromTarget,
-                conveyorPower));
+                conveyorPower).withTimeout(3));
 
-        new ParallelCommandGroup((createCommand.apply("p3 - Pickup middle cargo(9.2)")),
+        addCommands(new ParallelCommandGroup((createCommand.apply("p3 - Pickup middle cargo(9.2)")),
                 new PickUpCargo(
                         conveyor,
                         intake,
                         Constants.Conveyor.DEFAULT_POWER,
                         Constants.Intake.DEFAULT_POWER
-                ));
+                ).withTimeout(3)));
 
         addCommands((createCommand.apply("p3 - Going to terminal(9.3)")));
 
@@ -73,7 +73,7 @@ public class FourCargoAuto extends SequentialCommandGroup {
                 intake,
                 Constants.Conveyor.DEFAULT_POWER,
                 Constants.Intake.DEFAULT_POWER
-        ));
+        ).withTimeout(3));
 
 
         addCommands(createCommand.apply("p3 - Going to low tarmac(9.4.1)"));
@@ -84,6 +84,6 @@ public class FourCargoAuto extends SequentialCommandGroup {
                 conveyor,
                 flap,
                 distanceFromTarget,
-                conveyorPower));
+                conveyorPower).withTimeout(3));
     }
 }
