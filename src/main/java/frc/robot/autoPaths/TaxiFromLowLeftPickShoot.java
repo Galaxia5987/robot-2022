@@ -7,13 +7,14 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commandgroups.PickUpCargo;
 import frc.robot.commandgroups.ShootCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
+import frc.robot.subsystems.drivetrain.commands.testing.SimpleAdjustWithVision;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Intake;
@@ -46,7 +47,7 @@ public class TaxiFromLowLeftPickShoot extends SequentialCommandGroup {
 
         addCommands(new InstantCommand(() -> module.setLeds(true)));
 
-       addCommands(new ParallelCommandGroup((createCommand.apply("p1 - Taxi from low left and pickup middle cargo(3.1)")),
+        addCommands(new ParallelCommandGroup((createCommand.apply("p1 - Taxi from low left and pickup middle cargo(3.1)")),
                 new PickUpCargo(
                         conveyor,
                         flap,
@@ -56,15 +57,16 @@ public class TaxiFromLowLeftPickShoot extends SequentialCommandGroup {
                 ).withTimeout(3)));
 
 
-        addCommands(new ShootCargo(
+        addCommands(new ParallelRaceGroup(new ShootCargo(
                 shooter,
                 hood,
                 conveyor,
                 flap,
                 conveyorPower,
                 distanceFromTarget)
-                .withTimeout(3));
+                .withTimeout(3),
+                new SimpleAdjustWithVision(swerveDrive, () -> 0, () -> true, () -> module.getYaw().orElse(0), distanceFromTarget)));
 
-        addCommands(createCommand.apply("p1 - Going to middle tarmac(3.2.2))"));
+        addCommands(createCommand.apply("p1 - Going to middle tarmac(3.2.2)"));
     }
 }
