@@ -45,9 +45,9 @@ public class TaxiFromUpUpAndShoot extends SequentialCommandGroup {
                 hood,
                 conveyor,
                 flap,
-                distanceFromTarget,
-                conveyorPower
-        ).withTimeout(3));
+                conveyorPower,
+                distanceFromTarget)
+                .withTimeout(3));
 
         addCommands(createCommand.apply("p0 - Go to up tarmac(1.2.2)"));
     }

@@ -58,8 +58,9 @@ public class FiveCargoAuto extends SequentialCommandGroup {
                 hood,
                 conveyor,
                 flap,
-                distanceFromTarget,
-                conveyorPower).withTimeout(3));
+                conveyorPower,
+                distanceFromTarget)
+                .withTimeout(3));
 
         addCommands(new ParallelCommandGroup((createCommand.apply("p4 - Pickup middle cargo(10.2)")),
                 new PickUpCargo(
@@ -88,8 +89,9 @@ public class FiveCargoAuto extends SequentialCommandGroup {
                 hood,
                 conveyor,
                 flap,
-                distanceFromTarget,
-                conveyorPower).withTimeout(3));
+                conveyorPower,
+                distanceFromTarget)
+                .withTimeout(3));
 
 
         addCommands(createCommand.apply("p4 - Pickup up cargo(10.5)"));
@@ -101,7 +103,8 @@ public class FiveCargoAuto extends SequentialCommandGroup {
                 hood,
                 conveyor,
                 flap,
-                distanceFromTarget,
-                conveyorPower).withTimeout(3));
+                conveyorPower,
+                distanceFromTarget)
+                .withTimeout(3));
     }
 }
