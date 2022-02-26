@@ -76,7 +76,6 @@ public class RobotContainer {
     private void configureButtonBindings() {
         DoubleSupplier distanceFromTarget = () -> photonVisionModule.getDistance().orElse(-Constants.Vision.TARGET_RADIUS) + Constants.Vision.TARGET_RADIUS;
         DoubleSupplier conveyorPower = Constants.Conveyor.DEFAULT_POWER::get;
-        DoubleSupplier distance = () -> 3.5;
 
         a.whileHeld(new ShootCargo(
                 shooter,
@@ -84,9 +83,9 @@ public class RobotContainer {
                 conveyor,
                 flap,
                 conveyorPower,
-                distance
+                distanceFromTarget
         ));
-        DoubleSupplier setpointVelocity = () -> Shoot.getSetpointVelocity(distance.getAsDouble(), hood.isOpen());
+        DoubleSupplier setpointVelocity = () -> Shoot.getSetpointVelocity(distanceFromTarget.getAsDouble(), hood.isOpen());
         BooleanSupplier isFlywheelAtSetpoint = () -> Math.abs(setpointVelocity.getAsDouble() - shooter.getVelocity()) < SHOOTER_VELOCITY_DEADBAND.get();
         b.whenPressed(new FlapForShooting(flap, isFlywheelAtSetpoint, () -> !conveyor.isPreFlapBeamConnected()));
 //        rt.whileActiveContinuous(new ShootCargo(shooter, hood, conveyor, flap, () -> Constants.Conveyor.SHOOT_POWER, distanceSupplier));
