@@ -11,20 +11,19 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commandgroups.Outtake;
-import frc.robot.commandgroups.PickUpCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.OverpoweredDrive;
-import frc.robot.subsystems.drivetrain.commands.tuning.DriveForward;
+import frc.robot.subsystems.drivetrain.commands.testing.SimpleAdjustWithVision;
 import frc.robot.subsystems.flap.Flap;
+import frc.robot.subsystems.helicopter.Helicopter;
+import frc.robot.subsystems.helicopter.commands.JoystickPowerHelicopter;
+import frc.robot.subsystems.helicopter.commands.StopHelicopter;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.utils.PhotonVisionModule;
 import webapp.Webserver;
-
-import java.util.function.DoubleSupplier;
 
 public class RobotContainer {
     private static final Joystick joystick = new Joystick(Ports.Controls.JOYSTICK);
@@ -47,9 +46,9 @@ public class RobotContainer {
     private final Conveyor conveyor = Conveyor.getInstance();
     private final Flap flap = Flap.getInstance();
     private final Shooter shooter = Shooter.getInstance();
-    //    private final Climber climber = Climber.getInstance();
     private final Hood hood = Hood.getInstance();
     private final PhotonVisionModule photonVisionModule = new PhotonVisionModule("photonvision", null);
+    private final Helicopter helicopter = Helicopter.getInstance();
 //    private final DigitalOutput digitalOutput = new DigitalOutput(4);
 
     /**
@@ -68,17 +67,13 @@ public class RobotContainer {
 
     private void configureDefaultCommands() {
         swerve.setDefaultCommand(new OverpoweredDrive(swerve, () -> -joystick.getY(), () -> -joystick.getX(), () -> -joystick2.getX()));
-//        swerve.setDefaultCommand(new DriveForward(swerve));
+        helicopter.setDefaultCommand(new JoystickPowerHelicopter(helicopter, xbox::getLeftY));
     }
 
     private void configureButtonBindings() {
-        DoubleSupplier distanceSupplier = () -> photonVisionModule.getDistance().orElse(-Constants.Vision.TARGET_WIDTH / 2) + Constants.Vision.TARGET_WIDTH / 2;
-//        rt.whileActiveContinuous(new ShootCargo(shooter, hood, conveyor, flap, () -> Constants.Conveyor.SHOOT_POWER, distanceSupplier));
-        lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, Constants.Conveyor.DEFAULT_POWER.get(), Constants.Intake.DEFAULT_POWER::get));
-        rt.whileActiveContinuous(new Outtake(intake, conveyor, flap, shooter, hood, () -> false));
-        x.whenPressed(intake::toggleRetractor);
-
-        leftTrigger.whenPressed(() -> Robot.resetAngle());
+        leftTrigger.whenPressed((Runnable) Robot::resetAngle);
+        a.whileHeld(new SimpleAdjustWithVision(swerve, () -> 0, () -> true, () -> Robot.getAngle().getDegrees(), () -> 888));
+        b.whenPressed(new StopHelicopter(helicopter));
     }
 
 
