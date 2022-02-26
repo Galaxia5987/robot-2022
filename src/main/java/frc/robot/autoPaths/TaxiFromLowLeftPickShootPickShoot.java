@@ -74,7 +74,5 @@ public class TaxiFromLowLeftPickShootPickShoot extends SequentialCommandGroup {
                 conveyorPower,
                 distanceFromTarget)
                 .withTimeout(3));
-
-        addCommands(createCommand.apply("p2 - Going to low tarmac(6.3.1)"));
     }
 }

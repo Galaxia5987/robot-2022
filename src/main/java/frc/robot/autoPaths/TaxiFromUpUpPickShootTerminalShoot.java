@@ -26,7 +26,7 @@ public class TaxiFromUpUpPickShootTerminalShoot extends SequentialCommandGroup {
     private DoubleSupplier distanceFromTarget;
     private DoubleSupplier conveyorPower;
 
-    // Taxi from up up, pickup up cargo, go to terminal, park near low tarmac, shoot.(8)
+    // Taxi from up up, pickup up cargo, go to terminal, park near up tarmac, shoot.(8)
     public TaxiFromUpUpPickShootTerminalShoot(Shooter shooter, SwerveDrive swerveDrive, Conveyor conveyor, Intake intake, Hood hood, Flap flap) {
         var rotationPID = new ProfiledPIDController(Constants.Autonomous.KP_THETA_CONTROLLER, 0, 0, new TrapezoidProfile.Constraints(Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL));
         rotationPID.enableContinuousInput(-Math.PI, Math.PI);

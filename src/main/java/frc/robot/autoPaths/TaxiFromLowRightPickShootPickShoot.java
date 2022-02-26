@@ -6,7 +6,10 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commandgroups.PickUpCargo;
@@ -14,23 +17,23 @@ import frc.robot.commandgroups.ShootCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.auto.FollowPath;
+import frc.robot.subsystems.drivetrain.commands.testing.SimpleAdjustWithVision;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.commands.Shoot;
+import frc.robot.utils.PhotonVisionModule;
 
 import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 
 public class TaxiFromLowRightPickShootPickShoot extends SequentialCommandGroup {
-    private DoubleSupplier distanceFromTarget;
-    private DoubleSupplier conveyorPower;
 
     // Taxi from low right tarmac, pickup low cargo, shoot, pick up middle cargo, shoot, park near low tarmac.(7)
-    public TaxiFromLowRightPickShootPickShoot(Shooter shooter, SwerveDrive swerveDrive, Conveyor conveyor, Intake intake, Hood hood, Flap flap) {
-
-        var rotationPID = new ProfiledPIDController(Constants.Autonomous.KP_THETA_CONTROLLER, 0, 0, new TrapezoidProfile.Constraints(Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL));
-        rotationPID.enableContinuousInput(-Math.PI, Math.PI);
+    public TaxiFromLowRightPickShootPickShoot(Shooter shooter, SwerveDrive swerveDrive, Conveyor conveyor, Intake intake, Hood hood, Flap flap, PhotonVisionModule visionModule) {
+        DoubleSupplier distanceFromTarget = () -> visionModule.getDistance().orElse(-Constants.Vision.TARGET_RADIUS) + Constants.Vision.TARGET_RADIUS;
+        DoubleSupplier conveyorPower = Constants.Conveyor.DEFAULT_POWER::get;
 
         Function<String, FollowPath> createCommand = path -> new FollowPath(
                 PathPlanner.loadPath(path, Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL),
@@ -50,14 +53,15 @@ public class TaxiFromLowRightPickShootPickShoot extends SequentialCommandGroup {
                         Constants.Intake.DEFAULT_POWER::get
                 )));
 
-        addCommands(new ShootCargo(
+        addCommands(new ParallelRaceGroup(new ShootCargo(
                 shooter,
                 hood,
                 conveyor,
                 flap,
                 conveyorPower,
                 distanceFromTarget)
-                .withTimeout(3));
+                .withTimeout(3),
+                new SimpleAdjustWithVision(swerveDrive, () -> 0, () -> true, () -> visionModule.getYaw().orElse(0), distanceFromTarget)));
 
         addCommands(new ParallelCommandGroup((createCommand.apply("p2 - Picking up middle cargo(7.2)")),
                 new PickUpCargo(
@@ -68,15 +72,14 @@ public class TaxiFromLowRightPickShootPickShoot extends SequentialCommandGroup {
                         Constants.Intake.DEFAULT_POWER::get
                 ).withTimeout(3)));
 
-        addCommands(new ShootCargo(
+        addCommands(new ParallelRaceGroup(new ShootCargo(
                 shooter,
                 hood,
                 conveyor,
                 flap,
                 conveyorPower,
                 distanceFromTarget)
-                .withTimeout(3));
-
-        addCommands(createCommand.apply("p2 - Going to low tarmac(7.3.1)"));
+                .withTimeout(3),
+                new SimpleAdjustWithVision(swerveDrive, () -> 0, () -> true, () -> visionModule.getYaw().orElse(0), distanceFromTarget)));
     }
 }
