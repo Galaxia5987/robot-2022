@@ -10,6 +10,7 @@ import frc.robot.Constants;
 import frc.robot.commandgroups.PickUpCargo;
 import frc.robot.commandgroups.ShootCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
+import frc.robot.subsystems.conveyor.commands.Convey;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.auto.FollowPath;
 import frc.robot.subsystems.drivetrain.commands.testing.SimpleAdjustWithVision;
@@ -50,8 +51,9 @@ public class TaxiFromLowRightPickShoot extends SequentialCommandGroup {
                 ).withTimeout(3)));
 
         addCommands(new InstantCommand(swerveDrive::terminate));
-
-        addCommands(new ParallelRaceGroup(
+        addCommands(
+                new Convey(conveyor, -conveyorPower.getAsDouble()).withTimeout(0.05),
+                new ParallelCommandGroup(
                         new ShootCargo(
                                 shooter,
                                 hood,
@@ -59,9 +61,10 @@ public class TaxiFromLowRightPickShoot extends SequentialCommandGroup {
                                 flap,
                                 conveyorPower,
                                 distanceFromTarget)
-                                .withTimeout(3)),
+                                .withTimeout(3),
+                        new SimpleAdjustWithVision(swerveDrive, () -> 0, () -> true, () -> module.getYaw().orElse(0), distanceFromTarget))
+        );
 
-                new SimpleAdjustWithVision(swerveDrive, () -> 0, () -> true, () -> module.getYaw().orElse(0), distanceFromTarget));
 
         addCommands(createCommand.apply("p1 - Going to low tarmac(4.2.1)"));
     }

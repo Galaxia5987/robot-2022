@@ -1,5 +1,6 @@
 package frc.robot.subsystems.shooter.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.hood.Hood;
@@ -7,6 +8,7 @@ import frc.robot.subsystems.shooter.Shooter;
 import webapp.FireLog;
 
 import java.util.OptionalDouble;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class Shoot extends CommandBase {
@@ -14,23 +16,36 @@ public class Shoot extends CommandBase {
     protected final Hood hood;
     protected final DoubleSupplier distance;
     private final OptionalDouble power;
+    private final Timer timer = new Timer();
+    private boolean last = false;
+    private double setpointVelocity = 0;
+    private final BooleanSupplier postFlap;
+    private boolean starting = true;
 
     public Shoot(Shooter shooter, Hood hood, double power) {
         this.shooter = shooter;
         this.hood = hood;
+        this.postFlap = () -> false;
         this.distance = () -> 8;
         this.power = OptionalDouble.of(power);
         addRequirements(shooter);
     }
 
-    public Shoot(Shooter shooter, Hood hood, DoubleSupplier distance) {
+    public Shoot(Shooter shooter, Hood hood, DoubleSupplier distance, BooleanSupplier postFlap) {
         this.shooter = shooter;
         this.hood = hood;
         this.distance = distance;
+        this.postFlap = postFlap;
         this.power = OptionalDouble.empty();
         addRequirements(shooter);
     }
 
+    @Override
+    public void initialize() {
+        timer.start();
+        timer.reset();
+        starting = true;
+    }
 
     /**
      * Calculates the velocity setpoint according to the distance from the target.
@@ -48,9 +63,23 @@ public class Shoot extends CommandBase {
 
     @Override
     public void execute() {
-        double setpointVelocity = getSetpointVelocity(distance.getAsDouble(), hood.isOpen());
+        if (postFlap.getAsBoolean()) {
+            if (!last) {
+                timer.reset();
+            }
+            last = true;
+        } else {
+            last = false;
+        }
+
+        if (timer.hasElapsed(0.5) || starting) {
+            setpointVelocity = getSetpointVelocity(distance.getAsDouble(), hood.isOpen());
+            starting = false;
+        }
+
+
         if (power.isEmpty()) {
-            System.out.println("Distance: " + distance.getAsDouble() + ", Velocity: " + getSetpointVelocity(distance.getAsDouble(), hood.isOpen()));
+//            System.out.println("Distance: " + distance.getAsDouble() + ", Velocity: " + getSetpointVelocity(distance.getAsDouble(), hood.isOpen()));
             shooter.setVelocity(setpointVelocity);
             SmartDashboard.putString("speed_state", Math.abs(setpointVelocity - shooter.getVelocity()) <= 30 ? "green" : Math.abs(setpointVelocity - shooter.getVelocity()) <= 100 ? "yellow" : "red");
         } else {
@@ -58,11 +87,13 @@ public class Shoot extends CommandBase {
         }
         SmartDashboard.putNumber("something_velocity", shooter.getVelocity());
         FireLog.log("Shooter velocity", shooter.getVelocity());
-        FireLog.log("Shooter setpoint", getSetpointVelocity(distance.getAsDouble(), hood.isOpen()));
+        FireLog.log("Shooter setpoint", setpointVelocity);
     }
 
     @Override
     public void end(boolean interrupted) {
         shooter.terminate();
+        timer.stop();
+        starting = true;
     }
 }

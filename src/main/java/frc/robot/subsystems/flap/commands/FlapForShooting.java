@@ -37,6 +37,5 @@ public class FlapForShooting extends CommandBase {
             timer.stop();
             timer.reset();
         }
-
     }
 }

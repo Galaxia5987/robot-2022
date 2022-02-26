@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autoPaths.TaxiFromLowLeftPickShoot;
 import frc.robot.autoPaths.TaxiFromLowRightPickShoot;
+import frc.robot.autoPaths.TaxiFromLowRightPickShootPickShoot;
+import frc.robot.commandgroups.PickUpCargo;
 import frc.robot.commandgroups.ShootCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
@@ -91,7 +93,7 @@ public class RobotContainer {
 //        rt.whileActiveContinuous(new ShootCargo(shooter, hood, conveyor, flap, () -> Constants.Conveyor.SHOOT_POWER, distanceSupplier));
         x.whenPressed(photonVisionModule::toggleLeds);
         leftTrigger.whenPressed(() -> Robot.resetAngle());
-
+        lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, Constants.Conveyor.DEFAULT_POWER.get(), Constants.Intake.DEFAULT_POWER::get));
     }
 
     /**
@@ -100,10 +102,11 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
+        photonVisionModule.setLeds(false);
         var thetaController = new ProfiledPIDController(Constants.Autonomous.KP_THETA_CONTROLLER, 0, 0, Constants.SwerveDrive.HEADING_CONTROLLER_CONSTRAINTS);
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-        PathPlannerTrajectory trajectory = PathPlanner.loadPath("p1 - Taxi from low right and pickup low cargo(4.1)", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL);
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("p2 - Taxi from low right tarmac and pickup low cargo(7.1)", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL);
 //        PathPlannerTrajectory trajectory = PathPlanner.loadPath("Meter", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL);
         Robot.resetAngle(trajectory.getInitialState().holonomicRotation);
         swerve.resetOdometry(trajectory.getInitialState().poseMeters, trajectory.getInitialState().holonomicRotation);
@@ -122,7 +125,7 @@ public class RobotContainer {
                         swerve)
         );*/
 
-        return new TaxiFromLowRightPickShoot(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
+        return new TaxiFromLowRightPickShootPickShoot(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
 
     }
 

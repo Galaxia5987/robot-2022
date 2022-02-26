@@ -325,8 +325,6 @@ public class SwerveDrive extends SubsystemBase {
                 Robot.getAngle(),
                 getStates()
         );
-        System.out.println(getPose());
-        System.out.println(Robot.getAngle());
 
         String outputPosition = getPose().getX() + ", " + getPose().getY();
         SmartDashboard.putString("robot_position", outputPosition);

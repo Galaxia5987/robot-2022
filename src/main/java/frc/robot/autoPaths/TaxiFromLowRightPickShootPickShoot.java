@@ -15,6 +15,7 @@ import frc.robot.Constants;
 import frc.robot.commandgroups.PickUpCargo;
 import frc.robot.commandgroups.ShootCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
+import frc.robot.subsystems.conveyor.commands.Convey;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.auto.FollowPath;
 import frc.robot.subsystems.drivetrain.commands.testing.SimpleAdjustWithVision;
@@ -44,7 +45,7 @@ public class TaxiFromLowRightPickShootPickShoot extends SequentialCommandGroup {
                 swerveDrive::setStates,
                 swerveDrive);
 
-       addCommands(new ParallelCommandGroup((createCommand.apply("p2 - Taxi from low right tarmac and pickup low cargo(7.1)")),
+        addCommands(new ParallelRaceGroup((createCommand.apply("p2 - Taxi from low right tarmac and pickup low cargo(7.1)")),
                 new PickUpCargo(
                         conveyor,
                         flap,
@@ -53,33 +54,39 @@ public class TaxiFromLowRightPickShootPickShoot extends SequentialCommandGroup {
                         Constants.Intake.DEFAULT_POWER::get
                 )));
 
-        addCommands(new ParallelRaceGroup(new ShootCargo(
-                shooter,
-                hood,
-                conveyor,
-                flap,
-                conveyorPower,
-                distanceFromTarget)
-                .withTimeout(3),
-                new SimpleAdjustWithVision(swerveDrive, () -> 0, () -> true, () -> visionModule.getYaw().orElse(0), distanceFromTarget)));
+        addCommands(
+                new Convey(conveyor, -conveyorPower.getAsDouble()).withTimeout(0.05),
+                new ParallelRaceGroup(
+                        new ShootCargo(
+                                shooter,
+                                hood,
+                                conveyor,
+                                flap,
+                                conveyorPower,
+                                distanceFromTarget)
+                                .withTimeout(3),
+                        new SimpleAdjustWithVision(swerveDrive, () -> 0, () -> true, () -> visionModule.getYaw().orElse(0), distanceFromTarget)));
 
-        addCommands(new ParallelCommandGroup((createCommand.apply("p2 - Picking up middle cargo(7.2)")),
-                new PickUpCargo(
+        addCommands(
+                new ParallelCommandGroup(createCommand.apply("p2 - Picking up middle cargo(7.2)"),
+                        new PickUpCargo(
+                                conveyor,
+                                flap,
+                                intake,
+                                Constants.Conveyor.DEFAULT_POWER.get(),
+                                Constants.Intake.DEFAULT_POWER::get
+                        ).withTimeout(3)));
+
+        addCommands(
+                new Convey(conveyor, -conveyorPower.getAsDouble()).withTimeout(0.05),
+                new ParallelRaceGroup(new ShootCargo(
+                        shooter,
+                        hood,
                         conveyor,
                         flap,
-                        intake,
-                        Constants.Conveyor.DEFAULT_POWER.get(),
-                        Constants.Intake.DEFAULT_POWER::get
-                ).withTimeout(3)));
-
-        addCommands(new ParallelRaceGroup(new ShootCargo(
-                shooter,
-                hood,
-                conveyor,
-                flap,
-                conveyorPower,
-                distanceFromTarget)
-                .withTimeout(3),
-                new SimpleAdjustWithVision(swerveDrive, () -> 0, () -> true, () -> visionModule.getYaw().orElse(0), distanceFromTarget)));
+                        conveyorPower,
+                        distanceFromTarget)
+                        .withTimeout(3),
+                        new SimpleAdjustWithVision(swerveDrive, () -> 0, () -> true, () -> visionModule.getYaw().orElse(0), distanceFromTarget)));
     }
 }
