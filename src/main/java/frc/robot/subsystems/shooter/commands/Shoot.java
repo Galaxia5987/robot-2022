@@ -79,6 +79,7 @@ public class Shoot extends CommandBase {
 
 
         if (power.isEmpty()) {
+
 //            System.out.println("Distance: " + distance.getAsDouble() + ", Velocity: " + getSetpointVelocity(distance.getAsDouble(), hood.isOpen()));
             shooter.setVelocity(setpointVelocity);
             SmartDashboard.putString("speed_state", Math.abs(setpointVelocity - shooter.getVelocity()) <= 30 ? "green" : Math.abs(setpointVelocity - shooter.getVelocity()) <= 100 ? "yellow" : "red");

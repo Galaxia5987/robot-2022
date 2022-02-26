@@ -6,29 +6,26 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.autoPaths.TaxiFromLowLeftPickShoot;
-import frc.robot.autoPaths.TaxiFromLowRightPickShoot;
-import frc.robot.autoPaths.TaxiFromLowRightPickShootPickShoot;
+import frc.robot.commandgroups.Outtake;
 import frc.robot.commandgroups.PickUpCargo;
 import frc.robot.commandgroups.ShootCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
+import frc.robot.subsystems.conveyor.commands.Convey;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
-import frc.robot.subsystems.drivetrain.commands.OverpoweredDrive;
+import frc.robot.subsystems.drivetrain.commands.DriveAndAdjustWithVision;
 import frc.robot.subsystems.flap.Flap;
-import frc.robot.subsystems.flap.commands.FlapForShooting;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.commands.Shoot;
 import frc.robot.utils.PhotonVisionModule;
 import webapp.Webserver;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-
-import static frc.robot.Constants.Shooter.SHOOTER_VELOCITY_DEADBAND;
 
 public class RobotContainer {
     private static final Joystick joystick = new Joystick(Ports.Controls.JOYSTICK);
@@ -70,30 +67,25 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        swerve.setDefaultCommand(new OverpoweredDrive(swerve, () -> -joystick.getY(), () -> -joystick.getX(), () -> -joystick2.getX()));
+//        swerve.setDefaultCommand(new OverpoweredDrive(swerve, () -> -joystick.getY(), () -> -joystick.getX(), () -> -joystick2.getX()));
+        swerve.setDefaultCommand(new DriveAndAdjustWithVision(swerve, () -> -joystick.getY(), () -> -joystick.getX(), () -> -joystick2.getX(), () -> photonVisionModule.getYaw().orElse(0), () -> rightTrigger.get(), () -> photonVisionModule.getDistance().orElse(0)));
 //        swerve.setDefaultCommand(new HolonomicDrive(swerve, () -> -joystick.getY(), () -> -joystick.getX(), () -> -joystick2.getX()));
 //        swerve.setDefaultCommand(new DriveForward(swerve));
     }
 
     private void configureButtonBindings() {
         DoubleSupplier distanceFromTarget = () -> photonVisionModule.getDistance().orElse(-Constants.Vision.TARGET_RADIUS) + Constants.Vision.TARGET_RADIUS;
-        DoubleSupplier conveyorPower = Constants.Conveyor.DEFAULT_POWER::get;
-
-        a.whileHeld(new ShootCargo(
-                shooter,
-                hood,
-                conveyor,
-                flap,
-                conveyorPower,
-                distanceFromTarget
-        ));
-        DoubleSupplier setpointVelocity = () -> Shoot.getSetpointVelocity(distanceFromTarget.getAsDouble(), hood.isOpen());
-        BooleanSupplier isFlywheelAtSetpoint = () -> Math.abs(setpointVelocity.getAsDouble() - shooter.getVelocity()) < SHOOTER_VELOCITY_DEADBAND.get();
-        b.whenPressed(new FlapForShooting(flap, isFlywheelAtSetpoint, () -> !conveyor.isPreFlapBeamConnected()));
-//        rt.whileActiveContinuous(new ShootCargo(shooter, hood, conveyor, flap, () -> Constants.Conveyor.SHOOT_POWER, distanceSupplier));
+//        DoubleSupplier conveyorPower = Constants.Conveyor.DEFAULT_POWER::get;
+//        DoubleSupplier setpointVelocity = () -> Shoot.getSetpointVelocity(distanceFromTarget.getAsDouble(), hood.isOpen());
+//        BooleanSupplier isFlywheelAtSetpoint = () -> Math.abs(setpointVelocity.getAsDouble() - shooter.getVelocity()) < SHOOTER_VELOCITY_DEADBAND.get();
+//        b.whenPressed(new FlapForShooting(flap, isFlywheelAtSetpoint, () -> !conveyor.isPreFlapBeamConnected()));
+        rt.whileActiveContinuous(new ShootCargo(shooter, hood, conveyor, flap, () -> Constants.Conveyor.SHOOT_POWER, distanceFromTarget));
+        lt.whileActiveContinuous(new ParallelCommandGroup(
+                new Convey(conveyor,Constants.Conveyor.DEFAULT_POWER.get()),
+                new InstantCommand(() -> flap.setFlapMode(Flap.FlapMode.STOP_CARGO))));
+        b.whileHeld(new Convey(conveyor, -Constants.Conveyor.DEFAULT_POWER.get()));
         x.whenPressed(photonVisionModule::toggleLeds);
-        leftTrigger.whenPressed(() -> Robot.resetAngle());
-        lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, Constants.Conveyor.DEFAULT_POWER.get(), Constants.Intake.DEFAULT_POWER::get));
+        leftTrigger.whenPressed((Runnable) Robot::resetAngle);
     }
 
     /**
@@ -125,8 +117,8 @@ public class RobotContainer {
                         swerve)
         );*/
 
-        return new TaxiFromLowRightPickShootPickShoot(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
-
+//        return new TaxiFromLowRightPickShootPickShoot(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
+        return null;
     }
 
     /**
