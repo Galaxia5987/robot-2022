@@ -2,6 +2,7 @@ package frc.robot.subsystems.shooter.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.shooter.Shooter;
 import webapp.FireLog;
@@ -12,7 +13,7 @@ import java.util.function.DoubleSupplier;
 public class Shoot extends CommandBase {
     protected final Shooter shooter;
     protected final Hood hood;
-    protected final DoubleSupplier distance;
+    protected DoubleSupplier distance;
     private final OptionalDouble power;
 
     public Shoot(Shooter shooter, Hood hood, double power) {
@@ -49,9 +50,7 @@ public class Shoot extends CommandBase {
     public void execute() {
         if (power.isEmpty()) {
             double distance = this.distance.getAsDouble();
-            shooter.setVelocity(4300);
-            System.out.println("Distance: " + distance + ", Velocity: " + getSetpointVelocity(distance, hood.isOpen()));
-//            shooter.setVelocity(getSetpointVelocity(distance.getAsDouble()));
+            shooter.setVelocity(getSetpointVelocity(distance, distance < Constants.Hood.MIN_DISTANCE));
         } else {
             shooter.setPower(power.getAsDouble());
         }
