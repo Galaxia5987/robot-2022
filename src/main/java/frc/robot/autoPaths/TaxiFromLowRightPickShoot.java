@@ -26,7 +26,7 @@ public class TaxiFromLowRightPickShoot extends SequentialCommandGroup {
 
     // Taxi from low right, pick up low cargo, shoot, go near low tarmac.(4)
     public TaxiFromLowRightPickShoot(Shooter shooter, SwerveDrive swerveDrive, Conveyor conveyor, Intake intake, Hood hood, Flap flap, PhotonVisionModule module) {
-        DoubleSupplier distanceFromTarget = () -> module.getDistance().orElse(-Constants.Vision.TARGET_RADIUS) + -Constants.Vision.TARGET_RADIUS;
+        DoubleSupplier distanceFromTarget = () -> module.getDistance().orElse(-Constants.Vision.TARGET_RADIUS) + Constants.Vision.TARGET_RADIUS;
         DoubleSupplier conveyorPower = Constants.Conveyor.DEFAULT_POWER::get;
 
         Function<String, FollowPath> createCommand = path -> new FollowPath(
@@ -37,6 +37,7 @@ public class TaxiFromLowRightPickShoot extends SequentialCommandGroup {
                 new PIDController(Constants.Autonomous.KP_Y_CONTROLLER, 0, 0),
                 swerveDrive::setStates,
                 swerveDrive);
+        addCommands(new InstantCommand(() -> module.setLeds(false)));
 
         addCommands(new ParallelCommandGroup(
                 createCommand.apply("p1 - Taxi from low right and pickup low cargo(4.1)"),
@@ -51,16 +52,16 @@ public class TaxiFromLowRightPickShoot extends SequentialCommandGroup {
         addCommands(new InstantCommand(swerveDrive::terminate));
 
         addCommands(new ParallelRaceGroup(
-                new ShootCargo(
-                        shooter,
-                        hood,
-                        conveyor,
-                        flap,
-                        conveyorPower,
-                        distanceFromTarget)
-                        .withTimeout(3)));
+                        new ShootCargo(
+                                shooter,
+                                hood,
+                                conveyor,
+                                flap,
+                                conveyorPower,
+                                distanceFromTarget)
+                                .withTimeout(3)),
 
-//                new SimpleAdjustWithVision(swerveDrive, () -> 0, () -> true, () -> module.getYaw().orElse(0), distanceFromTarget)));
+                new SimpleAdjustWithVision(swerveDrive, () -> 0, () -> true, () -> module.getYaw().orElse(0), distanceFromTarget));
 
         addCommands(createCommand.apply("p1 - Going to low tarmac(4.2.1)"));
     }
