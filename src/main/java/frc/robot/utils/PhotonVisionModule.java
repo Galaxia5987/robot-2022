@@ -5,7 +5,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DigitalOutput;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -145,6 +144,9 @@ public class PhotonVisionModule extends SubsystemBase {
     @Override
     public void periodic() {
 //        System.out.println("distance= {" + (getDistance().orElse(0) + (TARGET_RADIUS)) + "}");
+        SmartDashboard.putString("visible_state", camera.getLatestResult().hasTargets() ? "green" : "red");
+        double yaw = getYaw().orElse(100);
+        SmartDashboard.putString("aim_state", Math.abs(yaw) <= 5 ? "green" : Math.abs(yaw) <= 13 ? "yellow" : "red");
     }
 
     @Override

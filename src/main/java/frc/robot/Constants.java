@@ -54,7 +54,7 @@ public final class Constants {
         public static final double HEADING_KI = 0;
         public static final double HEADING_KD = 0;
 //        public static final TrapezoidProfile.Constraints HEADING_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(4, 3.2); // [rads/sec], [rad/sec^2]
-        public static final TrapezoidProfile.Constraints HEADING_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(4, 3.2); // [rads/sec], [rad/sec^2]
+        public static final TrapezoidProfile.Constraints HEADING_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(10, 5); // [rads/sec], [rad/sec^2]
 //        public static final TrapezoidProfile.Constraints HEADING_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(4, 3.2); // [rads/sec], [rad/sec^2]
 
         // The heading is responsible for the angle of the whole chassis, while the angle is used in the angle motor itself.
@@ -74,7 +74,7 @@ public final class Constants {
         public static final int ANGLE_CRUISE_VELOCITY = 400;
         public static final double DRIFTING_PERIOD = 0.2; // expected period the robot will change its rotation even after commanded to stop. [s]
         public static final double SAMPLE_YAW_PERIOD = 0.1; // expected period the robot will change its rotation even after commanded to stop. [s]
-        public static final double ADJUST_CONTROLLER_KP = 10;
+        public static final double ADJUST_CONTROLLER_KP = 7;
         public static final WebConstant ADJUST_CONTROLLER_KI = WebConstant.of("Drivetrain", "KI_bruh", 0);
         public static final double ADJUST_CONTROLLER_TOLERANCE = Math.toRadians(0.5);
         private static final double Rx = SwerveDrive.ROBOT_LENGTH / 2; // [m]
@@ -153,7 +153,7 @@ public final class Constants {
     }
 
     public static class Autonomous {
-        public static final double KP_THETA_CONTROLLER = 7;
+        public static final double KP_THETA_CONTROLLER = 8.8;
         public static final double KP_X_CONTROLLER = 3;
         public static final double KP_Y_CONTROLLER = 3;
 
@@ -161,7 +161,7 @@ public final class Constants {
         public static final Matrix<N1, N1> localMeasurementStdDevs = VecBuilder.fill(0);
         public static final Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0, 0, 0);
 
-        public static final double MAX_VEL = 3; // [m/sec] 4.1
+        public static final double MAX_VEL = 2.5; // [m/sec] 4.1
         public static final double MAX_ACCEL = 1.5; // [m/sec^2] 2.14
     }
 
