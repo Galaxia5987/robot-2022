@@ -1,15 +1,9 @@
 package frc.robot.autoPaths;
 
 import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.commands.PPSwerveControllerCommand;
-import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commandgroups.PickUpCargo;
@@ -22,8 +16,8 @@ import frc.robot.subsystems.drivetrain.commands.testing.SimpleAdjustWithVision;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.commands.IntakeByRobotSpeed;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.commands.Shoot;
 import frc.robot.utils.PhotonVisionModule;
 
 import java.util.function.DoubleSupplier;
@@ -79,14 +73,16 @@ public class TaxiFromLowRightPickShootPickShoot extends SequentialCommandGroup {
 
         addCommands(
                 new Convey(conveyor, -conveyorPower.getAsDouble()).withTimeout(0.05),
-                new ParallelRaceGroup(new ShootCargo(
-                        shooter,
-                        hood,
-                        conveyor,
-                        flap,
-                        conveyorPower,
-                        distanceFromTarget)
-                        .withTimeout(3),
+                new ParallelRaceGroup(
+                        new IntakeByRobotSpeed(intake, () -> 0),
+                        new ShootCargo(
+                                shooter,
+                                hood,
+                                conveyor,
+                                flap,
+                                conveyorPower,
+                                distanceFromTarget)
+                                .withTimeout(3),
                         new SimpleAdjustWithVision(swerveDrive, () -> 0, () -> true, () -> visionModule.getYaw().orElse(0), distanceFromTarget)));
     }
 }
