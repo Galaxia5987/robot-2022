@@ -16,7 +16,7 @@ public class SimpleAdjustWithVision extends CommandBase {
     private final DoubleSupplier rotationSupplier;
     private final BooleanSupplier condition;
     private final DoubleSupplier yawSupplier;
-    private final PIDController adjustController = new PIDController(Constants.SwerveDrive.ADJUST_CONTROLLER_KP, Constants.SwerveDrive.ADJUST_CONTROLLER_KI.get(), 0) {{
+    private final PIDController adjustController = new PIDController(Constants.SwerveDrive.ADJUST_CONTROLLER_KP, 0, 0) {{
         enableContinuousInput(-Math.PI, Math.PI);
         setTolerance(Constants.SwerveDrive.ADJUST_CONTROLLER_TOLERANCE);
     }};
@@ -42,7 +42,6 @@ public class SimpleAdjustWithVision extends CommandBase {
 
     @Override
     public void execute() {
-        System.out.println(condition.getAsBoolean() + " " + yawSupplier.getAsDouble() + " " + distanceSupplier.getAsDouble());
         double rotation = Utils.deadband(rotationSupplier.getAsDouble(), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
         if (rotation == 0 && !condition.getAsBoolean()) {
             swerveDrive.terminate();

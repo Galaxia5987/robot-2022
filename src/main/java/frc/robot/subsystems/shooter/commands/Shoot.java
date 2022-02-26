@@ -48,13 +48,14 @@ public class Shoot extends CommandBase {
 
     @Override
     public void execute() {
+        double setpointVelocity = getSetpointVelocity(distance.getAsDouble(), hood.isOpen());
         if (power.isEmpty()) {
             System.out.println("Distance: " + distance.getAsDouble() + ", Velocity: " + getSetpointVelocity(distance.getAsDouble(), hood.isOpen()));
-            shooter.setVelocity(getSetpointVelocity(distance.getAsDouble(), hood.isOpen()));
+            shooter.setVelocity(setpointVelocity);
+            SmartDashboard.putString("speed_state", Math.abs(setpointVelocity - shooter.getVelocity()) <= 30 ? "green" : Math.abs(setpointVelocity - shooter.getVelocity()) <= 100 ? "yellow" : "red");
         } else {
             shooter.setPower(power.getAsDouble());
         }
-
         SmartDashboard.putNumber("something_velocity", shooter.getVelocity());
         FireLog.log("Shooter velocity", shooter.getVelocity());
         FireLog.log("Shooter setpoint", getSetpointVelocity(distance.getAsDouble(), hood.isOpen()));

@@ -12,6 +12,7 @@ import frc.robot.commandgroups.PickUpCargo;
 import frc.robot.commandgroups.ShootCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
+import frc.robot.subsystems.drivetrain.commands.auto.FollowPath;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Intake;
@@ -34,13 +35,12 @@ public class FiveCargoAuto extends SequentialCommandGroup {
         var rotationPID = new ProfiledPIDController(Constants.Autonomous.KP_THETA_CONTROLLER, 0, 0, new TrapezoidProfile.Constraints(Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL));
         rotationPID.enableContinuousInput(-Math.PI, Math.PI);
 
-        Function<String, PPSwerveControllerCommand> createCommand = path -> new PPSwerveControllerCommand(
+        Function<String, FollowPath> createCommand = path -> new FollowPath(
                 PathPlanner.loadPath(path, Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL),
                 swerveDrive::getPose,
                 swerveDrive.getKinematics(),
                 new PIDController(Constants.Autonomous.KP_X_CONTROLLER, 0, 0),
                 new PIDController(Constants.Autonomous.KP_Y_CONTROLLER, 0, 0),
-                rotationPID,
                 swerveDrive::setStates,
                 swerveDrive);
 

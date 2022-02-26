@@ -2,15 +2,13 @@ package frc.robot;
 
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.commands.PPSwerveControllerCommand;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.autoPaths.TaxiFromLowLeftPickShoot;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.OverpoweredDrive;
@@ -94,23 +92,27 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         var thetaController = new ProfiledPIDController(Constants.Autonomous.KP_THETA_CONTROLLER, 0, 0, Constants.SwerveDrive.HEADING_CONTROLLER_CONSTRAINTS);
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-
-//        PathPlannerTrajectory trajectory = PathPlanner.loadPath("p1 - Taxi from low left and pickup middle cargo(3.1)", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL);
-        PathPlannerTrajectory trajectory = PathPlanner.loadPath("Meter", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL);
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("p1 - Taxi from low left and pickup middle cargo(3.1)", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL);
+//        PathPlannerTrajectory trajectory = PathPlanner.loadPath("Meter", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL);
         Robot.resetAngle(trajectory.getInitialState().holonomicRotation);
         swerve.resetOdometry(trajectory.getInitialState().poseMeters, trajectory.getInitialState().holonomicRotation);
+/*        SwerveModuleState[] zeroStates = new SwerveModuleState[4];
+        Arrays.fill(zeroStates, new SwerveModuleState());
 
 
-        return new PPSwerveControllerCommand(
-                trajectory,
-                swerve::getPose,
-                swerve.getKinematics(),
-                new PIDController(Constants.Autonomous.KP_X_CONTROLLER, 0, 0),
-                new PIDController(Constants.Autonomous.KP_Y_CONTROLLER, 0, 0),
-                new ProfiledPIDController(7, 0, 0, new TrapezoidProfile.Constraints(4, 3.2)),
-                swerve::setStates,
-                swerve);
+        return new SequentialCommandGroup(
+                new FollowPath(
+                        trajectory,
+                        swerve::getPose,
+                        swerve.getKinematics(),
+                        new PIDController(Constants.Autonomous.KP_X_CONTROLLER, 0, 0),
+                        new PIDController(Constants.Autonomous.KP_Y_CONTROLLER, 0, 0),
+                        swerve::setStates,
+                        swerve)
+        );*/
+
+        return new TaxiFromLowLeftPickShoot(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
+
     }
 
     /**

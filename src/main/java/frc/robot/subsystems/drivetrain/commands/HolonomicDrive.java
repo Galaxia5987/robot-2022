@@ -34,7 +34,7 @@ public class HolonomicDrive extends CommandBase {
     @Override
     public void execute() {
         ChassisSpeeds speeds = calculateVelocities();
-        swerveDrive.holonomicDrive(speeds.vyMetersPerSecond, speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond);
+        swerveDrive.holonomicDrive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
 
         SwerveDrive.logSpeeds(speeds);
     }
