@@ -19,7 +19,7 @@ public class CheckVelocityDrop extends Shoot {
     public void execute() {
         super.execute();
         double velocity = shooter.getVelocity();
-        double setpoint = getSetpointVelocity(distance.getAsDouble(), hood.isOpen());
+        double setpoint = getSetpointVelocity(distance.getAsDouble());
         maximalDrop = Math.max(maximalDrop, lastVelocity - velocity);
 
         FireLog.log("Setpoint", setpoint);

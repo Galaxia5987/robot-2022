@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterDataModule;
 import webapp.FireLog;
 
 import java.util.OptionalDouble;
@@ -38,11 +39,9 @@ public class Shoot extends CommandBase {
      * @param distance is the distance from the target. [m]
      * @return 15. [rpm]
      */
-    public static double getSetpointVelocity(double distance, boolean isShort) {
-        if (isShort) {
-            return 187.25 * Math.pow(distance, 2) - 415.01 * distance + 3736.9;
-        }
-        return 4.1217 * Math.pow(distance, 2) + 487.03 * distance + 1849.3;
+    public static double getSetpointVelocity(double distance) {
+        ShooterDataModule data = ShooterDataModule.getDataModule(distance);
+        return data.getShooterVelocity();
     }
 
     @Override

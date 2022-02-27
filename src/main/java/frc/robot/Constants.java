@@ -11,6 +11,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Color;
+import frc.robot.subsystems.shooter.ShooterDataModule;
 import frc.robot.utils.SwerveModuleConfigBase;
 import frc.robot.valuetuner.WebConstant;
 import org.photonvision.SimVisionTarget;
@@ -108,6 +109,7 @@ public final class Constants {
             return configuration;
         }
 
+        public static final ShooterDataModule[] SHOOTER_DATA = new ShooterDataModule[]{};
     }
 
     public static final class SwerveModule {
