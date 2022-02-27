@@ -6,10 +6,10 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commandgroups.Outtake;
+import frc.robot.commandgroups.PickUpCargo;
 import frc.robot.commandgroups.ShootCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
@@ -18,8 +18,10 @@ import frc.robot.subsystems.drivetrain.commands.DriveAndAdjustWithVision;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.helicopter.Helicopter;
 import frc.robot.subsystems.helicopter.commands.JoystickPowerHelicopter;
+import frc.robot.subsystems.helicopter.commands.ToggleHelicopterStopper;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.commands.IntakeCargo;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.utils.PhotonVisionModule;
 import webapp.Webserver;
@@ -29,17 +31,18 @@ import java.util.function.DoubleSupplier;
 public class RobotContainer {
     private static final Joystick joystick = new Joystick(Ports.Controls.JOYSTICK);
     private static final Joystick joystick2 = new Joystick(Ports.Controls.JOYSTICK2);
+    final PhotonVisionModule photonVisionModule = new PhotonVisionModule("photonvision", null);
     private final XboxController xbox = new XboxController(Ports.Controls.XBOX);
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final JoystickButton b = new JoystickButton(xbox, XboxController.Button.kB.value);
     private final JoystickButton x = new JoystickButton(xbox, XboxController.Button.kX.value);
     private final JoystickButton y = new JoystickButton(xbox, XboxController.Button.kY.value);
     private final JoystickButton lb = new JoystickButton(xbox, XboxController.Button.kLeftBumper.value);
-    private final JoystickButton leftTrigger = new JoystickButton(joystick, Joystick.ButtonType.kTrigger.value);
-    private final JoystickButton rightTrigger = new JoystickButton(joystick2, Joystick.ButtonType.kTrigger.value);
+    private final JoystickButton rb = new JoystickButton(xbox, XboxController.Button.kRightBumper.value);
     private final Trigger rt = new Trigger(() -> xbox.getRightTriggerAxis() > Constants.Control.RIGHT_TRIGGER_DEADBAND);
     private final Trigger lt = new Trigger(() -> xbox.getLeftTriggerAxis() > Constants.Control.RIGHT_TRIGGER_DEADBAND);
-
+    private final JoystickButton leftTrigger = new JoystickButton(joystick, Joystick.ButtonType.kTrigger.value);
+    private final JoystickButton rightTrigger = new JoystickButton(joystick2, Joystick.ButtonType.kTrigger.value);
     // The robot's subsystems and commands are defined here...
     private final SwerveDrive swerve = SwerveDrive.getFieldOrientedInstance();
     private final Intake intake = Intake.getInstance();
@@ -48,7 +51,8 @@ public class RobotContainer {
     private final Shooter shooter = Shooter.getInstance();
     private final Hood hood = Hood.getInstance();
     private final Helicopter helicopter = Helicopter.getInstance();
-    final PhotonVisionModule photonVisionModule = new PhotonVisionModule("photonvision", null);
+
+    private double speedMultiplier = 1;
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -65,19 +69,32 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
+        swerve.setDefaultCommand(
+                new DriveAndAdjustWithVision(
+                        swerve,
+                        () -> -joystick.getY() * speedMultiplier,
+                        () -> -joystick.getX() * speedMultiplier,
+                        () -> -joystick2.getX() * speedMultiplier,
+                        () -> photonVisionModule.getYaw().orElse(0),
+                        rightTrigger::get,
+                        () -> photonVisionModule.getDistance().orElse(0)
+                )
+        );
         helicopter.setDefaultCommand(new JoystickPowerHelicopter(helicopter, xbox::getLeftY));
-        swerve.setDefaultCommand(new DriveAndAdjustWithVision(swerve, () -> -joystick.getY(), () -> -joystick.getX(), () -> -joystick2.getX(), () -> photonVisionModule.getYaw().orElse(0), () -> rightTrigger.get(), () -> photonVisionModule.getDistance().orElse(0)));
     }
 
     private void configureButtonBindings() {
+        a.whileHeld(new IntakeCargo(intake, () -> -Constants.Intake.DEFAULT_POWER.get()));
+        b.whileHeld(new Convey(conveyor, -Constants.Conveyor.DEFAULT_POWER.get()));
+        y.whenPressed(new ToggleHelicopterStopper(helicopter));
+
         DoubleSupplier distanceFromTarget = () -> photonVisionModule.getDistance().orElse(-Constants.Vision.TARGET_RADIUS) + Constants.Vision.TARGET_RADIUS;
         rt.whileActiveContinuous(new ShootCargo(shooter, hood, conveyor, flap, () -> Constants.Conveyor.SHOOT_POWER, distanceFromTarget));
-        lt.whileActiveContinuous(new ParallelCommandGroup(
-                new Convey(conveyor, Constants.Conveyor.DEFAULT_POWER.get()),
-                new InstantCommand(() -> flap.setFlapMode(Flap.FlapMode.STOP_CARGO))));
-        b.whileHeld(new Convey(conveyor, -Constants.Conveyor.DEFAULT_POWER.get()));
-        x.whenPressed(photonVisionModule::toggleLeds);
-        leftTrigger.whenPressed((Runnable) Robot::resetAngle);
+        lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, Constants.Conveyor.DEFAULT_POWER.get(), Constants.Intake.DEFAULT_POWER::get));
+        lb.whileHeld(new Outtake(intake, conveyor, flap, shooter, hood, () -> false));
+        rb.whileHeld(new Convey(conveyor, -Constants.Conveyor.DEFAULT_POWER.get()));
+
+        leftTrigger.whenPressed(() -> speedMultiplier = 0.5).whenReleased(() -> speedMultiplier = 1);
     }
 
     /**
