@@ -23,7 +23,7 @@ import frc.robot.valuetuner.NetworkTableConstant;
  * project.
  */
 public class Robot extends TimedRobot {
-    public static final boolean debug = !DriverStation.isFMSAttached();
+    public static final boolean debug = false;//!DriverStation.isFMSAttached();
     public static final AHRS navx = new AHRS(SPI.Port.kMXP);
     private static Rotation2d zeroAngle = new Rotation2d();
     //    private static Rotation2d startAngle = new Rotation2d();
