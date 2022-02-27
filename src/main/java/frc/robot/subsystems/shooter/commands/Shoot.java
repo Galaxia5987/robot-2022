@@ -46,11 +46,19 @@ public class Shoot extends CommandBase {
 
     @Override
     public void execute() {
+//        power.ifPresentOrElse(
+//                shooter::setPower,
+//                () -> {
+//                    double distance = this.distance.getAsDouble();
+//                    shooter.setVelocity(4300);
+//                    System.out.println("Distance: " + distance + ", Velocity: " + getSetpointVelocity(distance));
+////                    shooter.setVelocity(getSetpointVelocity(distance));
+//        });
         if (power.isEmpty()) {
             double distance = this.distance.getAsDouble();
             shooter.setVelocity(4300);
             System.out.println("Distance: " + distance + ", Velocity: " + getSetpointVelocity(distance));
-//            shooter.setVelocity(getSetpointVelocity(distance.getAsDouble()));
+//                    shooter.setVelocity(getSetpointVelocity(distance));
         } else {
             shooter.setPower(power.getAsDouble());
         }
