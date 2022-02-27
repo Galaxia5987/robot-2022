@@ -35,7 +35,7 @@ public class ShooterDataModule {
 
                 double slopeDistanceToVelocity = (measuredData[i + 1].getDistanceToTarget() - measuredData[i].getDistanceToTarget()) /
                         (measuredData[i + 1].getShooterVelocity() - measuredData[i].getShooterVelocity());
-                double constantDistanceToVelocity = measuredData[i].getDistanceToTarget() - slopeDistanceToTime * measuredData[i].getShooterVelocity();
+                double constantDistanceToVelocity = measuredData[i].getDistanceToTarget() - slopeDistanceToVelocity * measuredData[i].getShooterVelocity();
 
                 return new ShooterDataModule(
                         getLineValue(slopeDistanceToTime, constantDistanceToTime, distanceToTarget),
