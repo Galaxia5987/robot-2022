@@ -49,7 +49,7 @@ public class ShooterDataModule {
     }
 
     public static double getLineValue(double slope, double constant, double val) {
-        return slope * val + constant;
+        return (val - constant) / slope;
     }
 
     public double getDistanceToTarget() {
