@@ -13,6 +13,7 @@ public class HoodCommand extends CommandBase {
     private final BooleanSupplier postFlap;
     private final DoubleSupplier distance;
     private final Timer timer = new Timer();
+    private Hood.Mode mode = Hood.Mode.ShortDistance;
     private boolean last = false;
     private boolean starting = true;
 
@@ -54,24 +55,24 @@ public class HoodCommand extends CommandBase {
     public void initialize() {
         timer.reset();
         timer.start();
+        mode = distance.getAsDouble() < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD ? Hood.Mode.ShortDistance : Hood.Mode.LongDistance;
     }
 
     @Override
     public void execute() {
-        Hood.Mode mode = distance.getAsDouble() < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD ? Hood.Mode.ShortDistance : Hood.Mode.LongDistance;
-        if (postFlap.getAsBoolean()) {
-            if (!last) {
-                timer.reset();
-            }
-            last = true;
-        } else {
-            last = false;
-        }
-        if (timer.hasElapsed(0.5) || starting) {
-            hood.setSolenoid(mode);
-            starting = false;
-        }
-//        hood.setSolenoid(modeSupplier.get());
+//        if (postFlap.getAsBoolean()) {
+//            if (!last) {
+//                timer.reset();
+//            }
+//            last = true;
+//        } else {
+//            last = false;
+//        }
+//        if (timer.hasElapsed(0.5) || starting) {
+//            hood.setSolenoid(mode);
+//            starting = false;
+//        }
+        hood.setSolenoid(mode);
     }
 
     @Override

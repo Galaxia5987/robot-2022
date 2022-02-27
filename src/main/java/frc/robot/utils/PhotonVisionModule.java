@@ -65,8 +65,15 @@ public class PhotonVisionModule extends SubsystemBase {
     public OptionalDouble getDistance() {
         var results = camera.getLatestResult();
         if (results.hasTargets()) {
-            return OptionalDouble.of(filter.calculate(PhotonUtils.calculateDistanceToTargetMeters(CAMERA_HEIGHT, TARGET_HEIGHT_FROM_GROUND, Math.toRadians(CAMERA_PITCH), Math.toRadians(results.getBestTarget()
-                    .getPitch()))));
+            return OptionalDouble.of(
+                    filter.calculate(PhotonUtils.calculateDistanceToTargetMeters(
+                                    CAMERA_HEIGHT,
+                                    TARGET_HEIGHT_FROM_GROUND,
+                                    Math.toRadians(CAMERA_PITCH),
+                                    Math.toRadians(results.getBestTarget().getPitch())
+                            )
+                    )
+            );
         }
         return OptionalDouble.empty();
     }
@@ -145,7 +152,7 @@ public class PhotonVisionModule extends SubsystemBase {
 
     @Override
     public void periodic() {
-        System.out.println("distance= {" + (getDistance().orElse(0) + (TARGET_RADIUS)) + "}");
+        System.out.println("distance= {" + (getDistance().orElse(-TARGET_RADIUS) + TARGET_RADIUS) + "}");
         SmartDashboard.putString("visible_state", camera.getLatestResult().hasTargets() ? "green" : "red");
         double yaw = getYaw().orElse(100);
         SmartDashboard.putString("aim_state", Math.abs(yaw) <= 5 ? "green" : Math.abs(yaw) <= 13 ? "yellow" : "red");

@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.UnitModel;
 import frc.robot.utils.Utils;
@@ -53,6 +54,8 @@ public class Shooter extends SubsystemBase {
     private void configureMotor() {
         motor.configAllSettings(getConfiguration());
         motor.setInverted(INVERSION_TYPE);
+        motor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
+        motor.enableVoltageCompensation(true);
     }
 
     /**

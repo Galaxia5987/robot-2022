@@ -16,6 +16,10 @@ public class Intake extends SubsystemBase {
     private Intake() {
         motor.setInverted(Ports.Intake.IS_MOTOR_INVERTED);
         motor.enableVoltageCompensation(Constants.NOMINAL_VOLTAGE);
+        motor.setSmartCurrentLimit(50);
+        motor.setSecondaryCurrentLimit(50);
+        motor.setIdleMode(CANSparkMax.IdleMode.kCoast);
+        motor.burnFlash();
     }
 
 

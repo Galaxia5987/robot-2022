@@ -114,7 +114,7 @@ public final class Constants {
     }
 
     public static final class SwerveModule {
-        public static final int[] ZERO_POSITIONS = {-640, -91, -34, -713}; // fr, fl, rr, rl
+        public static final int[] ZERO_POSITIONS = {-8827, -2129, -4133, 317}; // fr, fl, rr, rl
 
         public static final int TRIGGER_THRESHOLD_CURRENT = 2; // [amps]
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]
@@ -184,7 +184,7 @@ public final class Constants {
 
     public static class Vision { //TODO: change for competition
         public static final double CAMERA_HEIGHT = 0.73; // [m]
-        public static final double TARGET_HEIGHT_FROM_GROUND = 2.62; // [m]
+        public static final double TARGET_HEIGHT_FROM_GROUND = 2.65; // [m] Pefzener 2.62
         public static final double CAMERA_PITCH = 36.2; // Pitch of the vision. [deg]
         public static final double DIAG_FOV = 75; // Diagonal FOV. [deg]
         public static final double LED_RANGE = 6; // Visible range of LEDs. [m]
@@ -250,7 +250,7 @@ public final class Constants {
     }
 
     public static class Intake {
-        public static final WebConstant DEFAULT_POWER = WebConstant.of("Intake", "power", 0.6); // power intake will receive on the basic command. [%]
+        public static final WebConstant DEFAULT_POWER = WebConstant.of("Intake", "power", 1); // power intake will receive on the basic command. [%]
         public static final double POWER_TO_VELOCITY_RATIO = -3 / 16.0; // Ratio of power to velocity. [% / m/s]
         public static final boolean IS_COMPENSATING_VOLTAGE = true;
         public static final double TIME_BETWEEN_RUNS = 1.0; // time intake will wait before toggling the retractor (for testing only). [s]

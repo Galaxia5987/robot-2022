@@ -17,9 +17,9 @@ public class Shoot extends CommandBase {
     protected final DoubleSupplier distance;
     private final OptionalDouble power;
     private final Timer timer = new Timer();
+    private final BooleanSupplier postFlap;
     private boolean last = false;
     private double setpointVelocity = 0;
-    private final BooleanSupplier postFlap;
     private boolean starting = true;
 
     public Shoot(Shooter shooter, Hood hood, double power) {
@@ -40,13 +40,6 @@ public class Shoot extends CommandBase {
         addRequirements(shooter);
     }
 
-    @Override
-    public void initialize() {
-        timer.start();
-        timer.reset();
-        starting = true;
-    }
-
     /**
      * Calculates the velocity setpoint according to the distance from the target.
      * Once the data from the shooter is acquired this function will be changed.
@@ -62,24 +55,32 @@ public class Shoot extends CommandBase {
     }
 
     @Override
-    public void execute() {
-        if (postFlap.getAsBoolean()) {
-            if (!last) {
-                timer.reset();
-            }
-            last = true;
-        } else {
-            last = false;
-        }
+    public void initialize() {
+        timer.start();
+        timer.reset();
+        starting = true;
+        setpointVelocity = getSetpointVelocity(distance.getAsDouble(), hood.isOpen());
+    }
 
-        if (timer.hasElapsed(0.5) || starting) {
-            setpointVelocity = getSetpointVelocity(distance.getAsDouble(), hood.isOpen());
-            starting = false;
-        }
+    @Override
+    public void execute() {
+//        if (postFlap.getAsBoolean()) {
+//            if (!last) {
+//                timer.reset();
+//            }
+//            last = true;
+//        } else {
+//            last = false;
+//        }
+
+//        if (timer.hasElapsed(0.5) || starting) {
+//            setpointVelocity = getSetpointVelocity(distance.getAsDouble(), hood.isOpen());
+//            starting = false;
+//        }
+//        setpointVelocity = getSetpointVelocity(distance.getAsDouble(), hood.isOpen());
 
 
         if (power.isEmpty()) {
-
 //            System.out.println("Distance: " + distance.getAsDouble() + ", Velocity: " + getSetpointVelocity(distance.getAsDouble(), hood.isOpen()));
             shooter.setVelocity(setpointVelocity);
             SmartDashboard.putString("speed_state", Math.abs(setpointVelocity - shooter.getVelocity()) <= 30 ? "green" : Math.abs(setpointVelocity - shooter.getVelocity()) <= 100 ? "yellow" : "red");
@@ -95,6 +96,6 @@ public class Shoot extends CommandBase {
     public void end(boolean interrupted) {
         shooter.terminate();
         timer.stop();
-        starting = true;
+//        starting = true;
     }
 }

@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.autoPaths.TaxiFromLowRightPickShootPickShoot;
 import frc.robot.commandgroups.Outtake;
 import frc.robot.commandgroups.PickUpCargo;
 import frc.robot.commandgroups.ShootCargo;
@@ -16,6 +17,7 @@ import frc.robot.subsystems.conveyor.commands.Convey;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.DriveAndAdjustWithVision;
 import frc.robot.subsystems.flap.Flap;
+import frc.robot.subsystems.flap.commands.FlapCommand;
 import frc.robot.subsystems.helicopter.Helicopter;
 import frc.robot.subsystems.helicopter.commands.JoystickPowerHelicopter;
 import frc.robot.subsystems.helicopter.commands.ToggleHelicopterStopper;
@@ -39,10 +41,12 @@ public class RobotContainer {
     private final JoystickButton y = new JoystickButton(xbox, XboxController.Button.kY.value);
     private final JoystickButton lb = new JoystickButton(xbox, XboxController.Button.kLeftBumper.value);
     private final JoystickButton rb = new JoystickButton(xbox, XboxController.Button.kRightBumper.value);
+    private final JoystickButton start = new JoystickButton(xbox, XboxController.Button.kStart.value);
     private final Trigger rt = new Trigger(() -> xbox.getRightTriggerAxis() > Constants.Control.RIGHT_TRIGGER_DEADBAND);
     private final Trigger lt = new Trigger(() -> xbox.getLeftTriggerAxis() > Constants.Control.RIGHT_TRIGGER_DEADBAND);
     private final JoystickButton leftTrigger = new JoystickButton(joystick, Joystick.ButtonType.kTrigger.value);
     private final JoystickButton rightTrigger = new JoystickButton(joystick2, Joystick.ButtonType.kTrigger.value);
+    private final JoystickButton two = new JoystickButton(joystick, 2);
     // The robot's subsystems and commands are defined here...
     private final SwerveDrive swerve = SwerveDrive.getFieldOrientedInstance();
     private final Intake intake = Intake.getInstance();
@@ -77,7 +81,7 @@ public class RobotContainer {
                         () -> -joystick2.getX() * speedMultiplier,
                         () -> photonVisionModule.getYaw().orElse(0),
                         rightTrigger::get,
-                        () -> photonVisionModule.getDistance().orElse(0)
+                        () -> photonVisionModule.getDistance().orElse(-Constants.Vision.TARGET_RADIUS) + Constants.Vision.TARGET_RADIUS
                 )
         );
         helicopter.setDefaultCommand(new JoystickPowerHelicopter(helicopter, xbox::getLeftY));
@@ -86,15 +90,19 @@ public class RobotContainer {
     private void configureButtonBindings() {
         a.whileHeld(new IntakeCargo(intake, () -> -Constants.Intake.DEFAULT_POWER.get()));
         b.whileHeld(new Convey(conveyor, -Constants.Conveyor.DEFAULT_POWER.get()));
-        y.whenPressed(new ToggleHelicopterStopper(helicopter));
+//        y.whenPressed(new ToggleHelicopterStopper(helicopter));
+        y.whenPressed(flap::toggleFlap);
+        x.whenPressed(intake::toggleRetractor);
 
         DoubleSupplier distanceFromTarget = () -> photonVisionModule.getDistance().orElse(-Constants.Vision.TARGET_RADIUS) + Constants.Vision.TARGET_RADIUS;
         rt.whileActiveContinuous(new ShootCargo(shooter, hood, conveyor, flap, () -> Constants.Conveyor.SHOOT_POWER, distanceFromTarget));
         lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, Constants.Conveyor.DEFAULT_POWER.get(), Constants.Intake.DEFAULT_POWER::get));
         lb.whileHeld(new Outtake(intake, conveyor, flap, shooter, hood, () -> false));
         rb.whileHeld(new Convey(conveyor, -Constants.Conveyor.DEFAULT_POWER.get()));
+        start.whenPressed(photonVisionModule::toggleLeds);
 
-        leftTrigger.whenPressed(() -> speedMultiplier = 0.5).whenReleased(() -> speedMultiplier = 1);
+        leftTrigger.whenPressed(() -> speedMultiplier = (speedMultiplier == 0.5 ? 1 : 0.5));
+        two.whenPressed((Runnable) Robot::resetAngle);
     }
 
     /**
@@ -104,30 +112,12 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         photonVisionModule.setLeds(false);
-        var thetaController = new ProfiledPIDController(Constants.Autonomous.KP_THETA_CONTROLLER, 0, 0, Constants.SwerveDrive.HEADING_CONTROLLER_CONSTRAINTS);
-        thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("p2 - Taxi from low right tarmac and pickup low cargo(7.1)", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL);
-//        PathPlannerTrajectory trajectory = PathPlanner.loadPath("Meter", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL);
         Robot.resetAngle(trajectory.getInitialState().holonomicRotation);
         swerve.resetOdometry(trajectory.getInitialState().poseMeters, trajectory.getInitialState().holonomicRotation);
-/*        SwerveModuleState[] zeroStates = new SwerveModuleState[4];
-        Arrays.fill(zeroStates, new SwerveModuleState());
 
-
-        return new SequentialCommandGroup(
-                new FollowPath(
-                        trajectory,
-                        swerve::getPose,
-                        swerve.getKinematics(),
-                        new PIDController(Constants.Autonomous.KP_X_CONTROLLER, 0, 0),
-                        new PIDController(Constants.Autonomous.KP_Y_CONTROLLER, 0, 0),
-                        swerve::setStates,
-                        swerve)
-        );*/
-
-//        return new TaxiFromLowRightPickShootPickShoot(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
-        return null;
+        return new TaxiFromLowRightPickShootPickShoot(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
     }
 
     /**
