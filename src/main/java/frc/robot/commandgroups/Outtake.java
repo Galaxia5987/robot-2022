@@ -16,19 +16,12 @@ import java.util.function.BooleanSupplier;
 
 public class Outtake extends ParallelCommandGroup {
 
-    private final Intake intake;
-    private final Conveyor conveyor;
-    private final Shooter shooter;
-
     public Outtake(Intake intake,
                    Conveyor conveyor,
                    Flap flap,
                    Shooter shooter,
                    Hood hood,
                    BooleanSupplier condition) {
-        this.intake = intake;
-        this.conveyor = conveyor;
-        this.shooter = shooter;
         addCommands(
                 new FlapCommand(flap, Flap.FlapMode.ALLOW_SHOOTING),
                 new Convey(conveyor, () -> Constants.Conveyor.DEFAULT_POWER.get() * (condition.getAsBoolean() ? 1 : -1)),
