@@ -1,5 +1,6 @@
 package frc.robot.subsystems.drivetrain.commands;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -15,6 +16,11 @@ import java.util.function.Supplier;
 public class TurnToAngle extends CommandBase {
     private final SwerveDrive swerveDrive;
     private final Supplier<Rotation2d> targetAngle;
+    private final PIDController adjustController = new PIDController(Constants.SwerveDrive.ADJUST_CONTROLLER_KP, Constants.SwerveDrive.ADJUST_CONTROLLER_KI.get(), 0) {{
+        enableContinuousInput(-Math.PI, Math.PI);
+        setTolerance(Constants.SwerveDrive.ADJUST_CONTROLLER_TOLERANCE);
+    }};
+
 
     /**
      * Initialize rotate to angle command.
@@ -30,9 +36,8 @@ public class TurnToAngle extends CommandBase {
 
     @Override
     public void execute() {
-        double output = swerveDrive.getHeadingOutput(targetAngle.get());
-
-        swerveDrive.holonomicDrive(0, 0, output);
+        adjustController.setSetpoint(targetAngle.get().getRadians());
+        swerveDrive.holonomicDrive(0, 0, adjustController.calculate(Robot.getRawAngle().getRadians()));
     }
 
     @Override

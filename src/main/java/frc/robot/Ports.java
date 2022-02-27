@@ -71,10 +71,11 @@ public final class Ports {
     /*
      left motor's data, right motor's data.
      */
-    public static class Climber {
+    public static class Helicopter {
         public static final int MAIN = 41;
         public static final int AUX = 42;
-        public static final int STOPPER = 0;
+        public static final int STOPPER = 6;
+        public static final int ENCODER = 3;
 
         public static final boolean SENSOR_PHASE = true;
 

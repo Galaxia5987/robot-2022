@@ -203,10 +203,10 @@ public final class Constants {
 
     }
 
-    public static class Climber {
-        public static final double KP = 1.5;
-        public static final double KI = 0;
-        public static final double KD = 0;
+    public static class Helicopter {
+        public static final WebConstant KP = WebConstant.of("Helicopter", "Kp", 1.5);
+        public static final WebConstant KI = WebConstant.of("Helicopter", "Ki", 0);
+        public static final WebConstant KD = WebConstant.of("Helicopter", "Kd", 0);
 
         public static final double F_FORWARD_S = 0;
         public static final double F_FORWARD_COS = 0;
@@ -232,11 +232,19 @@ public final class Constants {
         public static final double MAX_ANGLE = Math.toRadians(255); // [radians]
         public static final double MIN_ANGLE = Math.toRadians(-75); // [radians]
 
-        public static final double STOP_CLIMBER_TIMESTAMP = 149.5; // [s]
+        public static final double STOP_HELICOPTER_TIMESTAMP = 149.5; // [s]
 
         public static final int ZERO_POSITION = 0; // [radians]
 
-        public static final double ZERO_POSITION_TOLERANCE = 0.05; // [radians]
+        public static final double POSITION_TOLERANCE = 0.015; // [radians]
+
+        public static final double SECOND_RUNG = 0; // [radians]
+        public static final double THIRD_RUNG = 0; // [radians]
+        public static final double RUNG_SEPARATION = 0; // [radians]
+
+        public static final double BLUE_RUNG_YAW = 180;
+        public static final double RED_RUNG_YAW = BLUE_RUNG_YAW - 180;
+
     }
 
     public static class Intake {
