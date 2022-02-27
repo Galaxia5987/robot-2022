@@ -1,15 +1,13 @@
 package frc.robot.subsystems.helicopter.commands;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.Robot;
 import frc.robot.subsystems.helicopter.Helicopter;
 
 
-public class StopHelicopter extends InstantCommand {
+public class ToggleHelicopterStopper extends InstantCommand {
     private final Helicopter helicopter;
 
-    public StopHelicopter(Helicopter helicopter) {
+    public ToggleHelicopterStopper(Helicopter helicopter) {
         this.helicopter = helicopter;
 
         addRequirements(helicopter);
@@ -17,14 +15,7 @@ public class StopHelicopter extends InstantCommand {
 
     @Override
     public void initialize() {
-        if (Robot.isReal() && !Robot.debug) {
-            boolean notReady = DriverStation.isAutonomous();
-            if (!notReady) {
-                helicopter.toggleStopper();
-            }
-        } else {
-            helicopter.toggleStopper();
-        }
+        helicopter.toggleStopper();
     }
 
     @Override
