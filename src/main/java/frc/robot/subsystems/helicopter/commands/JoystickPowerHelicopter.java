@@ -19,16 +19,10 @@ public class JoystickPowerHelicopter extends CommandBase {
         addRequirements(helicopter);
     }
 
-
     @Override
     public void execute() {
-        double flyFly= Utils.deadband(joystickOutput.getAsDouble(), Constants.Helicopter.JOYSTICK_DEADBAND);
+        double flyFly = Utils.deadband(joystickOutput.getAsDouble(), Constants.Helicopter.JOYSTICK_DEADBAND);
         helicopter.vroomVroom(flyFly);
-    }
-
-    @Override
-    public boolean isFinished() {
-        return Timer.getFPGATimestamp() > Constants.Helicopter.STOP_HELICOPTER_TIMESTAMP;
     }
 
     @Override
