@@ -57,7 +57,7 @@ public class Shoot extends CommandBase {
 
         SmartDashboard.putNumber("something_velocity", shooter.getVelocity());
         FireLog.log("Shooter velocity", shooter.getVelocity());
-        FireLog.log("Shooter setpoint", getSetpointVelocity(distance.getAsDouble(), hood.isOpen()));
+        FireLog.log("Shooter setpoint", getSetpointVelocity(distance.getAsDouble()));
     }
 
     @Override
