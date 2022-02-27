@@ -8,6 +8,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -23,7 +24,6 @@ import webapp.FireLog;
 public class SwerveDrive extends SubsystemBase {
     private static SwerveDrive FIELD_ORIENTED_INSTANCE = null;
     private static SwerveDrive ROBOT_ORIENTED_INSTANCE = null;
-
     private final SwerveModule[] modules = new SwerveModule[4];
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(Constants.SwerveDrive.SWERVE_POSITIONS);
     private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, new Rotation2d());
@@ -35,6 +35,9 @@ public class SwerveDrive extends SubsystemBase {
     );
     private final TimeDelayedBoolean rotationDelay = new TimeDelayedBoolean();
     private final boolean fieldOriented;
+    Timer timer = new Timer();
+    double prevSpeed = 0;
+    boolean bool = true;
 
     private SwerveDrive(boolean fieldOriented) {
         this.fieldOriented = fieldOriented;
@@ -46,6 +49,9 @@ public class SwerveDrive extends SubsystemBase {
         headingController.enableContinuousInput(-Math.PI, Math.PI);
         headingController.reset(0, 0);
         headingController.setTolerance(Constants.SwerveDrive.ALLOWABLE_HEADING_ERROR);
+        timer.start();
+        timer.reset();
+        SmartDashboard.putNumber("max_vel_bruh", 0);
     }
 
     /**
@@ -172,7 +178,6 @@ public class SwerveDrive extends SubsystemBase {
         return true;
     }
 
-
     /**
      * Rotates the robot to a desired angle.
      *
@@ -208,8 +213,15 @@ public class SwerveDrive extends SubsystemBase {
     public void setStates(SwerveModuleState[] states) {
         for (SwerveModule module : modules) {
             states[module.getWheel()] = SwerveModuleState.optimize(states[module.getWheel()], module.getAngle());
-            module.setAngle(states[module.getWheel()].angle);
-            module.setVelocity(states[module.getWheel()].speedMetersPerSecond);
+            module.setState(states[module.getWheel()]);
+        }
+    }
+
+    public void desaturatedSetStates(SwerveModuleState[] states) {
+        SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.Autonomous.MAX_VEL);
+        for (SwerveModule module : modules) {
+            states[module.getWheel()] = SwerveModuleState.optimize(states[module.getWheel()], module.getAngle());
+            module.setState(states[module.getWheel()]);
         }
     }
 
@@ -263,7 +275,7 @@ public class SwerveDrive extends SubsystemBase {
      * @param pose the current pose.
      */
     public void resetOdometry(Pose2d pose, Rotation2d angle) {
-        odometry.resetPosition(pose, angle);
+        odometry.resetPosition(new Pose2d(pose.getTranslation(), angle), angle);
     }
 
     /**
@@ -310,14 +322,15 @@ public class SwerveDrive extends SubsystemBase {
     public void periodic() {
         odometry.updateWithTime(
                 Timer.getFPGATimestamp(),
-                Robot.getRawAngle(),
+                Robot.getAngle(),
                 getStates()
         );
-/*
-        headingController.setP(Constants.SwerveDrive.HEADING_KP.get());
-        headingController.setI(Constants.SwerveDrive.HEADING_KI.get());
-        headingController.setD(Constants.SwerveDrive.HEADING_KD.get());
-*/
+
+        String outputPosition = getPose().getX() + ", " + getPose().getY();
+        SmartDashboard.putString("robot_position", outputPosition);
+        String outputRotation = String.valueOf(Robot.getAngle().getDegrees());
+        SmartDashboard.putString("robot_rotation", outputRotation);
+
     }
 }
 

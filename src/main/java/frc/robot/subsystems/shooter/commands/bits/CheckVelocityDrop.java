@@ -5,14 +5,15 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.Shoot;
 import webapp.FireLog;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class CheckVelocityDrop extends Shoot {
     private double lastVelocity;
     private double maximalDrop = 0;
 
-    public CheckVelocityDrop(Shooter shooter, Hood hood, DoubleSupplier distance) {
-        super(shooter, hood, distance);
+    public CheckVelocityDrop(Shooter shooter, Hood hood, DoubleSupplier distance, BooleanSupplier postFlap) {
+        super(shooter, hood, distance, postFlap);
     }
 
     @Override

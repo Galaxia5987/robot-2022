@@ -14,6 +14,7 @@ public class HoodCommand extends CommandBase {
     private final DoubleSupplier distance;
     private final Timer timer = new Timer();
     private boolean last = false;
+    private boolean starting = true;
 
     public HoodCommand(Hood hood, BooleanSupplier postFlap, DoubleSupplier distance) {
         this.hood = hood;
@@ -66,14 +67,16 @@ public class HoodCommand extends CommandBase {
         } else {
             last = false;
         }
-        if (timer.hasElapsed(0.5)) {
+        if (timer.hasElapsed(0.5) || starting) {
             hood.setSolenoid(mode);
+            starting = false;
         }
 //        hood.setSolenoid(modeSupplier.get());
     }
 
     @Override
     public void end(boolean interrupted) {
-//        timer.stop();
+        timer.stop();
+        starting = true;
     }
 }

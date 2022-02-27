@@ -4,7 +4,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
@@ -20,7 +19,7 @@ public class DriveAndAdjustWithVision extends HolonomicDrive {
         setTolerance(Constants.SwerveDrive.ALLOWABLE_HEADING_ERROR);
     }};
 
-    private final PIDController adjustController = new PIDController(Constants.SwerveDrive.ADJUST_CONTROLLER_KP, Constants.SwerveDrive.ADJUST_CONTROLLER_KI.get(), 0) {{
+    private final PIDController adjustController = new PIDController(Constants.SwerveDrive.ADJUST_CONTROLLER_KP, 0, 0) {{
         enableContinuousInput(-Math.PI, Math.PI);
         setTolerance(Constants.SwerveDrive.ALLOWABLE_HEADING_ERROR);
     }};
@@ -94,8 +93,10 @@ public class DriveAndAdjustWithVision extends HolonomicDrive {
                 } else {
                     if (sampleYawTimer.hasElapsed(Constants.SwerveDrive.SAMPLE_YAW_PERIOD)) {
                         Rotation2d offset = new Rotation2d(Math.atan2(-Math.signum(yawSupplier.getAsDouble()) * Constants.Shooter.CARGO_OFFSET, distanceSupplier.getAsDouble()));
-                        SmartDashboard.putNumber("offset", offset.getDegrees());
                         target = Robot.getAngle().minus(Rotation2d.fromDegrees(yawSupplier.getAsDouble()).plus(offset));
+                        if (distanceSupplier.getAsDouble() >= 2.5) {
+                            target = Robot.getAngle().minus(Rotation2d.fromDegrees(yawSupplier.getAsDouble()));
+                        }
                         sampleYawTimer.reset();
                     }
                     rotation = adjustController.calculate(Robot.getAngle().getRadians(), target.getRadians());

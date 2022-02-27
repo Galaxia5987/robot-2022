@@ -7,6 +7,7 @@ import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.Shoot;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class CheckShooterAccuracy extends Shoot {
@@ -14,8 +15,8 @@ public class CheckShooterAccuracy extends Shoot {
     private double lastVelocity;
     private double lastTime;
 
-    public CheckShooterAccuracy(Shooter shooter, Hood hood, DoubleSupplier distance) {
-        super(shooter, hood, distance);
+    public CheckShooterAccuracy(Shooter shooter, Hood hood, DoubleSupplier distance, BooleanSupplier postFlap) {
+        super(shooter, hood, distance, postFlap);
     }
 
     @Override

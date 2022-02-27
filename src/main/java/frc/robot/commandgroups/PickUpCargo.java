@@ -15,7 +15,7 @@ public class PickUpCargo extends ParallelCommandGroup {
     public PickUpCargo(Conveyor conveyor, Flap flap, Intake intake, double conveyorPower, DoubleSupplier intakePower) {
         addCommands(
                 new Convey(conveyor, conveyorPower),
-                new FlapCommand(flap, Flap.FlapMode.Closed),
+                new FlapCommand(flap, Flap.FlapMode.STOP_CARGO),
                 new IntakeCargo(intake, () -> true, intakePower)
         );
     }

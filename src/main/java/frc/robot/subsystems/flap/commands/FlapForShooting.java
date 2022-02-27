@@ -12,7 +12,7 @@ public class FlapForShooting extends CommandBase {
     private final BooleanSupplier hasReachedSetpoint;
     private final BooleanSupplier hasSensedObject;
     private final Timer timer = new Timer();
-    private boolean targetMode = Flap.FlapMode.Open.mode;
+    private boolean targetMode = Flap.FlapMode.ALLOW_SHOOTING.mode;
 
     public FlapForShooting(Flap flap, BooleanSupplier hasReachedSetpoint, BooleanSupplier hasSensedObject) {
         this.flap = flap;
@@ -37,6 +37,5 @@ public class FlapForShooting extends CommandBase {
             timer.stop();
             timer.reset();
         }
-
     }
 }

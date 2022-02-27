@@ -31,8 +31,8 @@ public final class Constants {
     // The order of modules is ALWAYS front-right (fr), front-left (fl), rear-right (rr), rear-left (rl)
     public static final class SwerveDrive {
         public static final double SMOOTHING_MULTIPLIER = 1.25;
-        public static final double VELOCITY_MULTIPLIER = 3.5;
-        public static final double ROTATION_MULTIPLIER = 4;
+        public static final double VELOCITY_MULTIPLIER = 3;
+        public static final double ROTATION_MULTIPLIER = 3;
 
         public static final int TICKS_PER_ROTATION_DRIVE_MOTOR = 2048;
         public static final int TICKS_PER_ROTATION_ANGLE_MOTOR = 1024;
@@ -53,7 +53,9 @@ public final class Constants {
         public static final double HEADING_KP = 5;
         public static final double HEADING_KI = 0;
         public static final double HEADING_KD = 0;
-        public static final TrapezoidProfile.Constraints HEADING_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 1.5); // [rads/sec], [rad/sec^2]
+        //        public static final TrapezoidProfile.Constraints HEADING_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(4, 3.2); // [rads/sec], [rad/sec^2]
+        public static final TrapezoidProfile.Constraints HEADING_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(10, 5); // [rads/sec], [rad/sec^2]
+//        public static final TrapezoidProfile.Constraints HEADING_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(4, 3.2); // [rads/sec], [rad/sec^2]
 
         // The heading is responsible for the angle of the whole chassis, while the angle is used in the angle motor itself.
         public static final double ALLOWABLE_HEADING_ERROR = Math.toRadians(5); // [rad]
@@ -73,7 +75,7 @@ public final class Constants {
         public static final double DRIFTING_PERIOD = 0.2; // expected period the robot will change its rotation even after commanded to stop. [s]
         public static final double SAMPLE_YAW_PERIOD = 0.1; // expected period the robot will change its rotation even after commanded to stop. [s]
         public static final double ADJUST_CONTROLLER_KP = 10;
-        public static final WebConstant ADJUST_CONTROLLER_KI = WebConstant.of("Drivetrain", "KI_bruh", 0.2);
+        public static final WebConstant ADJUST_CONTROLLER_KI = WebConstant.of("Drivetrain", "KI_bruh", 0);
         public static final double ADJUST_CONTROLLER_TOLERANCE = Math.toRadians(0.5);
         private static final double Rx = SwerveDrive.ROBOT_LENGTH / 2; // [m]
         private static final double Ry = SwerveDrive.ROBOT_WIDTH / 2; // [m]
@@ -98,9 +100,10 @@ public final class Constants {
 
         public static final double OUTPUT_MULTIPLIER = 0.1; // Multiplies the output for manual control in the bits. [%]
         public static final double OUTTAKE_POWER = 0.2; // Power to give to the shooter when taking balls out. [%]
-        public static final WebConstant SHOOTER_VELOCITY_DEADBAND = WebConstant.of("Shooter", "Velocity deadband", 30); // Dead band for shooter velocity setpoint. [rpm]
+        public static final WebConstant SHOOTER_VELOCITY_DEADBAND = WebConstant.of("Shooter", "Velocity deadband", 50); // Dead band for shooter velocity setpoint. [rpm]
         public static double RECOMMENDED_ACCELERATION_TIME = 1.3; // Recommended time for the shooter to get to it's setpoint. [s]
-        public static double CARGO_OFFSET = 0.15; // Desired offset from the middle of the target where you want the cargo to hit. [m]
+                public static double CARGO_OFFSET = 0.4; // Desired offset from the middle of the target where you want the cargo to hit. [m]
+//        public static double CARGO_OFFSET = 0; // Desired offset from the middle of the target where you want the cargo to hit. [m]
 
         public static TalonFXConfiguration getConfiguration() {
             final TalonFXConfiguration configuration = new TalonFXConfiguration();
@@ -111,7 +114,7 @@ public final class Constants {
     }
 
     public static final class SwerveModule {
-        public static final int[] ZERO_POSITIONS = {379, 935, 999, 314}; // fr, fl, rr, rl
+        public static final int[] ZERO_POSITIONS = {-640, -91, -34, -713}; // fr, fl, rr, rl
 
         public static final int TRIGGER_THRESHOLD_CURRENT = 2; // [amps]
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]
@@ -122,8 +125,7 @@ public final class Constants {
                 .configInversions(DRIVE_INVERTED_FR, ANGLE_INVERTED_FR, ANGLE_SENSOR_PHASE_FR)
                 .configAnglePID(6, 0, 0, 0)
                 .configZeroPosition(ZERO_POSITIONS[0])
-                .configJ(0.115)
-                .enableDebug()
+                .configJ(0.115).enableDebug()
                 .build();
 
         public static final SwerveModuleConfigBase flConfig = new SwerveModuleConfigBase.Builder(1)
@@ -152,16 +154,16 @@ public final class Constants {
     }
 
     public static class Autonomous {
-        public static final double KP_THETA_CONTROLLER = 0;
-        public static final double KP_X_CONTROLLER = 1.6;
-        public static final double KP_Y_CONTROLLER = 0;
+        public static final double KP_THETA_CONTROLLER = 8.8;
+        public static final double KP_X_CONTROLLER = 3;
+        public static final double KP_Y_CONTROLLER = 3;
 
         public static final Matrix<N3, N1> stateStdDevs = VecBuilder.fill(0, 0, 0);
         public static final Matrix<N1, N1> localMeasurementStdDevs = VecBuilder.fill(0);
         public static final Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0, 0, 0);
 
-        public static final double MAX_VEL = 3; // [m/sec]
-        public static final double MAX_ACCEL = 1.5; // [m/sec^2]
+        public static final double MAX_VEL = 2.5; // [m/sec] 4.1
+        public static final double MAX_ACCEL = 1.5; // [m/sec^2] 2.14
     }
 
     public static class Conveyor {
@@ -271,4 +273,5 @@ public final class Constants {
     public static class Flap {
         public static final double FLAP_DELAY = 0.4; // [sec]
     }
+
 }

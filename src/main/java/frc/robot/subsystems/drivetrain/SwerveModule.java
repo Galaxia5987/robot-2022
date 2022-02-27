@@ -55,6 +55,8 @@ public class SwerveModule extends SubsystemBase {
         angleMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, Constants.TALON_TIMEOUT);
         angleMotor.configFeedbackNotContinuous(false, Constants.TALON_TIMEOUT);
 
+        driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, Constants.TALON_TIMEOUT);
+
         angleMotor.setNeutralMode(NeutralMode.Brake);
         driveMotor.setNeutralMode(NeutralMode.Brake);
 

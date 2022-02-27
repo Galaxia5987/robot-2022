@@ -30,7 +30,7 @@ public class Outtake extends ParallelCommandGroup {
         this.conveyor = conveyor;
         this.shooter = shooter;
         addCommands(
-                new FlapCommand(flap, Flap.FlapMode.Open),
+                new FlapCommand(flap, Flap.FlapMode.ALLOW_SHOOTING),
                 new Convey(conveyor, () -> Constants.Conveyor.DEFAULT_POWER.get() * (condition.getAsBoolean() ? 1 : -1)),
                 new DynamicConditionalCommand(
                         condition,

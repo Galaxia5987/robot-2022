@@ -1,10 +1,10 @@
 package frc.robot.commandgroups;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
 import frc.robot.subsystems.flap.Flap;
-import frc.robot.subsystems.flap.commands.FlapForShooting;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.hood.commands.HoodCommand;
 import frc.robot.subsystems.shooter.Shooter;
@@ -27,10 +27,10 @@ public class ShootCargo extends ParallelCommandGroup {
         BooleanSupplier isFlywheelAtSetpoint = () -> Math.abs(setpointVelocity.getAsDouble() - shooter.getVelocity()) < SHOOTER_VELOCITY_DEADBAND.get();
 
         addCommands(
-                new HoodCommand(hood, () -> !conveyor.isPostFlapBeamConnected(), () -> 8),
+                new HoodCommand(hood, () -> !conveyor.isPostFlapBeamConnected(), distanceFromTarget),
                 new Convey(conveyor, conveyorPower, isFlywheelAtSetpoint),
-                new FlapForShooting(flap, isFlywheelAtSetpoint, () -> !conveyor.isPreFlapBeamConnected()),
-                new Shoot(shooter, hood, distanceFromTarget)
+                new InstantCommand(flap::allowShooting),
+                new Shoot(shooter, hood, distanceFromTarget, () -> !conveyor.isPostFlapBeamConnected())
         );
     }
 }

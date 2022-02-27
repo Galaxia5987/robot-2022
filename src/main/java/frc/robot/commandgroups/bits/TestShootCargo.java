@@ -4,14 +4,12 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
 import frc.robot.subsystems.hood.Hood;
-import frc.robot.subsystems.hood.commands.HoodCommand;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.Shoot;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-import static frc.robot.Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD;
 import static frc.robot.Constants.Shooter.SHOOTER_VELOCITY_DEADBAND;
 
 public class TestShootCargo extends ParallelCommandGroup {
@@ -19,7 +17,8 @@ public class TestShootCargo extends ParallelCommandGroup {
                           Hood hood,
                           Conveyor conveyor,
                           DoubleSupplier distanceFromTarget,
-                          DoubleSupplier conveyorPower) {
+                          DoubleSupplier conveyorPower,
+                          BooleanSupplier postFlap) {
         /*
         This boolean supplier uses a deadband for the shooter velocity by turning it into the
         ratio between the current velocity and the setpoint.
@@ -30,7 +29,7 @@ public class TestShootCargo extends ParallelCommandGroup {
         addCommands(
 //                new HoodCommand(hood, () -> Hood.Mode.getValue(distanceFromTarget.getAsDouble() < DISTANCE_FROM_TARGET_THRESHOLD), distance),
                 new Convey(conveyor, conveyorPower, isFlywheelAtSetpoint),
-                new Shoot(shooter, hood, distanceFromTarget)
+                new Shoot(shooter, hood, distanceFromTarget, postFlap)
         );
     }
 }
