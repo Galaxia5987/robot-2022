@@ -49,7 +49,7 @@ public class Shoot extends CommandBase {
         if (power.isEmpty()) {
             double distance = this.distance.getAsDouble();
             shooter.setVelocity(4300);
-            System.out.println("Distance: " + distance + ", Velocity: " + getSetpointVelocity(distance, hood.isOpen()));
+            System.out.println("Distance: " + distance + ", Velocity: " + getSetpointVelocity(distance));
 //            shooter.setVelocity(getSetpointVelocity(distance.getAsDouble()));
         } else {
             shooter.setPower(power.getAsDouble());
