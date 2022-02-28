@@ -93,7 +93,7 @@ public final class Constants {
         public static final double WHEEL_RADIUS = 0.1016; // Radius of the wheels. [m]
 
         public static final double NEUTRAL_DEADBAND = 0.1; // [%]
-        public static final WebConstant kP = WebConstant.of("Shooter", "kP", 0.73);
+        public static final WebConstant kP = WebConstant.of("Shooter", "kP", 0.254);
         public static final WebConstant kI = WebConstant.of("Shooter", "kI", 0);
         public static final WebConstant kD = WebConstant.of("Shooter", "kD", 0);
         public static final WebConstant kF = WebConstant.of("Shooter", "kf", 0.055);
