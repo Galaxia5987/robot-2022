@@ -57,12 +57,12 @@ public class Convey3 extends CommandBase {
             getBallToPreFlap = true;
         }
 
-//        if (timer.hasElapsed(0.1)) { //TODO: switch timer for has reached setpoint
         if (setpointSupplier.getAsBoolean()) {
-            getBallToPreFlap = true;
-//                timer.reset();
-//                timer.stop();
-//            }
+            if (timer.hasElapsed(0.1)) { //TODO: switch timer for has reached setpoint
+                getBallToPreFlap = true;
+                timer.reset();
+                timer.stop();
+            }
         }
     }
 

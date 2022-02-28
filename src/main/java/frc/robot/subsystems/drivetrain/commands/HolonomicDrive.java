@@ -21,7 +21,6 @@ public class HolonomicDrive extends CommandBase {
     private final LinearFilter joystickFilter = LinearFilter.movingAverage(
             Constants.Control.JOYSTICK_FILTER_TAP);
 
-
     public HolonomicDrive(SwerveDrive swerveDrive, DoubleSupplier forwardSupplier, DoubleSupplier strafeSupplier, DoubleSupplier rotationSupplier) {
         this.swerveDrive = swerveDrive;
         this.forwardSupplier = forwardSupplier;
@@ -48,11 +47,10 @@ public class HolonomicDrive extends CommandBase {
         double strafe = strafeSupplier.getAsDouble(); // vy
 
         double rotation = Utils.rotationalDeadband(rotationSupplier.getAsDouble(), Constants.SwerveDrive.JOYSTICK_THRESHOLD) * Constants.SwerveDrive.ROTATION_MULTIPLIER;
-
         // recalculate - update based on the angle and the magnitude
         double alpha = Math.atan2(strafe, forward); // direction of movement
         double magnitude = Math.hypot(forward, strafe) * Constants.SwerveDrive.VELOCITY_MULTIPLIER;
-        magnitude = Utils.smoothed(magnitude, Constants.Control.JOYSTICK_OMEGA_SMOOTHING_EXPONENT, joystickFilter);
+        magnitude = joystickFilter.calculate(magnitude);
         magnitude = Utils.deadband(magnitude, Constants.SwerveDrive.JOYSTICK_THRESHOLD);
 
         forward = Math.cos(alpha) * magnitude;

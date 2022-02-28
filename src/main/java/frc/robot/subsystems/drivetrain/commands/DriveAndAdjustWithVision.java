@@ -92,11 +92,12 @@ public class DriveAndAdjustWithVision extends HolonomicDrive {
                     rotation = Constants.SwerveDrive.ROTATION_MULTIPLIER / 2;
                 } else {
                     if (sampleYawTimer.hasElapsed(Constants.SwerveDrive.SAMPLE_YAW_PERIOD)) {
-                        Rotation2d offset = new Rotation2d(Math.atan2(-Math.signum(yawSupplier.getAsDouble()) * Constants.Shooter.CARGO_OFFSET, distanceSupplier.getAsDouble()));
-                        target = Robot.getAngle().minus(Rotation2d.fromDegrees(yawSupplier.getAsDouble()).plus(offset));
-                        if (distanceSupplier.getAsDouble() >= 2.5) {
-                            target = Robot.getAngle().minus(Rotation2d.fromDegrees(yawSupplier.getAsDouble()));
-                        }
+//                        Rotation2d offset = new Rotation2d(Math.atan2(-Math.signum(yawSupplier.getAsDouble()) * Constants.Shooter.CARGO_OFFSET, distanceSupplier.getAsDouble()));
+//                        target = Robot.getAngle().minus(Rotation2d.fromDegrees(yawSupplier.getAsDouble()).plus(offset));
+                        target = Robot.getAngle().minus(Rotation2d.fromDegrees(yawSupplier.getAsDouble()));
+//                        if (distanceSupplier.getAsDouble() >= 2.5) {
+//                            target = Robot.getAngle().minus(Rotation2d.fromDegrees(yawSupplier.getAsDouble()));
+//                        }
                         sampleYawTimer.reset();
                     }
                     rotation = adjustController.calculate(Robot.getAngle().getRadians(), target.getRadians());

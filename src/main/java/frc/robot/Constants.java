@@ -66,15 +66,15 @@ public final class Constants {
         public static final double ROBOT_WIDTH = 0.5224; // [m]
 
         // the rotational velocity of the robot, this constant multiplies the rotation output of the joystick
-        public static final double JOYSTICK_THRESHOLD = 0.1; // [%]
+        public static final double JOYSTICK_THRESHOLD = 0.05; // [%]
         public static final double ANGLE_COSINE_DEADBAND = Math.toRadians(10); // [rads]
         public static final int ANGLE_CURVE_STRENGTH = 1;
         public static final double ROTATIONAL_ADDITION_RESTRAINT = 3;
         public static final int ANGLE_MOTION_ACCELERATION = 1300;
         public static final int ANGLE_CRUISE_VELOCITY = 400;
-        public static final double DRIFTING_PERIOD = 0.2; // expected period the robot will change its rotation even after commanded to stop. [s]
+        public static final double DRIFTING_PERIOD = 0.5; // expected period the robot will change its rotation even after commanded to stop. [s]
         public static final double SAMPLE_YAW_PERIOD = 0.1; // expected period the robot will change its rotation even after commanded to stop. [s]
-        public static final double ADJUST_CONTROLLER_KP = 10;
+        public static final double ADJUST_CONTROLLER_KP = 10.5;
         public static final WebConstant ADJUST_CONTROLLER_KI = WebConstant.of("Drivetrain", "KI_bruh", 0);
         public static final double ADJUST_CONTROLLER_TOLERANCE = Math.toRadians(0.5);
         private static final double Rx = SwerveDrive.ROBOT_LENGTH / 2; // [m]
@@ -102,7 +102,8 @@ public final class Constants {
         public static final double OUTTAKE_POWER = 0.2; // Power to give to the shooter when taking balls out. [%]
         public static final WebConstant SHOOTER_VELOCITY_DEADBAND = WebConstant.of("Shooter", "Velocity deadband", 50); // Dead band for shooter velocity setpoint. [rpm]
         public static double RECOMMENDED_ACCELERATION_TIME = 1.3; // Recommended time for the shooter to get to it's setpoint. [s]
-                public static double CARGO_OFFSET = 0.4; // Desired offset from the middle of the target where you want the cargo to hit. [m]
+//                public static double CARGO_OFFSET = 0.4; // Desired offset from the middle of the target where you want the cargo to hit. [m]
+                public static double CARGO_OFFSET = 0; // Desired offset from the middle of the target where you want the cargo to hit. [m]
 //        public static double CARGO_OFFSET = 0; // Desired offset from the middle of the target where you want the cargo to hit. [m]
 
         public static TalonFXConfiguration getConfiguration() {
@@ -252,7 +253,6 @@ public final class Constants {
     public static class Intake {
         public static final WebConstant DEFAULT_POWER = WebConstant.of("Intake", "power", 1); // power intake will receive on the basic command. [%]
         public static final double POWER_TO_VELOCITY_RATIO = -3 / 16.0; // Ratio of power to velocity. [% / m/s]
-        public static final boolean IS_COMPENSATING_VOLTAGE = true;
         public static final double TIME_BETWEEN_RUNS = 1.0; // time intake will wait before toggling the retractor (for testing only). [s]
     }
 
@@ -265,7 +265,7 @@ public final class Constants {
     public static class Control {
         public static final double RIGHT_TRIGGER_DEADBAND = 0.4; // Deadband for right trigger. [%]
         public static final double LEFT_TRIGGER_DEADBAND = 0.4; // Deadband for right trigger. [%]
-        public static final int JOYSTICK_FILTER_TAP = 8;
+        public static final int JOYSTICK_FILTER_TAP = 8 + 8/2;
         public static final double JOYSTICK_XY_SMOOTHING_EXPONENT = 1.5;
         public static final double JOYSTICK_OMEGA_SMOOTHING_EXPONENT = 1.5;
     }

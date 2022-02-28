@@ -5,6 +5,7 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autoPaths.TaxiFromLowRightPickShootPickShoot;
@@ -39,6 +40,7 @@ public class RobotContainer {
     private final JoystickButton lb = new JoystickButton(xbox, XboxController.Button.kLeftBumper.value);
     private final JoystickButton rb = new JoystickButton(xbox, XboxController.Button.kRightBumper.value);
     private final JoystickButton start = new JoystickButton(xbox, XboxController.Button.kStart.value);
+    private final JoystickButton back = new JoystickButton(xbox, XboxController.Button.kBack.value);
     private final Trigger rt = new Trigger(() -> xbox.getRightTriggerAxis() > Constants.Control.RIGHT_TRIGGER_DEADBAND);
     private final Trigger lt = new Trigger(() -> xbox.getLeftTriggerAxis() > Constants.Control.RIGHT_TRIGGER_DEADBAND);
     private final JoystickButton leftTrigger = new JoystickButton(joystick, Joystick.ButtonType.kTrigger.value);
@@ -86,9 +88,10 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         a.whileHeld(new IntakeCargo(intake, () -> -Constants.Intake.DEFAULT_POWER.get()));
-        b.whileHeld(new Convey(conveyor, -Constants.Conveyor.DEFAULT_POWER.get()));
-        y.whenPressed(flap::toggleFlap);
+        b.whileHeld(new Convey(conveyor, Constants.Conveyor.DEFAULT_POWER.get()));
+        y.whenPressed(helicopter::toggleStopper);
         x.whenPressed(intake::toggleRetractor);
+        back.whenPressed(flap::toggleFlap);
 
         DoubleSupplier distanceFromTarget = photonVisionModule::getDistance;
         rt.whileActiveContinuous(new ShootCargo(shooter, hood, conveyor, flap, () -> Constants.Conveyor.SHOOT_POWER, distanceFromTarget));
