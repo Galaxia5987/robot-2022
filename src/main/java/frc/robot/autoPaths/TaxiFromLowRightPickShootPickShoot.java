@@ -29,7 +29,7 @@ public class TaxiFromLowRightPickShootPickShoot extends SequentialCommandGroup {
 
     // Taxi from low right tarmac, pickup low cargo, shoot, pick up middle cargo, shoot, park near low tarmac.(7)
     public TaxiFromLowRightPickShootPickShoot(Shooter shooter, SwerveDrive swerveDrive, Conveyor conveyor, Intake intake, Hood hood, Flap flap, PhotonVisionModule visionModule) {
-        DoubleSupplier distanceFromTarget = () -> visionModule.getDistance().orElse(-Constants.Vision.TARGET_RADIUS) + Constants.Vision.TARGET_RADIUS;
+        DoubleSupplier distanceFromTarget = visionModule::getDistance;
         DoubleSupplier conveyorPower = () -> Constants.Conveyor.SHOOT_POWER;
 
         Function<String, FollowPath> createCommand = path -> new FollowPath(

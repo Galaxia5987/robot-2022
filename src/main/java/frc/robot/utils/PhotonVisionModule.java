@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Ports;
 import frc.robot.Robot;
 import org.photonvision.PhotonCamera;
@@ -62,20 +63,18 @@ public class PhotonVisionModule extends SubsystemBase {
      *
      * @return the distance of the vision module from the target. [m]
      */
-    public OptionalDouble getDistance() {
+    public double getDistance() {
         var results = camera.getLatestResult();
         if (results.hasTargets()) {
-            return OptionalDouble.of(
-                    filter.calculate(PhotonUtils.calculateDistanceToTargetMeters(
-                                    CAMERA_HEIGHT,
-                                    TARGET_HEIGHT_FROM_GROUND,
-                                    Math.toRadians(CAMERA_PITCH),
-                                    Math.toRadians(results.getBestTarget().getPitch())
-                            )
+            return filter.calculate(PhotonUtils.calculateDistanceToTargetMeters(
+                            CAMERA_HEIGHT,
+                            TARGET_HEIGHT_FROM_GROUND,
+                            Math.toRadians(CAMERA_PITCH),
+                            Math.toRadians(results.getBestTarget().getPitch())
                     )
-            );
+            ) + TARGET_RADIUS;
         }
-        return OptionalDouble.empty();
+        return 0;
     }
 
     public OptionalDouble getYaw() {
@@ -92,17 +91,15 @@ public class PhotonVisionModule extends SubsystemBase {
      * @return the translation relative to the target.
      */
     public Optional<Translation2d> estimateCameraTranslationToTarget() {
-        PhotonPipelineResult results;
-        if (Robot.isSimulation()) {
-            results = simCamera.getLatestResult();
-        } else {
-            results = camera.getLatestResult();
-        }
+        PhotonPipelineResult results = Robot.isSimulation() ? simCamera.getLatestResult() : camera.getLatestResult();
         if (results.hasTargets()) {
-            double distance = PhotonUtils.calculateDistanceToTargetMeters(CAMERA_HEIGHT, TARGET_HEIGHT_FROM_GROUND, Math.toRadians(CAMERA_PITCH), Math.toRadians(results.getBestTarget()
-                    .getPitch()));
-            return Optional.of(PhotonUtils.estimateCameraToTargetTranslation(distance, Rotation2d.fromDegrees(-results.getBestTarget()
-                    .getYaw())));
+            double distance = PhotonUtils.calculateDistanceToTargetMeters(
+                    CAMERA_HEIGHT,
+                    TARGET_HEIGHT_FROM_GROUND,
+                    Math.toRadians(CAMERA_PITCH),
+                    Math.toRadians(results.getBestTarget().getPitch())
+            );
+            return Optional.of(PhotonUtils.estimateCameraToTargetTranslation(distance, Rotation2d.fromDegrees(-results.getBestTarget().getYaw())));
         }
         return Optional.empty();
     }
@@ -128,6 +125,14 @@ public class PhotonVisionModule extends SubsystemBase {
         return Optional.empty();
     }
 
+    public Translation2d ahahah() {
+        double distance = getDistance();
+        Rotation2d robotOrientation = Robot.getAngle();
+        Rotation2d relativeAngle = Rotation2d.fromDegrees(getYaw().orElse(0));
+        Rotation2d perpendicular = robotOrientation.minus(relativeAngle);
+        return HUB_POSE.getTranslation().minus(new Translation2d(distance * perpendicular.getCos(), distance * perpendicular.getSin()));
+    }
+
     /**
      * @param on whether to turn on the leds.
      *           Turns the leds on or off.
@@ -150,9 +155,71 @@ public class PhotonVisionModule extends SubsystemBase {
         return leds.get();
     }
 
+    public Transform2d poseRelativeToTarget() {
+        double navxAngle = Robot.getAngle().getDegrees();
+        double yawOffset = getYaw().orElse(0);
+        double d = getDistance();
+        double relativeAngle = navxAngle - yawOffset + 180;
+        relativeAngle = (relativeAngle < 0) ? 360 + relativeAngle : relativeAngle;
+        double y = d * Math.sin(Math.toRadians(relativeAngle));
+        double x = d * Math.cos(Math.toRadians(relativeAngle));
+
+        return new Transform2d(
+                new Translation2d(x, y),
+                new Rotation2d(x, y)
+        );
+    }
+
+    public Pose2d getOdometryWithVision() {
+        return HUB_POSE.plus(poseRelativeToTarget());
+    }
+
+    public Translation2d barel() {
+        PhotonPipelineResult results = Robot.isSimulation() ? simCamera.getLatestResult() : camera.getLatestResult();
+        if (results.hasTargets()) {
+            double d = PhotonUtils.calculateDistanceToTargetMeters(
+                    CAMERA_HEIGHT,
+                    TARGET_HEIGHT_FROM_GROUND,
+                    Math.toRadians(CAMERA_PITCH),
+                    Math.toRadians(results.getBestTarget().getPitch())
+            ) + TARGET_RADIUS;
+            Rotation2d targetAngle = Robot.getAngle().minus(Rotation2d.fromDegrees(-results.getBestTarget().getYaw()));
+            double x = d * targetAngle.getCos();
+            double y = d * targetAngle.getSin();
+
+            int quadrant = (int) Math.floor(targetAngle.getDegrees() / 90.0);
+            double dX;
+            double dY;
+            switch (quadrant) {
+                case 0:
+                    dX = Constants.FIELD_WIDTH / 2 * targetAngle.getCos();
+                    if (Math.signum(targetAngle.getDegrees()) == 1) {
+                        dY = Constants.FIELD_LENGTH / 2 * targetAngle.getSin();
+                    } else {
+                        dY = -Constants.FIELD_LENGTH / 2 * targetAngle.getSin();
+                    }
+                    break;
+                case 1:
+                    dX = -Constants.FIELD_WIDTH / 2 * targetAngle.getCos();
+                    dY = Constants.FIELD_LENGTH / 2 * targetAngle.getSin();
+                    break;
+                default:
+                    dX = -Constants.FIELD_WIDTH / 2 * targetAngle.getCos();
+                    dY = -Constants.FIELD_LENGTH / 2 * targetAngle.getSin();
+                    break;
+            }
+            System.out.println("Angle: " + targetAngle.getDegrees());
+            return new Translation2d(Math.abs(x) + dX, Math.abs(y) + dY);
+        }
+        return new Translation2d();
+    }
+
     @Override
     public void periodic() {
-        System.out.println("distance= {" + (getDistance().orElse(-TARGET_RADIUS) + TARGET_RADIUS) + "}");
+//        System.out.println("Pose with vision = " + HUB_POSE.plus(poseRelativeToTarget()));
+        Pose2d pos = getOdometryWithVision();
+        String outputPosition = pos.getX() + ", " + pos.getY();
+        SmartDashboard.putString("robot_position", outputPosition);
         SmartDashboard.putString("visible_state", camera.getLatestResult().hasTargets() ? "green" : "red");
         double yaw = getYaw().orElse(100);
         SmartDashboard.putString("aim_state", Math.abs(yaw) <= 5 ? "green" : Math.abs(yaw) <= 13 ? "yellow" : "red");

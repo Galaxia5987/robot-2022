@@ -29,7 +29,7 @@ public class TaxiFromLowLeftPickShoot extends SequentialCommandGroup {
 
     // Taxi from low left, pick up middle cargo, shoot, park between tarmacs.(3)
     public TaxiFromLowLeftPickShoot(Shooter shooter, SwerveDrive swerveDrive, Conveyor conveyor, Intake intake, Hood hood, Flap flap, PhotonVisionModule module) {
-        distanceFromTarget = () -> module.getDistance().orElse(-Constants.Vision.TARGET_RADIUS) + -Constants.Vision.TARGET_RADIUS;
+        distanceFromTarget = module::getDistance;
         conveyorPower = Constants.Conveyor.DEFAULT_POWER::get;
         var rotationPID = new ProfiledPIDController(Constants.Autonomous.KP_THETA_CONTROLLER, 0, 0, new TrapezoidProfile.Constraints(Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL));
         rotationPID.enableContinuousInput(-Math.PI, Math.PI);

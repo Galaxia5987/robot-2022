@@ -2,7 +2,6 @@ package frc.robot;
 
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,10 +16,8 @@ import frc.robot.subsystems.conveyor.commands.Convey;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.DriveAndAdjustWithVision;
 import frc.robot.subsystems.flap.Flap;
-import frc.robot.subsystems.flap.commands.FlapCommand;
 import frc.robot.subsystems.helicopter.Helicopter;
 import frc.robot.subsystems.helicopter.commands.JoystickPowerHelicopter;
-import frc.robot.subsystems.helicopter.commands.ToggleHelicopterStopper;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.commands.IntakeCargo;
@@ -81,7 +78,7 @@ public class RobotContainer {
                         () -> -joystick2.getX() * speedMultiplier,
                         () -> photonVisionModule.getYaw().orElse(0),
                         rightTrigger::get,
-                        () -> photonVisionModule.getDistance().orElse(-Constants.Vision.TARGET_RADIUS) + Constants.Vision.TARGET_RADIUS
+                        photonVisionModule::getDistance
                 )
         );
         helicopter.setDefaultCommand(new JoystickPowerHelicopter(helicopter, xbox::getLeftY));
@@ -90,11 +87,10 @@ public class RobotContainer {
     private void configureButtonBindings() {
         a.whileHeld(new IntakeCargo(intake, () -> -Constants.Intake.DEFAULT_POWER.get()));
         b.whileHeld(new Convey(conveyor, -Constants.Conveyor.DEFAULT_POWER.get()));
-//        y.whenPressed(new ToggleHelicopterStopper(helicopter));
         y.whenPressed(flap::toggleFlap);
         x.whenPressed(intake::toggleRetractor);
 
-        DoubleSupplier distanceFromTarget = () -> photonVisionModule.getDistance().orElse(-Constants.Vision.TARGET_RADIUS) + Constants.Vision.TARGET_RADIUS;
+        DoubleSupplier distanceFromTarget = photonVisionModule::getDistance;
         rt.whileActiveContinuous(new ShootCargo(shooter, hood, conveyor, flap, () -> Constants.Conveyor.SHOOT_POWER, distanceFromTarget));
         lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, Constants.Conveyor.DEFAULT_POWER.get(), Constants.Intake.DEFAULT_POWER::get));
         lb.whileHeld(new Outtake(intake, conveyor, flap, shooter, hood, () -> false));
