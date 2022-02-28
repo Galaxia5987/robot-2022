@@ -3,7 +3,7 @@ package frc.robot.commandgroups;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.conveyor.Conveyor;
-import frc.robot.subsystems.conveyor.commands.Convey2;
+import frc.robot.subsystems.conveyor.commands.Convey3;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.hood.commands.HoodCommand;
@@ -29,7 +29,7 @@ public class ShootCargo extends ParallelCommandGroup {
         addCommands(
                 new HoodCommand(hood, () -> !conveyor.isPostFlapBeamConnected(), distanceFromTarget),
 //                new Convey(conveyor, conveyorPower, isFlywheelAtSetpoint),
-                new Convey2(conveyor, conveyorPower, () -> Shoot.getSetpointVelocity(distanceFromTarget.getAsDouble(), hood.isOpen()), shooter::getVelocity),
+                new Convey3(conveyor, () -> !conveyor.isPreFlapBeamConnected(), isFlywheelAtSetpoint),
                 new InstantCommand(flap::allowShooting),
                 new Shoot(shooter, hood, distanceFromTarget, () -> !conveyor.isPostFlapBeamConnected())
         );
