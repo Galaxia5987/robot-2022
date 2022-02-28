@@ -1,6 +1,7 @@
 package frc.robot.subsystems.shooter;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -76,7 +77,7 @@ public class Shooter extends SubsystemBase {
      * @param velocity is the velocity setpoint. [rpm]
      */
     public void setVelocity(double velocity) {
-        motor.set(ControlMode.Velocity, unitModel.toTicks100ms(Utils.rpmToRps(velocity)));
+        motor.set(ControlMode.Velocity, unitModel.toTicks100ms(Utils.rpmToRps(velocity)), DemandType.ArbitraryFeedForward, 0.01);
     }
 
     /**
