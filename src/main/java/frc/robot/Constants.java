@@ -207,14 +207,10 @@ public final class Constants {
     }
 
     public static class Helicopter {
-        public static final WebConstant KP = WebConstant.of("Helicopter", "Kp", 1.5);
-        public static final WebConstant KI = WebConstant.of("Helicopter", "Ki", 0);
-        public static final WebConstant KD = WebConstant.of("Helicopter", "Kd", 0);
+        public static final double KP =  0.068;
+        public static final double KI = 0;
+        public static final double KD = 0;
 
-        public static final double F_FORWARD_S = 0;
-        public static final double F_FORWARD_COS = 0;
-        public static final double F_FORWARD_V = 0;
-        public static final double F_FORWARD_A = 0;
 
         public static final double CRUISE_VELOCITY = 0; // [ticks/100ms]
         public static final double MAXIMAL_ACCELERATION = 0; // [ticks/100ms*sec]
@@ -225,6 +221,7 @@ public final class Constants {
         public static final double GEAR_RATIO = 292.1;
 
         public static final double TICKS_PER_RAD = 2048 * GEAR_RATIO / (2 * Math.PI);
+        public static final double TICKS_PER_RAD_ABSOLUTE_ENCODER = 1 / (2 * Math.PI);
 
         public static final double JOYSTICK_DEADBAND = 0.05; // [%]
 
@@ -237,7 +234,7 @@ public final class Constants {
 
         public static final double STOP_HELICOPTER_TIMESTAMP = 149.5; // [s]
 
-        public static final int ZERO_POSITION = 0; // [radians]
+        public static final double ZERO_POSITION = -0.050759776268994417; // [ticks]
 
         public static final double POSITION_TOLERANCE = 0.015; // [radians]
 
