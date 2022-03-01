@@ -92,7 +92,7 @@ public class RobotContainer {
         y.whenPressed(helicopter::toggleStopper);
         x.whenPressed(intake::toggleRetractor);
         back.whenPressed(flap::toggleFlap);
-        upPov.whileActiveOnce(new MoveHelicopter(helicopter, Math.toRadians(110.66)));
+        upPov.whileActiveOnce(new MoveHelicopter(helicopter, Constants.Helicopter.SECOND_RUNG));
         downPov.whileActiveOnce(new MoveHelicopter(helicopter, 0));
 
         DoubleSupplier distanceFromTarget = photonVisionModule::getDistance;
