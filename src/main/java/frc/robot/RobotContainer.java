@@ -1,14 +1,11 @@
 package frc.robot;
 
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.autoPaths.TaxiFromLowRightPickShootPickShoot;
 import frc.robot.commandgroups.Outtake;
 import frc.robot.commandgroups.PickUpCargo;
 import frc.robot.commandgroups.ShootCargo;
@@ -19,11 +16,13 @@ import frc.robot.subsystems.drivetrain.commands.DriveAndAdjustWithVision;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.helicopter.Helicopter;
 import frc.robot.subsystems.helicopter.commands.JoystickPowerHelicopter;
+import frc.robot.subsystems.helicopter.commands.MoveHelicopter;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.commands.IntakeCargo;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.utils.PhotonVisionModule;
+import frc.robot.valuetuner.WebConstant;
 import webapp.Webserver;
 
 import java.util.function.DoubleSupplier;
@@ -43,6 +42,8 @@ public class RobotContainer {
     private final JoystickButton back = new JoystickButton(xbox, XboxController.Button.kBack.value);
     private final Trigger rt = new Trigger(() -> xbox.getRightTriggerAxis() > Constants.Control.RIGHT_TRIGGER_DEADBAND);
     private final Trigger lt = new Trigger(() -> xbox.getLeftTriggerAxis() > Constants.Control.RIGHT_TRIGGER_DEADBAND);
+    private final Trigger upPov = new Trigger(() -> xbox.getPOV() == 0);
+    private final Trigger downPov = new Trigger(() -> xbox.getPOV() == 180);
     private final JoystickButton leftTrigger = new JoystickButton(joystick, Joystick.ButtonType.kTrigger.value);
     private final JoystickButton rightTrigger = new JoystickButton(joystick2, Joystick.ButtonType.kTrigger.value);
     private final JoystickButton two = new JoystickButton(joystick, 2);
@@ -63,7 +64,6 @@ public class RobotContainer {
     public RobotContainer() {
         // Configure the button bindings and default commands
         configureDefaultCommands();
-
         if (Robot.debug) {
             startFireLog();
         }
@@ -83,7 +83,7 @@ public class RobotContainer {
                         photonVisionModule::getDistance
                 )
         );
-        helicopter.setDefaultCommand(new JoystickPowerHelicopter(helicopter, xbox::getLeftY));
+        helicopter.setDefaultCommand(new JoystickPowerHelicopter(helicopter, () -> -xbox.getLeftY()));
     }
 
     private void configureButtonBindings() {
@@ -92,6 +92,8 @@ public class RobotContainer {
         y.whenPressed(helicopter::toggleStopper);
         x.whenPressed(intake::toggleRetractor);
         back.whenPressed(flap::toggleFlap);
+        upPov.whileActiveOnce(new MoveHelicopter(helicopter, Math.toRadians(110.66)));
+        downPov.whileActiveOnce(new MoveHelicopter(helicopter, 0));
 
         DoubleSupplier distanceFromTarget = photonVisionModule::getDistance;
         rt.whileActiveContinuous(new ShootCargo(shooter, hood, conveyor, flap, () -> Constants.Conveyor.SHOOT_POWER, distanceFromTarget));
