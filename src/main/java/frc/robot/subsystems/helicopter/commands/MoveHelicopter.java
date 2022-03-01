@@ -5,6 +5,8 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.helicopter.Helicopter;
 
+import java.util.function.DoubleSupplier;
+
 public class MoveHelicopter extends CommandBase {
     private final Helicopter helicopter;
     private final double desiredRad;
@@ -17,8 +19,13 @@ public class MoveHelicopter extends CommandBase {
     }
 
     @Override
+    public void initialize() {
+        helicopter.setStopperMode(false);
+    }
+
+    @Override
     public void execute() {
-        helicopter.setPosition(new Rotation2d(desiredRad));
+        helicopter.setAbsolutePosition(new Rotation2d(desiredRad));
     }
 
     @Override
