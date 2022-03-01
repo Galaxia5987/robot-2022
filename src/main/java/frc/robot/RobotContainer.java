@@ -44,6 +44,7 @@ public class RobotContainer {
     private final Trigger lt = new Trigger(() -> xbox.getLeftTriggerAxis() > Constants.Control.RIGHT_TRIGGER_DEADBAND);
     private final Trigger upPov = new Trigger(() -> xbox.getPOV() == 0);
     private final Trigger downPov = new Trigger(() -> xbox.getPOV() == 180);
+    private final Trigger rightPov = new Trigger(() -> xbox.getPOV() == 90);
     private final JoystickButton leftTrigger = new JoystickButton(joystick, Joystick.ButtonType.kTrigger.value);
     private final JoystickButton rightTrigger = new JoystickButton(joystick2, Joystick.ButtonType.kTrigger.value);
     private final JoystickButton two = new JoystickButton(joystick, 2);
@@ -89,14 +90,13 @@ public class RobotContainer {
     private void configureButtonBindings() {
         a.whileHeld(new IntakeCargo(intake, () -> -Constants.Intake.DEFAULT_POWER.get()));
         b.whileHeld(new Convey(conveyor, Constants.Conveyor.DEFAULT_POWER.get()));
-        y.whenPressed(helicopter::toggleStopper);
+        rightPov.whileActiveOnce(new RunCommand(helicopter::toggleStopper));
         x.whenPressed(intake::toggleRetractor);
         back.whenPressed(flap::toggleFlap);
-        upPov.whileActiveOnce(new MoveHelicopter(helicopter, Constants.Helicopter.SECOND_RUNG));
-        downPov.whileActiveOnce(new MoveHelicopter(helicopter, 0));
+        upPov.and(start).whileActiveOnce(new MoveHelicopter(helicopter, Constants.Helicopter.SECOND_RUNG));
+        downPov.and(start).whileActiveOnce(new MoveHelicopter(helicopter, 0));
 
-        DoubleSupplier distanceFromTarget = photonVisionModule::getDistance;
-        rt.whileActiveContinuous(new ShootCargo(shooter, hood, conveyor, flap, () -> Constants.Conveyor.SHOOT_POWER, distanceFromTarget));
+        rt.whileActiveContinuous(new ShootCargo(shooter, hood, conveyor, flap, () -> Constants.Conveyor.SHOOT_POWER, photonVisionModule::getDistance));
         lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, Constants.Conveyor.DEFAULT_POWER.get(), Constants.Intake.DEFAULT_POWER::get));
         lb.whileHeld(new Outtake(intake, conveyor, flap, shooter, hood, () -> false));
         rb.whileHeld(new Convey(conveyor, -Constants.Conveyor.DEFAULT_POWER.get()));
@@ -112,13 +112,14 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        photonVisionModule.setLeds(false);
-
-        PathPlannerTrajectory trajectory = PathPlanner.loadPath("p2 - Taxi from low right tarmac and pickup low cargo(7.1)", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL);
-        Robot.resetAngle(trajectory.getInitialState().holonomicRotation);
-        swerve.resetOdometry(trajectory.getInitialState().poseMeters, trajectory.getInitialState().holonomicRotation);
-
-        return new TaxiFromLowRightPickShootPickShoot(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
+        return null;
+//        photonVisionModule.setLeds(false);
+//
+//        PathPlannerTrajectory trajectory = PathPlanner.loadPath("p2 - Taxi from low right tarmac and pickup low cargo(7.1)", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL);
+//        Robot.resetAngle(trajectory.getInitialState().holonomicRotation);
+//        swerve.resetOdometry(trajectory.getInitialState().poseMeters, trajectory.getInitialState().holonomicRotation);
+//
+//        return new TaxiFromLowRightPickShootPickShoot(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
     }
 
     /**
