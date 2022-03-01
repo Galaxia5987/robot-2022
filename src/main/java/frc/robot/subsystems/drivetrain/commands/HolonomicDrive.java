@@ -47,6 +47,7 @@ public class HolonomicDrive extends CommandBase {
         double strafe = strafeSupplier.getAsDouble(); // vy
 
         double rotation = Utils.rotationalDeadband(rotationSupplier.getAsDouble(), Constants.SwerveDrive.JOYSTICK_THRESHOLD) * Constants.SwerveDrive.ROTATION_MULTIPLIER;
+        rotation = Utils.thetaSmoothing(rotation);
         // recalculate - update based on the angle and the magnitude
         double alpha = Math.atan2(strafe, forward); // direction of movement
         double magnitude = Math.hypot(forward, strafe) * Constants.SwerveDrive.VELOCITY_MULTIPLIER;

@@ -2,6 +2,8 @@ package frc.robot.utils;
 
 import edu.wpi.first.math.filter.LinearFilter;
 
+import java.util.function.Function;
+
 public class Utils {
 
 
@@ -53,5 +55,14 @@ public class Utils {
     public static double smoothed(double value, double exponent, LinearFilter joystickFilter) {
         double filteredValue = joystickFilter.calculate(value);
         return Math.pow(Math.abs(filteredValue), exponent) * Math.signum(filteredValue);
+    }
+
+    public static double thetaSmoothing(double val) {
+        Function<Double, Double> function = x -> Math.pow(x + 1, 1.7) - 1;
+        if (val > 0) {
+            return -0.8 * function.apply(-val);
+        } else {
+            return 0.8 * function.apply(val);
+        }
     }
 }
