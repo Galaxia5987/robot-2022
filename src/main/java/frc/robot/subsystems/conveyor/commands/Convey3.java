@@ -1,6 +1,7 @@
 package frc.robot.subsystems.conveyor.commands;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.conveyor.Conveyor;
@@ -42,11 +43,17 @@ public class Convey3 extends CommandBase {
         setpoint = setpointSuppier.getAsDouble();
 //        conveyor.setPower(Constants.Conveyor.DEFAULT_POWER.get());
         wait = true;
-
+        last = false;
     }
 
     @Override
     public void execute() {
+        SmartDashboard.putBoolean("getBallToPreFlap", getBallToPreFlap);
+        SmartDashboard.putBoolean("last", last);
+        SmartDashboard.putNumber("timer", timer.get());
+        SmartDashboard.putBoolean("setpoint_reached", Math.abs(setpoint - velocitySupplier.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get());
+        SmartDashboard.putBoolean("wait", wait);
+
         if (wait) {
             if (Math.abs(setpoint - velocitySupplier.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get()) {
                 wait = false;
@@ -73,13 +80,14 @@ public class Convey3 extends CommandBase {
                 getBallToPreFlap = true;
             }
 
-            if (Math.abs(setpoint - velocitySupplier.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get()) {
-                if (timer.hasElapsed(0.3)) {
-                    getBallToPreFlap = true;
-                    timer.reset();
-                    timer.stop();
-                }
+//            if (Math.abs(setpoint - velocitySupplier.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get()) {
+            if (timer.hasElapsed(0.6)) {
+                getBallToPreFlap = true;
+                SmartDashboard.putNumber("time", timer.get());
+                timer.reset();
+                timer.stop();
             }
+//            }
         }
     }
 

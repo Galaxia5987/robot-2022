@@ -22,15 +22,11 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.commands.IntakeCargo;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.utils.PhotonVisionModule;
-import frc.robot.valuetuner.WebConstant;
 import webapp.Webserver;
-
-import java.util.function.DoubleSupplier;
 
 public class RobotContainer {
     private static final Joystick joystick = new Joystick(Ports.Controls.JOYSTICK);
     private static final Joystick joystick2 = new Joystick(Ports.Controls.JOYSTICK2);
-    final PhotonVisionModule photonVisionModule = new PhotonVisionModule("photonvision", null);
     private final XboxController xbox = new XboxController(Ports.Controls.XBOX);
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final JoystickButton b = new JoystickButton(xbox, XboxController.Button.kB.value);
@@ -49,7 +45,8 @@ public class RobotContainer {
     private final JoystickButton rightTrigger = new JoystickButton(joystick2, Joystick.ButtonType.kTrigger.value);
     private final JoystickButton two = new JoystickButton(joystick, 2);
     // The robot's subsystems and commands are defined here...
-    private final SwerveDrive swerve = SwerveDrive.getFieldOrientedInstance();
+    final PhotonVisionModule photonVisionModule = new PhotonVisionModule("photonvision", null);
+    private final SwerveDrive swerve = SwerveDrive.getFieldOrientedInstance(photonVisionModule::getOdometryWithVision);
     private final Intake intake = Intake.getInstance();
     private final Conveyor conveyor = Conveyor.getInstance();
     private final Flap flap = Flap.getInstance();
@@ -101,6 +98,7 @@ public class RobotContainer {
         lb.whileHeld(new Outtake(intake, conveyor, flap, shooter, hood, () -> false));
         rb.whileHeld(new Convey(conveyor, -Constants.Conveyor.DEFAULT_POWER.get()));
         start.whenPressed(photonVisionModule::toggleLeds);
+        y.whenPressed(() -> shooter.setVelocity(3630));
 
         leftTrigger.whenPressed(() -> speedMultiplier = (speedMultiplier == 0.5 ? 1 : 0.5));
         two.whenPressed((Runnable) Robot::resetAngle);
