@@ -1,12 +1,10 @@
 package frc.robot.commandgroups.bits;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
-import frc.robot.subsystems.drivetrain.commands.HolonomicDrive;
 import frc.robot.subsystems.drivetrain.commands.testing.TurnAllModuleMotors;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.commands.IntakeCargo;
@@ -44,16 +42,17 @@ public class TurnAllMotors extends ParallelCommandGroup {
     public void execute() {
         super.execute();
 
-        double[] swerveStates = new double[]{swerve.getModule(0).getVelocity(),
-                                             swerve.getModule(1).getVelocity(),
-                                             swerve.getModule(2).getVelocity(),
-                                             swerve.getModule(3).getVelocity()};
+        double[] swerveStates = new double[]{
+                swerve.getModule(0).getVelocity(),
+                swerve.getModule(1).getVelocity(),
+                swerve.getModule(2).getVelocity(),
+                swerve.getModule(3).getVelocity()};
         System.out.println(
                 "        Shooter        |         " + "Conveyor         |         " + "Swerve          |         " + "Intake" + "\n" +
-                "req = " + Shoot.getSetpointVelocity(3, false) + ", actual = " + shooter.getVelocity() + "|" +
-                "req = 0.5, actual = " + conveyor.getPower() + "|" +
-                "req = 0.5, actual = " + Arrays.toString(swerveStates) + "|" +
-                "req = 0.5, actual = " + intake.getPower()
+                        "req = " + Shoot.getSetpointVelocity(3, false) + ", actual = " + shooter.getVelocity() + "|" +
+                        "req = 0.5, actual = " + conveyor.getPower() + "|" +
+                        "req = 0.5, actual = " + Arrays.toString(swerveStates) + "|" +
+                        "req = 0.5, actual = " + intake.getPower()
         );
     }
 }
