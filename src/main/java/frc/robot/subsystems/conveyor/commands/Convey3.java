@@ -57,8 +57,13 @@ public class Convey3 extends CommandBase {
         if (wait) {
             if (Math.abs(setpoint - velocitySupplier.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get()) {
                 wait = false;
+//                last = false;
             }
+            SmartDashboard.putString("Saar", "Mama");
         } else {
+            SmartDashboard.putString("Saar", "Joe");
+            SmartDashboard.putNumber("Saar2", timer.get());
+
             if (getBallToPreFlap) {
                 conveyor.setPower(Constants.Conveyor.DEFAULT_POWER.get());
             } else {

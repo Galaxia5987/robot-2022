@@ -33,14 +33,14 @@ public class SwerveDrive extends SubsystemBase {
     private final SwerveModule[] modules = new SwerveModule[4];
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(Constants.SwerveDrive.SWERVE_POSITIONS);
     private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, new Rotation2d());
-    private final SwerveDrivePoseEstimator poseEstimator =
-            new SwerveDrivePoseEstimator(
-                    new Rotation2d(),
-                    new Pose2d(),
-                    kinematics,
-                    VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
-                    VecBuilder.fill(Units.degreesToRadians(0.01)),
-                    VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
+//    private final SwerveDrivePoseEstimator poseEstimator =
+//            new SwerveDrivePoseEstimator(
+//                    new Rotation2d(),
+//                    new Pose2d(),
+//                    kinematics,
+//                    VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(5)),
+//                    VecBuilder.fill(Units.degreesToRadians(0.01)),
+//                    VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(30)));
     private final ProfiledPIDController headingController = new ProfiledPIDController(
             Constants.SwerveDrive.HEADING_KP,
             Constants.SwerveDrive.HEADING_KI,
@@ -187,7 +187,7 @@ public class SwerveDrive extends SubsystemBase {
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
         for (SwerveModule module : modules) {
             states[module.getWheel()] = SwerveModuleState.optimize(states[module.getWheel()], module.getAngle());
-            if (!(Math.abs(states[module.getWheel()].angle.minus(module.getAngle()).getDegrees()) < 3)) { // TODO: Remove the magic number
+            if (!(Math.abs(states[module.getWheel()].angle.minus(module.getAngle()).getDegrees()) < 7)) { // TODO: Remove the magic number
                 return false;
             }
         }
@@ -294,6 +294,10 @@ public class SwerveDrive extends SubsystemBase {
         odometry.resetPosition(new Pose2d(pose.getTranslation(), angle), angle);
     }
 
+//    public void resetPoseEstimator(Pose2d pose2d) {
+//        poseEstimator.resetPosition(pose2d, Robot.getAngle());
+//    }
+
     /**
      * Resets the heading controller target angle.
      */
@@ -342,19 +346,19 @@ public class SwerveDrive extends SubsystemBase {
                 getStates()
         );
 
-        poseEstimator.updateWithTime(
-                Timer.getFPGATimestamp(),
-                Robot.getAngle(),
-                getStates()
-        );
+//        poseEstimator.updateWithTime(
+//                Timer.getFPGATimestamp(),
+//                Robot.getAngle(),
+//                getStates()
+//        );
 
-        var visionData = visionPose.get();
-        if (visionData.hasTarget()) {
-            poseEstimator.addVisionMeasurement(visionData.estimatedPose(), visionData.time());
-        }
+//        var visionData = visionPose.get();
+//        if (visionData.hasTarget()) {
+//            poseEstimator.addVisionMeasurement(visionData.estimatedPose(), visionData.time());
+//        }
 
-        String outputPosition = poseEstimator.getEstimatedPosition().getX() + ", " + poseEstimator.getEstimatedPosition().getY();
-        SmartDashboard.putString("robot_position", outputPosition);
+//        String outputPosition = poseEstimator.getEstimatedPosition().getX() + ", " + poseEstimator.getEstimatedPosition().getY();
+//        SmartDashboard.putString("robot_position", outputPosition);
 
 //        String outputPosition = getPose().getX() + ", " + getPose().getY();
 //        SmartDashboard.putString("robot_position", outputPosition);

@@ -52,7 +52,7 @@ public class TaxiFromLowRightPickShootPickShoot extends SequentialCommandGroup {
                 )));
 
         addCommands(
-                new Convey(conveyor, -conveyorPower.getAsDouble()).withTimeout(0.05),
+                new Convey(conveyor, -conveyorPower.getAsDouble()).withTimeout(0.1),
                 new ParallelRaceGroup(
                         new ShootCargo(
                                 shooter,
@@ -79,7 +79,7 @@ public class TaxiFromLowRightPickShootPickShoot extends SequentialCommandGroup {
         );
 
         addCommands(
-                new Convey(conveyor, -conveyorPower.getAsDouble()).withTimeout(0.05),
+                new Convey(conveyor, -conveyorPower.getAsDouble()).withTimeout(0.1),
                 new ParallelRaceGroup(
                         new IntakeByRobotSpeed(intake, () -> 0),
                         new ShootCargo(

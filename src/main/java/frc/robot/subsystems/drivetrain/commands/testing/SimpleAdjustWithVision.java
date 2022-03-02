@@ -49,8 +49,9 @@ public class SimpleAdjustWithVision extends CommandBase {
         } else {
             if (condition.getAsBoolean()) {
                 if (!last) {
-                    Rotation2d offset = new Rotation2d(Math.atan2(Math.toRadians(-Math.signum(yawSupplier.getAsDouble()) * Constants.Shooter.CARGO_OFFSET), distanceSupplier.getAsDouble()));
-                    target = Robot.getAngle().minus(Rotation2d.fromDegrees(yawSupplier.getAsDouble()).plus(offset));
+//                    Rotation2d offset = new Rotation2d(Math.atan2(Math.toRadians(-Math.signum(yawSupplier.getAsDouble()) * Constants.Shooter.CARGO_OFFSET), distanceSupplier.getAsDouble()));
+//                    target = Robot.getAngle().minus(Rotation2d.fromDegrees(yawSupplier.getAsDouble()).plus(offset));
+                    target = Robot.getAngle().minus(Rotation2d.fromDegrees(yawSupplier.getAsDouble()));
                     last = true;
                 }
                 rotation = adjustController.calculate(Robot.getAngle().getRadians(), target.getRadians());

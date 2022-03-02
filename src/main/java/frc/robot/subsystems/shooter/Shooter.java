@@ -15,6 +15,7 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.UnitModel;
 import frc.robot.utils.Utils;
+import webapp.FireLog;
 
 import static frc.robot.Constants.Shooter.*;
 import static frc.robot.Ports.Shooter.INVERSION_TYPE;
@@ -101,6 +102,7 @@ public class Shooter extends SubsystemBase {
     public void periodic() {
         lastTime = currentTime;
         currentTime = Timer.getFPGATimestamp();
+        FireLog.log("Shooter-velocity", getVelocity());
 
         motor.config_kP(0, kP.get());
         motor.config_kI(0, kI.get());
