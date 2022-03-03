@@ -22,15 +22,33 @@ public class ShootCargo extends ParallelCommandGroup {
                       Conveyor conveyor,
                       Flap flap,
                       DoubleSupplier conveyorPower,
+                      DoubleSupplier distanceFromTarget,
+                      boolean bool) {
+        DoubleSupplier setpointVelocity = () -> Shoot.getSetpointVelocity(distanceFromTarget.getAsDouble(), hood.isOpen());
+        BooleanSupplier isFlywheelAtSetpoint = () -> Math.abs(setpointVelocity.getAsDouble() - shooter.getVelocity()) < SHOOTER_VELOCITY_DEADBAND.get();
+
+        addCommands(
+//                new HoodCommand(hood, () -> !conveyor.isPostFlapBeamConnected(), distanceFromTarget),
+//                new Convey3(conveyor, () -> !conveyor.isPreFlapBeamConnected(), setpointVelocity, shooter::getVelocity),
+                new InstantCommand(flap::allowShooting),
+                new Shoot(shooter, hood, distanceFromTarget, bool)
+        );
+    }
+
+    public ShootCargo(Shooter shooter,
+                      Hood hood,
+                      Conveyor conveyor,
+                      Flap flap,
+                      DoubleSupplier conveyorPower,
                       DoubleSupplier distanceFromTarget) {
         DoubleSupplier setpointVelocity = () -> Shoot.getSetpointVelocity(distanceFromTarget.getAsDouble(), hood.isOpen());
         BooleanSupplier isFlywheelAtSetpoint = () -> Math.abs(setpointVelocity.getAsDouble() - shooter.getVelocity()) < SHOOTER_VELOCITY_DEADBAND.get();
 
         addCommands(
-                new HoodCommand(hood, () -> !conveyor.isPostFlapBeamConnected(), distanceFromTarget),
-                new Convey3(conveyor, () -> !conveyor.isPreFlapBeamConnected(), setpointVelocity, () -> shooter.getVelocity()),
+//                new HoodCommand(hood, () -> !conveyor.isPostFlapBeamConnected(), distanceFromTarget),
+//                new Convey3(conveyor, () -> !conveyor.isPreFlapBeamConnected(), setpointVelocity, shooter::getVelocity),
                 new InstantCommand(flap::allowShooting),
-                new Shoot(shooter, hood, distanceFromTarget, () -> !conveyor.isPostFlapBeamConnected())
+                new Shoot(shooter, hood, distanceFromTarget, false)
         );
     }
 }

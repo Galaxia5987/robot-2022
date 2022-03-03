@@ -29,7 +29,7 @@ public class TestShootCargo extends ParallelCommandGroup {
         addCommands(
 //                new HoodCommand(hood, () -> Hood.Mode.getValue(distanceFromTarget.getAsDouble() < DISTANCE_FROM_TARGET_THRESHOLD), distance),
                 new Convey(conveyor, conveyorPower, isFlywheelAtSetpoint),
-                new Shoot(shooter, hood, distanceFromTarget, postFlap)
+                new Shoot(shooter, hood, distanceFromTarget)
         );
     }
 }

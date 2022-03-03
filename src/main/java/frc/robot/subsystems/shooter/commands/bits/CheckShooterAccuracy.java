@@ -15,8 +15,8 @@ public class CheckShooterAccuracy extends Shoot {
     private double lastVelocity;
     private double lastTime;
 
-    public CheckShooterAccuracy(Shooter shooter, Hood hood, DoubleSupplier distance, BooleanSupplier postFlap) {
-        super(shooter, hood, distance, postFlap);
+    public CheckShooterAccuracy(Shooter shooter, Hood hood, DoubleSupplier distance) {
+        super(shooter, hood, distance);
     }
 
     @Override

@@ -93,10 +93,10 @@ public final class Constants {
         public static final double WHEEL_RADIUS = 0.1016; // Radius of the wheels. [m]
 
         public static final double NEUTRAL_DEADBAND = 0.1; // [%]
-        public static final WebConstant kP = WebConstant.of("Shooter", "kP", 0.07);
+        public static final WebConstant kP = WebConstant.of("Shooter", "kP", 0.045);
         public static final WebConstant kI = WebConstant.of("Shooter", "kI", 0);
         public static final WebConstant kD = WebConstant.of("Shooter", "kD", 2);
-        public static final WebConstant kF = WebConstant.of("Shooter", "kf", 0.0501);
+        public static final WebConstant kF = WebConstant.of("Shooter", "kf", 0.04965);
 
         public static final double OUTPUT_MULTIPLIER = 0.1; // Multiplies the output for manual control in the bits. [%]
         public static final double OUTTAKE_POWER = 0.2; // Power to give to the shooter when taking balls out. [%]

@@ -8,36 +8,37 @@ import frc.robot.subsystems.shooter.Shooter;
 import webapp.FireLog;
 
 import java.util.OptionalDouble;
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class Shoot extends CommandBase {
     protected final Shooter shooter;
     protected final Hood hood;
     protected final DoubleSupplier distance;
+    private final boolean bool;
     private final OptionalDouble power;
     private final Timer timer = new Timer();
-    private final BooleanSupplier postFlap;
-    private boolean last = false;
     private double setpointVelocity = 0;
-    private boolean starting = true;
 
     public Shoot(Shooter shooter, Hood hood, double power) {
         this.shooter = shooter;
         this.hood = hood;
-        this.postFlap = () -> false;
         this.distance = () -> 8;
         this.power = OptionalDouble.of(power);
+        bool = false;
         addRequirements(shooter);
     }
 
-    public Shoot(Shooter shooter, Hood hood, DoubleSupplier distance, BooleanSupplier postFlap) {
+    public Shoot(Shooter shooter, Hood hood, DoubleSupplier distance, boolean bool) {
         this.shooter = shooter;
         this.hood = hood;
         this.distance = distance;
-        this.postFlap = postFlap;
+        this.bool = bool;
         this.power = OptionalDouble.empty();
         addRequirements(shooter);
+    }
+
+    public Shoot(Shooter shooter, Hood hood, DoubleSupplier distance) {
+       this(shooter, hood, distance, false);
     }
 
     /**
@@ -58,8 +59,12 @@ public class Shoot extends CommandBase {
     public void initialize() {
         timer.start();
         timer.reset();
-        starting = true;
-        setpointVelocity = getSetpointVelocity(distance.getAsDouble(), hood.isOpen());
+        if (bool) {
+            setpointVelocity = getSetpointVelocity(distance.getAsDouble(), hood.isOpen());
+
+        } else {
+            setpointVelocity = distance.getAsDouble();
+        }
     }
 
     @Override
