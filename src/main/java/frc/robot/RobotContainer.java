@@ -2,6 +2,9 @@ package frc.robot;
 
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -10,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autoPaths.TaxiFromLowLeftPickShoot;
+import frc.robot.autoPaths.TaxiFromLowRightPickShootPickShoot;
 import frc.robot.commandgroups.Outtake;
 import frc.robot.commandgroups.PickUpCargo;
 import frc.robot.commandgroups.ShootCargo;
@@ -17,16 +21,19 @@ import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.DriveAndAdjustWithVision;
+import frc.robot.subsystems.drivetrain.commands.TurnToAngle;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.helicopter.Helicopter;
 import frc.robot.subsystems.helicopter.commands.JoystickPowerHelicopter;
 import frc.robot.subsystems.helicopter.commands.MoveHelicopter;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.intake.commands.IntakeCargo;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.utils.PhotonVisionModule;
 import webapp.Webserver;
+
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 public class RobotContainer {
     private static final Joystick joystick = new Joystick(Ports.Controls.JOYSTICK);
@@ -51,6 +58,7 @@ public class RobotContainer {
     private final JoystickButton leftTrigger = new JoystickButton(joystick, Joystick.ButtonType.kTrigger.value);
     private final JoystickButton rightTrigger = new JoystickButton(joystick2, Joystick.ButtonType.kTrigger.value);
     private final JoystickButton two = new JoystickButton(joystick, 2);
+    private final JoystickButton twoJoystick2 = new JoystickButton(joystick2, 2);
     private final JoystickButton twelve = new JoystickButton(joystick, 12);
     private final SwerveDrive swerve = SwerveDrive.getFieldOrientedInstance(photonVisionModule::estimatePose);
     private final Intake intake = Intake.getInstance();
@@ -76,13 +84,23 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-       swerve.setDefaultCommand(
+        Supplier<Pose2d> swervePose = swerve::getPose;
+        Supplier<Transform2d> poseRelativeToTarget = () -> Constants.Vision.HUB_POSE.minus(swervePose.get());
+        DoubleSupplier yaw = () -> photonVisionModule.hasTargets() ? photonVisionModule.getYaw().orElse(0) :
+                Robot.getAngle().minus(new Rotation2d(
+                                Math.atan2(
+                                        poseRelativeToTarget.get().getY(),
+                                        poseRelativeToTarget.get().getX()
+                                )
+                        )
+                ).getDegrees();
+        swerve.setDefaultCommand(
                 new DriveAndAdjustWithVision(
                         swerve,
                         () -> -joystick.getY() * speedMultiplier,
                         () -> -joystick.getX() * speedMultiplier,
                         () -> -joystick2.getX() * speedMultiplier,
-                        () -> photonVisionModule.getYaw().orElse(0),
+                        yaw,
                         rightTrigger::get,
                         photonVisionModule::getDistance
                 )
@@ -92,7 +110,14 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        a.whileHeld(new IntakeCargo(intake, () -> -Constants.Intake.DEFAULT_POWER.get()));
+        Supplier<Pose2d> swervePose = swerve::getPose;
+        Supplier<Transform2d> poseRelativeToTarget = () -> Constants.Vision.HUB_POSE.minus(swervePose.get());
+
+        DoubleSupplier distanceFromTarget = () -> photonVisionModule.hasTargets() ?
+                photonVisionModule.getDistance() :
+                Math.hypot(poseRelativeToTarget.get().getX(), poseRelativeToTarget.get().getY());
+
+//        a.whileHeld(new IntakeCargo(intake, () -> -Constants.Intake.DEFAULT_POWER.get()));
         b.whileHeld(new Convey(conveyor, Constants.Conveyor.DEFAULT_POWER.get()));
         leftPov.whileActiveOnce(new InstantCommand(hood::toggle));
         x.whenPressed(intake::toggleRetractor);
@@ -103,17 +128,23 @@ public class RobotContainer {
         downPov.and(start).whileActiveOnce(new MoveHelicopter(helicopter, 0));
 //        rt.whileActiveContinuous(new Shoot(shooter, hood, WebConstant.of("Shooter", "Setpoint", 0)::get, () -> true));
 
-        rt.whileActiveContinuous(new ShootCargo(shooter, hood, conveyor, flap, () -> Constants.Conveyor.SHOOT_POWER, photonVisionModule::getDistance));
+        rt.whileActiveContinuous(new ShootCargo(
+                shooter, hood, conveyor, flap,
+                () -> Constants.Conveyor.SHOOT_POWER,
+                distanceFromTarget));
         lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, Constants.Conveyor.DEFAULT_POWER.get(), Constants.Intake.DEFAULT_POWER::get));
         lb.whileHeld(new Outtake(intake, conveyor, flap, shooter, hood, () -> false));
         rb.whileHeld(new Convey(conveyor, -Constants.Conveyor.DEFAULT_POWER.get()));
         start.whenPressed(photonVisionModule::toggleLeds);
-        y.whenPressed(new RunCommand(() -> shooter.setVelocity(3630)).withInterrupt(rt::get));
+        y.whenPressed(new RunCommand(() -> shooter.setVelocity(3350)).withInterrupt(rt::get));
 //        twelve.whenPressed(() -> swerve.resetPoseEstimator(new Pose2d(7, 5, new Rotation2d())));
 
 
         leftTrigger.whenPressed(() -> speedMultiplier = (speedMultiplier == 0.5 ? 1 : 0.5));
         two.whenPressed((Runnable) Robot::resetAngle);
+        twoJoystick2.whileHeld(new TurnToAngle(swerve, () -> 0));
+
+
     }
 
     /**
@@ -125,16 +156,16 @@ public class RobotContainer {
 //        return null;
         photonVisionModule.setLeds(false);
 
-//        PathPlannerTrajectory trajectory = PathPlanner.loadPath("p2 - Taxi from low right tarmac and pickup low cargo(7.1)", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL);
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("p2 - Taxi from low right tarmac and pickup low cargo(7.1)", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL);
 //        PathPlannerTrajectory trajectory = PathPlanner.loadPath("p2 - Taxi from low left tarmac and pickup middle cargo(6.1)", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL);
-        PathPlannerTrajectory trajectory = PathPlanner.loadPath("p1 - Taxi from low left and pickup middle cargo(3.1)", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL);
+//        PathPlannerTrajectory trajectory = PathPlanner.loadPath("p1 - Taxi from low left and pickup middle cargo(3.1)", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL);
 //        PathPlannerTrajectory trajectory = PathPlanner.loadPath("p2 - Taxi from low left tarmac and pickup middle cargo(6.1)", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL);
         Robot.resetAngle(trajectory.getInitialState().holonomicRotation);
         swerve.resetOdometry(trajectory.getInitialState().poseMeters, trajectory.getInitialState().holonomicRotation);
 
-//        return new TaxiFromLowRightPickShootPickShoot(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
+        return new TaxiFromLowRightPickShootPickShoot(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
 //        return new TaxiFromLowLeftPickShootPickShoot(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
-        return new TaxiFromLowLeftPickShoot(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
+//        return new TaxiFromLowLeftPickShoot(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
     }
 
     /**

@@ -87,7 +87,6 @@ public class Shoot extends CommandBase {
         timer.reset();
         if (bool) {
             setpointVelocity = getSetpointVelocity(distance.getAsDouble(), hood.isOpen());
-
         } else {
             setpointVelocity = distance.getAsDouble();
         }

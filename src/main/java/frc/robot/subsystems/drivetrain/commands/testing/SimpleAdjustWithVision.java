@@ -16,7 +16,7 @@ public class SimpleAdjustWithVision extends CommandBase {
     private final DoubleSupplier rotationSupplier;
     private final BooleanSupplier condition;
     private final DoubleSupplier yawSupplier;
-    private final PIDController adjustController = new PIDController(Constants.SwerveDrive.ADJUST_CONTROLLER_KP, 0, 0) {{
+    private final PIDController adjustController = new PIDController(Constants.SwerveDrive.ADJUST_CONTROLLER_KP.get(), 0, 0) {{
         enableContinuousInput(-Math.PI, Math.PI);
         setTolerance(Constants.SwerveDrive.ADJUST_CONTROLLER_TOLERANCE);
     }};

@@ -1,7 +1,6 @@
 package frc.robot.subsystems.helicopter;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -163,12 +162,16 @@ public class Helicopter extends SubsystemBase {
             double volts = controller.calculate(getVelocity(), velocity);
             mainMotor.setVoltage(volts);
         } else {
-            mainMotor.set(ControlMode.Velocity, unitModelPosition.toTicks100ms(velocity));
+            if (!isStopperEngaged()) {
+                mainMotor.set(ControlMode.Velocity, unitModelPosition.toTicks100ms(velocity));
+            }
         }
     }
 
     public void vroomVroom(double power) {
-        mainMotor.set(ControlMode.PercentOutput, power);
+        if (!isStopperEngaged()) {
+            mainMotor.set(ControlMode.PercentOutput, power);
+        }
     }
 
     /**
@@ -193,7 +196,9 @@ public class Helicopter extends SubsystemBase {
     public void setAbsolutePosition(Rotation2d position) {
         var currentPosition = new Rotation2d(getAbsolutePosition());
         var error = position.minus(currentPosition);
-        mainMotor.set(ControlMode.Position, unitModelPosition.toTicks(error.getRadians()) + mainMotor.getSelectedSensorPosition());
+        if (!isStopperEngaged()) {
+            mainMotor.set(ControlMode.Position, unitModelPosition.toTicks(error.getRadians()) + mainMotor.getSelectedSensorPosition());
+        }
     }
 
     /**
@@ -210,7 +215,9 @@ public class Helicopter extends SubsystemBase {
         var currentPosition = getPosition();
         var error = position.minus(currentPosition);
         Rotation2d minMove = new Rotation2d(Math.IEEEremainder(unitModelPosition.toTicks(error.getRadians()), Math.PI * 2));
-        mainMotor.set(ControlMode.MotionMagic, unitModelPosition.toTicks(minMove.getRadians()));
+        if (!isStopperEngaged()) {
+            mainMotor.set(ControlMode.MotionMagic, unitModelPosition.toTicks(minMove.getRadians()));
+        }
     }
 
     /**
@@ -219,7 +226,7 @@ public class Helicopter extends SubsystemBase {
      * @return the stopper's mode.
      */
     public boolean isStopperEngaged() {
-        return stopper.get();
+        return !stopper.get();
     }
 
     /**

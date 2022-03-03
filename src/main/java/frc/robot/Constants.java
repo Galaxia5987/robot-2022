@@ -76,8 +76,9 @@ public final class Constants {
         public static final int ANGLE_CRUISE_VELOCITY = 400;
         public static final double DRIFTING_PERIOD = 0.5; // expected period the robot will change its rotation even after commanded to stop. [s]
         public static final double SAMPLE_YAW_PERIOD = 0.1; // expected period the robot will change its rotation even after commanded to stop. [s]
-        public static final double ADJUST_CONTROLLER_KP = 10.5;
-        public static final WebConstant ADJUST_CONTROLLER_KI = WebConstant.of("Drivetrain", "KI_bruh", 0);
+        public static final WebConstant ADJUST_CONTROLLER_KP = WebConstant.of("Swerve", "kp_heading", 12.5);
+        public static final WebConstant ADJUST_CONTROLLER_KI = WebConstant.of("Swerve", "KI_heading", 0);
+        public static final WebConstant ADJUST_CONTROLLER_KD = WebConstant.of("Swerve", "Kd_heading", 0.1);
         public static final double ADJUST_CONTROLLER_TOLERANCE = Math.toRadians(0.5);
         private static final double Rx = SwerveDrive.ROBOT_LENGTH / 2; // [m]
         private static final double Ry = SwerveDrive.ROBOT_WIDTH / 2; // [m]
@@ -288,7 +289,7 @@ public final class Constants {
 
     public static class Hood {
         public static final double HOOD_PRESSURE_BIT_DELTA_TIME = 0.1; // [s]
-        public static final double DISTANCE_FROM_TARGET_THRESHOLD = 2.78; // [m]
+        public static final double DISTANCE_FROM_TARGET_THRESHOLD = 2.67; // [m]
         public static final double MIN_DISTANCE = 1.6;
     }
 
