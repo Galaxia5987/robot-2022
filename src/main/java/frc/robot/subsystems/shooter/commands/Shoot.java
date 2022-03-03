@@ -3,10 +3,12 @@ package frc.robot.subsystems.shooter.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.shooter.Shooter;
 import webapp.FireLog;
 
+import java.util.HashMap;
 import java.util.OptionalDouble;
 import java.util.function.DoubleSupplier;
 
@@ -38,7 +40,7 @@ public class Shoot extends CommandBase {
     }
 
     public Shoot(Shooter shooter, Hood hood, DoubleSupplier distance) {
-       this(shooter, hood, distance, false);
+        this(shooter, hood, distance, false);
     }
 
     /**
@@ -49,11 +51,35 @@ public class Shoot extends CommandBase {
      * @return 15. [rpm]
      */
     public static double getSetpointVelocity(double distance, boolean isShort) {
+        HashMap<Double, Double> measurements;
         if (isShort) {
-            return 187.25 * Math.pow(distance, 2) - 415.01 * distance + 3736.9;
+            measurements = Constants.Shooter.SHORT_MEASUREMENTS;
+        } else {
+            measurements = Constants.Shooter.LONG_MEASUREMENTS;
         }
-        return 4.1217 * Math.pow(distance, 2) + 487.03 * distance + 1849.3;
+        double prevMeasuredDistance = 0, nextMeasuredDistance = 0;
+        double minPrevDifference = Double.POSITIVE_INFINITY, minNextDifference = Double.POSITIVE_INFINITY;
+
+        for (var measuredDistance : measurements.keySet()) {
+            double difference = measuredDistance - distance;
+            if (difference < 0) {
+                if (Math.abs(difference) < Math.abs(minPrevDifference)) {
+                    minPrevDifference = difference;
+                    prevMeasuredDistance = measuredDistance;
+                }
+            } else {
+                if (Math.abs(difference) < Math.abs(minNextDifference)) {
+                    minNextDifference = difference;
+                    nextMeasuredDistance = measuredDistance;
+                }
+            }
+        }
+        double y1 = measurements.get(prevMeasuredDistance);
+        double y2 = measurements.get(nextMeasuredDistance);
+        double t = (distance - prevMeasuredDistance) / (nextMeasuredDistance - prevMeasuredDistance);
+        return (1 - t) * y1 + t * y2;
     }
+
 
     @Override
     public void initialize() {
