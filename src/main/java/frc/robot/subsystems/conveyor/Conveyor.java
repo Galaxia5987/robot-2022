@@ -215,11 +215,12 @@ public class Conveyor extends SubsystemBase {
                                             add an invalid value at the tail of the queue
          */
         if (!colorIntake.equals(lastSeenColor)) {
-            if (lastSeenColor.equals(DriverStation.Alliance.Invalid) && power > 0 && getCargoCount() != MAX_CARGO_AMOUNT) {
+            if (!lastSeenColor.equals(DriverStation.Alliance.Invalid) && power > 0 && getCargoCount() != MAX_CARGO_AMOUNT) {
                 cargoPositions.removeFirstOccurrence(DriverStation.Alliance.Invalid.name());
                 cargoPositions.add(colorIntake.name());
                 System.out.println("Intaking " + colorIntake.name());
             } else if (power < 0) {
+                System.out.println(getFirstNotInvalid());
                 cargoPositions.removeFirstOccurrence(getFirstNotInvalid());
                 cargoPositions.add(DriverStation.Alliance.Invalid.name());
                 System.out.println("Outtaking " + colorIntake.name());
@@ -257,7 +258,7 @@ public class Conveyor extends SubsystemBase {
         var alliance = getColor();
         double red = filter.calculate(colorSensor.getRed());
         SmartDashboard.putNumber("red-val", red);
-        SmartDashboard.putNumberArray("color", new double[]{color.blue, color.green, color.red});
+        SmartDashboard.putNumberArray("color", new double[]{color.red, color.green, color.blue});
         SmartDashboard.putString("detected-color", alliance.name());
         String[] positions = cargoPositions.toArray(String[]::new);
         SmartDashboard.putStringArray("position", positions);
@@ -267,8 +268,9 @@ public class Conveyor extends SubsystemBase {
         SmartDashboard.putBoolean("postBeam", postFlapBeam.get());
         SmartDashboard.putBoolean("isConnectedColor", colorSensor.isConnected());
         SmartDashboard.putNumber("proximity", colorSensor.getProximity());
-        SmartDashboard.putNumber("sensor-blue", colorSensor.getRawColor().blue);
-        SmartDashboard.putNumber("sensor-red", colorSensor.getRawColor().red);
+        SmartDashboard.putNumber("sensor-blue", color.blue);
+        SmartDashboard.putNumber("sensor-red", color.red);
+        SmartDashboard.putNumber("sensor-green", color.green);
 
     }
 

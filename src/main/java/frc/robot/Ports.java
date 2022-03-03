@@ -90,6 +90,6 @@ public final class Ports {
     }
 
     public static class Vision {
-        public static final int LEDS = 4;
+        public static final int LEDS = 3;
     }
 }

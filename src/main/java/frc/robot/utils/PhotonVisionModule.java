@@ -29,7 +29,9 @@ public class PhotonVisionModule extends SubsystemBase {
     private final SimVisionSystem simVisionSystem;
     private final SimulateDrivetrain simulateDrivetrain;
     private final DigitalOutput leds = new DigitalOutput(Ports.Vision.LEDS);
-    private final LinearFilter filter = LinearFilter.movingAverage(20);
+    private final LinearFilter filter = LinearFilter.movingAverage(10);
+    private final Timer timer = new Timer();
+    private boolean startedLeds = false;
 
     public PhotonVisionModule(String cameraName, SimulateDrivetrain simulateDrivetrain) {
         this.simulateDrivetrain = simulateDrivetrain;
@@ -65,13 +67,25 @@ public class PhotonVisionModule extends SubsystemBase {
     public double getDistance() {
         var results = camera.getLatestResult();
         if (results.hasTargets()) {
-            return filter.calculate(PhotonUtils.calculateDistanceToTargetMeters(
-                            CAMERA_HEIGHT,
-                            TARGET_HEIGHT_FROM_GROUND,
-                            Math.toRadians(CAMERA_PITCH),
-                            Math.toRadians(results.getBestTarget().getPitch())
-                    )
-            ) + TARGET_RADIUS;
+            double distance = PhotonUtils.calculateDistanceToTargetMeters(
+                    CAMERA_HEIGHT,
+                    TARGET_HEIGHT_FROM_GROUND,
+                    Math.toRadians(CAMERA_PITCH),
+                    Math.toRadians(results.getBestTarget().getPitch())
+            );
+
+            if (startedLeds) {
+                if (!timer.hasElapsed(0.2)) {
+                    filter.calculate(distance);
+                    return distance + TARGET_RADIUS;
+                } else {
+                    startedLeds = false;
+                    timer.stop();
+                    timer.reset();
+                }
+            }
+
+            return filter.calculate(distance) + TARGET_RADIUS;
         }
         return 0;
     }
@@ -104,18 +118,23 @@ public class PhotonVisionModule extends SubsystemBase {
     }
 
     /**
-     * @param on whether to turn on the leds.
+     * @param off whether to turn on the leds.
      *           Turns the leds on or off.
      */
-    public void setLeds(boolean on) {
-        leds.set(on);
+    public void setLeds(boolean off) {
+        leds.set(off);
+        if (!off) {
+            timer.reset();
+            timer.start();
+        }
+        startedLeds = !off;
     }
 
     /**
      * Toggle the leds mode.
      */
     public void toggleLeds() {
-        leds.set(!leds.get());
+        setLeds(!getLedsState());
     }
 
     /**
@@ -125,7 +144,7 @@ public class PhotonVisionModule extends SubsystemBase {
         return leds.get();
     }
 
-    public VisionEstimationData getOdometryWithVision() {
+    public VisionEstimationData estimatePose() {
         double navxAngle = Robot.getAngle().getDegrees();
         var results = camera.getLatestResult();
         if (results.hasTargets()) {

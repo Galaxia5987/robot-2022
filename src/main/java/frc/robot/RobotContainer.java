@@ -2,17 +2,14 @@ package frc.robot;
 
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autoPaths.TaxiFromLowLeftPickShoot;
-import frc.robot.autoPaths.TaxiFromLowLeftPickShootPickShoot;
-import frc.robot.autoPaths.TaxiFromLowRightPickShootPickShoot;
 import frc.robot.commandgroups.Outtake;
 import frc.robot.commandgroups.PickUpCargo;
 import frc.robot.commandgroups.ShootCargo;
@@ -50,11 +47,12 @@ public class RobotContainer {
     private final Trigger upPov = new Trigger(() -> xbox.getPOV() == 0);
     private final Trigger downPov = new Trigger(() -> xbox.getPOV() == 180);
     private final Trigger rightPov = new Trigger(() -> xbox.getPOV() == 90);
+    private final Trigger leftPov = new Trigger(() -> xbox.getPOV() == 270);
     private final JoystickButton leftTrigger = new JoystickButton(joystick, Joystick.ButtonType.kTrigger.value);
     private final JoystickButton rightTrigger = new JoystickButton(joystick2, Joystick.ButtonType.kTrigger.value);
     private final JoystickButton two = new JoystickButton(joystick, 2);
     private final JoystickButton twelve = new JoystickButton(joystick, 12);
-    private final SwerveDrive swerve = SwerveDrive.getFieldOrientedInstance(photonVisionModule::getOdometryWithVision);
+    private final SwerveDrive swerve = SwerveDrive.getFieldOrientedInstance(photonVisionModule::estimatePose);
     private final Intake intake = Intake.getInstance();
     private final Conveyor conveyor = Conveyor.getInstance();
     private final Flap flap = Flap.getInstance();
@@ -78,7 +76,7 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        swerve.setDefaultCommand(
+       swerve.setDefaultCommand(
                 new DriveAndAdjustWithVision(
                         swerve,
                         () -> -joystick.getY() * speedMultiplier,
@@ -96,19 +94,21 @@ public class RobotContainer {
     private void configureButtonBindings() {
         a.whileHeld(new IntakeCargo(intake, () -> -Constants.Intake.DEFAULT_POWER.get()));
         b.whileHeld(new Convey(conveyor, Constants.Conveyor.DEFAULT_POWER.get()));
-        rightPov.whileActiveOnce(new RunCommand(helicopter::toggleStopper));
+        leftPov.whileActiveOnce(new InstantCommand(hood::toggle));
         x.whenPressed(intake::toggleRetractor);
         back.whenPressed(flap::toggleFlap);
+//        upPov.whileActiveOnce(new InstantCommand(hood::toggle));
+        rightPov.whileActiveOnce(new InstantCommand(helicopter::toggleStopper));
         upPov.and(start).whileActiveOnce(new MoveHelicopter(helicopter, Constants.Helicopter.SECOND_RUNG));
         downPov.and(start).whileActiveOnce(new MoveHelicopter(helicopter, 0));
+//        rt.whileActiveContinuous(new Shoot(shooter, hood, WebConstant.of("Shooter", "Setpoint", 0)::get, () -> true));
 
-//        rt.whileActiveContinuous(new ShootCargo2(shooter, hood, conveyor, flap, photonVisionModule::getDistance));
         rt.whileActiveContinuous(new ShootCargo(shooter, hood, conveyor, flap, () -> Constants.Conveyor.SHOOT_POWER, photonVisionModule::getDistance));
         lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, Constants.Conveyor.DEFAULT_POWER.get(), Constants.Intake.DEFAULT_POWER::get));
         lb.whileHeld(new Outtake(intake, conveyor, flap, shooter, hood, () -> false));
         rb.whileHeld(new Convey(conveyor, -Constants.Conveyor.DEFAULT_POWER.get()));
         start.whenPressed(photonVisionModule::toggleLeds);
-        y.whenPressed(() -> shooter.setVelocity(3630));
+        y.whenPressed(new RunCommand(() -> shooter.setVelocity(3630)).withInterrupt(rt::get));
 //        twelve.whenPressed(() -> swerve.resetPoseEstimator(new Pose2d(7, 5, new Rotation2d())));
 
 
