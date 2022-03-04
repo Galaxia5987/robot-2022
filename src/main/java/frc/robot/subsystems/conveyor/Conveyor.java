@@ -28,24 +28,19 @@ public class Conveyor extends SubsystemBase {
     private static Conveyor INSTANCE = null;
     private final WPI_TalonFX motor = new WPI_TalonFX(Ports.Conveyor.MOTOR);
     private final Deque<String> cargoPositions = new ArrayDeque<>();
-    private final ColorSensorV3 colorSensor = new ColorSensorV3(I2C.Port.kMXP);
-    private final DigitalInput postFlapBeam = new DigitalInput(Ports.Conveyor.POST_FLAP_BEAM_BREAKER);
-    private final DigitalInput preFlapBeam = new DigitalInput(Ports.Conveyor.PRE_FLAP_BEAM_BREAKER);
-    private final ColorMatch colorMatch = new ColorMatch();
+    private final BeamBreaker postFlapBeam = new BeamBreaker(Ports.Conveyor.POST_FLAP_BEAM_BREAKER);
+    private final BeamBreaker preFlapBeam = new BeamBreaker(Ports.Conveyor.PRE_FLAP_BEAM_BREAKER);
     private final UnitModel unitModel = new UnitModel(Constants.Conveyor.TICKS_PER_UNIT);
-    private DriverStation.Alliance lastSeenColor = DriverStation.Alliance.Invalid;
     private boolean wasPostFlapBeamConnected = true;
     private int currentProximity = 0;
     private double commandPower;
     private LinearFilter filter = LinearFilter.movingAverage(20);
+    private ColorSensor colorSensor = new ColorSensor(I2C.Port.kMXP);
 
     private Conveyor() {
         motor.setInverted(MOTOR_INVERSION);
         motor.enableVoltageCompensation(IS_COMPENSATING_VOLTAGE);
         motor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
-        colorMatch.addColorMatch(RED);
-        colorMatch.addColorMatch(BLUE);
-        colorMatch.addColorMatch(NONE);
         cargoPositions.add(DriverStation.Alliance.Invalid.name());
         cargoPositions.add(DriverStation.Alliance.Invalid.name());
         motor.config_kP(0, kP, TALON_TIMEOUT);
@@ -67,41 +62,12 @@ public class Conveyor extends SubsystemBase {
     }
 
     /**
-     * @return the color sensor value as a {@link edu.wpi.first.wpilibj.DriverStation.Alliance} enum.
-     */
-    public DriverStation.Alliance getColor() {
-        Color color = colorSensor.getColor();
-        ColorMatchResult result = colorMatch.matchClosestColor(color);
-        Color resultColor = result.color;
-
-        SmartDashboard.putNumberArray("Barel-Color", new double[]{resultColor.red, resultColor.green, resultColor.blue});
-        SmartDashboard.putNumber("Barel-confidence", result.confidence);
-
-        if (resultColor == RED) {
-            return DriverStation.Alliance.Red;
-        } else if (resultColor == BLUE) {
-            return DriverStation.Alliance.Blue;
-        } else {
-            return DriverStation.Alliance.Invalid;
-        }
-    }
-
-    /**
-     * Returns the proximity of the color sensor from the nearest object.
-     *
-     * @return the proximity from the object (0 to 2047, largest when object is close).
-     */
-    public int getProximityValue() {
-        return colorSensor.getProximity();
-    }
-
-    /**
      * Get the input of the pre-flap beam breaker.
      *
      * @return the input of the pre-flap beam breaker (true or false).
      */
     public boolean isPreFlapBeamConnected() {
-        return preFlapBeam.get();
+        return !preFlapBeam.hasObject();
     }
 
     /**
@@ -110,7 +76,7 @@ public class Conveyor extends SubsystemBase {
      * @return the input of the post-flap beam breaker (true or false).
      */
     public boolean isPostFlapBeamConnected() {
-        return postFlapBeam.get();
+        return !postFlapBeam.hasObject();
     }
 
     /**
@@ -139,7 +105,10 @@ public class Conveyor extends SubsystemBase {
      */
     public void setPower(double power) {
         motor.set(power);
-        this.commandPower = power;
+    }
+
+    public void setCommandPower(double commandPower) {
+        this.commandPower = commandPower;
     }
 
     public double getVelocity() {
@@ -159,6 +128,21 @@ public class Conveyor extends SubsystemBase {
         return new ArrayDeque<>(cargoPositions);
     }
 
+    public void updateCargoInQueue(DriverStation.Alliance color) {
+        SmartDashboard.putBoolean("positive power", commandPower > 0);
+        SmartDashboard.putBoolean("valid", !color.equals(DriverStation.Alliance.Invalid));
+        if (commandPower > 0 && !color.equals(DriverStation.Alliance.Invalid)) {
+            cargoPositions.removeFirstOccurrence(DriverStation.Alliance.Invalid.name());
+            cargoPositions.add(color.name());
+            SmartDashboard.putString("eitan", "Joe");
+        } else if (commandPower < 0 && color.equals(DriverStation.Alliance.Invalid)) {
+            cargoPositions.removeLastOccurrence(getFirstNotInvalid());
+            cargoPositions.add(DriverStation.Alliance.Invalid.name());
+        } else {
+            System.out.println("Power 0");
+        }
+    }
+
     /**
      * This function updates the actual positions of the balls based on the following sensors:
      * color sensor, post flap beam, proximity sensor (in the color sensor).
@@ -166,69 +150,26 @@ public class Conveyor extends SubsystemBase {
      * Logic documentation is included in the function.
      */
     public void updateActualBallPositions() {
-        /*
-        Condition: if the current proximity of the object in front of the sensor is less than the constant
-            true => get the current color the color sensor sees
-                    Condition: if the current input of the color sensor is invalid and the last wasn't
-                        true => set the current input of the color sensor to the last input
-            false => set current input of the color sensor to invalid
-         */
-        double power = motor.get();
-        SmartDashboard.putNumber("con-power", power);
         DriverStation.Alliance colorIntake;
-        if (currentProximity >= MIN_PROXIMITY_VALUE) {
-            colorIntake = getColor();
-            SmartDashboard.putString("prox-color", colorIntake.name());
-//            if (colorIntake.equals(DriverStation.Alliance.Invalid) && !lastSeenColor.equals(DriverStation.Alliance.Invalid)) {
-//                colorIntake = lastSeenColor;
-//            }
+
+        if (postFlapBeam.hasChanged() && !postFlapBeam.hasObject()) {
+            cargoPositions.removeFirstOccurrence(getFirstNotInvalid());
+        }
+
+        if (colorSensor.getProximityValue() > MIN_PROXIMITY_VALUE) {
+            colorIntake = colorSensor.getColor();
         } else {
             colorIntake = DriverStation.Alliance.Invalid;
-            SmartDashboard.putString("prox-color", "none");
         }
 
-        boolean isPostFlapBeamConnected = isPostFlapBeamConnected();
 
-        /*
-        Condition: if the post flap beam break is active and last input it wasn't and the power is positive
-            true => Condition: if the amount of non-invalid cargo in the queue is 1
-                        true => remove the first non-invalid in the queue
-                        false => remove the head of the queue
-                    add an invalid value to the tail of the queue
-         */
-        if (isPostFlapBeamConnected && !wasPostFlapBeamConnected && power > 0) {
-            if (getCargoCount() == 1) {
-                cargoPositions.removeFirstOccurrence(getFirstNotInvalid());
-            } else {
-                cargoPositions.removeFirst();
-            }
+        if (colorSensor.hasColorChanged()) {
+            updateCargoInQueue(colorIntake);
+        }
+
+        if (preFlapBeam.hasObject() && colorSensor.getProximityValue() > MIN_PROXIMITY_VALUE) {
             cargoPositions.add(DriverStation.Alliance.Invalid.name());
         }
-
-        /*
-        Condition: if the current input of the color sensor isn't equal to the last
-            true => Condition: if current input isn't invalid and the power is positive and there isn't 2 cargo in the queue
-                        true => remove the first invalid value in the queue
-                                add the current input of the color sensor
-                        false => Condition: the current input of the color sensor is invalid and the power is negative
-                                    true => remove the first non-invalid value in the queue
-                                            add an invalid value at the tail of the queue
-         */
-        if (!colorIntake.equals(lastSeenColor)) {
-            if (!lastSeenColor.equals(DriverStation.Alliance.Invalid) && power > 0 && getCargoCount() != MAX_CARGO_AMOUNT) {
-                cargoPositions.removeFirstOccurrence(DriverStation.Alliance.Invalid.name());
-                cargoPositions.add(colorIntake.name());
-                System.out.println("Intaking " + colorIntake.name());
-            } else if (power < 0) {
-                System.out.println(getFirstNotInvalid());
-                cargoPositions.removeFirstOccurrence(getFirstNotInvalid());
-                cargoPositions.add(DriverStation.Alliance.Invalid.name());
-                System.out.println("Outtaking " + colorIntake.name());
-            }
-        }
-
-        wasPostFlapBeamConnected = isPostFlapBeamConnected;
-        lastSeenColor = colorIntake;
     }
 
     /**
@@ -241,9 +182,8 @@ public class Conveyor extends SubsystemBase {
             return cargoPositions.getLast();
         } else if (cargoPositions.getFirst().equals(DriverStation.Alliance.Red.name()) || cargoPositions.getFirst().equals(DriverStation.Alliance.Blue.name())) {
             return cargoPositions.getFirst();
-        } else {
-            return DriverStation.Alliance.Invalid.name();
         }
+        return DriverStation.Alliance.Invalid.name();
     }
 
     /**
@@ -251,45 +191,20 @@ public class Conveyor extends SubsystemBase {
      */
     @Override
     public void periodic() {
-        currentProximity = colorSensor.getProximity();
+        postFlapBeam.updateBeamBreaker();
+        preFlapBeam.updateBeamBreaker();
+        colorSensor.updateColorSensor();
         updateActualBallPositions();
-        SmartDashboard.putString("position", cargoPositions.toString());
-        var color = colorSensor.getColor();
-        var alliance = getColor();
-        double red = filter.calculate(colorSensor.getRed());
-        SmartDashboard.putNumber("red-val", red);
-        SmartDashboard.putNumberArray("color", new double[]{color.red, color.green, color.blue});
-        SmartDashboard.putString("detected-color", alliance.name());
-        String[] positions = cargoPositions.toArray(String[]::new);
-        SmartDashboard.putStringArray("position", positions);
-        SmartDashboard.putString("First", positions[0]);
-        SmartDashboard.putString("Last", positions[1]);
-        SmartDashboard.putBoolean("preBeam", preFlapBeam.get());
-        SmartDashboard.putBoolean("postBeam", postFlapBeam.get());
-        SmartDashboard.putBoolean("isConnectedColor", colorSensor.isConnected());
-        SmartDashboard.putNumber("proximity", colorSensor.getProximity());
-        SmartDashboard.putNumber("sensor-blue", color.blue);
-        SmartDashboard.putNumber("sensor-red", color.red);
-        SmartDashboard.putNumber("sensor-green", color.green);
 
+        SmartDashboard.putString("Positions", cargoPositions.toString());
+        SmartDashboard.putNumber("Proximity", colorSensor.getProximityValue());
+        SmartDashboard.putString("Current Detected", colorSensor.getCurrentColor().name());
+        SmartDashboard.putBoolean("Pre flap", !preFlapBeam.hasObject());
+        SmartDashboard.putNumberArray("Color", colorSensor.getRawColor());
     }
 
     @Override
     public void simulationPeriodic() {
-        SmartDashboard.putString("position", cargoPositions.toString());
-        var color = colorSensor.getColor();
-        var alliance = getColor();
-        SmartDashboard.putNumberArray("color", new double[]{color.red, color.green, color.blue});
-//        System.out.println(Arrays.toString(new double[]{color.red, color.green, color.blue}));
-        SmartDashboard.putString("detected-color", alliance.name());
-        String[] positions = cargoPositions.toArray(String[]::new);
-        SmartDashboard.putStringArray("position", positions);
-        SmartDashboard.putString("First", positions[0]);
-        SmartDashboard.putString("Last", positions[1]);
-        SmartDashboard.putBoolean("dio", preFlapBeam.get());
-        SmartDashboard.putBoolean("isConnectedColor", colorSensor.isConnected());
-        SmartDashboard.putNumber("proximity", colorSensor.getProximity());
-
 
     }
 }

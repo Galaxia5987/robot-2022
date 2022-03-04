@@ -41,9 +41,6 @@ public class Convey2 extends CommandBase {
             conveyor.setPower(0);
         }
         SmartDashboard.putNumber("Conveyor p", conveyor.getPower());
-
-        maximalProximity = Math.max(maximalProximity, conveyor.getProximityValue());
-        System.out.println("Maximal proximity " + maximalProximity);
     }
 
     @Override

@@ -205,9 +205,9 @@ public final class Constants {
         public static final WebConstant DEFAULT_POWER = WebConstant.of("Conveyor", "Default velocity", 0.5); // [%]
         public static final int MAX_CARGO_AMOUNT = 2;
         public static final int MIN_PROXIMITY_VALUE = 200; // Minimum distance from the color sensor in order to induce detection (arbitrary bit units).
-        public static final Color BLUE = new Color(0.21, 0.44, 0.35);
-        public static final Color RED = new Color(0.48, 0.38, 0.13);
-        public static final Color NONE = new Color(0.36, 0.33, 0.31);
+        public static final Color BLUE = new Color(0.18, 0.385, 0.436);
+        public static final Color RED = new Color(0.511, 0.346, 0.143);
+        public static final Color NONE = new Color(0.31, 0.415, 0.275);
         public static final double kP = 0;
         public static final double kI = 0;
         public static final double kD = 0;
