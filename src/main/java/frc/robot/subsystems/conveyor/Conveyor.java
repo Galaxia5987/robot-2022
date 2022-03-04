@@ -2,15 +2,11 @@ package frc.robot.subsystems.conveyor;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.revrobotics.ColorMatch;
-import com.revrobotics.ColorMatchResult;
-import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
@@ -28,8 +24,8 @@ public class Conveyor extends SubsystemBase {
     private static Conveyor INSTANCE = null;
     private final WPI_TalonFX motor = new WPI_TalonFX(Ports.Conveyor.MOTOR);
     private final Deque<String> cargoPositions = new ArrayDeque<>();
-    private final BeamBreaker postFlapBeam = new BeamBreaker(Ports.Conveyor.POST_FLAP_BEAM_BREAKER);
-    private final BeamBreaker preFlapBeam = new BeamBreaker(Ports.Conveyor.PRE_FLAP_BEAM_BREAKER);
+    private final DigitalInput postFlapBeam = new DigitalInput(Ports.Conveyor.POST_FLAP_BEAM_BREAKER);
+    private final DigitalInput preFlapBeam = new DigitalInput(Ports.Conveyor.PRE_FLAP_BEAM_BREAKER);
     private final UnitModel unitModel = new UnitModel(Constants.Conveyor.TICKS_PER_UNIT);
     private boolean wasPostFlapBeamConnected = true;
     private int currentProximity = 0;
@@ -67,7 +63,7 @@ public class Conveyor extends SubsystemBase {
      * @return the input of the pre-flap beam breaker (true or false).
      */
     public boolean isPreFlapBeamConnected() {
-        return !preFlapBeam.hasObject();
+        return preFlapBeam.get();
     }
 
     /**
@@ -76,7 +72,7 @@ public class Conveyor extends SubsystemBase {
      * @return the input of the post-flap beam breaker (true or false).
      */
     public boolean isPostFlapBeamConnected() {
-        return !postFlapBeam.hasObject();
+        return postFlapBeam.get();
     }
 
     /**
@@ -152,9 +148,9 @@ public class Conveyor extends SubsystemBase {
     public void updateActualBallPositions() {
         DriverStation.Alliance colorIntake;
 
-        if (postFlapBeam.hasChanged() && !postFlapBeam.hasObject()) {
-            cargoPositions.removeFirstOccurrence(getFirstNotInvalid());
-        }
+//        if (postFlapBeam.hasChanged() && !postFlapBeam.hasObject()) {
+//            cargoPositions.removeFirstOccurrence(getFirstNotInvalid());
+//        }
 
         if (colorSensor.getProximityValue() > MIN_PROXIMITY_VALUE) {
             colorIntake = colorSensor.getColor();
@@ -167,9 +163,9 @@ public class Conveyor extends SubsystemBase {
             updateCargoInQueue(colorIntake);
         }
 
-        if (preFlapBeam.hasObject() && colorSensor.getProximityValue() > MIN_PROXIMITY_VALUE) {
-            cargoPositions.add(DriverStation.Alliance.Invalid.name());
-        }
+//        if (preFlapBeam.hasObject() && colorSensor.getProximityValue() > MIN_PROXIMITY_VALUE) {
+//            cargoPositions.add(DriverStation.Alliance.Invalid.name());
+//        }
     }
 
     /**
@@ -191,16 +187,16 @@ public class Conveyor extends SubsystemBase {
      */
     @Override
     public void periodic() {
-        postFlapBeam.updateBeamBreaker();
-        preFlapBeam.updateBeamBreaker();
-        colorSensor.updateColorSensor();
-        updateActualBallPositions();
+//        postFlapBeam.updateBeamBreaker();
+//        preFlapBeam.updateBeamBreaker();
+//        colorSensor.updateColorSensor();
+//        updateActualBallPositions();
 
-        SmartDashboard.putString("Positions", cargoPositions.toString());
-        SmartDashboard.putNumber("Proximity", colorSensor.getProximityValue());
-        SmartDashboard.putString("Current Detected", colorSensor.getCurrentColor().name());
-        SmartDashboard.putBoolean("Pre flap", !preFlapBeam.hasObject());
-        SmartDashboard.putNumberArray("Color", colorSensor.getRawColor());
+//        SmartDashboard.putString("Positions", cargoPositions.toString());
+//        SmartDashboard.putNumber("Proximity", colorSensor.getProximityValue());
+//        SmartDashboard.putString("Current Detected", colorSensor.getCurrentColor().name());
+//        SmartDashboard.putBoolean("Pre flap", !preFlapBeam.hasObject());
+//        SmartDashboard.putNumberArray("Color", colorSensor.getRawColor());
     }
 
     @Override

@@ -5,6 +5,8 @@
 package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.cscore.MjpegServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.util.Color;
@@ -24,12 +26,12 @@ public class Robot extends TimedRobot {
     public static final boolean debug = true;//!DriverStation.isFMSAttached();
     public static final AHRS navx = new AHRS(SPI.Port.kMXP);
     private static Rotation2d zeroAngle = new Rotation2d();
-    private final AddressableLED led = new AddressableLED(1);
+//    private final AddressableLED led = new AddressableLED(1);
     //    private static Rotation2d startAngle = new Rotation2d();
     public PowerDistribution pdp = new PowerDistribution();
     private Command m_autonomousCommand;
     private RobotContainer m_robotContainer;
-    private AddressableLEDBuffer buffer = new AddressableLEDBuffer(54);
+//    private AddressableLEDBuffer buffer = new AddressableLEDBuffer(54);
 
     /**
      * Gets the current angle of the robot in respect to the start angle.
@@ -71,16 +73,19 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
+
 //        startAngle = Robot.navx.getRotation2d();
         resetAngle();
         if (debug) {
             NetworkTableConstant.initializeAllConstants();
         }
         m_robotContainer = new RobotContainer();
+        UsbCamera usbCamera = new UsbCamera("USB Camera 0", 0);
+        MjpegServer mjpegServer1 = new MjpegServer("serve_USB Camera 0", 1181);
+        mjpegServer1.setSource(usbCamera);
 
-
-        led.setLength(buffer.getLength());
-        led.start();
+//        led.setLength(buffer.getLength());
+//        led.start();
     }
 
     /**
@@ -93,10 +98,10 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
-        for (int i = 0; i < buffer.getLength(); i++) {
-            buffer.setLED(i, Color.kPurple);
-        }
-        led.setData(buffer);
+//        for (int i = 0; i < buffer.getLength(); i++) {
+//            buffer.setLED(i, Color.kPurple);
+//        }
+//        led.setData(buffer);
     }
 
     /**

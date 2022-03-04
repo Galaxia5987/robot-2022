@@ -86,7 +86,7 @@ public class Convey3 extends CommandBase {
             }
 
 //            if (Math.abs(setpoint - velocitySupplier.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get()) {
-            if (timer.hasElapsed(0.6)) {
+            if (timer.hasElapsed(0.3)) {
                 getBallToPreFlap = true;
                 SmartDashboard.putNumber("time", timer.get());
                 timer.reset();

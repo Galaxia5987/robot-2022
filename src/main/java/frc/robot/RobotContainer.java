@@ -29,6 +29,8 @@ import frc.robot.subsystems.helicopter.commands.MoveHelicopter;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.commands.BackAndShootCargo;
+import frc.robot.utils.LedSubsystem;
 import frc.robot.utils.PhotonVisionModule;
 import webapp.Webserver;
 
@@ -67,6 +69,7 @@ public class RobotContainer {
     private final Shooter shooter = Shooter.getInstance();
     private final Hood hood = Hood.getInstance();
     private final Helicopter helicopter = Helicopter.getInstance();
+    private final LedSubsystem ledSubsystem = new LedSubsystem();
 
     private double speedMultiplier = 1;
 
@@ -105,7 +108,7 @@ public class RobotContainer {
                         photonVisionModule::getDistance
                 )
         );
-        helicopter.setDefaultCommand(new JoystickPowerHelicopter(helicopter, () -> -xbox.getLeftY()));
+        helicopter.setDefaultCommand(new JoystickPowerHelicopter(helicopter, xbox::getLeftY));
 //        shooter.setDefaultCommand(new Shoot(shooter, hood, WebConstant.of("Shooter", "Setpoint", 0)::get, () -> true));
     }
 
@@ -128,7 +131,7 @@ public class RobotContainer {
         downPov.and(start).whileActiveOnce(new MoveHelicopter(helicopter, 0));
 //        rt.whileActiveContinuous(new Shoot(shooter, hood, WebConstant.of("Shooter", "Setpoint", 0)::get, () -> true));
 
-        rt.whileActiveContinuous(new ShootCargo(
+        rt.whileActiveContinuous(new BackAndShootCargo(
                 shooter, hood, conveyor, flap,
                 () -> Constants.Conveyor.SHOOT_POWER,
                 distanceFromTarget));

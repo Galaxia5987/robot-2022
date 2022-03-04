@@ -149,7 +149,7 @@ public final class Constants {
     }
 
     public static final class SwerveModule {
-        public static final int[] ZERO_POSITIONS = {381, -77, -1050, -623}; // fr, fl, rr, rl
+        public static final int[] ZERO_POSITIONS = {-1652, -1106, -5142, -421}; // fr, fl, rr, rl
 
         public static final int TRIGGER_THRESHOLD_CURRENT = 2; // [amps]
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]
