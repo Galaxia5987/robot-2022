@@ -19,20 +19,18 @@ public class TaxiFromLowLeftPickShootPickShoot extends SaarIsAutonomous {
 
     // Taxi from low left tarmac, pickup middle cargo, shoot, pick up low cargo, shoot, park in low tarmac.(6)
     public TaxiFromLowLeftPickShootPickShoot(Shooter shooter, SwerveDrive swerveDrive, Conveyor conveyor, Intake intake, Hood hood, Flap flap, PhotonVisionModule visionModule) {
-        super(swerveDrive, shooter, conveyor, intake, hood, flap, visionModule);
+        super(swerveDrive, shooter, conveyor, intake, hood, flap, visionModule, "p2 - Taxi from low left tarmac and pickup middle cargo(6.1)");
 
-        addCommands(new ParallelRaceGroup(
-                        followPath.apply("p2 - Taxi from low left tarmac and pickup middle cargo(6.1)"),
-                        pickup.apply(10)
-                )
+        addCommands(
+                followPathAndPickup("p2 - Taxi from low left tarmac and pickup middle cargo(6.1)")
         );
 
-        addCommands(shootAndAdjust.apply(5));
+        addCommands(shootAndAdjust(5));
 
-        addCommands(new ParallelRaceGroup(
-                followPath.apply("p2 - Picking up low cargo(6.2)"),
-                pickup.apply(3)));
+        addCommands(
+                followPathAndPickup("p2 - Picking up low cargo(6.2)")
+        );
 
-        addCommands(shootAndAdjust.apply(3));
+        addCommands(shootAndAdjust(3));
     }
 }

@@ -24,12 +24,12 @@ public class TaxiFromUpUpAndShoot extends SaarIsAutonomous {
 
     // Taxi from up up tarmac, shoot pre-loaded cargo, park near up tarmac.(2)
     public TaxiFromUpUpAndShoot(Shooter shooter, SwerveDrive swerveDrive, Conveyor conveyor, Intake intake, Hood hood, Flap flap, PhotonVisionModule visionModule) {
-        super(swerveDrive, shooter, conveyor, intake, hood, flap, visionModule);
+        super(swerveDrive, shooter, conveyor, intake, hood, flap, visionModule, "p0 - Taxi from up up tarmac(2.1)");
 
-        addCommands(followPath.apply("p0 - Taxi from up up tarmac(2.1"));
+        addCommands(followPathAndPickup("p0 - Taxi from up up tarmac(2.1)"));
 
-        addCommands(shootAndAdjust.apply(3));
+        addCommands(shootAndAdjust(3));
 
-        addCommands(followPath.apply("p0 - Go to up tarmac(1.2.2)"));
+        addCommands(followPath("p0 - Go to up tarmac(1.2.2)"));
     }
 }

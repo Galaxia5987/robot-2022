@@ -96,17 +96,18 @@ public class Helicopter extends SubsystemBase {
          Set the right motor on Brake mode.
          */
         mainMotor.setNeutralMode(NeutralMode.Brake);
+        auxMotor.setNeutralMode(NeutralMode.Brake);
 
         /*
          Setting the motor to go clockwise.
          */
         mainMotor.setInverted(Ports.Helicopter.IS_MAIN_INVERTED);
-
-        var currentLimit = new SupplyCurrentLimitConfiguration(true, 60, 40, 2);
-        mainMotor.configGetSupplyCurrentLimit(currentLimit);
-        mainMotor.configSupplyCurrentLimit(currentLimit);
-        auxMotor.configGetSupplyCurrentLimit(currentLimit);
-        auxMotor.configSupplyCurrentLimit(currentLimit);
+//
+//        var currentLimit = new SupplyCurrentLimitConfiguration(true, 60, 40, 2);
+//        mainMotor.configGetSupplyCurrentLimit(currentLimit);
+//        mainMotor.configSupplyCurrentLimit(currentLimit);
+//        auxMotor.configGetSupplyCurrentLimit(currentLimit);
+//        auxMotor.configSupplyCurrentLimit(currentLimit);
 
         /*
          config PID velocity for main motor.

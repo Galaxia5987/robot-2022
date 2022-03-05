@@ -10,9 +10,12 @@ public class LedSubsystem extends SubsystemBase {
     private AddressableLED m_led = new AddressableLED(1);
     private AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(54);
     private int current = 1;
+    private int current2 = 0;
     private int m_rainbowFirstPixelHue = 0;
     private int m_water = 80;
     private int sign = 1;
+    private int percent = 0;
+    private boolean neutralMode = true;
 
     public LedSubsystem() {
         m_led.setLength(m_ledBuffer.getLength());
@@ -24,9 +27,9 @@ public class LedSubsystem extends SubsystemBase {
 
     public static int[] switchOfGods(int idx) { // 6 states
         switch (idx) {
-//            case 0:
-//                return new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-//                        0, 0, 0, 0, 0, 0, 0, 0, 0};
+            case 0:
+                return new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0};
             case 1:
                 return new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
                         1, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -61,6 +64,65 @@ public class LedSubsystem extends SubsystemBase {
         return null;
     }
 
+    public static int[] switchOfGods2(int idx) { // 3 states
+        switch (idx) {
+            case 0:
+                return new int[]{0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1,
+                        1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0};
+            case 1:
+                return new int[]{0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0
+                        ,
+                        0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0};
+            case 2:
+                return new int[]{0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0
+                        ,
+                        0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0};
+            case 3:
+                return new int[]{1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0,
+                        0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1};
+            case 4:
+                return new int[]{1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1,
+                        1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1};
+            case 5:
+                return new int[]{0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1,
+                        1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0};
+            case 6:
+                return new int[]{1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0,
+                        0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1};
+            case 7:
+                return new int[]{1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1,
+                        1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1};
+            case 8:
+                return new int[]{0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1,
+                        1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0};
+            case 9:
+                return new int[]{1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0,
+                        0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1};
+            case 10:
+                return new int[]{1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1,
+                        1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1};
+            case 11:
+                return new int[]{0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1,
+                        1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0};
+            case 12:
+                return new int[]{1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0,
+                        0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1};
+            case 13:
+                return new int[]{1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1,
+                        1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1};
+            case 14:
+                return new int[]{0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1,
+                        1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0};
+            case 15:
+                return new int[]{1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0,
+                        0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1};
+            case 16:
+                return new int[]{1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1,
+                        1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1};
+        }
+        return null;
+    }
+
     public void updateCurrent(int states) {
         current++;
         if (current == states) {
@@ -68,43 +130,99 @@ public class LedSubsystem extends SubsystemBase {
         }
     }
 
+    public void updateCurrent2(int states) {
+        current2++;
+        if (current2 == states) {
+            current2 = 0;
+        }
+    }
+
     @Override
     public void periodic() {
         double time = 0.2;
-        if(current == 9){
+        if (current == 9) {
             time = 0.4;
         }
         if (timer.hasElapsed(time)) {
             updateCurrent(10);
+            updateCurrent2(17);
             timer.reset();
         }
-        for (var i = 0; i < 20; i++) {
-            if (switchOfGods(current)[i] == 1) {
-                m_ledBuffer.setHSV(i, 10, 255, 128);
-            } else {
-                m_ledBuffer.setRGB(i, 25, 25, 25);
+        if (neutralMode) {
+            for (var i = 0; i < 20; i++) {
+                if (switchOfGods(current)[i] == 1) {
+                    m_ledBuffer.setHSV(i, 10, 255, 128);
+                } else {
+                    m_ledBuffer.setRGB(i, 25, 25, 25);
+                }
+            }
+        } else {
+            for (var i = 0; i < 20; i++) {
+                if (switchOfGods(percent)[i] == 1) {
+                    m_ledBuffer.setRGB(i, 0, 255, 0);
+                } else {
+                    m_ledBuffer.setRGB(i, 25, 25, 25);
+                }
             }
         }
+
+
         m_ledBuffer.setRGB(0, 0, 0, 0);
         m_ledBuffer.setRGB(1, 0, 0, 0);
 
-        for (var i = 20; i < m_ledBuffer.getLength(); i++) {
+/*        for (var i = 20; i < m_ledBuffer.getLength(); i++) {
 //            final var hue = (m_rainbowFirstPixelHue + (i * 180 / m_ledBuffer.getLength())) % 180;
 //            final var hue = (m_water + (i * 35 / 34));
-            final var hue = (m_water);
+//            final var hue = (m_water);
 //            m_ledBuffer.setHSV(i, hue, 255, 128);
-            m_ledBuffer.setRGB(i, 0, 156, 189);
-        }
-        m_rainbowFirstPixelHue += 3;
-        m_rainbowFirstPixelHue %= 180;
-        m_water += sign;
-        if (m_water >= 130) {
-            sign = -1;
-        }
-
-        if (m_water <= 80) {
-            sign = 1;
-        }
+            if (switchOfGods2(current2)[i - 20] == 1) {
+                m_ledBuffer.setRGB(i, 0, 156, 189);
+            } else {
+                m_ledBuffer.setRGB(i, 25, 25, 25);
+            }
+//            m_ledBuffer.setRGB(i, 0, 156, 189);
+        }*/
+//        m_rainbowFirstPixelHue += 3;
+//        m_rainbowFirstPixelHue %= 180;
+//        m_water += sign;
+//        if (m_water >= 130) {
+//            sign = -1;
+//        }
+//
+//        if (m_water <= 80) {
+//            sign = 1;
+//        }
+        rainbow2();
         m_led.setData(m_ledBuffer);
+        // Increase by to make the rainbow "move"
+        m_rainbowFirstPixelHue += 3;
+        // Check bounds
+        m_rainbowFirstPixelHue %= 180;
     }
+
+    private void rainbow2() {
+        // For every pixel
+        for (var i = 37; i < m_ledBuffer.getLength(); i++) {
+            // Calculate the hue - hue is easier for rainbows because the color
+            // shape is a circle so only one value needs to precess
+            final var hue = ((180-m_rainbowFirstPixelHue) + (i * 180 / 17)) % 180;
+            // Set the value
+            m_ledBuffer.setHSV(i, hue, 223, 217);
+            m_ledBuffer.setHSV(36 - (i - 37), hue, 223, 217);
+        }
+        // Increase by to make the rainbow "move"
+//        m_rainbowFirstPixelHue += 3;
+        // Check bounds
+//        m_rainbowFirstPixelHue %= 180;
+    }
+
+    public void setNeutralMode(boolean neutralMode) {
+        this.neutralMode = neutralMode;
+    }
+
+    public void setPercent(int percent) {
+        this.percent = percent;
+    }
+
+
 }

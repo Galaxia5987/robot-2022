@@ -1,9 +1,11 @@
 package frc.robot.subsystems.shooter.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.shooter.Shooter;
 import webapp.FireLog;
@@ -83,6 +85,7 @@ public class Shoot extends CommandBase {
 
     @Override
     public void initialize() {
+        RobotContainer.ledSubsystem.setNeutralMode(false);
         timer.start();
         timer.reset();
         if (bool) {
@@ -94,6 +97,7 @@ public class Shoot extends CommandBase {
 
     @Override
     public void execute() {
+
 //        if (postFlap.getAsBoolean()) {
 //            if (!last) {
 //                timer.reset();
@@ -120,6 +124,9 @@ public class Shoot extends CommandBase {
         SmartDashboard.putNumber("something_velocity", shooter.getVelocity());
         FireLog.log("Shooter velocity", shooter.getVelocity());
         FireLog.log("Shooter setpoint", setpointVelocity);
+        if (setpointVelocity != 0) {
+            RobotContainer.ledSubsystem.setPercent((int) Math.round((MathUtil.clamp(shooter.getVelocity(), 0, setpointVelocity) / setpointVelocity) * 9));
+        }
     }
 
     @Override
@@ -127,5 +134,7 @@ public class Shoot extends CommandBase {
         shooter.terminate();
         timer.stop();
 //        starting = true;
+        RobotContainer.ledSubsystem.setNeutralMode(true);
+        RobotContainer.ledSubsystem.setPercent(0);
     }
 }

@@ -1,7 +1,6 @@
 package frc.robot.subsystems.shooter.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants;
 import frc.robot.commandgroups.ShootCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
@@ -18,8 +17,10 @@ public class BackAndShootCargo extends SequentialCommandGroup {
                              Flap flap,
                              DoubleSupplier conveyorPower,
                              DoubleSupplier distanceFromTarget) {
-        addCommands(new Convey(conveyor, -0.25).withTimeout(0.025),
+        addCommands(new Convey(conveyor, -0.25).withTimeout(0.075).withInterrupt(conveyor::isPreFlapBeamConnected),
                 new ShootCargo(shooter, hood, conveyor, flap, conveyorPower, distanceFromTarget));
+
+
 
     }
 }

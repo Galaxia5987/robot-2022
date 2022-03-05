@@ -1,7 +1,5 @@
 package frc.robot;
 
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -12,11 +10,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.autoPaths.TaxiFromLowLeftPickShoot;
-import frc.robot.autoPaths.TaxiFromLowRightPickShootPickShoot;
+import frc.robot.autoPaths.FourCargoAuto;
 import frc.robot.commandgroups.Outtake;
 import frc.robot.commandgroups.PickUpCargo;
-import frc.robot.commandgroups.ShootCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
@@ -40,6 +36,7 @@ import java.util.function.Supplier;
 public class RobotContainer {
     private static final Joystick joystick = new Joystick(Ports.Controls.JOYSTICK);
     private static final Joystick joystick2 = new Joystick(Ports.Controls.JOYSTICK2);
+    public static LedSubsystem ledSubsystem = new LedSubsystem();
     // The robot's subsystems and commands are defined here...
     final PhotonVisionModule photonVisionModule = new PhotonVisionModule("photonvision", null);
     private final XboxController xbox = new XboxController(Ports.Controls.XBOX);
@@ -69,8 +66,6 @@ public class RobotContainer {
     private final Shooter shooter = Shooter.getInstance();
     private final Hood hood = Hood.getInstance();
     private final Helicopter helicopter = Helicopter.getInstance();
-    private final LedSubsystem ledSubsystem = new LedSubsystem();
-
     private double speedMultiplier = 1;
 
     /**
@@ -89,14 +84,13 @@ public class RobotContainer {
     private void configureDefaultCommands() {
         Supplier<Pose2d> swervePose = swerve::getPose;
         Supplier<Transform2d> poseRelativeToTarget = () -> Constants.Vision.HUB_POSE.minus(swervePose.get());
-        DoubleSupplier yaw = () -> photonVisionModule.hasTargets() ? photonVisionModule.getYaw().orElse(0) :
-                Robot.getAngle().minus(new Rotation2d(
-                                Math.atan2(
-                                        poseRelativeToTarget.get().getY(),
-                                        poseRelativeToTarget.get().getX()
-                                )
+        DoubleSupplier yaw = () -> photonVisionModule.getYaw().orElse(Robot.getAngle().minus(new Rotation2d(
+                        Math.atan2(
+                                poseRelativeToTarget.get().getY(),
+                                poseRelativeToTarget.get().getX()
                         )
-                ).getDegrees();
+                )
+        ).getDegrees());
         swerve.setDefaultCommand(
                 new DriveAndAdjustWithVision(
                         swerve,
@@ -139,7 +133,7 @@ public class RobotContainer {
         lb.whileHeld(new Outtake(intake, conveyor, flap, shooter, hood, () -> false));
         rb.whileHeld(new Convey(conveyor, -Constants.Conveyor.DEFAULT_POWER.get()));
         start.whenPressed(photonVisionModule::toggleLeds);
-        y.whenPressed(new RunCommand(() -> shooter.setVelocity(3350)).withInterrupt(rt::get));
+        y.whenPressed(new RunCommand(() -> shooter.setVelocity(3350), shooter).withInterrupt(rt::get));
 //        twelve.whenPressed(() -> swerve.resetPoseEstimator(new Pose2d(7, 5, new Rotation2d())));
 
 
@@ -156,19 +150,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-//        return null;
-        photonVisionModule.setLeds(false);
-
-        PathPlannerTrajectory trajectory = PathPlanner.loadPath("p2 - Taxi from low right tarmac and pickup low cargo(7.1)", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL);
-//        PathPlannerTrajectory trajectory = PathPlanner.loadPath("p2 - Taxi from low left tarmac and pickup middle cargo(6.1)", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL);
-//        PathPlannerTrajectory trajectory = PathPlanner.loadPath("p1 - Taxi from low left and pickup middle cargo(3.1)", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL);
-//        PathPlannerTrajectory trajectory = PathPlanner.loadPath("p2 - Taxi from low left tarmac and pickup middle cargo(6.1)", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL);
-        Robot.resetAngle(trajectory.getInitialState().holonomicRotation);
-        swerve.resetOdometry(trajectory.getInitialState().poseMeters, trajectory.getInitialState().holonomicRotation);
-
-        return new TaxiFromLowRightPickShootPickShoot(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
-//        return new TaxiFromLowLeftPickShootPickShoot(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
-//        return new TaxiFromLowLeftPickShoot(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
+        return new FourCargoAuto(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
     }
 
     /**

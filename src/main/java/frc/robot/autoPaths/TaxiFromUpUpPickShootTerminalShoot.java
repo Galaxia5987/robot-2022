@@ -1,9 +1,6 @@
 package frc.robot.autoPaths;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.Constants;
-import frc.robot.commandgroups.PickUpCargo;
-import frc.robot.commandgroups.ShootCargo;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.flap.Flap;
@@ -16,23 +13,24 @@ public class TaxiFromUpUpPickShootTerminalShoot extends SaarIsAutonomous {
 
     // Taxi from up up, pickup up cargo, go to terminal, park near up tarmac, shoot.(8)
     public TaxiFromUpUpPickShootTerminalShoot(Shooter shooter, SwerveDrive swerveDrive, Conveyor conveyor, Intake intake, Hood hood, Flap flap, PhotonVisionModule visionModule) {
-        super(swerveDrive, shooter, conveyor, intake, hood, flap, visionModule);
+        super(swerveDrive, shooter, conveyor, intake, hood, flap, visionModule, "p2 - Taxi from up up tarmac and going to up cargo(8.1)");
 
-        addCommands(new ParallelCommandGroup(
-                        followPath.apply("p2 - Taxi from up up tarmac and going to up cargo(8.1)"),
-                        pickup.apply(10)
+        addCommands(
+                followPathAndPickup("p2 - Taxi from up up tarmac and going to up cargo(8.1)")
+        );
+
+        addCommands(shootAndAdjust(3));
+
+        addCommands(
+                new ParallelRaceGroup(
+                        followPath("p2 - Going to terminal(8.2)"),
+                        pickup(10)
                 )
         );
 
-        addCommands(shootAndAdjust.apply(3));
+        addCommands(followPathAndPickup("p2 - Going to low tarmac(8.3.1)"));
 
-        addCommands(followPath.apply("p2 - Going to terminal(8.2)"));
-
-        addCommands(pickup.apply(3));
-
-        addCommands(followPath.apply("p2 - Going to low tarmac(8.3.1)"));
-
-        addCommands(shootAndAdjust.apply(3));
+        addCommands(shootAndAdjust(3));
     }
 
 }
