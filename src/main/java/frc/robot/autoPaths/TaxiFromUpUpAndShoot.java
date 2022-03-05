@@ -15,40 +15,21 @@ import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.utils.PhotonVisionModule;
 
 import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 
-public class TaxiFromUpUpAndShoot extends SequentialCommandGroup {
-    private DoubleSupplier distanceFromTarget;
-    private DoubleSupplier conveyorPower;
+public class TaxiFromUpUpAndShoot extends SaarIsAutonomous {
 
     // Taxi from up up tarmac, shoot pre-loaded cargo, park near up tarmac.(2)
-    public TaxiFromUpUpAndShoot(Shooter shooter, SwerveDrive swerveDrive, Conveyor conveyor, Intake intake, Hood hood, Flap flap) {
-        var rotationPID = new ProfiledPIDController(Constants.Autonomous.KP_THETA_CONTROLLER, 0, 0, new TrapezoidProfile.Constraints(Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL));
-        rotationPID.enableContinuousInput(-Math.PI, Math.PI);
+    public TaxiFromUpUpAndShoot(Shooter shooter, SwerveDrive swerveDrive, Conveyor conveyor, Intake intake, Hood hood, Flap flap, PhotonVisionModule visionModule) {
+        super(swerveDrive, shooter, conveyor, intake, hood, flap, visionModule);
 
-        Function<String, FollowPath> createCommand = path -> new FollowPath(
-                PathPlanner.loadPath(path, Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL),
-                swerveDrive::getPose,
-                swerveDrive.getKinematics(),
-                new PIDController(Constants.Autonomous.KP_X_CONTROLLER, 0, 0),
-                new PIDController(Constants.Autonomous.KP_Y_CONTROLLER, 0, 0),
-                swerveDrive::setStates,
-                swerveDrive);
+        addCommands(followPath.apply("p0 - Taxi from up up tarmac(2.1"));
 
+        addCommands(shootAndAdjust.apply(3));
 
-        addCommands(createCommand.apply("p0 - Taxi from up up tarmac(2.1"));
-
-        addCommands(new ShootCargo(
-                shooter,
-                hood,
-                conveyor,
-                flap,
-                conveyorPower,
-                distanceFromTarget)
-                .withTimeout(3));
-
-        addCommands(createCommand.apply("p0 - Go to up tarmac(1.2.2)"));
+        addCommands(followPath.apply("p0 - Go to up tarmac(1.2.2)"));
     }
 }

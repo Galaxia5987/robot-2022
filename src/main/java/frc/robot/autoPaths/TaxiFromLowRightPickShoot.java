@@ -23,50 +23,20 @@ import frc.robot.utils.PhotonVisionModule;
 import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 
-public class TaxiFromLowRightPickShoot extends SequentialCommandGroup {
+public class TaxiFromLowRightPickShoot extends SaarIsAutonomous {
 
     // Taxi from low right, pick up low cargo, shoot, go near low tarmac.(4)
-    public TaxiFromLowRightPickShoot(Shooter shooter, SwerveDrive swerveDrive, Conveyor conveyor, Intake intake, Hood hood, Flap flap, PhotonVisionModule module) {
-        DoubleSupplier distanceFromTarget = module::getDistance;
-        DoubleSupplier conveyorPower = Constants.Conveyor.DEFAULT_POWER::get;
-
-        Function<String, FollowPath> createCommand = path -> new FollowPath(
-                PathPlanner.loadPath(path, Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL),
-                swerveDrive::getPose,
-                swerveDrive.getKinematics(),
-                new PIDController(Constants.Autonomous.KP_X_CONTROLLER, 0, 0),
-                new PIDController(Constants.Autonomous.KP_Y_CONTROLLER, 0, 0),
-                swerveDrive::setStates,
-                swerveDrive);
-        addCommands(new InstantCommand(() -> module.setLeds(false)));
+    public TaxiFromLowRightPickShoot(Shooter shooter, SwerveDrive swerveDrive, Conveyor conveyor, Intake intake, Hood hood, Flap flap, PhotonVisionModule visionModule) {
+        super(swerveDrive, shooter, conveyor, intake, hood, flap, visionModule);
 
         addCommands(new ParallelCommandGroup(
-                createCommand.apply("p1 - Taxi from low right and pickup low cargo(4.1)"),
-                new PickUpCargo(
-                        conveyor,
-                        flap,
-                        intake,
-                        Constants.Conveyor.DEFAULT_POWER.get(),
-                        Constants.Intake.DEFAULT_POWER::get
-                ).withTimeout(3)));
+                followPath.apply("p1 - Taxi from low right and pickup low cargo(4.1)"),
+                pickup.apply(3)));
 
         addCommands(new InstantCommand(swerveDrive::terminate));
-        addCommands(
-                new Convey(conveyor, -conveyorPower.getAsDouble()).withTimeout(0.05),
-                new ParallelCommandGroup(
-                        new ShootCargo(
-                                shooter,
-                                hood,
-                                conveyor,
-                                flap,
-                                conveyorPower,
-                                distanceFromTarget)
-                                .withTimeout(3),
-                        new SimpleAdjustWithVision(swerveDrive, () -> 0, () -> true, () -> module.getYaw().orElse(0), distanceFromTarget))
-        );
+        addCommands(shootAndAdjust.apply(3));
 
-
-        addCommands(createCommand.apply("p1 - Going to low tarmac(4.2.1)"));
+        addCommands(followPath.apply("p1 - Going to low tarmac(4.2.1)"));
     }
 }
 
