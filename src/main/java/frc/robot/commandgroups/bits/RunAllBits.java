@@ -1,5 +1,6 @@
 package frc.robot.commandgroups.bits;
 
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.conveyor.Conveyor;
@@ -20,10 +21,18 @@ public class RunAllBits extends SequentialCommandGroup {
                       Flap flap,
                       Hood hood) {
         addCommands(
-                new CheckSolenoids(hood, flap, intake).andThen(new WaitCommand(1)),
-                new TurnAllMotors(shooter, conveyor, swerve, intake).andThen(new WaitCommand(1)),
-                new HelpfulZeroing(swerve).andThen(new WaitCommand(1)),
-                new TurnToRandomAngles(swerve).andThen(new WaitCommand(1))
+                new CheckSolenoids(hood, flap, intake)
+                        .alongWith(new RunCommand(() -> System.out.println("Checking solenoids")))
+                        .andThen(new WaitCommand(1)),
+                new TurnAllMotors(shooter, conveyor, swerve, intake)
+                        .alongWith(new RunCommand(() -> System.out.println("Turning all motors")))
+                        .andThen(new WaitCommand(1)),
+                new HelpfulZeroing(swerve)
+                        .alongWith(new RunCommand(() -> System.out.println("Zeroing swerve modules")))
+                        .andThen(new WaitCommand(5)),
+                new TurnToRandomAngles(swerve)
+                        .alongWith(new RunCommand(() -> System.out.println("Oscillating swerve modules")))
+                        .andThen(new WaitCommand(1))
         );
     }
 }
