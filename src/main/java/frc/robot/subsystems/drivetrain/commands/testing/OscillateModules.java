@@ -5,11 +5,11 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
-public class TurnToRandomAngles extends CommandBase {
+public class OscillateModules extends CommandBase {
     private final SwerveDrive swerve;
     private final Timer timer = new Timer();
 
-    public TurnToRandomAngles(SwerveDrive swerve) {
+    public OscillateModules(SwerveDrive swerve) {
         this.swerve = swerve;
     }
 

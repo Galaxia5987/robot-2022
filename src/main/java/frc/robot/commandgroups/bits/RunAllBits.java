@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.testing.HelpfulZeroing;
-import frc.robot.subsystems.drivetrain.commands.testing.TurnToRandomAngles;
+import frc.robot.subsystems.drivetrain.commands.testing.OscillateModules;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Intake;
@@ -30,9 +30,10 @@ public class RunAllBits extends SequentialCommandGroup {
                 new HelpfulZeroing(swerve)
                         .raceWith(new RunCommand(() -> System.out.println("Zeroing swerve modules")))
                         .andThen(new WaitCommand(5)),
-                new TurnToRandomAngles(swerve)
+                new OscillateModules(swerve)
                         .raceWith(new RunCommand(() -> System.out.println("Oscillating swerve modules")))
-                        .andThen(new WaitCommand(1))
+                        .andThen(new HelpfulZeroing(swerve))
+                        .andThen(new WaitCommand(5))
         );
     }
 }
