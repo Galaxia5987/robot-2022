@@ -28,12 +28,14 @@ public class RunAllBits extends SequentialCommandGroup {
                         .raceWith(new RunCommand(() -> System.out.println("Checking solenoids")))
                         .andThen(new WaitCommand(1)),
                 new TurnAllMotors(shooter, conveyor, swerve, intake)
+                        .withTimeout(5)
                         .raceWith(new RunCommand(() -> System.out.println("Turning all motors")))
                         .andThen(new WaitCommand(1)),
                 new HelpfulZeroing(swerve)
                         .raceWith(new RunCommand(() -> System.out.println("Zeroing swerve modules")))
                         .andThen(new WaitCommand(5)),
                 new OscillateModules(swerve)
+                        .withTimeout(5)
                         .raceWith(new RunCommand(() -> System.out.println("Oscillating swerve modules")))
                         .andThen(new HelpfulZeroing(swerve))
                         .andThen(new WaitCommand(5)),
