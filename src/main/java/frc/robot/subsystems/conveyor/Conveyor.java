@@ -197,6 +197,12 @@ public class Conveyor extends SubsystemBase {
 //        SmartDashboard.putString("Current Detected", colorSensor.getCurrentColor().name());
 //        SmartDashboard.putBoolean("Pre flap", !preFlapBeam.hasObject());
 //        SmartDashboard.putNumberArray("Color", colorSensor.getRawColor());
+        int minutes = (int) Math.round(DriverStation.getMatchTime()) / 60;
+        String minutesString = "0" + minutes;
+        int seconds = (int) Math.round(DriverStation.getMatchTime()) % 60;
+        String secondsString = seconds < 10 ? "0" + seconds : seconds + "";
+        String timerString = minutesString + ":" + secondsString;
+        SmartDashboard.putString("timer", timerString);
     }
 
     @Override

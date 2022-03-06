@@ -48,11 +48,11 @@ public class Convey3 extends CommandBase {
 
     @Override
     public void execute() {
-        SmartDashboard.putBoolean("getBallToPreFlap", getBallToPreFlap);
-        SmartDashboard.putBoolean("last", last);
-        SmartDashboard.putNumber("timer", timer.get());
-        SmartDashboard.putBoolean("setpoint_reached", Math.abs(setpoint - velocitySupplier.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get());
-        SmartDashboard.putBoolean("wait", wait);
+//        SmartDashboard.putBoolean("getBallToPreFlap", getBallToPreFlap);
+//        SmartDashboard.putBoolean("last", last);
+//        SmartDashboard.putNumber("timer", timer.get());
+//        SmartDashboard.putBoolean("setpoint_reached", Math.abs(setpoint - velocitySupplier.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get());
+//        SmartDashboard.putBoolean("wait", wait);
 
         if (wait) {
             if (Math.abs(setpoint - velocitySupplier.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get()) {
