@@ -8,6 +8,8 @@ import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.testing.HelpfulZeroing;
 import frc.robot.subsystems.drivetrain.commands.testing.OscillateModules;
 import frc.robot.subsystems.flap.Flap;
+import frc.robot.subsystems.helicopter.Helicopter;
+import frc.robot.subsystems.helicopter.commands.JoystickHelicopter;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
@@ -19,7 +21,8 @@ public class RunAllBits extends SequentialCommandGroup {
                       Conveyor conveyor,
                       Intake intake,
                       Flap flap,
-                      Hood hood) {
+                      Hood hood,
+                      Helicopter helicopter) {
         addCommands(
                 new CheckSolenoids(hood, flap, intake)
                         .raceWith(new RunCommand(() -> System.out.println("Checking solenoids")))
@@ -33,7 +36,10 @@ public class RunAllBits extends SequentialCommandGroup {
                 new OscillateModules(swerve)
                         .raceWith(new RunCommand(() -> System.out.println("Oscillating swerve modules")))
                         .andThen(new HelpfulZeroing(swerve))
-                        .andThen(new WaitCommand(5))
+                        .andThen(new WaitCommand(5)),
+                new JoystickHelicopter(helicopter, () -> 1)
+                        .withTimeout(5)
+                        .raceWith(new RunCommand(() -> System.out.println("Turning helicopter")))
         );
     }
 }

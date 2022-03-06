@@ -151,7 +151,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-//        return new RunAllBits(swerve, shooter, conveyor, intake, flap, hood);
+//        return new RunAllBits(swerve, shooter, conveyor, intake, flap, hood, helicopter);
         return new FourCargoAuto(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
     }
 

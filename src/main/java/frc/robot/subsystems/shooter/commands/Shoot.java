@@ -136,5 +136,6 @@ public class Shoot extends CommandBase {
 //        starting = true;
         RobotContainer.ledSubsystem.setNeutralMode(true);
         RobotContainer.ledSubsystem.setPercent(0);
+        SmartDashboard.putString("speed_state", "red");
     }
 }
