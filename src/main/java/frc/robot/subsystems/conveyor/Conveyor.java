@@ -27,11 +27,11 @@ public class Conveyor extends SubsystemBase {
     private final DigitalInput postFlapBeam = new DigitalInput(Ports.Conveyor.POST_FLAP_BEAM_BREAKER);
     private final DigitalInput preFlapBeam = new DigitalInput(Ports.Conveyor.PRE_FLAP_BEAM_BREAKER);
     private final UnitModel unitModel = new UnitModel(Constants.Conveyor.TICKS_PER_UNIT);
-    private boolean wasPostFlapBeamConnected = true;
-    private int currentProximity = 0;
+    private final boolean wasPostFlapBeamConnected = true;
+    private final int currentProximity = 0;
     private double commandPower;
-    private LinearFilter filter = LinearFilter.movingAverage(20);
-    private ColorSensor colorSensor = new ColorSensor(I2C.Port.kMXP);
+    private final LinearFilter filter = LinearFilter.movingAverage(20);
+    private final ColorSensor colorSensor = new ColorSensor(I2C.Port.kMXP);
 
     private Conveyor() {
         motor.setInverted(MOTOR_INVERSION);

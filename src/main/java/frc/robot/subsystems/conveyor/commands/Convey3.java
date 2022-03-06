@@ -19,9 +19,9 @@ public class Convey3 extends CommandBase {
     private final DoubleSupplier velocitySupplier;
     boolean go = false;
     private boolean last = false;
-    private boolean first = true;
+    private final boolean first = true;
     private boolean getBallToPreFlap = true;
-    private Timer delayTimer = new Timer();
+    private final Timer delayTimer = new Timer();
     private double setpoint = 0;
     private boolean wait = true;
 

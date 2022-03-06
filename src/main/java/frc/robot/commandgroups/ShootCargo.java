@@ -41,6 +41,6 @@ public class ShootCargo extends ParallelCommandGroup {
                       Flap flap,
                       DoubleSupplier conveyorPower,
                       DoubleSupplier distanceFromTarget) {
-       this(shooter, hood, conveyor, flap, conveyorPower, distanceFromTarget, true);
+        this(shooter, hood, conveyor, flap, conveyorPower, distanceFromTarget, true);
     }
 }

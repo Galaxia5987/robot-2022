@@ -7,13 +7,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LedSubsystem extends SubsystemBase {
     Timer timer = new Timer();
-    private AddressableLED m_led = new AddressableLED(1);
-    private AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(54);
+    private final AddressableLED m_led = new AddressableLED(1);
+    private final AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(54);
     private int current = 1;
     private int current2 = 0;
     private int m_rainbowFirstPixelHue = 0;
-    private int m_water = 80;
-    private int sign = 1;
+    private final int m_water = 80;
+    private final int sign = 1;
     private int percent = 0;
     private boolean neutralMode = true;
 
@@ -205,7 +205,7 @@ public class LedSubsystem extends SubsystemBase {
         for (var i = 37; i < m_ledBuffer.getLength(); i++) {
             // Calculate the hue - hue is easier for rainbows because the color
             // shape is a circle so only one value needs to precess
-            final var hue = ((180-m_rainbowFirstPixelHue) + (i * 180 / 17)) % 180;
+            final var hue = ((180 - m_rainbowFirstPixelHue) + (i * 180 / 17)) % 180;
             // Set the value
             m_ledBuffer.setHSV(i, hue, 223, 217);
             m_ledBuffer.setHSV(36 - (i - 37), hue, 223, 217);

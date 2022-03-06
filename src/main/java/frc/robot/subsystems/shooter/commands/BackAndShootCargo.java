@@ -21,6 +21,5 @@ public class BackAndShootCargo extends SequentialCommandGroup {
                 new ShootCargo(shooter, hood, conveyor, flap, conveyorPower, distanceFromTarget));
 
 
-
     }
 }

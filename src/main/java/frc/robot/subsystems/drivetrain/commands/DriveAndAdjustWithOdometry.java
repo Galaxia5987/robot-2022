@@ -1,7 +1,6 @@
 package frc.robot.subsystems.drivetrain.commands;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -10,7 +9,6 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
-import java.util.OptionalDouble;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -23,11 +21,11 @@ public class DriveAndAdjustWithOdometry extends HolonomicDrive {
     }};
     private final Timer driftingTimer = new Timer();
     private final Timer sampleYawTimer = new Timer();
+    private final BooleanSupplier condition;
     private boolean newSetpoint = false;
     private Rotation2d setpoint;
     private boolean wait = false;
     private double current = 0;
-    private final BooleanSupplier condition;
 
     public DriveAndAdjustWithOdometry(SwerveDrive swerveDrive, DoubleSupplier forwardSupplier, DoubleSupplier strafeSupplier, DoubleSupplier rotationSupplier, BooleanSupplier condition) {
         super(swerveDrive, forwardSupplier, strafeSupplier, rotationSupplier);

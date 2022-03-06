@@ -5,16 +5,15 @@ import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 
 import static frc.robot.Constants.Conveyor.*;
 
 public class ColorSensor {
     private final ColorSensorV3 sensor;
+    private final ColorMatch colorMatch = new ColorMatch();
     private DriverStation.Alliance lastSeenColor = DriverStation.Alliance.Invalid;
     private DriverStation.Alliance currentColor = DriverStation.Alliance.Invalid;
-    private final ColorMatch colorMatch = new ColorMatch();
 
     public ColorSensor(I2C.Port colorSensorPort) {
         this.sensor = new ColorSensorV3(colorSensorPort);
