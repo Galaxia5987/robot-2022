@@ -22,16 +22,16 @@ public class RunAllBits extends SequentialCommandGroup {
                       Hood hood) {
         addCommands(
                 new CheckSolenoids(hood, flap, intake)
-                        .alongWith(new RunCommand(() -> System.out.println("Checking solenoids")))
+                        .raceWith(new RunCommand(() -> System.out.println("Checking solenoids")))
                         .andThen(new WaitCommand(1)),
                 new TurnAllMotors(shooter, conveyor, swerve, intake)
-                        .alongWith(new RunCommand(() -> System.out.println("Turning all motors")))
+                        .raceWith(new RunCommand(() -> System.out.println("Turning all motors")))
                         .andThen(new WaitCommand(1)),
                 new HelpfulZeroing(swerve)
-                        .alongWith(new RunCommand(() -> System.out.println("Zeroing swerve modules")))
+                        .raceWith(new RunCommand(() -> System.out.println("Zeroing swerve modules")))
                         .andThen(new WaitCommand(5)),
                 new TurnToRandomAngles(swerve)
-                        .alongWith(new RunCommand(() -> System.out.println("Oscillating swerve modules")))
+                        .raceWith(new RunCommand(() -> System.out.println("Oscillating swerve modules")))
                         .andThen(new WaitCommand(1))
         );
     }
