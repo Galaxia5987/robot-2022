@@ -285,7 +285,7 @@ public final class Constants {
     public static class Intake {
         public static final WebConstant DEFAULT_POWER = WebConstant.of("Intake", "power", 1); // power intake will receive on the basic command. [%]
         public static final double POWER_TO_VELOCITY_RATIO = -3 / 16.0; // Ratio of power to velocity. [% / m/s]
-        public static final double TIME_BETWEEN_RUNS = 1.0; // time intake will wait before toggling the retractor (for testing only). [s]
+        public static final double TIME_BETWEEN_RUNS = 1.7; // time intake will wait before toggling the retractor (for testing only). [s]
     }
 
     public static class Hood {

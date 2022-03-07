@@ -1,6 +1,7 @@
 package frc.robot.commandgroups.bits;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.flap.commands.bits.OscillateFlap;
 import frc.robot.subsystems.helicopter.Helicopter;
@@ -17,7 +18,8 @@ public class CheckSolenoids extends SequentialCommandGroup {
                 new OscillateStopper(helicopter).withTimeout(5),
                 new CheckHoodPressure(hood).withTimeout(5),
                 new OscillateFlap(flap).withTimeout(5),
-                new RetractorTest(intake, 100).withTimeout(5)
+                new WaitCommand(3),
+                new RetractorTest(intake, 3).withTimeout(5)
         );
     }
 }

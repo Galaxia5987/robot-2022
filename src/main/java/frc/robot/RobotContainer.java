@@ -14,6 +14,7 @@ import frc.robot.commandgroups.BackAndShootCargo2;
 import frc.robot.commandgroups.OneBallOuttake;
 import frc.robot.commandgroups.Outtake;
 import frc.robot.commandgroups.PickUpCargo;
+import frc.robot.commandgroups.bits.RunAllBits;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
@@ -163,8 +164,8 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-//        return new RunAllBits(swerve, shooter, conveyor, intake, flap, hood, helicopter);
-        return autonomousCommand;
+        return new RunAllBits(swerve, shooter, conveyor, intake, flap, hood, helicopter);
+//        return autonomousCommand;
     }
 
     /**
