@@ -279,6 +279,7 @@ public final class Constants {
         public static final double BLUE_RUNG_YAW = 180;
         public static final double RED_RUNG_YAW = BLUE_RUNG_YAW - 180;
 
+        public static final double OSCILLATION_DELTA_TIME = 0.2;
     }
 
     public static class Intake {

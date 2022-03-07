@@ -24,7 +24,7 @@ public class RunAllBits extends SequentialCommandGroup {
                       Hood hood,
                       Helicopter helicopter) {
         addCommands(
-                new CheckSolenoids(hood, flap, intake)
+                new CheckSolenoids(hood, flap, intake, helicopter)
                         .raceWith(new RunCommand(() -> System.out.println("Checking solenoids")))
                         .andThen(new WaitCommand(1)),
                 new TurnAllMotors(shooter, conveyor, swerve, intake)
@@ -40,6 +40,7 @@ public class RunAllBits extends SequentialCommandGroup {
                         .andThen(new HelpfulZeroing(swerve))
                         .andThen(new WaitCommand(5)),
                 new JoystickHelicopter(helicopter, () -> 1)
+                        .beforeStarting(() -> helicopter.setStopperMode(false))
                         .withTimeout(5)
                         .raceWith(new RunCommand(() -> System.out.println("Turning helicopter")))
         );
