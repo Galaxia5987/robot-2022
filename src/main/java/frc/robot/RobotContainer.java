@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.auto.FourCargoAuto;
+import frc.robot.auto.TaxiFromLowRightPickShootPickShoot;
 import frc.robot.commandgroups.BackAndShootCargo2;
 import frc.robot.commandgroups.OneBallOuttake;
 import frc.robot.commandgroups.Outtake;
@@ -76,7 +77,7 @@ public class RobotContainer {
      * The container for the robot.  Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        autonomousCommand = new FourCargoAuto(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
+        autonomousCommand = new TaxiFromLowRightPickShootPickShoot(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
         // Configure the button bindings and default commands
         configureDefaultCommands();
         if (Robot.debug) {
