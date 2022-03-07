@@ -15,11 +15,11 @@ public class CheckSolenoids extends SequentialCommandGroup {
 
     public CheckSolenoids(Hood hood, Flap flap, Intake intake, Helicopter helicopter) {
         addCommands(
-                new OscillateStopper(helicopter).withTimeout(5),
-                new CheckHoodPressure(hood).withTimeout(5),
-                new OscillateFlap(flap).withTimeout(5),
+                new OscillateStopper(helicopter).withTimeout(3),
+                new CheckHoodPressure(hood).withTimeout(3),
+                new OscillateFlap(flap).withTimeout(3),
                 new WaitCommand(3),
-                new RetractorTest(intake, 3).withTimeout(5)
+                new RetractorTest(intake, 3).withTimeout(5.1)
         );
     }
 }
