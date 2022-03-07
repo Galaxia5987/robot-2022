@@ -27,8 +27,8 @@ public class CheckColorSensor extends Convey {
 
         var queue = conveyor.getQueue();
 
-        SmartDashboard.putString("First", queue.getFirst());
-        SmartDashboard.putString("Last", queue.getLast());
+        SmartDashboard.putString("First", queue.getFirst().name());
+        SmartDashboard.putString("Last", queue.getLast().name());
         SmartDashboard.putNumber("Number of cargo", conveyor.getCargoCount());
     }
 

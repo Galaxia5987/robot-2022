@@ -1,4 +1,4 @@
-package frc.robot.autoPaths;
+package frc.robot.auto;
 
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import frc.robot.subsystems.conveyor.Conveyor;

@@ -28,6 +28,7 @@ public class ColorSensor {
      * @return the color sensor value as a {@link edu.wpi.first.wpilibj.DriverStation.Alliance} enum.
      */
     public DriverStation.Alliance getColor() {
+        if (getProximityValue() < MIN_PROXIMITY_VALUE) return DriverStation.Alliance.Invalid;
         ColorMatchResult result = colorMatch.matchClosestColor(sensor.getColor());
         Color resultColor = result.color;
 

@@ -335,6 +335,13 @@ public class SwerveDrive extends SubsystemBase {
         }
     }
 
+    public void lock() {
+        modules[0].setAngle(Rotation2d.fromDegrees(45));
+        modules[1].setAngle(Rotation2d.fromDegrees(-45));
+        modules[3].setAngle(Rotation2d.fromDegrees(45));
+        modules[1].setAngle(Rotation2d.fromDegrees(-45));
+    }
+
     @Override
     public void periodic() {
         odometry.updateWithTime(

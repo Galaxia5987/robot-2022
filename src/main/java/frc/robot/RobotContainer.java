@@ -5,12 +5,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.autoPaths.FourCargoAuto;
+import frc.robot.auto.FourCargoAuto;
+import frc.robot.commandgroups.BackAndShootCargo2;
+import frc.robot.commandgroups.OneBallOuttake;
 import frc.robot.commandgroups.Outtake;
 import frc.robot.commandgroups.PickUpCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
@@ -37,6 +37,7 @@ public class RobotContainer {
     private static final Joystick joystick = new Joystick(Ports.Controls.JOYSTICK);
     private static final Joystick joystick2 = new Joystick(Ports.Controls.JOYSTICK2);
     public static LedSubsystem ledSubsystem = new LedSubsystem();
+    //    public static LedSubsystem ledSubsystem = new LedSubsystem();
     // The robot's subsystems and commands are defined here...
     final PhotonVisionModule photonVisionModule = new PhotonVisionModule("photonvision", null);
     private final XboxController xbox = new XboxController(Ports.Controls.XBOX);
@@ -66,12 +67,16 @@ public class RobotContainer {
     private final Shooter shooter = Shooter.getInstance();
     private final Hood hood = Hood.getInstance();
     private final Helicopter helicopter = Helicopter.getInstance();
+    private CommandBase autonomousCommand;
     private double speedMultiplier = 1;
+//    private AddressableLED led = new AddressableLED(1);
+//    private AddressableLEDBuffer buffer = new AddressableLEDBuffer(54);
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+        autonomousCommand = new FourCargoAuto(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
         // Configure the button bindings and default commands
         configureDefaultCommands();
         if (Robot.debug) {
@@ -79,6 +84,7 @@ public class RobotContainer {
         }
 
         configureButtonBindings();
+
     }
 
     private void configureDefaultCommands() {
@@ -115,10 +121,14 @@ public class RobotContainer {
                 Math.hypot(poseRelativeToTarget.get().getX(), poseRelativeToTarget.get().getY());
 
 //        a.whileHeld(new IntakeCargo(intake, () -> -Constants.Intake.DEFAULT_POWER.get()));
-        b.whileHeld(new Convey(conveyor, Constants.Conveyor.DEFAULT_POWER.get()));
+        b.whileHeld(new ParallelCommandGroup(
+                new InstantCommand(flap::allowShooting),
+                new Convey(conveyor, Constants.Conveyor.DEFAULT_POWER.get())
+        ));
         leftPov.whileActiveOnce(new InstantCommand(hood::toggle));
         x.whenPressed(intake::toggleRetractor);
-        back.whenPressed(flap::toggleFlap);
+//        back.whenPressed(flap::toggleFlap);
+        back.whenPressed(new OneBallOuttake(intake, conveyor, () -> conveyor.getColorSensorProximity() >= 150));
 //        upPov.whileActiveOnce(new InstantCommand(hood::toggle));
         rightPov.whileActiveOnce(new InstantCommand(helicopter::toggleStopper));
         upPov.and(start).whileActiveOnce(new MoveHelicopter(helicopter, Constants.Helicopter.SECOND_RUNG));
@@ -131,17 +141,19 @@ public class RobotContainer {
                 distanceFromTarget));
         lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, Constants.Conveyor.DEFAULT_POWER.get(), Constants.Intake.DEFAULT_POWER::get));
         lb.whileHeld(new Outtake(intake, conveyor, flap, shooter, hood, () -> false));
-        rb.whileHeld(new Convey(conveyor, -Constants.Conveyor.DEFAULT_POWER.get()));
+        rb.whileHeld(new Convey(conveyor, -Constants.Conveyor.SHOOT_POWER));
         start.whenPressed(photonVisionModule::toggleLeds);
-        y.whenPressed(new RunCommand(() -> shooter.setVelocity(3350), shooter).withInterrupt(rt::get));
+        y.whenPressed(new RunCommand(() -> {
+            shooter.setVelocity(3350);
+        }, shooter).withInterrupt(rt::get));
 //        twelve.whenPressed(() -> swerve.resetPoseEstimator(new Pose2d(7, 5, new Rotation2d())));
-
+        a.whileHeld(new BackAndShootCargo2(shooter, hood, conveyor, flap,
+                () -> Constants.Conveyor.SHOOT_POWER,
+                distanceFromTarget));
 
         leftTrigger.whenPressed(() -> speedMultiplier = (speedMultiplier == 0.5 ? 1 : 0.5));
         two.whenPressed((Runnable) Robot::resetAngle);
         twoJoystick2.whileHeld(new TurnToAngle(swerve, () -> 0));
-
-
     }
 
     /**
@@ -151,7 +163,7 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
 //        return new RunAllBits(swerve, shooter, conveyor, intake, flap, hood, helicopter);
-        return new FourCargoAuto(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
+        return autonomousCommand;
     }
 
     /**

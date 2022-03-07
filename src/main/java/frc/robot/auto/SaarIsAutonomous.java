@@ -1,4 +1,4 @@
-package frc.robot.autoPaths;
+package frc.robot.auto;
 
 import com.pathplanner.lib.PathPlanner;
 import edu.wpi.first.math.controller.PIDController;
@@ -65,11 +65,11 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
         return new ParallelRaceGroup(
                 followPath(path),
                 pickup(10),
-                new RunCommand(() -> shooter.setVelocity(3300), shooter)
+                new RunCommand(() -> shooter.setVelocity(3400), shooter)
         );
     }
 
-    protected CommandBase shootAndAdjust(int timeout) {
+    protected CommandBase shootAndAdjust(double timeout) {
         Supplier<Pose2d> swervePose = swerveDrive::getPose;
         Supplier<Transform2d> poseRelativeToTarget = () -> Constants.Vision.HUB_POSE.minus(swervePose.get());
         DoubleSupplier distanceFromTarget = visionModule::getDistance;
@@ -82,7 +82,7 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
                 )
         ).getDegrees());
         return new SequentialCommandGroup(
-                new SimpleAdjustWithVision(swerveDrive, () -> 0, () -> true, yaw, distanceFromTarget).withTimeout(0.7),
+                new SimpleAdjustWithVision(swerveDrive, () -> 0, () -> true, yaw, distanceFromTarget).withTimeout(0.3),
                 new ParallelRaceGroup(new BackAndShootCargo(
                         shooter,
                         hood,

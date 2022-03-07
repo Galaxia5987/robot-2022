@@ -44,8 +44,8 @@ public class TestBallFlow extends SequentialCommandGroup {
         SmartDashboard.putBoolean("Is post flap beam connected", conveyor.isPostFlapBeamConnected());
         SmartDashboard.putNumber("Shooter velocity", shooter.getVelocity());
         SmartDashboard.putNumber("Conveyor power", conveyor.getPower());
-        SmartDashboard.putString("First in queue", conveyor.getQueue().getFirst());
-        SmartDashboard.putString("Last in queue", conveyor.getQueue().getLast());
+        SmartDashboard.putString("First in queue", conveyor.getQueue().getFirst().name());
+        SmartDashboard.putString("Last in queue", conveyor.getQueue().getLast().name());
         SmartDashboard.putNumber("Number of balls in conveyor", conveyor.getCargoCount());
         SmartDashboard.putBoolean("Is pre flap beam connected", conveyor.isPreFlapBeamConnected());
     }

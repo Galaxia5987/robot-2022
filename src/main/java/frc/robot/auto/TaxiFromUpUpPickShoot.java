@@ -1,4 +1,4 @@
-package frc.robot.autoPaths;
+package frc.robot.auto;
 
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
@@ -14,12 +14,8 @@ public class TaxiFromUpUpPickShoot extends SaarIsAutonomous {
     public TaxiFromUpUpPickShoot(Shooter shooter, SwerveDrive swerveDrive, Conveyor conveyor, Intake intake, Hood hood, Flap flap, PhotonVisionModule visionModule) {
         super(swerveDrive, shooter, conveyor, intake, hood, flap, visionModule, "p1 - Taxi from up up to up cargo and pickup up cargo(5.1)");
 
-        addCommands(
-                followPathAndPickup("p1 - Taxi from up up to up cargo and pickup up cargo(5.1)")
-        );
+        addCommands(followPathAndPickup("p1 - Taxi from up up to up cargo and pickup up cargo(5.1)"));
 
         addCommands(shootAndAdjust(3));
-
-        addCommands(followPath("p1 - Going to up tarmac(5.2.2)"));
     }
 }

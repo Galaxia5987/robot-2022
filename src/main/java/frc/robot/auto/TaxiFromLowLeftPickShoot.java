@@ -1,5 +1,6 @@
-package frc.robot.autoPaths;
+package frc.robot.auto;
 
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.flap.Flap;
@@ -15,11 +16,14 @@ public class TaxiFromLowLeftPickShoot extends SaarIsAutonomous {
         super(swerveDrive, shooter, conveyor, intake, hood, flap, module, "p1 - Taxi from low left and pickup middle cargo(3.1)");
 
         addCommands(
-                followPathAndPickup("p1 - Taxi from low left and pickup middle cargo(3.1)")
+                new ParallelRaceGroup(
+                        followPath("p1 - Taxi from low left and pickup middle cargo(3.1)"),
+                        pickup(10)
+                )
         );
 
         addCommands(shootAndAdjust(5));
 
-        addCommands(followPath("p1 - Going to middle tarmac(3.2.2)"));
+//        addCommands(followPath("p1 - Going to middle tarmac(3.2.2)"));
     }
 }

@@ -1,4 +1,4 @@
-package frc.robot.autoPaths;
+package frc.robot.auto;
 
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;

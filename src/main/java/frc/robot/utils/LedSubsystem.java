@@ -2,18 +2,22 @@ package frc.robot.utils;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LedSubsystem extends SubsystemBase {
-    Timer timer = new Timer();
+    public static boolean climbTime = false;
     private final AddressableLED m_led = new AddressableLED(1);
     private final AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(54);
+    private final int m_water = 80;
+    private final int sign = 1;
+    Timer timer = new Timer();
+    Timer timer2 = new Timer();
     private int current = 1;
     private int current2 = 0;
     private int m_rainbowFirstPixelHue = 0;
-    private final int m_water = 80;
-    private final int sign = 1;
     private int percent = 0;
     private boolean neutralMode = true;
 
@@ -23,6 +27,9 @@ public class LedSubsystem extends SubsystemBase {
         m_led.start();
         timer.start();
         timer.reset();
+        timer2.start();
+        timer2.reset();
+        climbTime = false;
     }
 
     public static int[] switchOfGods(int idx) { // 6 states
@@ -139,6 +146,12 @@ public class LedSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        if (DriverStation.isAutonomous() || DriverStation.getMatchTime() == -1) {
+            climbTime = false;
+        }
+        if (!DriverStation.isAutonomous() && DriverStation.getMatchTime() != -1 && DriverStation.getMatchTime() <= 30) {
+            climbTime = true;
+        }
         double time = 0.2;
         if (current == 9) {
             time = 0.4;
@@ -151,7 +164,8 @@ public class LedSubsystem extends SubsystemBase {
         if (neutralMode) {
             for (var i = 0; i < 20; i++) {
                 if (switchOfGods(current)[i] == 1) {
-                    m_ledBuffer.setHSV(i, 10, 255, 128);
+//                    m_ledBuffer.setHSV(i, 10, 255, 128);
+                    m_ledBuffer.setRGB(i, 0, 158, 189);
                 } else {
                     m_ledBuffer.setRGB(i, 25, 25, 25);
                 }
@@ -163,6 +177,12 @@ public class LedSubsystem extends SubsystemBase {
                 } else {
                     m_ledBuffer.setRGB(i, 25, 25, 25);
                 }
+            }
+        }
+
+        if (climbTime) {
+            for (var i = 0; i < 20; i++) {
+                m_ledBuffer.setRGB(i, 0, 158, 189);
             }
         }
 
@@ -207,13 +227,28 @@ public class LedSubsystem extends SubsystemBase {
             // shape is a circle so only one value needs to precess
             final var hue = ((180 - m_rainbowFirstPixelHue) + (i * 180 / 17)) % 180;
             // Set the value
-            m_ledBuffer.setHSV(i, hue, 223, 217);
-            m_ledBuffer.setHSV(36 - (i - 37), hue, 223, 217);
+            if (neutralMode) {
+                m_ledBuffer.setLED(i, Color.kPurple);
+//                m_ledBuffer.setRGB(i, 219, 127, 142);
+                m_ledBuffer.setLED(36 - (i - 37), Color.kPurple);
+//                m_ledBuffer.setRGB(36 - (i - 37), 219, 127, 142);
+            } else {
+                m_ledBuffer.setHSV(i, hue, 223, 217);
+                m_ledBuffer.setHSV(36 - (i - 37), hue, 223, 217);
+            }
         }
         // Increase by to make the rainbow "move"
 //        m_rainbowFirstPixelHue += 3;
         // Check bounds
 //        m_rainbowFirstPixelHue %= 180;
+
+        if (climbTime) {
+            for (var i = 37; i < m_ledBuffer.getLength(); i++) {
+                final var hue = ((180 - m_rainbowFirstPixelHue) + (i * 180 / 17)) % 180;
+                m_ledBuffer.setHSV(i, hue, 223, 217);
+                m_ledBuffer.setHSV(36 - (i - 37), hue, 223, 217);
+            }
+        }
     }
 
     public void setNeutralMode(boolean neutralMode) {

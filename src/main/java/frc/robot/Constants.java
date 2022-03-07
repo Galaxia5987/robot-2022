@@ -149,7 +149,7 @@ public final class Constants {
     }
 
     public static final class SwerveModule {
-        public static final int[] ZERO_POSITIONS = {-642, -1114, -1024, 585}; // fr, fl, rr, rl
+        public static final int[] ZERO_POSITIONS = {-635, -103, -1054, -434}; // fr, fl, rr, rl
 
         public static final int TRIGGER_THRESHOLD_CURRENT = 2; // [amps]
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]
@@ -197,8 +197,8 @@ public final class Constants {
         public static final Matrix<N1, N1> localMeasurementStdDevs = VecBuilder.fill(0);
         public static final Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0, 0, 0);
 
-        public static final double MAX_VEL = 3.5; // [m/sec] 4.1
-        public static final double MAX_ACCEL = 1.75; // [m/sec^2] 2.14
+        public static final double MAX_VEL = 4; // [m/sec] 4.1
+        public static final double MAX_ACCEL = 2; // [m/sec^2] 2.14
     }
 
     public static class Conveyor {
