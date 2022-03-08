@@ -1,9 +1,6 @@
 package frc.robot.commandgroups.bits;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.testing.HelpfulZeroing;
@@ -24,29 +21,45 @@ public class RunAllBits extends SequentialCommandGroup {
                       Intake intake,
                       Flap flap,
                       Hood hood,
-                      Helicopter helicopter) {
+                      Helicopter helicopter,
+                      Command... waitFor) {
         addCommands(
                 new CheckSolenoids(hood, flap, intake, helicopter)
                         .raceWith(new RunCommand(() -> System.out.println("Checking solenoids")))
-                        .andThen(new WaitCommand(1)),
+                        .andThen(waitFor[0]),
                 new TurnAllMotors(shooter, conveyor, swerve, intake)
                         .withTimeout(5)
                         .raceWith(new RunCommand(() -> System.out.println("Turning all motors")))
                         .andThen(new InstantCommand(() -> shooter.setVelocity(0)))
-                        .andThen(new WaitCommand(1)),
+                        .andThen(waitFor[1]),
                 new HelpfulZeroing(swerve)
                         .raceWith(new RunCommand(() -> System.out.println("Zeroing swerve modules")))
-                        .andThen(new WaitCommand(5)),
+                        .andThen(waitFor[2]),
                 new OscillateModules(swerve)
                         .withTimeout(5)
                         .raceWith(new RunCommand(() -> System.out.println("Oscillating swerve modules")))
                         .andThen(new HelpfulZeroing(swerve))
-                        .andThen(new WaitCommand(5)),
+                        .andThen(waitFor[3]),
                 new JoystickHelicopter(helicopter, () -> 1)
                         .beforeStarting(() -> helicopter.setStopperMode(false))
                         .withTimeout(5)
                         .raceWith(new RunCommand(() -> System.out.println("Turning helicopter")))
                         .andThen(new MoveHelicopter(helicopter, 0).beforeStarting(() -> System.out.println("Returning helicopter to 0")))
         );
+    }
+
+    public RunAllBits(SwerveDrive swerve,
+                      Shooter shooter,
+                      Conveyor conveyor,
+                      Intake intake,
+                      Flap flap,
+                      Hood hood,
+                      Helicopter helicopter) {
+
+        this(swerve, shooter, conveyor, intake, flap, hood, helicopter,
+                new WaitCommand(1),
+                new WaitCommand(1),
+                new WaitCommand(5),
+                new WaitCommand(5));
     }
 }
