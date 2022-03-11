@@ -67,4 +67,23 @@ public class Utils {
             return 0.9 * function.applyAsDouble(val) - 0.9 * function.applyAsDouble(Constants.SwerveDrive.JOYSTICK_THRESHOLD);
         }
     }
+
+    public static double swerveSmoothing(double val, double threshold) {
+        if (Math.abs(val) < threshold) {
+            return 0;
+        }
+
+        final int X = 0;
+        final int Y = 1;
+
+        DoubleUnaryOperator Fx = x -> Math.pow(x + 1, 2) - 1;
+        MultivariableFunction Gxy = (inputs) ->
+                (-Fx.applyAsDouble(-inputs[X]) + Fx.applyAsDouble(-inputs[Y])) /
+                (1 + Fx.applyAsDouble(-inputs[Y]));
+        MultivariableFunction Hxy = (inputs) ->
+                Gxy.apply(Math.abs(inputs[X]), inputs[Y]) *
+                Math.signum(inputs[X]);
+
+        return Hxy.apply(val, threshold);
+    }
 }
