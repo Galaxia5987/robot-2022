@@ -58,11 +58,11 @@ public class Utils {
     }
 
     public static double thetaSmoothing(double val) {
-        Function<Double, Double> function = x -> Math.pow(x + 1, 1.7) - 1;
+        Function<Double, Double> function = x -> Math.pow(x + 1, 2) - 1;
         if (val > 0) {
-            return -0.8 * function.apply(-val);
+            return -0.9 * function.apply(-val) - 0.0878;
         } else {
-            return 0.8 * function.apply(val);
+            return 0.8 * function.apply(val) + 0.0878;
         }
     }
 }
