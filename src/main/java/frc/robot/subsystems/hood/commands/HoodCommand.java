@@ -13,8 +13,8 @@ public class HoodCommand extends CommandBase {
     private final BooleanSupplier postFlap;
     private final DoubleSupplier distance;
     private final Timer timer = new Timer();
-    private Hood.Mode mode = Hood.Mode.ShortDistance;
     private final boolean last = false;
+    private Hood.Mode mode = Hood.Mode.ShortDistance;
     private boolean starting = true;
 
     public HoodCommand(Hood hood, BooleanSupplier postFlap, DoubleSupplier distance) {

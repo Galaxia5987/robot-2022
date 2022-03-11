@@ -28,7 +28,7 @@ public class Robot extends TimedRobot {
     public static final AHRS navx = new AHRS(SPI.Port.kMXP);
     private static Rotation2d zeroAngle = new Rotation2d();
     //    private final AddressableLED led = new AddressableLED(1);
-    private static Rotation2d startAngle = new Rotation2d();
+    private static final Rotation2d startAngle = new Rotation2d();
     public PowerDistribution pdp = new PowerDistribution();
     private Command m_autonomousCommand;
     private RobotContainer m_robotContainer;

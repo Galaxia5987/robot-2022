@@ -8,9 +8,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.auto.FourCargoAuto;
 import frc.robot.auto.TaxiFromLowRightPickShootPickShoot;
-import frc.robot.commandgroups.BackAndShootCargo2;
+import frc.robot.commandgroups.BackAndShootCargoSort;
 import frc.robot.commandgroups.OneBallOuttake;
 import frc.robot.commandgroups.Outtake;
 import frc.robot.commandgroups.PickUpCargo;
@@ -36,32 +35,10 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 public class RobotContainer {
-    private static final Joystick joystick = new Joystick(Ports.Controls.JOYSTICK);
-    private static final Joystick joystick2 = new Joystick(Ports.Controls.JOYSTICK2);
-    public static LedSubsystem ledSubsystem = new LedSubsystem();
-    //    public static LedSubsystem ledSubsystem = new LedSubsystem();
+
     // The robot's subsystems and commands are defined here...
+    public static LedSubsystem ledSubsystem = new LedSubsystem();
     final PhotonVisionModule photonVisionModule = new PhotonVisionModule("photonvision", null);
-    private final XboxController xbox = new XboxController(Ports.Controls.XBOX);
-    private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
-    private final JoystickButton b = new JoystickButton(xbox, XboxController.Button.kB.value);
-    private final JoystickButton x = new JoystickButton(xbox, XboxController.Button.kX.value);
-    private final JoystickButton y = new JoystickButton(xbox, XboxController.Button.kY.value);
-    private final JoystickButton lb = new JoystickButton(xbox, XboxController.Button.kLeftBumper.value);
-    private final JoystickButton rb = new JoystickButton(xbox, XboxController.Button.kRightBumper.value);
-    private final JoystickButton start = new JoystickButton(xbox, XboxController.Button.kStart.value);
-    private final JoystickButton back = new JoystickButton(xbox, XboxController.Button.kBack.value);
-    private final Trigger rt = new Trigger(() -> xbox.getRightTriggerAxis() > Constants.Control.RIGHT_TRIGGER_DEADBAND);
-    private final Trigger lt = new Trigger(() -> xbox.getLeftTriggerAxis() > Constants.Control.RIGHT_TRIGGER_DEADBAND);
-    private final Trigger upPov = new Trigger(() -> xbox.getPOV() == 0);
-    private final Trigger downPov = new Trigger(() -> xbox.getPOV() == 180);
-    private final Trigger rightPov = new Trigger(() -> xbox.getPOV() == 90);
-    private final Trigger leftPov = new Trigger(() -> xbox.getPOV() == 270);
-    private final JoystickButton leftTrigger = new JoystickButton(joystick, Joystick.ButtonType.kTrigger.value);
-    private final JoystickButton rightTrigger = new JoystickButton(joystick2, Joystick.ButtonType.kTrigger.value);
-    private final JoystickButton two = new JoystickButton(joystick, 2);
-    private final JoystickButton twoJoystick2 = new JoystickButton(joystick2, 2);
-    private final JoystickButton twelve = new JoystickButton(joystick, 12);
     private final SwerveDrive swerve = SwerveDrive.getFieldOrientedInstance(photonVisionModule::estimatePose);
     private final Intake intake = Intake.getInstance();
     private final Conveyor conveyor = Conveyor.getInstance();
@@ -69,11 +46,9 @@ public class RobotContainer {
     private final Shooter shooter = Shooter.getInstance();
     private final Hood hood = Hood.getInstance();
     private final Helicopter helicopter = Helicopter.getInstance();
-    private CommandBase autonomousCommand;
+    private final CommandBase autonomousCommand;
     private double speedMultiplier = 1;
     private double thetaMultiplier = 1.5;
-//    private AddressableLED led = new AddressableLED(1);
-//    private AddressableLEDBuffer buffer = new AddressableLEDBuffer(54);
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -103,63 +78,63 @@ public class RobotContainer {
         swerve.setDefaultCommand(
                 new DriveAndAdjustWithVision(
                         swerve,
-                        () -> -joystick.getY() * speedMultiplier,
-                        () -> -joystick.getX() * speedMultiplier,
-                        () -> -joystick2.getX() * thetaMultiplier,
+                        () -> -Joysticks.leftJoystick.getY() * speedMultiplier,
+                        () -> -Joysticks.leftJoystick.getX() * speedMultiplier,
+                        () -> -Joysticks.rightJoystick.getX() * thetaMultiplier,
                         yaw,
-                        rightTrigger::get,
+                        Joysticks.rightTrigger::get,
                         photonVisionModule::getDistance
                 )
         );
-        helicopter.setDefaultCommand(new JoystickPowerHelicopter(helicopter, xbox::getLeftY));
-//        shooter.setDefaultCommand(new Shoot(shooter, hood, WebConstant.of("Shooter", "Setpoint", 0)::get, () -> true));
+        helicopter.setDefaultCommand(new JoystickPowerHelicopter(helicopter, Xbox.controller::getLeftY));
     }
 
     private void configureButtonBindings() {
         Supplier<Pose2d> swervePose = swerve::getPose;
         Supplier<Transform2d> poseRelativeToTarget = () -> Constants.Vision.HUB_POSE.minus(swervePose.get());
-
         DoubleSupplier distanceFromTarget = () -> photonVisionModule.hasTargets() ?
                 photonVisionModule.getDistance() :
                 Math.hypot(poseRelativeToTarget.get().getX(), poseRelativeToTarget.get().getY());
 
-//        a.whileHeld(new IntakeCargo(intake, () -> -Constants.Intake.DEFAULT_POWER.get()));
-        b.whileHeld(new ParallelCommandGroup(
-                new InstantCommand(flap::allowShooting),
-                new Convey(conveyor, Constants.Conveyor.DEFAULT_POWER.get())
-        ));
-        leftPov.whileActiveOnce(new InstantCommand(hood::toggle));
-        x.whenPressed(intake::toggleRetractor);
-//        back.whenPressed(flap::toggleFlap);
-        back.whenPressed(new OneBallOuttake(intake, conveyor, () -> conveyor.getColorSensorProximity() >= 150));
-//        upPov.whileActiveOnce(new InstantCommand(hood::toggle));
-        rightPov.whileActiveOnce(new InstantCommand(helicopter::toggleStopper));
-        upPov.and(start).whileActiveOnce(new MoveHelicopter(helicopter, Constants.Helicopter.SECOND_RUNG));
-        downPov.and(start).whileActiveOnce(new MoveHelicopter(helicopter, 0));
-//        rt.whileActiveContinuous(new Shoot(shooter, hood, WebConstant.of("Shooter", "Setpoint", 0)::get, () -> true));
+        { // Xbox controller button bindings.
+            Xbox.b.whileHeld(new ParallelCommandGroup(
+                    new InstantCommand(flap::allowShooting),
+                    new Convey(conveyor, Constants.Conveyor.DEFAULT_POWER.get())
+            ));
+            Xbox.x.whenPressed(intake::toggleRetractor);
+            Xbox.y.whenPressed(new RunCommand(() -> {
+                shooter.setVelocity(3350);
+            }, shooter).withInterrupt(Xbox.rt::get));
+            Xbox.a.whileHeld(new BackAndShootCargoSort(shooter, hood, conveyor, flap,
+                    () -> Constants.Conveyor.SHOOT_POWER,
+                    distanceFromTarget));
 
-        rt.whileActiveContinuous(new BackAndShootCargo(
-                shooter, hood, conveyor, flap,
-                () -> Constants.Conveyor.SHOOT_POWER,
-                distanceFromTarget));
-        lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, Constants.Conveyor.DEFAULT_POWER.get(), Constants.Intake.DEFAULT_POWER::get));
-        lb.whileHeld(new Outtake(intake, conveyor, flap, shooter, hood, () -> false));
-        rb.whileHeld(new Convey(conveyor, -Constants.Conveyor.SHOOT_POWER));
-        start.whenPressed(photonVisionModule::toggleLeds);
-        y.whenPressed(new RunCommand(() -> {
-            shooter.setVelocity(3350);
-        }, shooter).withInterrupt(rt::get));
-//        twelve.whenPressed(() -> swerve.resetPoseEstimator(new Pose2d(7, 5, new Rotation2d())));
-        a.whileHeld(new BackAndShootCargo2(shooter, hood, conveyor, flap,
-                () -> Constants.Conveyor.SHOOT_POWER,
-                distanceFromTarget));
+            Xbox.leftPov.whileActiveOnce(new InstantCommand(hood::toggle));
+            Xbox.rightPov.whileActiveOnce(new InstantCommand(helicopter::toggleStopper));
+            Xbox.upPov.and(Xbox.start).whileActiveOnce(new MoveHelicopter(helicopter, Constants.Helicopter.SECOND_RUNG));
+            Xbox.downPov.and(Xbox.start).whileActiveOnce(new MoveHelicopter(helicopter, 0));
 
-        leftTrigger.whenPressed(() -> {
-            speedMultiplier = (speedMultiplier == 0.5 ? 1 : 0.5);
-            thetaMultiplier = (thetaMultiplier == 0.75 ? 1.5 : 0.75);
-        });
-        two.whenPressed((Runnable) Robot::resetAngle);
-        twoJoystick2.whileHeld(new TurnToAngle(swerve, () -> 0));
+            Xbox.rt.whileActiveContinuous(new BackAndShootCargo(
+                    shooter, hood, conveyor, flap,
+                    () -> Constants.Conveyor.SHOOT_POWER,
+                    distanceFromTarget));
+            Xbox.lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, Constants.Conveyor.DEFAULT_POWER.get(), Constants.Intake.DEFAULT_POWER::get));
+            Xbox.lb.whileHeld(new Outtake(intake, conveyor, flap, shooter, hood, () -> false));
+            Xbox.rb.whileHeld(new Convey(conveyor, -Constants.Conveyor.SHOOT_POWER));
+
+            Xbox.start.whenPressed(photonVisionModule::toggleLeds);
+            Xbox.back.whenPressed(new OneBallOuttake(intake, conveyor, () -> conveyor.getColorSensorProximity() >= 150));
+        }
+
+        { // Joystick button bindings.
+            Joysticks.leftTrigger.whenPressed(() -> {
+                speedMultiplier = (speedMultiplier == 0.5 ? 1 : 0.5);
+                thetaMultiplier = (thetaMultiplier == 0.75 ? 1.5 : 0.75);
+            });
+
+            Joysticks.leftTwo.whenPressed((Runnable) Robot::resetAngle);
+            Joysticks.rightTwo.whileHeld(new TurnToAngle(swerve, () -> 0));
+        }
     }
 
     /**
@@ -183,5 +158,39 @@ public class RobotContainer {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static final class Joysticks {
+        public static final Joystick leftJoystick = new Joystick(Ports.Controls.JOYSTICK);
+        public static final Joystick rightJoystick = new Joystick(Ports.Controls.JOYSTICK2);
+
+        public static final JoystickButton leftTrigger = new JoystickButton(leftJoystick, Joystick.ButtonType.kTrigger.value);
+        public static final JoystickButton rightTrigger = new JoystickButton(rightJoystick, Joystick.ButtonType.kTrigger.value);
+
+        public static final JoystickButton leftTwo = new JoystickButton(leftJoystick, 2);
+        public static final JoystickButton rightTwo = new JoystickButton(rightJoystick, 2);
+    }
+
+    private static final class Xbox {
+        public static final XboxController controller = new XboxController(Ports.Controls.XBOX);
+
+        public static final JoystickButton a = new JoystickButton(controller, XboxController.Button.kA.value);
+        public static final JoystickButton b = new JoystickButton(controller, XboxController.Button.kB.value);
+        public static final JoystickButton x = new JoystickButton(controller, XboxController.Button.kX.value);
+        public static final JoystickButton y = new JoystickButton(controller, XboxController.Button.kY.value);
+
+        public static final JoystickButton lb = new JoystickButton(controller, XboxController.Button.kLeftBumper.value);
+        public static final JoystickButton rb = new JoystickButton(controller, XboxController.Button.kRightBumper.value);
+
+        public static final JoystickButton start = new JoystickButton(controller, XboxController.Button.kStart.value);
+        public static final JoystickButton back = new JoystickButton(controller, XboxController.Button.kBack.value);
+
+        public static final Trigger rt = new Trigger(() -> controller.getRightTriggerAxis() > Constants.Control.RIGHT_TRIGGER_DEADBAND);
+        public static final Trigger lt = new Trigger(() -> controller.getLeftTriggerAxis() > Constants.Control.LEFT_TRIGGER_DEADBAND);
+
+        public static final Trigger upPov = new Trigger(() -> controller.getPOV() == 0);
+        public static final Trigger downPov = new Trigger(() -> controller.getPOV() == 180);
+        public static final Trigger rightPov = new Trigger(() -> controller.getPOV() == 90);
+        public static final Trigger leftPov = new Trigger(() -> controller.getPOV() == 270);
     }
 }

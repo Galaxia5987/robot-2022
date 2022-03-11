@@ -4,7 +4,6 @@ import edu.wpi.first.math.filter.LinearFilter;
 import frc.robot.Constants;
 
 import java.util.function.DoubleUnaryOperator;
-import java.util.function.Function;
 
 public class Utils {
 
@@ -68,6 +67,17 @@ public class Utils {
         }
     }
 
+    /**
+     * Method used for smoothing with any threshold.
+     * See functions implemented here visually at {@link <a href="https://www.math3d.org/EQBPTCQu3">...</a>}
+     * The y-axis represents the threshold.
+     * Note that the function h(x,y) doesn't extend beyond a y-value of 0.5.
+     * This is because I doubt you need a threshold larger than 0.5.
+     *
+     * @param val       the input value to smooth. [%]
+     * @param threshold the threshold to apply. [%]
+     * @return the smoothed value with the threshold.
+     */
     public static double swerveSmoothing(double val, double threshold) {
         if (Math.abs(val) < threshold) {
             return 0;
@@ -79,10 +89,10 @@ public class Utils {
         DoubleUnaryOperator Fx = x -> Math.pow(x + 1, 2) - 1;
         MultivariableFunction Gxy = (inputs) ->
                 (-Fx.applyAsDouble(-inputs[X]) + Fx.applyAsDouble(-inputs[Y])) /
-                (1 + Fx.applyAsDouble(-inputs[Y]));
+                        (1 + Fx.applyAsDouble(-inputs[Y]));
         MultivariableFunction Hxy = (inputs) ->
                 Gxy.apply(Math.abs(inputs[X]), inputs[Y]) *
-                Math.signum(inputs[X]);
+                        Math.signum(inputs[X]);
 
         return Hxy.apply(val, threshold);
     }
