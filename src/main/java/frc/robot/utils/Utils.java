@@ -1,7 +1,9 @@
 package frc.robot.utils;
 
 import edu.wpi.first.math.filter.LinearFilter;
+import frc.robot.Constants;
 
+import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
 
 public class Utils {
@@ -58,11 +60,11 @@ public class Utils {
     }
 
     public static double thetaSmoothing(double val) {
-        Function<Double, Double> function = x -> Math.pow(x + 1, 2) - 1;
+        DoubleUnaryOperator function = x -> Math.pow(x + 1, 2) - 1;
         if (val > 0) {
-            return -0.9 * function.apply(-val) - 0.0878;
+            return -0.9 * function.applyAsDouble(-val) + 0.9 * function.applyAsDouble(Constants.SwerveDrive.JOYSTICK_THRESHOLD);
         } else {
-            return 0.8 * function.apply(val) + 0.0878;
+            return 0.9 * function.applyAsDouble(val) - 0.9 * function.applyAsDouble(Constants.SwerveDrive.JOYSTICK_THRESHOLD);
         }
     }
 }
