@@ -71,6 +71,7 @@ public class RobotContainer {
     private final Helicopter helicopter = Helicopter.getInstance();
     private CommandBase autonomousCommand;
     private double speedMultiplier = 1;
+    private double thetaMultiplier = 1.5;
 //    private AddressableLED led = new AddressableLED(1);
 //    private AddressableLEDBuffer buffer = new AddressableLEDBuffer(54);
 
@@ -104,7 +105,7 @@ public class RobotContainer {
                         swerve,
                         () -> -joystick.getY() * speedMultiplier,
                         () -> -joystick.getX() * speedMultiplier,
-                        () -> -joystick2.getX() * speedMultiplier,
+                        () -> -joystick2.getX() * thetaMultiplier,
                         yaw,
                         rightTrigger::get,
                         photonVisionModule::getDistance
@@ -153,7 +154,10 @@ public class RobotContainer {
                 () -> Constants.Conveyor.SHOOT_POWER,
                 distanceFromTarget));
 
-        leftTrigger.whenPressed(() -> speedMultiplier = (speedMultiplier == 0.5 ? 1 : 0.5));
+        leftTrigger.whenPressed(() -> {
+            speedMultiplier = (speedMultiplier == 0.5 ? 1 : 0.5);
+            thetaMultiplier = (thetaMultiplier == 0.75 ? 1.5 : 0.75);
+        });
         two.whenPressed((Runnable) Robot::resetAngle);
         twoJoystick2.whileHeld(new TurnToAngle(swerve, () -> 0));
     }
