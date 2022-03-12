@@ -37,16 +37,19 @@ public final class Ports {
 
     public static class Intake {
         public static final int MOTOR = 11;
-        public static final boolean IS_MOTOR_INVERTED = true;
         public static final int SOLENOID = 1;
+
+        public static final boolean IS_MOTOR_INVERTED = true;
     }
 
     public static class Conveyor {
         public static final int MOTOR = 21;
-        public static final TalonFXInvertType MOTOR_INVERSION = TalonFXInvertType.Clockwise;
-        public static final boolean IS_COMPENSATING_VOLTAGE = true;
         public static final int POST_FLAP_BEAM_BREAKER = 7;
         public static final int PRE_FLAP_BEAM_BREAKER = 6;
+
+        public static final boolean IS_COMPENSATING_VOLTAGE = true;
+
+        public static final TalonFXInvertType MOTOR_INVERSION = TalonFXInvertType.Clockwise;
     }
 
     public static class Flap {
@@ -55,6 +58,7 @@ public final class Ports {
 
     public static class Shooter {
         public static final int MOTOR = 31; // Main motor port.
+
         public static final TalonFXInvertType INVERSION_TYPE = TalonFXInvertType.CounterClockwise;
     }
 
@@ -81,12 +85,6 @@ public final class Ports {
 
         public static final TalonFXInvertType IS_AUX_INVERTED = TalonFXInvertType.Clockwise;
         public static final TalonFXInvertType IS_MAIN_INVERTED = TalonFXInvertType.Clockwise;
-
-        /*
-         Used only for simulation.
-         */
-        public static final int ENCODER_A_CHANNEL = 0;
-        public static final int ENCODER_B_CHANNEL = 1;
     }
 
     public static class Vision {

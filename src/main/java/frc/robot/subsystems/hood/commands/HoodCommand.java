@@ -24,33 +24,6 @@ public class HoodCommand extends CommandBase {
         addRequirements(hood);
     }
 
-//    public HoodCommand(Hood hood, Supplier<Hood.Mode> modeSupplier) {
-//        this.hood = hood;
-//        this.modeSupplier = modeSupplier;
-//        addRequirements(hood);
-//    }
-
-//    public HoodCommand(Hood hood, DoubleSupplier distance) {
-//        boolean val = distance.getAsDouble() > Constants.Hood.MIN_DISTANCE ? distance.getAsDouble() < DISTANCE_FROM_TARGET_THRESHOLD :  hood.isOpen()
-//        this(hood, () -> Hood.Mode.getValue(););
-//    }
-
-
-//    public HoodCommand(Hood hood, Hood.Mode mode) {
-//        this(hood, () -> mode);
-//        isInstant = true;
-//    }
-
-
-//    @Override
-//    public void initialize() {
-//        if (isInstant) {
-//            execute();
-//            cancel();
-//        }
-//    }
-
-
     @Override
     public void initialize() {
         timer.reset();
@@ -60,18 +33,6 @@ public class HoodCommand extends CommandBase {
 
     @Override
     public void execute() {
-//        if (postFlap.getAsBoolean()) {
-//            if (!last) {
-//                timer.reset();
-//            }
-//            last = true;
-//        } else {
-//            last = false;
-//        }
-//        if (timer.hasElapsed(0.5) || starting) {
-//            hood.setSolenoid(mode);
-//            starting = false;
-//        }
         hood.setSolenoid(mode);
     }
 

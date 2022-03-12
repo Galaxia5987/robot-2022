@@ -50,6 +50,10 @@ public class ColorSensor {
         return sensor.getProximity();
     }
 
+    /**
+     * Updates the values of the color sensor.
+     * Call this function every loop, unless you're a psycho.
+     */
     public void updateColorSensor() {
         lastSeenColor = currentColor;
         currentColor = getColor();

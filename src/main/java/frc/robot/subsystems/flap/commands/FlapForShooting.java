@@ -32,7 +32,7 @@ public class FlapForShooting extends CommandBase {
         if (hasSensedObject.getAsBoolean() && hasReachedSetpoint.getAsBoolean()) {
             flap.allowShooting();
             timer.start();
-        } else if (timer.hasElapsed(Constants.Flap.FLAP_DELAY)) {
+        } else if (timer.hasElapsed(Constants.Flap.OSCILLATION_DELTA_TIME)) {
             flap.blockShooter();
             timer.stop();
             timer.reset();

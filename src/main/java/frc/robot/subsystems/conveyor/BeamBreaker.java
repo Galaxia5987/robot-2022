@@ -15,6 +15,10 @@ public class BeamBreaker {
         return !get();
     }
 
+    /**
+     * Updates value of beam breaker.
+     * Call this every loop, unless you're a psycho.
+     */
     public void updateBeamBreaker() {
         hadObjectLastLoop = hasObject;
         hasObject = hasObject();

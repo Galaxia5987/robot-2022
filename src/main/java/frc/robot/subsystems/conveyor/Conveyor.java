@@ -31,10 +31,6 @@ public class Conveyor extends SubsystemBase {
         motor.setInverted(MOTOR_INVERSION);
         motor.enableVoltageCompensation(IS_COMPENSATING_VOLTAGE);
         motor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
-        motor.config_kP(0, kP, TALON_TIMEOUT);
-        motor.config_kI(0, kI, TALON_TIMEOUT);
-        motor.config_kD(0, kD, TALON_TIMEOUT);
-        motor.config_kF(0, kF, TALON_TIMEOUT);
     }
 
     /**
@@ -151,10 +147,8 @@ public class Conveyor extends SubsystemBase {
 
         SmartDashboard.putString("Positions", cargoPositions.toString());
         SmartDashboard.putNumber("Proximity", colorSensor.getProximityValue());
-//        SmartDashboard.putString("Current Detected", colorSensor.getCurrentColor().name());
         SmartDashboard.putBoolean("Pre flap", preFlapBeam.get());
         SmartDashboard.putBoolean("Post flap", postFlapBeam.get());
-//        SmartDashboard.putNumberArray("Color", colorSensor.getRawColor());
         int minutes = (int) Math.round(DriverStation.getMatchTime()) / 60;
         String minutesString = "0" + minutes;
         int seconds = (int) Math.round(DriverStation.getMatchTime()) % 60;
@@ -175,10 +169,5 @@ public class Conveyor extends SubsystemBase {
 
         SmartDashboard.putString("first_color", firstColor);
         SmartDashboard.putString("second_color", secondColor);
-    }
-
-    @Override
-    public void simulationPeriodic() {
-
     }
 }

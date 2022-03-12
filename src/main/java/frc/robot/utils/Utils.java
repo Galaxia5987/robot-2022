@@ -1,7 +1,6 @@
 package frc.robot.utils;
 
 import edu.wpi.first.math.filter.LinearFilter;
-import frc.robot.Constants;
 
 import java.util.function.DoubleUnaryOperator;
 
@@ -9,27 +8,27 @@ public class Utils {
 
 
     /**
-     * Sets the value of the joystick to 0 if the value is less than the threshold.
+     * This method ensures that any accidental input is set to 0.
+     * In other words, if the value is less than the threshold the function returns 0.
      *
-     * @param val       the joystick value.
+     * @param val       the input value.
      * @param threshold the threshold value.
      * @return 0 if the value is less than the threshold else the value.
      */
-    public static double deadband(double val, double threshold) {
+    public static double conventionalDeadband(double val, double threshold) {
         if (Math.abs(val) < threshold)
             return 0;
         return val;
     }
 
     /**
-     * @param input     the joystick input.
-     * @param threshold the joystick deadband threshold.
+     * @param val     the input value.
+     * @param threshold the threshold value.
      * @return the updated value after the deadband.
      */
-    public static double rotationalDeadband(double input, double threshold) {
-        if (Math.abs(input) < threshold)
-            return 0;
-        return (input - (Math.signum(input) * threshold)) / (1 - threshold);
+    public static double continuousDeadband(double val, double threshold) {
+        val = conventionalDeadband(val, threshold);
+        return (val - (Math.signum(val) * threshold)) / (1 - threshold);
     }
 
     /**
@@ -53,18 +52,18 @@ public class Utils {
         return rpm / 60.0;
     }
 
-    public static double smoothed(double value, double exponent, LinearFilter joystickFilter) {
-        double filteredValue = joystickFilter.calculate(value);
+    /**
+     * Smoothing method making use of a moving average filter,
+     * fulfilling the purpose of slowing down an input and filtering noise.
+     *
+     * @param value               the value to smooth.
+     * @param exponent            the exponent to smooth the value by.
+     * @param movingAverageFilter the filter to lower input noise.
+     * @return the smoothed value.
+     */
+    public static double smoothed(double value, double exponent, LinearFilter movingAverageFilter) {
+        double filteredValue = movingAverageFilter.calculate(value);
         return Math.pow(Math.abs(filteredValue), exponent) * Math.signum(filteredValue);
-    }
-
-    public static double thetaSmoothing(double val) {
-        DoubleUnaryOperator function = x -> Math.pow(x + 1, 2) - 1;
-        if (val > 0) {
-            return -0.9 * function.applyAsDouble(-val) + 0.9 * function.applyAsDouble(Constants.SwerveDrive.JOYSTICK_THRESHOLD);
-        } else {
-            return 0.9 * function.applyAsDouble(val) - 0.9 * function.applyAsDouble(Constants.SwerveDrive.JOYSTICK_THRESHOLD);
-        }
     }
 
     /**
@@ -86,6 +85,10 @@ public class Utils {
         final int X = 0;
         final int Y = 1;
 
+        /*
+        All mathematical functions implemented here are an exact replica
+        of the functions displayed visually in the link above.
+         */
         DoubleUnaryOperator Fx = x -> Math.pow(x + 1, 2) - 1;
         MultivariableFunction Gxy = (inputs) ->
                 (-Fx.applyAsDouble(-inputs[X]) + Fx.applyAsDouble(-inputs[Y])) /

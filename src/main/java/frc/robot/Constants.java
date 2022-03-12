@@ -21,18 +21,19 @@ import static frc.robot.Ports.SwerveDrive.*;
 
 
 public final class Constants {
-    public static final double LOOP_PERIOD = 0.02; // [s]
     public static final int TALON_TIMEOUT = 10; // Waiting period for configurations [ms].
+
+    public static final double LOOP_PERIOD = 0.02; // [s]
     public static final double NOMINAL_VOLTAGE = 12; // [volts]
     public static final double FIELD_WIDTH = 8.23; // Width of the field. [m]
     public static final double FIELD_LENGTH = 16.46; // Length of the field. [m]
+    public static final double SIMULATION_LOOP_PERIOD = 0.02; // [s]
+
     public static final boolean ENABLE_VOLTAGE_COMPENSATION = true;
     public static final boolean ENABLE_CURRENT_LIMIT = true;
-    public static final double SIMULATION_LOOP_PERIOD = 0.02; // [s]
 
     // The order of modules is ALWAYS front-right (fr), front-left (fl), rear-right (rr), rear-left (rl)
     public static final class SwerveDrive {
-        public static final double SMOOTHING_MULTIPLIER = 1.25;
         public static final double VELOCITY_MULTIPLIER = 3;
         public static final double ROTATION_MULTIPLIER = 3;
 
@@ -55,9 +56,7 @@ public final class Constants {
         public static final double HEADING_KP = 5;
         public static final double HEADING_KI = 0;
         public static final double HEADING_KD = 0;
-        //        public static final TrapezoidProfile.Constraints HEADING_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(4, 3.2); // [rads/sec], [rad/sec^2]
         public static final TrapezoidProfile.Constraints HEADING_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(10, 5); // [rads/sec], [rad/sec^2]
-//        public static final TrapezoidProfile.Constraints HEADING_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(4, 3.2); // [rads/sec], [rad/sec^2]
 
         // The heading is responsible for the angle of the whole chassis, while the angle is used in the angle motor itself.
         public static final double ALLOWABLE_HEADING_ERROR = Math.toRadians(5); // [rad]
@@ -68,20 +67,22 @@ public final class Constants {
         public static final double ROBOT_WIDTH = 0.5224; // [m]
 
         // the rotational velocity of the robot, this constant multiplies the rotation output of the joystick
-        public static final double JOYSTICK_THRESHOLD = 0.05; // [%]
-        public static final double ANGLE_COSINE_DEADBAND = Math.toRadians(10); // [rads]
         public static final int ANGLE_CURVE_STRENGTH = 1;
-        public static final double ROTATIONAL_ADDITION_RESTRAINT = 3;
-        public static final int ANGLE_MOTION_ACCELERATION = 1300;
         public static final int ANGLE_CRUISE_VELOCITY = 400;
+        public static final int ANGLE_MOTION_ACCELERATION = 1300;
+
+        public static final double JOYSTICK_THRESHOLD = 0.05; // [%]
+        public static final double ROTATIONAL_ADDITION_RESTRAINT = 3;
         public static final double DRIFTING_PERIOD = 0.5; // expected period the robot will change its rotation even after commanded to stop. [s]
         public static final double SAMPLE_YAW_PERIOD = 0.1; // expected period the robot will change its rotation even after commanded to stop. [s]
-        public static final WebConstant ADJUST_CONTROLLER_KP = WebConstant.of("Swerve", "kp_heading", 12.5);
-        public static final WebConstant ADJUST_CONTROLLER_KI = WebConstant.of("Swerve", "KI_heading", 0);
-        public static final WebConstant ADJUST_CONTROLLER_KD = WebConstant.of("Swerve", "Kd_heading", 0.1);
         public static final double ADJUST_CONTROLLER_TOLERANCE = Math.toRadians(0.5);
         private static final double Rx = SwerveDrive.ROBOT_LENGTH / 2; // [m]
         private static final double Ry = SwerveDrive.ROBOT_WIDTH / 2; // [m]
+
+        public static final WebConstant ADJUST_CONTROLLER_KP = WebConstant.of("Swerve", "kp_heading", 12.5);
+        public static final WebConstant ADJUST_CONTROLLER_KI = WebConstant.of("Swerve", "KI_heading", 0);
+        public static final WebConstant ADJUST_CONTROLLER_KD = WebConstant.of("Swerve", "Kd_heading", 0.1);
+
         // Axis systems
         public static final Translation2d[] SWERVE_POSITIONS = new Translation2d[]{
                 new Translation2d(Rx, -Ry),
@@ -93,18 +94,18 @@ public final class Constants {
 
     public static class Shooter {
         public static final double TICKS_PER_REVOLUTION = 2048; // Ticks per revolution of the shooter motor. [tick]
-        public static final double WHEEL_RADIUS = 0.1016; // Radius of the wheels. [m]
-
         public static final double NEUTRAL_DEADBAND = 0.1; // [%]
+        public static final double OUTPUT_MULTIPLIER = 0.1; // Multiplies the output for manual control in the bits. [%]
+        public static final double OUTTAKE_POWER = 0.2; // Power to give to the shooter when taking balls out. [%]
+        public static final double RECOMMENDED_ACCELERATION_TIME = 1.3; // Recommended time for the shooter to get to it's setpoint. [s]
+        public static final double CARGO_OFFSET = 0; // Desired offset from the middle of the target where you want the cargo to hit. [m]
+
         public static final WebConstant kP = WebConstant.of("Shooter", "kP", 0.045);
         public static final WebConstant kI = WebConstant.of("Shooter", "kI", 0);
         public static final WebConstant kD = WebConstant.of("Shooter", "kD", 2);
         public static final WebConstant kF = WebConstant.of("Shooter", "kf", 0.04965);
-
-        public static final double OUTPUT_MULTIPLIER = 0.1; // Multiplies the output for manual control in the bits. [%]
-        public static final double OUTTAKE_POWER = 0.2; // Power to give to the shooter when taking balls out. [%]
         public static final WebConstant SHOOTER_VELOCITY_DEADBAND = WebConstant.of("Shooter", "Velocity deadband", 50); // Dead band for shooter velocity setpoint. [rpm]
-        //        public static double CARGO_OFFSET = 0; // Desired offset from the middle of the target where you want the cargo to hit. [m]
+
         public static final HashMap<Double, Double> SHORT_MEASUREMENTS = new HashMap<>() {{
             put(-99999.0, 3350.0);
             put(1.9, 3350.0);
@@ -112,7 +113,6 @@ public final class Constants {
             put(2.39, 3800.0);
             put(2.67, 3925.0);
             put(99999.0, 3925.0);
-
         }};
         public static final HashMap<Double, Double> LONG_MEASUREMENTS = new HashMap<>() {{
             put(-99999.0, 3350.0);
@@ -136,24 +136,21 @@ public final class Constants {
             put(5.65, 4550.0);
             put(99999.0, 4550.0);
         }};
-        public static double RECOMMENDED_ACCELERATION_TIME = 1.3; // Recommended time for the shooter to get to it's setpoint. [s]
-        //                public static double CARGO_OFFSET = 0.4; // Desired offset from the middle of the target where you want the cargo to hit. [m]
-        public static double CARGO_OFFSET = 0; // Desired offset from the middle of the target where you want the cargo to hit. [m]
 
         public static TalonFXConfiguration getConfiguration() {
             final TalonFXConfiguration configuration = new TalonFXConfiguration();
             configuration.neutralDeadband = NEUTRAL_DEADBAND;
             return configuration;
         }
-
     }
 
     public static final class SwerveModule {
-        public static final int[] ZERO_POSITIONS = {-635, -103, -1054, -434}; // fr, fl, rr, rl
-
         public static final int TRIGGER_THRESHOLD_CURRENT = 2; // [amps]
+
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]
         public static final double RAMP_RATE = 0; // seconds from neutral to max
+
+        public static final int[] ZERO_POSITIONS = {-635, -103, -1054, -434}; // fr, fl, rr, rl
 
         public static final SwerveModuleConfigBase frConfig = new SwerveModuleConfigBase.Builder(0)
                 .configPorts(DRIVE_MOTOR_FR, ANGLE_MOTOR_FR)
@@ -202,29 +199,27 @@ public final class Constants {
     }
 
     public static class Conveyor {
-        public static final WebConstant DEFAULT_POWER = WebConstant.of("Conveyor", "Default velocity", 0.5); // [%]
-        public static final int MAX_CARGO_AMOUNT = 2;
         public static final int MIN_PROXIMITY_VALUE = 200; // Minimum distance from the color sensor in order to induce detection (arbitrary bit units).
-        public static final Color BLUE = new Color(0.18, 0.385, 0.436);
-        public static final Color RED = new Color(0.511, 0.346, 0.143);
-        public static final Color NONE = new Color(0.31, 0.415, 0.275);
-        public static final double kP = 0;
-        public static final double kI = 0;
-        public static final double kD = 0;
-        public static final double kF = 0;
 
         public static final double TICKS_PER_UNIT = 2048 * 2;
         public static final double SHOOT_POWER = 0.5;
+
+        public static final Color BLUE = new Color(0.18, 0.385, 0.436);
+        public static final Color RED = new Color(0.511, 0.346, 0.143);
+        public static final Color NONE = new Color(0.31, 0.415, 0.275);
+
+        public static final WebConstant DEFAULT_POWER = WebConstant.of("Conveyor", "Default velocity", 0.5); // [%]
     }
 
     public static class Vision { //TODO: change for competition
+        public static final int CAM_RESOLUTION_HEIGHT = 480; // Height of camera resolution. [pixel]
+        public static final int CAM_RESOLUTION_WIDTH = 640; // Width of camera resolution. [pixel]
+
         public static final double CAMERA_HEIGHT = 0.73; // [m]
         public static final double TARGET_HEIGHT_FROM_GROUND = 2.65; // [m] Pefzener 2.62
         public static final double CAMERA_PITCH = 36.2; // Pitch of the vision. [deg]
         public static final double DIAG_FOV = 75; // Diagonal FOV. [deg]
         public static final double LED_RANGE = 6; // Visible range of LEDs. [m]
-        public static final int CAM_RESOLUTION_WIDTH = 640; // Width of camera resolution. [pixel]
-        public static final int CAM_RESOLUTION_HEIGHT = 480; // Height of camera resolution. [pixel]
         public static final double MIN_TARGET_AREA = 10; // Minimal area of target. [pixel^2]
         public static final double TARGET_WIDTH = 1.36; // Width of vision target strip. [m]
         public static final double TARGET_HEIGHT = 0.05; // Height of the vision target strip. [m]
@@ -245,10 +240,8 @@ public final class Constants {
         public static final double KI = 0;
         public static final double KD = 0;
 
-
         public static final double CRUISE_VELOCITY = 0; // [ticks/100ms]
         public static final double MAXIMAL_ACCELERATION = 0; // [ticks/100ms*sec]
-        public static final boolean VOLTAGE_COMPENSATION = true;
 
         public static final double MAX_VELOCITY = Math.PI * 2 / 3; // [rad/s]
 
@@ -280,30 +273,30 @@ public final class Constants {
         public static final double RED_RUNG_YAW = BLUE_RUNG_YAW - 180;
 
         public static final double OSCILLATION_DELTA_TIME = 0.2;
+
+        public static final boolean VOLTAGE_COMPENSATION = true;
     }
 
     public static class Intake {
-        public static final WebConstant DEFAULT_POWER = WebConstant.of("Intake", "power", 1); // power intake will receive on the basic command. [%]
         public static final double POWER_TO_VELOCITY_RATIO = -3 / 16.0; // Ratio of power to velocity. [% / m/s]
         public static final double TIME_BETWEEN_RUNS = 1.7; // time intake will wait before toggling the retractor (for testing only). [s]
+
+        public static final WebConstant DEFAULT_POWER = WebConstant.of("Intake", "power", 1); // power intake will receive on the basic command. [%]
     }
 
     public static class Hood {
         public static final double HOOD_PRESSURE_BIT_DELTA_TIME = 0.1; // [s]
         public static final double DISTANCE_FROM_TARGET_THRESHOLD = 2.67; // [m]
-        public static final double MIN_DISTANCE = 1.6;
     }
 
     public static class Control {
+        public static final int JOYSTICK_FILTER_TAP = 8 + 8 / 2;
+
         public static final double RIGHT_TRIGGER_DEADBAND = 0.4; // Deadband for right trigger. [%]
         public static final double LEFT_TRIGGER_DEADBAND = 0.4; // Deadband for right trigger. [%]
-        public static final int JOYSTICK_FILTER_TAP = 8 + 8 / 2;
-        public static final double JOYSTICK_XY_SMOOTHING_EXPONENT = 1.5;
-        public static final double JOYSTICK_OMEGA_SMOOTHING_EXPONENT = 1.5;
     }
 
     public static class Flap {
-        public static final double FLAP_DELAY = 0.4; // [sec]
+        public static final double OSCILLATION_DELTA_TIME = 0.4; // [sec]
     }
-
 }

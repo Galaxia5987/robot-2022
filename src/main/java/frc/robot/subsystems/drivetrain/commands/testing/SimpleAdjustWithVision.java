@@ -42,7 +42,7 @@ public class SimpleAdjustWithVision extends CommandBase {
 
     @Override
     public void execute() {
-        double rotation = Utils.deadband(rotationSupplier.getAsDouble(), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
+        double rotation = Utils.conventionalDeadband(rotationSupplier.getAsDouble(), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
         if (rotation == 0 && !condition.getAsBoolean()) {
             swerveDrive.terminate();
             last = false;

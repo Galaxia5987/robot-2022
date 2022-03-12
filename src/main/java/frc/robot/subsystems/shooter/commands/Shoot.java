@@ -97,25 +97,7 @@ public class Shoot extends CommandBase {
 
     @Override
     public void execute() {
-
-//        if (postFlap.getAsBoolean()) {
-//            if (!last) {
-//                timer.reset();
-//            }
-//            last = true;
-//        } else {
-//            last = false;
-//        }
-
-//        if (timer.hasElapsed(0.5) || starting) {
-//            setpointVelocity = getSetpointVelocity(distance.getAsDouble(), hood.isOpen());
-//            starting = false;
-//        }
-//        setpointVelocity = getSetpointVelocity(distance.getAsDouble(), hood.isOpen());
-
-
         if (power.isEmpty()) {
-//            System.out.println("Distance: " + distance.getAsDouble() + ", Velocity: " + getSetpointVelocity(distance.getAsDouble(), hood.isOpen()));
             shooter.setVelocity(setpointVelocity);
             SmartDashboard.putString("speed_state", Math.abs(setpointVelocity - shooter.getVelocity()) <= 30 ? "green" : Math.abs(setpointVelocity - shooter.getVelocity()) <= 100 ? "yellow" : "red");
         } else {
@@ -133,7 +115,6 @@ public class Shoot extends CommandBase {
     public void end(boolean interrupted) {
         shooter.terminate();
         timer.stop();
-//        starting = true;
         RobotContainer.ledSubsystem.setNeutralMode(true);
         RobotContainer.ledSubsystem.setPercent(0);
         SmartDashboard.putString("speed_state", "red");
