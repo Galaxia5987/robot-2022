@@ -21,11 +21,11 @@ public class Convey4 extends CommandBase {
     private final DoubleSupplier velocitySupplier;
     private final Hood hood;
     private final DoubleSupplier distance;
+    private final boolean first = true;
+    private final Timer delayTimer = new Timer();
     boolean go = false;
     private boolean last = false;
-    private final boolean first = true;
     private boolean getBallToPreFlap = true;
-    private final Timer delayTimer = new Timer();
     private double setpoint = 0;
     private boolean wait = true;
     private Hood.Mode mode = Hood.Mode.ShortDistance;

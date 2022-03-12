@@ -22,7 +22,7 @@ public class Utils {
     }
 
     /**
-     * @param val     the input value.
+     * @param val       the input value.
      * @param threshold the threshold value.
      * @return the updated value after the deadband.
      */

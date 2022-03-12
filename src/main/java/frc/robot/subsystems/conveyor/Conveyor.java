@@ -13,8 +13,7 @@ import frc.robot.subsystems.UnitModel;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-import static frc.robot.Constants.Conveyor.*;
-import static frc.robot.Constants.TALON_TIMEOUT;
+import static frc.robot.Constants.Conveyor.MIN_PROXIMITY_VALUE;
 import static frc.robot.Ports.Conveyor.IS_COMPENSATING_VOLTAGE;
 import static frc.robot.Ports.Conveyor.MOTOR_INVERSION;
 
