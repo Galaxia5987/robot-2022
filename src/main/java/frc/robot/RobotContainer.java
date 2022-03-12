@@ -129,7 +129,7 @@ public class RobotContainer {
         { // Joystick button bindings.
             Joysticks.leftTrigger.whenPressed(() -> {
                 speedMultiplier = (speedMultiplier == 0.5 ? 1 : 0.5);
-                thetaMultiplier = (thetaMultiplier == 0.75 ? 1.5 : 0.75);
+                thetaMultiplier = 1.5 * speedMultiplier;
             });
 
             Joysticks.leftTwo.whenPressed((Runnable) Robot::resetAngle);
