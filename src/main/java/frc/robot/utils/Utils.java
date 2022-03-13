@@ -99,4 +99,8 @@ public class Utils {
 
         return Hxy.apply(val, threshold);
     }
+
+    public static double timeByDistance(double distance) {
+        return 8;
+    }
 }
