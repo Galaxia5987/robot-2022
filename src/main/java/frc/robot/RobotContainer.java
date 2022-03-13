@@ -1,7 +1,6 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -35,6 +34,7 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 public class RobotContainer {
+    public static boolean playWithoutVision = false;
 
     // The robot's subsystems and commands are defined here...
     public static LedSubsystem ledSubsystem = new LedSubsystem();
@@ -66,25 +66,16 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        Supplier<Pose2d> swervePose = swerve::getPose;
-        Supplier<Transform2d> poseRelativeToTarget = () -> Constants.Vision.HUB_POSE.minus(swervePose.get());
-        DoubleSupplier yaw = () -> photonVisionModule.getYaw().orElse(Robot.getAngle().minus(new Rotation2d(
-                        Math.atan2(
-                                poseRelativeToTarget.get().getY(),
-                                poseRelativeToTarget.get().getX()
-                        )
-                )
-        ).getDegrees());
         swerve.setDefaultCommand(
                 new DriveAndAdjustWithVision(
                         swerve,
                         () -> -Joysticks.leftJoystick.getY() * speedMultiplier,
                         () -> -Joysticks.leftJoystick.getX() * speedMultiplier,
                         () -> -Joysticks.rightJoystick.getX() * thetaMultiplier,
-                        yaw,
+                        () -> photonVisionModule.getYaw().orElse(0),
                         Joysticks.rightTrigger::get,
-                        photonVisionModule::getDistance
-                )
+                        photonVisionModule::getDistance,
+                        () -> photonVisionModule.hasTargets())
         );
         helicopter.setDefaultCommand(new JoystickPowerHelicopter(helicopter, Xbox.controller::getLeftY));
     }

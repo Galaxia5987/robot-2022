@@ -11,8 +11,8 @@ import frc.robot.Robot;
 import frc.robot.commandgroups.PickUpCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
+import frc.robot.subsystems.drivetrain.commands.AdjustToTargetOnCommand;
 import frc.robot.subsystems.drivetrain.commands.auto.FollowPath;
-import frc.robot.subsystems.drivetrain.commands.testing.SimpleAdjustWithVision;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Intake;
@@ -82,7 +82,7 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
                 )
         ).getDegrees());
         return new SequentialCommandGroup(
-                new SimpleAdjustWithVision(swerveDrive, () -> 0, () -> true, yaw, distanceFromTarget).withTimeout(0.3),
+                new AdjustToTargetOnCommand(swerveDrive, () -> visionModule.getYaw().orElse(0), () -> visionModule.hasTargets()).withTimeout(0.3),
                 new ParallelRaceGroup(new BackAndShootCargo(
                         shooter,
                         hood,
@@ -92,7 +92,7 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
                         distanceFromTarget)
                         .withTimeout(timeout),
                         new IntakeCargo(intake, Constants.Intake.DEFAULT_POWER::get),
-                        new SimpleAdjustWithVision(swerveDrive, () -> 0, () -> true, yaw, distanceFromTarget))
+                        new AdjustToTargetOnCommand(swerveDrive, () -> visionModule.getYaw().orElse(0), () -> visionModule.hasTargets()))
         );
     }
 

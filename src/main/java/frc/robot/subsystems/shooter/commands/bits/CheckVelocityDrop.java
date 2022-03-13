@@ -12,7 +12,7 @@ public class CheckVelocityDrop extends Shoot {
     private double maximalDrop = 0;
 
     public CheckVelocityDrop(Shooter shooter, Hood hood, DoubleSupplier distance) {
-        super(shooter, hood, distance);
+        super(shooter, hood, distance, hasTarget, odomDistance);
     }
 
     @Override

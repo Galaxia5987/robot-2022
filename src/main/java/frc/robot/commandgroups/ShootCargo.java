@@ -10,10 +10,7 @@ import frc.robot.subsystems.hood.commands.HoodCommand;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.Shoot;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-
-import static frc.robot.Constants.Shooter.SHOOTER_VELOCITY_DEADBAND;
 
 public class ShootCargo extends ParallelCommandGroup {
 
@@ -25,13 +22,12 @@ public class ShootCargo extends ParallelCommandGroup {
                       DoubleSupplier distanceFromTarget,
                       boolean bool) {
         DoubleSupplier setpointVelocity = () -> Shoot.getSetpointVelocity(distanceFromTarget.getAsDouble(), hood.isOpen());
-        BooleanSupplier isFlywheelAtSetpoint = () -> Math.abs(setpointVelocity.getAsDouble() - shooter.getVelocity()) < SHOOTER_VELOCITY_DEADBAND.get();
 
         addCommands(
                 new HoodCommand(hood, () -> !conveyor.isPostFlapBeamConnected(), distanceFromTarget),
                 new Convey3(conveyor, () -> !conveyor.isPreFlapBeamConnected(), setpointVelocity, shooter::getVelocity),
                 new InstantCommand(flap::allowShooting),
-                new Shoot(shooter, hood, distanceFromTarget, bool)
+                new Shoot(shooter, hood, distanceFromTarget, bool, hasTarget)
         );
     }
 

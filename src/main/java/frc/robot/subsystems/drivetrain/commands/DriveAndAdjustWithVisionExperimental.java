@@ -13,7 +13,7 @@ import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.SwerveDrive.VELOCITY_MULTIPLIER;
 
-public class DriveAndAdjustWithVision extends HolonomicDrive {
+public class DriveAndAdjustWithVisionExperimental extends HolonomicDrive {
     private final PIDController pidController = new PIDController(Constants.SwerveDrive.HEADING_KP, 0, 0) {{
         enableContinuousInput(-Math.PI, Math.PI);
         setTolerance(Constants.SwerveDrive.ALLOWABLE_HEADING_ERROR);
@@ -34,8 +34,9 @@ public class DriveAndAdjustWithVision extends HolonomicDrive {
     private boolean wait = false;
     private double current = 0;
     private Rotation2d target;
+    private boolean last = false;
 
-    public DriveAndAdjustWithVision(SwerveDrive swerveDrive, DoubleSupplier forwardSupplier, DoubleSupplier strafeSupplier, DoubleSupplier rotationSupplier, DoubleSupplier yawSupplier, BooleanSupplier condition, DoubleSupplier distanceSupplier, BooleanSupplier hasTarget) {
+    public DriveAndAdjustWithVisionExperimental(SwerveDrive swerveDrive, DoubleSupplier forwardSupplier, DoubleSupplier strafeSupplier, DoubleSupplier rotationSupplier, DoubleSupplier yawSupplier, BooleanSupplier condition, DoubleSupplier distanceSupplier, BooleanSupplier hasTarget) {
         super(swerveDrive, forwardSupplier, strafeSupplier, rotationSupplier);
         this.yawSupplier = yawSupplier;
         this.condition = condition;
@@ -88,27 +89,28 @@ public class DriveAndAdjustWithVision extends HolonomicDrive {
 
         } else {
 
-
             // if you want to adjust to the target
             if (condition.getAsBoolean()) {
-                if (!hasTarget.getAsBoolean()) {
-                    var robotAngle = Robot.getAngle();
-                    var robotPose = swerveDrive.getPose().getTranslation();
-                    var hubPose = Constants.Vision.HUB_POSE.getTranslation();
-                    var poseRelativeToTarget = hubPose.minus(robotPose);
-                    var value = robotAngle.plus(new Rotation2d(
-                            Math.atan2(
-                                    poseRelativeToTarget.getY(),
-                                    poseRelativeToTarget.getX()
-                            )));
-                    target = value;
-                } else {
-                    if (sampleYawTimer.hasElapsed(Constants.SwerveDrive.SAMPLE_YAW_PERIOD)) {
+                if (!last) {
+                    if (!hasTarget.getAsBoolean()) {
+                        var robotAngle = Robot.getAngle();
+                        var robotPose = swerveDrive.getPose().getTranslation();
+                        var hubPose = Constants.Vision.HUB_POSE.getTranslation();
+                        var poseRelativeToTarget = hubPose.minus(robotPose);
+                        var value = robotAngle.plus(new Rotation2d(
+                                Math.atan2(
+                                        poseRelativeToTarget.getY(),
+                                        poseRelativeToTarget.getX()
+                                )));
+                        target = value;
+                    } else {
                         target = Robot.getAngle().minus(Rotation2d.fromDegrees(yawSupplier.getAsDouble()));
-                        sampleYawTimer.reset();
                     }
+                    last = true;
                 }
                 rotation = adjustController.calculate(Robot.getAngle().getRadians(), target.getRadians());
+            } else {
+                last = false;
             }
 
             // if swerveDrive angles were reached don't wait

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Ports;
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.SimPhotonCamera;
@@ -55,6 +56,10 @@ public class PhotonVisionModule extends SubsystemBase {
     public boolean hasTargets() {
         if (Robot.isSimulation()) {
             return simCamera.getLatestResult().hasTargets();
+        }
+
+        if (RobotContainer.playWithoutVision) {
+            return false;
         }
         return camera.getLatestResult().hasTargets();
     }
