@@ -2,6 +2,10 @@ package frc.robot.subsystems.intake;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import edu.wpi.first.util.datalog.BooleanLogEntry;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -12,6 +16,8 @@ public class Intake extends SubsystemBase {
     private static Intake INSTANCE;
     private final CANSparkMax motor = new CANSparkMax(Ports.Intake.MOTOR, CANSparkMaxLowLevel.MotorType.kBrushless);
     private final Solenoid retractor = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Intake.SOLENOID);
+    private final DoubleLogEntry power;
+    private final BooleanLogEntry retracted;
 
     private Intake() {
         motor.setInverted(Ports.Intake.IS_MOTOR_INVERTED);
@@ -20,6 +26,10 @@ public class Intake extends SubsystemBase {
         motor.setSecondaryCurrentLimit(50);
         motor.setIdleMode(CANSparkMax.IdleMode.kCoast);
         motor.burnFlash();
+
+        DataLog log = DataLogManager.getLog();
+        power = new DoubleLogEntry(log, "/intake/power");
+        retracted = new BooleanLogEntry(log, "/intake/retracted");
     }
 
 
@@ -79,6 +89,12 @@ public class Intake extends SubsystemBase {
      */
     public boolean getRetractorState() {
         return retractor.get();
+    }
+
+    @Override
+    public void periodic() {
+        power.append(getPower());
+        retracted.append(retractor.get());
     }
 
     public enum RetractorState {

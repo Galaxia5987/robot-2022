@@ -4,7 +4,9 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -23,12 +25,11 @@ import static frc.robot.Ports.Shooter.MOTOR;
 
 public class Shooter extends SubsystemBase {
     private static final ShuffleboardTab tab = Shuffleboard.getTab("Velocity");
-    public static NetworkTableEntry shooterVelocity =
-            tab.add("Velocity", 0)
-                    .getEntry();
     private static Shooter INSTANCE;
     private final UnitModel unitModel = new UnitModel(TICKS_PER_REVOLUTION);
     private final WPI_TalonFX motor = new WPI_TalonFX(MOTOR);
+    private final DoubleLogEntry shooterVelocity;
+    private final DoubleLogEntry shooterVoltage;
     private FlywheelSim flywheelSim;
     private TalonFXSimCollection simCollection;
     private double currentTime = 0;
@@ -39,6 +40,11 @@ public class Shooter extends SubsystemBase {
         if (Robot.isSimulation()) {
             simCollection = motor.getSimCollection();
         }
+
+        DataLog log = DataLogManager.getLog();
+        shooterVelocity = new DoubleLogEntry(log, "/shooter/velocity");
+        shooterVoltage = new DoubleLogEntry(log, "/shooter/voltage");
+
     }
 
     /**
@@ -102,6 +108,8 @@ public class Shooter extends SubsystemBase {
     public void periodic() {
         lastTime = currentTime;
         currentTime = Timer.getFPGATimestamp();
+        shooterVelocity.append(getVelocity());
+        shooterVoltage.append(motor.getMotorOutputVoltage());
         FireLog.log("Shooter-velocity", getVelocity());
 
         motor.config_kP(0, kP.get());

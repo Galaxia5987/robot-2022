@@ -8,10 +8,10 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.util.datalog.BooleanLogEntry;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
@@ -43,6 +43,9 @@ public class Helicopter extends SubsystemBase {
     private final SingleJointedArmSim armSim;
     private final MechanismLigament2d arm;
 
+    private final DoubleLogEntry power;
+    private final DoubleLogEntry voltage;
+    private final BooleanLogEntry isStopped;
 
     private Helicopter() {
         if (Robot.isSimulation()) {
@@ -129,6 +132,11 @@ public class Helicopter extends SubsystemBase {
          Setting the motor to go clockwise.
          */
         auxMotor.setInverted(Ports.Helicopter.IS_AUX_INVERTED);
+
+        DataLog log = DataLogManager.getLog();
+        power = new DoubleLogEntry(log, "/helicopter/power");
+        voltage = new DoubleLogEntry(log, "/helicopter/voltage");
+        isStopped = new BooleanLogEntry(log, "/helicopter/isStopped");
     }
 
     /**
@@ -244,6 +252,13 @@ public class Helicopter extends SubsystemBase {
      */
     public void stop() {
         mainMotor.stopMotor();
+    }
+
+    @Override
+    public void periodic() {
+        power.append(mainMotor.get());
+        voltage.append(mainMotor.getMotorOutputVoltage());
+        isStopped.append(isStopperEngaged());
     }
 
     /**
