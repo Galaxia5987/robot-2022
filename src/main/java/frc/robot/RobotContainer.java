@@ -35,6 +35,7 @@ import java.util.function.Supplier;
 
 public class RobotContainer {
     public static boolean playWithoutVision = false;
+    public static boolean hardCodedVelocity = false;
 
     // The robot's subsystems and commands are defined here...
     public static LedSubsystem ledSubsystem = new LedSubsystem();

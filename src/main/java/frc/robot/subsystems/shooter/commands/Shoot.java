@@ -96,7 +96,14 @@ public class Shoot extends CommandBase {
         timer.start();
         timer.reset();
         if (bool) {
-            setpointVelocity = getSetpointVelocity(distance.getAsDouble());
+            if (hasTarget.getAsBoolean()) {
+                setpointVelocity = getSetpointVelocity(distance.getAsDouble());
+            } else {
+                setpointVelocity = getSetpointVelocity(odomDistance.getAsDouble());
+            }
+            if (RobotContainer.hardCodedVelocity) {
+                setpointVelocity = Constants.Shooter.TARMAC_VELOCITY;
+            }
         } else {
             setpointVelocity = distance.getAsDouble();
         }

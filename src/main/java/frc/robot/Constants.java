@@ -82,7 +82,7 @@ public final class Constants {
 
         private static final double Rx = SwerveDrive.ROBOT_LENGTH / 2; // [m]
         private static final double Ry = SwerveDrive.ROBOT_WIDTH / 2; // [m]
-        
+
         // Axis systems
         public static final Translation2d[] SWERVE_POSITIONS = new Translation2d[]{
                 new Translation2d(Rx, -Ry),
@@ -136,6 +136,7 @@ public final class Constants {
             put(5.65, 4550.0);
             put(99999.0, 4550.0);
         }};
+        public static final double TARMAC_VELOCITY = 3700;
 
         public static TalonFXConfiguration getConfiguration() {
             final TalonFXConfiguration configuration = new TalonFXConfiguration();
