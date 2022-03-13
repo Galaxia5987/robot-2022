@@ -23,10 +23,10 @@ public class Convey3 extends CommandBase {
     private double setpoint = 0;
     private boolean wait = true;
 
-    public Convey3(Conveyor conveyor, BooleanSupplier preFlapSupplier, DoubleSupplier distanceSupplier, DoubleSupplier velocitySupplier) {
+    public Convey3(Conveyor conveyor, BooleanSupplier preFlapSupplier, DoubleSupplier setpointSupplier, DoubleSupplier velocitySupplier) {
         this.conveyor = conveyor;
         this.preFlapSupplier = preFlapSupplier;
-        this.setpointSuppier = distanceSupplier;
+        this.setpointSuppier = setpointSupplier;
         this.velocitySupplier = velocitySupplier;
         addRequirements(conveyor);
     }

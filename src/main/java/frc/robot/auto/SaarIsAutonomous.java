@@ -89,7 +89,9 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
                         conveyor,
                         flap,
                         conveyorPower,
-                        distanceFromTarget)
+                        distanceFromTarget,
+                        () -> visionModule.hasTargets(),
+                        () -> swerveDrive.getOdomDistance())
                         .withTimeout(timeout),
                         new IntakeCargo(intake, Constants.Intake.DEFAULT_POWER::get),
                         new AdjustToTargetOnCommand(swerveDrive, () -> visionModule.getYaw().orElse(0), () -> visionModule.hasTargets()))
