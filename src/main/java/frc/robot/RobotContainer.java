@@ -98,7 +98,7 @@ public class RobotContainer {
             }, shooter).withInterrupt(Xbox.rt::get));
             Xbox.a.whileHeld(new BackAndShootCargoSort(shooter, hood, conveyor, flap,
                     () -> Constants.Conveyor.SHOOT_POWER,
-                    distanceFromTarget));
+                    distanceFromTarget, () -> photonVisionModule.hasTargets(), () -> swerve.getOdomDistance()));
 
             Xbox.leftPov.whileActiveOnce(new InstantCommand(hood::toggle));
             Xbox.rightPov.whileActiveOnce(new InstantCommand(helicopter::toggleStopper));
@@ -108,7 +108,7 @@ public class RobotContainer {
             Xbox.rt.whileActiveContinuous(new BackAndShootCargo(
                     shooter, hood, conveyor, flap,
                     () -> Constants.Conveyor.SHOOT_POWER,
-                    distanceFromTarget));
+                    distanceFromTarget, () -> photonVisionModule.hasTargets(), () -> swerve.getOdomDistance()));
             Xbox.lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, Constants.Conveyor.DEFAULT_POWER.get(), Constants.Intake.DEFAULT_POWER::get));
             Xbox.lb.whileHeld(new Outtake(intake, conveyor, flap, shooter, hood, () -> false));
             Xbox.rb.whileHeld(new Convey(conveyor, -Constants.Conveyor.SHOOT_POWER));

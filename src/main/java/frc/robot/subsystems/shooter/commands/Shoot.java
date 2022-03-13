@@ -23,14 +23,15 @@ public class Shoot extends CommandBase {
     private final OptionalDouble power;
     private final Timer timer = new Timer();
     private final BooleanSupplier hasTarget;
+    private final DoubleSupplier odomDistance;
     private double setpointVelocity = 0;
     private final DoubleSupplier odomDistance;
 
     public Shoot(Shooter shooter, Hood hood, double power, BooleanSupplier hasTarget, DoubleSupplier odomDistance) {
         this.shooter = shooter;
         this.hood = hood;
-        this.hasTarget = hasTarget;
-        this.odomDistance = odomDistance;
+        this.hasTarget = () -> true;
+        this.odomDistance = () -> 0;
         this.distance = () -> 8;
         this.power = OptionalDouble.of(power);
         bool = false;
@@ -59,9 +60,9 @@ public class Shoot extends CommandBase {
      * @param distance is the distance from the target. [m]
      * @return 15. [rpm]
      */
-    public static double getSetpointVelocity(double distance, boolean isShort) {
+    public static double getSetpointVelocity(double distance) {
         HashMap<Double, Double> measurements;
-        if (isShort) {
+        if (distance < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD) {
             measurements = Constants.Shooter.SHORT_MEASUREMENTS;
         } else {
             measurements = Constants.Shooter.LONG_MEASUREMENTS;
@@ -96,11 +97,7 @@ public class Shoot extends CommandBase {
         timer.start();
         timer.reset();
         if (bool) {
-            if (hasTarget.getAsBoolean()) {
-                setpointVelocity = getSetpointVelocity(distance.getAsDouble(), hood.isOpen());
-            } else {
-                setpointVelocity = getSetpointVelocity(odomDistance.getAsDouble(), hood.isOpen());
-            }
+            setpointVelocity = getSetpointVelocity(distance.getAsDouble());
         } else {
             setpointVelocity = distance.getAsDouble();
         }

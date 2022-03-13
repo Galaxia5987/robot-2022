@@ -79,7 +79,7 @@ public class TryVelocities extends SequentialCommandGroup {
 
         addCommands(
                 new ShootCargo(shooter, hood, conveyor, flap,
-                        Constants.Conveyor.DEFAULT_POWER::get, () -> distanceFromTarget)
+                        Constants.Conveyor.DEFAULT_POWER::get, () -> distanceFromTarget, () -> true, () -> 0)
                         .withInterrupt(() -> getOutputs()[2]),
                 new WaitUntilCommand(isFinished).andThen(() -> {
                     if (getOutputs()[0]) {
