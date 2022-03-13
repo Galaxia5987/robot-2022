@@ -22,15 +22,15 @@ public class ShootCargo2 extends ParallelCommandGroup {
                        Flap flap,
                        DoubleSupplier conveyorPower,
                        DoubleSupplier distanceFromTarget,
-                       boolean bool) {
-        DoubleSupplier setpointVelocity = () -> Shoot.getSetpointVelocity(distanceFromTarget.getAsDouble(), hood.isOpen());
+                       boolean bool, BooleanSupplier hasTarget, DoubleSupplier odomDistance) {
+        DoubleSupplier setpointVelocity = () -> Shoot.getSetpointVelocity(distanceFromTarget.getAsDouble());
         BooleanSupplier isFlywheelAtSetpoint = () -> Math.abs(setpointVelocity.getAsDouble() - shooter.getVelocity()) < SHOOTER_VELOCITY_DEADBAND.get();
 
         addCommands(
 //                new HoodCommand(hood, () -> !conveyor.isPostFlapBeamConnected(), distanceFromTarget),
                 new Convey4(conveyor, hood, () -> !conveyor.isPreFlapBeamConnected(), setpointVelocity, shooter::getVelocity, distanceFromTarget),
                 new InstantCommand(flap::allowShooting),
-                new Shoot(shooter, hood, distanceFromTarget, bool)
+                new Shoot(shooter, hood, distanceFromTarget, bool, hasTarget, odomDistance)
         );
     }
 
@@ -39,7 +39,7 @@ public class ShootCargo2 extends ParallelCommandGroup {
                        Conveyor conveyor,
                        Flap flap,
                        DoubleSupplier conveyorPower,
-                       DoubleSupplier distanceFromTarget) {
-        this(shooter, hood, conveyor, flap, conveyorPower, distanceFromTarget, true);
+                       DoubleSupplier distanceFromTarget, BooleanSupplier hasTarget, DoubleSupplier odomDistance) {
+        this(shooter, hood, conveyor, flap, conveyorPower, distanceFromTarget, true, hasTarget, odomDistance);
     }
 }

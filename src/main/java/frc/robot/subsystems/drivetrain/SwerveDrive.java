@@ -342,6 +342,10 @@ public class SwerveDrive extends SubsystemBase {
         modules[1].setAngle(Rotation2d.fromDegrees(-45));
     }
 
+    public double getOdomDistance() {
+        return Constants.Vision.HUB_POSE.getTranslation().minus(getPose().getTranslation()).getNorm();
+    }
+
     @Override
     public void periodic() {
         odometry.updateWithTime(

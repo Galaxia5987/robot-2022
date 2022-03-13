@@ -15,7 +15,7 @@ public class CheckShooterAccuracy extends Shoot {
     private double lastTime;
 
     public CheckShooterAccuracy(Shooter shooter, Hood hood, DoubleSupplier distance) {
-        super(shooter, hood, distance);
+        super(shooter, hood, distance, () -> true, () -> 0);
     }
 
     @Override
@@ -23,14 +23,14 @@ public class CheckShooterAccuracy extends Shoot {
         timer.reset();
         timer.start();
         lastTime = timer.get();
-        lastVelocity = getSetpointVelocity(distance.getAsDouble(), hood.isOpen());
+        lastVelocity = getSetpointVelocity(distance.getAsDouble());
     }
 
     @Override
     public void execute() {
         super.execute();
 
-        double setpoint = getSetpointVelocity(distance.getAsDouble(), hood.isOpen());
+        double setpoint = getSetpointVelocity(distance.getAsDouble());
         double currentVelocity = shooter.getVelocity();
         double acceleration = (currentVelocity - lastVelocity) / (timer.get() - lastTime);
 

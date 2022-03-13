@@ -26,7 +26,7 @@ public class TestBallFlow extends SequentialCommandGroup {
         this.intake = intake;
         this.shooter = shooter;
         this.conveyor = conveyor;
-        this.shootCargo = new ShootCargo(shooter, hood, conveyor, flap, () -> 8, Constants.Conveyor.DEFAULT_POWER::get);
+        this.shootCargo = new ShootCargo(shooter, hood, conveyor, flap, () -> 8, Constants.Conveyor.DEFAULT_POWER::get, () -> true, () -> 0);
         this.pickUpCargo = new PickUpCargo(conveyor, flap, intake, Constants.Conveyor.DEFAULT_POWER.get(), () -> 0.5);
 
         addCommands(

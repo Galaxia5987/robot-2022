@@ -13,8 +13,6 @@ import frc.robot.subsystems.shooter.commands.Shoot;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-import static frc.robot.Constants.Shooter.SHOOTER_VELOCITY_DEADBAND;
-
 public class ShootCargo extends ParallelCommandGroup {
 
     public ShootCargo(Shooter shooter,
@@ -23,15 +21,14 @@ public class ShootCargo extends ParallelCommandGroup {
                       Flap flap,
                       DoubleSupplier conveyorPower,
                       DoubleSupplier distanceFromTarget,
-                      boolean bool) {
-        DoubleSupplier setpointVelocity = () -> Shoot.getSetpointVelocity(distanceFromTarget.getAsDouble(), hood.isOpen());
-        BooleanSupplier isFlywheelAtSetpoint = () -> Math.abs(setpointVelocity.getAsDouble() - shooter.getVelocity()) < SHOOTER_VELOCITY_DEADBAND.get();
+                      boolean bool, BooleanSupplier hasTarget, DoubleSupplier odomDistance) {
+        DoubleSupplier setpointVelocity = () -> Shoot.getSetpointVelocity(distanceFromTarget.getAsDouble());
 
         addCommands(
                 new HoodCommand(hood, () -> !conveyor.isPostFlapBeamConnected(), distanceFromTarget),
                 new Convey3(conveyor, () -> !conveyor.isPreFlapBeamConnected(), setpointVelocity, shooter::getVelocity),
                 new InstantCommand(flap::allowShooting),
-                new Shoot(shooter, hood, distanceFromTarget, bool)
+                new Shoot(shooter, hood, distanceFromTarget, bool, hasTarget, odomDistance)
         );
     }
 
@@ -40,7 +37,7 @@ public class ShootCargo extends ParallelCommandGroup {
                       Conveyor conveyor,
                       Flap flap,
                       DoubleSupplier conveyorPower,
-                      DoubleSupplier distanceFromTarget) {
-        this(shooter, hood, conveyor, flap, conveyorPower, distanceFromTarget, true);
+                      DoubleSupplier distanceFromTarget, BooleanSupplier hasTarget, DoubleSupplier odomDistance) {
+        this(shooter, hood, conveyor, flap, conveyorPower, distanceFromTarget, true, hasTarget, odomDistance);
     }
 }
