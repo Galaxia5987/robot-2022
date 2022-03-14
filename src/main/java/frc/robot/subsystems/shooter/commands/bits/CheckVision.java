@@ -16,13 +16,13 @@ import static frc.robot.Constants.Vision.*;
 public class CheckVision extends SequentialCommandGroup {
 
 
-    public CheckVision(Shooter shooter, Hood hood, PhotonVisionModule photonVisionModule, PhotonCamera photonCamera) {
+    public CheckVision(Shooter shooter, Hood hood, PhotonCamera photonCamera, LinearFilter linearFilter) {
         addCommands(
                 new ParallelRaceGroup(
                         new Shoot(
                                 shooter,
                                 hood,
-                                photonVisionModule::getDistance).withTimeout(8),
+                                testGetDistance(photonCamera, linearFilter)).withTimeout(8),
 
                         new RunCommand(() -> System.out.println("Current velocity for 2m: " + shooter.getVelocity())),
 
@@ -31,7 +31,7 @@ public class CheckVision extends SequentialCommandGroup {
     }
 
 
-    public double testGetDistance(PhotonVisionModule photonVisionModule, PhotonCamera photonCamera, LinearFilter linearFilter) {
+    public double testGetDistance(PhotonCamera photonCamera, LinearFilter linearFilter) {
         var results = photonCamera.getLatestResult();
         if (results.hasTargets()) {
             double distance = PhotonUtils.calculateDistanceToTargetMeters(
