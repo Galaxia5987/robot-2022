@@ -17,14 +17,18 @@ public class TestColorSensor extends SequentialCommandGroup {
     }
 
     public static void checkColorBlue(Conveyor conveyor) {
-        if (conveyor.getColor() != DriverStation.Alliance.Blue) {
+        if (conveyor.getColor() != DriverStation.Alliance.Invalid) {
             System.out.println("Waiting for blue cargo....");
+        } else if (conveyor.getColor() == DriverStation.Alliance.Red) {
+            System.out.println("Error! sensed red");
         } else System.out.println("Sensed blue!!!");
     }
 
     public static void checkColorRed(Conveyor conveyor) {
         if (conveyor.getColor() != DriverStation.Alliance.Red) {
             System.out.println("Waiting for red cargo....");
+        } else if (conveyor.getColor() == DriverStation.Alliance.Blue) {
+            System.out.println("Error! sensed blue");
         } else System.out.println("Sensed red!!!");
     }
 }
