@@ -4,9 +4,11 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.TurnToAngle;
+import frc.robot.subsystems.drivetrain.commands.TurnWhileRunning;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.shooter.Shooter;
@@ -24,7 +26,7 @@ public class ShootAndRun extends ParallelCommandGroup {
         Supplier<Translation2d> virtualGoal = () -> calculateVirtualGoal(currentGoal.get(), swerveDrive.getChassisSpeeds(), flightTime.getAsDouble());
         addCommands(
                 new ShootCargo(shooter, hood, conveyor, flap, Constants.Conveyor.DEFAULT_POWER::get, () -> getShootingDistance(virtualGoal.get())),
-                new TurnToAngle(swerveDrive, () -> getYawToVirtualGoal(virtualGoal.get()))
+                new TurnWhileRunning(swerveDrive, () -> getYawToVirtualGoal(virtualGoal.get()))
         );
 
     }
@@ -38,7 +40,7 @@ public class ShootAndRun extends ParallelCommandGroup {
     }
 
     private double getYawToVirtualGoal(Translation2d virtualGoal) {
-        return Math.atan(virtualGoal.getY() / virtualGoal.getX());
+        return Robot.getAngle().getDegrees() - Math.atan(virtualGoal.getY() / virtualGoal.getX());
     }
 
     private double getShootingDistance(Translation2d virtualGoal) {
