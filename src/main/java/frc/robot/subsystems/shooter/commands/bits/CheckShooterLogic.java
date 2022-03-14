@@ -17,25 +17,27 @@ public class CheckShooterLogic extends SequentialCommandGroup {
                         new Shoot(
                                 shooter,
                                 hood,
-                                () -> 2),
-                        new RunCommand(() -> System.out.println("vel for distance 2m: " + shooter.getVelocity()))
-                ).withTimeout(5),
+                                () -> 2).withTimeout(5),
+                        new RunCommand(() -> System.out.println("Current vel for distance 2m: " + shooter.getVelocity())),
+                        new RunCommand(()-> System.out.println("desired vel for distance 2m: " + Shoot.getSetpointVelocity(2, true)
+                ))),
 
                 new ParallelRaceGroup(
                         new Shoot(
                                 shooter,
                                 hood,
-                                () -> 3),
-                        new RunCommand(() -> System.out.println("vel for distance 3m: " + shooter.getVelocity())
-                        ).withTimeout(5)),
+                                () -> 3.5).withTimeout(5),
+                        new RunCommand(() -> System.out.println("Current vel for distance 3.5m: " + shooter.getVelocity())),
+                        new RunCommand(()-> System.out.println("Desired vel for distance 3.5m: " + Shoot.getSetpointVelocity(3.5, false))
+                        )),
 
                 new ParallelRaceGroup(
                         new Shoot(
                                 shooter,
                                 hood,
-                                () -> 5),
-                        new RunCommand(() -> System.out.println("vel for distance 5m: " + shooter.getVelocity())
-                        ).withTimeout(5)));
-
+                                () -> 5).withTimeout(5),
+                        new RunCommand(() -> System.out.println("Current vel for distance 5m: " + shooter.getVelocity())),
+                        new RunCommand(()-> System.out.println("Desired vel for distance 5m: " + Shoot.getSetpointVelocity(5, false))
+        )));
     }
 }

@@ -1,7 +1,6 @@
 package frc.robot.subsystems.shooter.commands.bits;
 
 import edu.wpi.first.math.filter.LinearFilter;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
