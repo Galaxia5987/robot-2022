@@ -134,6 +134,9 @@ public class Conveyor extends SubsystemBase {
         return colorSensor.getProximityValue();
     }
 
+    public DriverStation.Alliance getColor() {
+        return colorSensor.getColor();
+    }
     /**
      * removes the string representing the cargo from the list if the cargo is ejected and adds if the cargo is consumed
      */

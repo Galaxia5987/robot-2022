@@ -217,13 +217,15 @@ public final class Constants {
 
         public static final double CAMERA_HEIGHT = 0.73; // [m]
         public static final double TARGET_HEIGHT_FROM_GROUND = 2.65; // [m] Pefzener 2.62
+        public static final double BIT_CAMERA_HEIGHT = 0.73; // [m]
+        public static final double BIT_TARGET_HEIGHT_FROM_GROUND = 2.65; // [m] Pefzener 2.62
         public static final double CAMERA_PITCH = 36.2; // Pitch of the vision. [deg]
         public static final double DIAG_FOV = 75; // Diagonal FOV. [deg]
         public static final double LED_RANGE = 6; // Visible range of LEDs. [m]
         public static final double MIN_TARGET_AREA = 10; // Minimal area of target. [pixel^2]
         public static final double TARGET_WIDTH = 1.36; // Width of vision target strip. [m]
         public static final double TARGET_HEIGHT = 0.05; // Height of the vision target strip. [m]
-        public static final double TARGET_RADIUS = 0.678;
+        public static final double TARGET_RADIUS = 0.678; // [m]
 
         public static final Pose2d HUB_POSE = new Pose2d( // Position of the hub relative to the field.
                 new Translation2d(FIELD_LENGTH / 2, FIELD_WIDTH / 2), new Rotation2d());
