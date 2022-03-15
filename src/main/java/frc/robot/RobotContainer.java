@@ -83,7 +83,7 @@ public class RobotContainer {
                         () -> -Joysticks.rightJoystick.getX() * thetaMultiplier,
                         yaw,
                         Joysticks.rightTrigger::get,
-                        photonVisionModule::getDistance
+                        () -> photonVisionModule.getDistance(Constants.Vision.CAMERA_HEIGHT, Constants.Vision.TARGET_HEIGHT)
                 )
         );
         helicopter.setDefaultCommand(new JoystickPowerHelicopter(helicopter, Xbox.controller::getLeftY));
@@ -93,7 +93,7 @@ public class RobotContainer {
         Supplier<Pose2d> swervePose = swerve::getPose;
         Supplier<Transform2d> poseRelativeToTarget = () -> Constants.Vision.HUB_POSE.minus(swervePose.get());
         DoubleSupplier distanceFromTarget = () -> photonVisionModule.hasTargets() ?
-                photonVisionModule.getDistance() :
+                 photonVisionModule.getDistance(Constants.Vision.CAMERA_HEIGHT, Constants.Vision.TARGET_HEIGHT) :
                 Math.hypot(poseRelativeToTarget.get().getX(), poseRelativeToTarget.get().getY());
 
         { // Xbox controller button bindings.
