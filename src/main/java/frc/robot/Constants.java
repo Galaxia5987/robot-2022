@@ -136,7 +136,7 @@ public final class Constants {
             put(5.65, 4550.0);
             put(99999.0, 4550.0);
         }};
-        public static final double TARMAC_VELOCITY = 3700;
+        public static final double TARMAC_VELOCITY = 3700; // [rpm]
 
         public static TalonFXConfiguration getConfiguration() {
             final TalonFXConfiguration configuration = new TalonFXConfiguration();
