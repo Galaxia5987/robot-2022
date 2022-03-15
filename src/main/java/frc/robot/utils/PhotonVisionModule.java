@@ -64,12 +64,12 @@ public class PhotonVisionModule extends SubsystemBase {
      *
      * @return the distance of the vision module from the target. [m]
      */
-    public double getDistance() {
+    public double getDistance(double cameraHeight, double targetHeight) {
         var results = camera.getLatestResult();
         if (results.hasTargets()) {
             double distance = PhotonUtils.calculateDistanceToTargetMeters(
-                    CAMERA_HEIGHT,
-                    TARGET_HEIGHT_FROM_GROUND,
+                    cameraHeight,
+                    targetHeight,
                     Math.toRadians(CAMERA_PITCH),
                     Math.toRadians(results.getBestTarget().getPitch())
             );
@@ -172,7 +172,7 @@ public class PhotonVisionModule extends SubsystemBase {
 
     @Override
     public void periodic() {
-        System.out.println("Distance: " + getDistance());
+        System.out.println("Distance: " + getDistance(CAMERA_HEIGHT, TARGET_HEIGHT));
 //        System.out.println("Pose with vision = " + HUB_POSE.plus(poseRelativeToTarget()));
 
 
