@@ -134,6 +134,10 @@ public class Conveyor extends SubsystemBase {
         return colorSensor.getProximityValue();
     }
 
+
+    /**
+     * @return The color the color sensor sensed.
+     */
     public DriverStation.Alliance getColor() {
         return colorSensor.getColor();
     }
