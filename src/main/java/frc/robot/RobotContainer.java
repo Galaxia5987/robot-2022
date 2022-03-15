@@ -34,8 +34,8 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 public class RobotContainer {
-    public static boolean playWithoutVision = false;
-    public static boolean hardCodedVelocity = false;
+    public static final boolean playWithoutVision = false;
+    public static final boolean hardCodedVelocity = false;
 
     // The robot's subsystems and commands are defined here...
     public static LedSubsystem ledSubsystem = new LedSubsystem();
@@ -99,7 +99,7 @@ public class RobotContainer {
             }, shooter).withInterrupt(Xbox.rt::get));
             Xbox.a.whileHeld(new BackAndShootCargoSort(shooter, hood, conveyor, flap,
                     () -> Constants.Conveyor.SHOOT_POWER,
-                    distanceFromTarget, photonVisionModule::hasTargets, swerve::getOdomDistance));
+                    distanceFromTarget, photonVisionModule::hasTargets, swerve::getOdometryDistance));
 
             Xbox.leftPov.whileActiveOnce(new InstantCommand(hood::toggle));
             Xbox.rightPov.whileActiveOnce(new InstantCommand(helicopter::toggleStopper));
@@ -109,7 +109,7 @@ public class RobotContainer {
             Xbox.rt.whileActiveContinuous(new BackAndShootCargo(
                     shooter, hood, conveyor, flap,
                     () -> Constants.Conveyor.SHOOT_POWER,
-                    distanceFromTarget, photonVisionModule::hasTargets, swerve::getOdomDistance));
+                    distanceFromTarget, photonVisionModule::hasTargets, swerve::getOdometryDistance));
             Xbox.lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, Constants.Conveyor.DEFAULT_POWER.get(), Constants.Intake.DEFAULT_POWER::get));
             Xbox.lb.whileHeld(new Outtake(intake, conveyor, flap, shooter, hood, () -> false));
             Xbox.rb.whileHeld(new Convey(conveyor, -Constants.Conveyor.SHOOT_POWER));
