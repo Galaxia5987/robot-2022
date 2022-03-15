@@ -31,19 +31,19 @@ public class ShootAndRun extends ParallelCommandGroup {
 
     }
     
-    private Translation2d calculateCurrentGoal(double distance, double yaw) {
-        return new Translation2d(distance * Math.cos(yaw), distance * Math.sin(yaw));
+    public Translation2d calculateCurrentGoal(double distance, double yaw) {
+        return new Translation2d(distance * Math.cos(Math.toRadians(yaw)), distance * Math.sin(Math.toRadians(yaw)));
     }
 
-    private Translation2d calculateVirtualGoal(Translation2d currentGoal, ChassisSpeeds speeds, double flightTime) {
+    public Translation2d calculateVirtualGoal(Translation2d currentGoal, ChassisSpeeds speeds, double flightTime) {
         return currentGoal.minus(new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond).times(flightTime));
     }
 
-    private double getYawToVirtualGoal(Translation2d virtualGoal) {
-        return Robot.getAngle().getDegrees() - Math.atan(virtualGoal.getY() / virtualGoal.getX());
+    public double getYawToVirtualGoal(Translation2d virtualGoal) {
+        return Math.toDegrees(Robot.getAngle().getRadians() - Math.atan2(virtualGoal.getY() , virtualGoal.getX()));
     }
 
-    private double getShootingDistance(Translation2d virtualGoal) {
+    public double getShootingDistance(Translation2d virtualGoal) {
         return Math.hypot(virtualGoal.getX(), virtualGoal.getY());
     }
 
