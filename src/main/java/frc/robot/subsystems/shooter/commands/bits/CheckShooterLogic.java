@@ -19,7 +19,7 @@ public class CheckShooterLogic extends SequentialCommandGroup {
                                 hood,
                                 () -> 2).withTimeout(5),
                         new RunCommand(() -> System.out.println("Current vel for distance 2m: " + shooter.getVelocity())),
-                        new RunCommand(()-> System.out.println("desired vel for distance 2m: " + Shoot.getSetpointVelocity(2, true)
+                        new RunCommand(()-> System.out.println("desired vel for distance 2m: " + Shoot.getSetpointVelocity(2, hood.isOpen())
                 ))),
 
                 new ParallelRaceGroup(
@@ -28,7 +28,7 @@ public class CheckShooterLogic extends SequentialCommandGroup {
                                 hood,
                                 () -> 3.5).withTimeout(5),
                         new RunCommand(() -> System.out.println("Current vel for distance 3.5m: " + shooter.getVelocity())),
-                        new RunCommand(()-> System.out.println("Desired vel for distance 3.5m: " + Shoot.getSetpointVelocity(3.5, false))
+                        new RunCommand(()-> System.out.println("Desired vel for distance 3.5m: " + Shoot.getSetpointVelocity(3.5, hood.isOpen()))
                         )),
 
                 new ParallelRaceGroup(
@@ -37,7 +37,7 @@ public class CheckShooterLogic extends SequentialCommandGroup {
                                 hood,
                                 () -> 5).withTimeout(5),
                         new RunCommand(() -> System.out.println("Current vel for distance 5m: " + shooter.getVelocity())),
-                        new RunCommand(()-> System.out.println("Desired vel for distance 5m: " + Shoot.getSetpointVelocity(5, false))
+                        new RunCommand(()-> System.out.println("Desired vel for distance 5m: " + Shoot.getSetpointVelocity(5, hood.isOpen()))
         )));
     }
 }
