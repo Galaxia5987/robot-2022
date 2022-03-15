@@ -12,19 +12,19 @@ public class TestShooterVelocity extends SequentialCommandGroup {
 
         addCommands(
                         new ParallelRaceGroup(
-                                new InstantCommand(
+                                new RunCommand(
                                         () -> shooter.setVelocity(0)).withTimeout(5),
                                 new RunCommand(
                                         () -> System.out.println("shooter vel0: " + shooter.getVelocity()))),
 
                     new ParallelRaceGroup(
-                        new InstantCommand(
-                                () -> shooter.setVelocity(1500)).withTimeout(5)
-                                .alongWith(new RunCommand(
-                                        () -> System.out.println("shooter vel1500: " + shooter.getVelocity())))),
+                        new RunCommand(
+                                () -> shooter.setVelocity(1500)).withTimeout(5),
+                                new RunCommand(
+                                        () -> System.out.println("shooter vel1500: " + shooter.getVelocity()))),
 
                 new ParallelRaceGroup(
-                        new InstantCommand(
+                        new RunCommand(
                                 () -> shooter.setVelocity(3000)).withTimeout(5),
                         new RunCommand(
                                 () -> System.out.println("shooter vel3000: " + shooter.getVelocity()
