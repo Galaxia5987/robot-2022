@@ -342,7 +342,12 @@ public class SwerveDrive extends SubsystemBase {
         modules[1].setAngle(Rotation2d.fromDegrees(-45));
     }
 
-    public double getOdomDistance() {
+    /**
+     * Get the distance of the robot from the hub using odometry.
+     *
+     * @return distance from hub. [m]
+     */
+    public double getOdometryDistance() {
         return Constants.Vision.HUB_POSE.getTranslation().minus(getPose().getTranslation()).getNorm();
     }
 

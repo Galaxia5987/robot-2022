@@ -16,8 +16,8 @@ public class BackAndShootCargoSort extends SequentialCommandGroup {
                                  Conveyor conveyor,
                                  Flap flap,
                                  DoubleSupplier conveyorPower,
-                                 DoubleSupplier distanceFromTarget, BooleanSupplier hasTarget, DoubleSupplier odomDistance) {
+                                 DoubleSupplier distanceFromTarget, BooleanSupplier hasTarget, DoubleSupplier odometryDistance) {
         addCommands(new Convey(conveyor, -0.25).withTimeout(0.075).withInterrupt(conveyor::isPreFlapBeamConnected),
-                new ShootCargo2(shooter, hood, conveyor, flap, conveyorPower, distanceFromTarget, hasTarget, odomDistance));
+                new ShootCargo2(shooter, hood, conveyor, flap, conveyorPower, distanceFromTarget, hasTarget, odometryDistance));
     }
 }

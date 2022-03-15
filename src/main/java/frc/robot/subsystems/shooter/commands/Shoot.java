@@ -23,33 +23,33 @@ public class Shoot extends CommandBase {
     private final OptionalDouble power;
     private final Timer timer = new Timer();
     private final BooleanSupplier hasTarget;
-    private final DoubleSupplier odomDistance;
+    private final DoubleSupplier odometryDistance;
     private double setpointVelocity = 0;
 
-    public Shoot(Shooter shooter, Hood hood, double power, BooleanSupplier hasTarget, DoubleSupplier odomDistance) {
+    public Shoot(Shooter shooter, Hood hood, double power, BooleanSupplier hasTarget, DoubleSupplier odometryDistance) {
         this.shooter = shooter;
         this.hood = hood;
         this.hasTarget = () -> true;
-        this.odomDistance = () -> 0;
+        this.odometryDistance = () -> 0;
         this.distance = () -> 8;
         this.power = OptionalDouble.of(power);
         bool = false;
         addRequirements(shooter);
     }
 
-    public Shoot(Shooter shooter, Hood hood, DoubleSupplier distance, boolean bool, BooleanSupplier hasTarget, DoubleSupplier odomDistance) {
+    public Shoot(Shooter shooter, Hood hood, DoubleSupplier distance, boolean bool, BooleanSupplier hasTarget, DoubleSupplier odometryDistance) {
         this.shooter = shooter;
         this.hood = hood;
         this.distance = distance;
         this.bool = bool;
         this.hasTarget = hasTarget;
-        this.odomDistance = odomDistance;
+        this.odometryDistance = odometryDistance;
         this.power = OptionalDouble.empty();
         addRequirements(shooter);
     }
 
-    public Shoot(Shooter shooter, Hood hood, DoubleSupplier distance, BooleanSupplier hasTarget, DoubleSupplier odomDistance) {
-        this(shooter, hood, distance, false, hasTarget, odomDistance);
+    public Shoot(Shooter shooter, Hood hood, DoubleSupplier distance, BooleanSupplier hasTarget, DoubleSupplier odometryDistance) {
+        this(shooter, hood, distance, false, hasTarget, odometryDistance);
     }
 
     /**
@@ -99,7 +99,7 @@ public class Shoot extends CommandBase {
             if (hasTarget.getAsBoolean()) {
                 setpointVelocity = getSetpointVelocity(distance.getAsDouble());
             } else {
-                setpointVelocity = getSetpointVelocity(odomDistance.getAsDouble());
+                setpointVelocity = getSetpointVelocity(odometryDistance.getAsDouble());
             }
             if (RobotContainer.hardCodedVelocity) {
                 setpointVelocity = Constants.Shooter.TARMAC_VELOCITY;
