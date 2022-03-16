@@ -1,4 +1,5 @@
 package com.vogella.junit5;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import edu.wpi.first.math.geometry.Translation2d;
@@ -17,29 +18,20 @@ import java.util.function.DoubleSupplier;
 
 
 public class TestShootAndRun {
-    ShootAndRun shootAndRun
-    Shooter shooter;
-    SwerveDrive swerveDrive;
-    Hood hood ;
-    Conveyor conveyor;
-    Flap flap;
-    DoubleSupplier visionDistance;
-    DoubleSupplier visionYaw;
+    ShootAndRun shootAndRun;
+
 
     @BeforeEach
-    void setUp(){
-        Shooter.getInstance();
-        SwerveDrive.getFieldOrientedInstance();
-        Hood.getInstance();
-        Conveyor.getInstance();
-        Flap.getInstance();
+    void setUp() {
 
-        shootAndRun = new ShootAndRun(Shooter shooter, SwerveDrive swerveDrive, Hood hood, Conveyor conveyor, Flap flap, DoubleSupplier visionDistance, DoubleSupplier visionYaw);
+        shootAndRun = new ShootAndRun(Shooter.getInstance(), SwerveDrive.getFieldOrientedInstance(() -> null), Hood.getInstance(), Conveyor.getInstance(), Flap.getInstance(), () -> 0, () -> 0);
     }
+
     @Test
     @DisplayName("Test Shoot and run functions")
-    void testCalculateCurrentGoal(){
+    Translation2d testCalculateCurrentGoal() {
         assertEquals(new Translation2d(1, 0), shootAndRun.calculateCurrentGoal(1, 0),
                 "Should give coordinates of (1, 0)");
+        return null;
     }
 }
