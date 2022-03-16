@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.auto.FiveCargoAuto;
 import frc.robot.auto.TaxiFromLowRightPickShootPickShoot;
 import frc.robot.commandgroups.BackAndShootCargoSort;
 import frc.robot.commandgroups.OneBallOuttake;
@@ -54,7 +55,7 @@ public class RobotContainer {
      * The container for the robot.  Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        autonomousCommand = new TaxiFromLowRightPickShootPickShoot(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
+        autonomousCommand = new FiveCargoAuto(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
         // Configure the button bindings and default commands
         configureDefaultCommands();
         if (Robot.debug) {
@@ -133,7 +134,7 @@ public class RobotContainer {
             });
 
             Joysticks.leftTwo.whenPressed((Runnable) Robot::resetAngle);
-            Joysticks.rightTwo.whileHeld(new TurnToAngle(swerve, () -> 0));
+            Joysticks.rightTwo.whileHeld(new TurnToAngle(swerve, () -> new Rotation2d()));
         }
     }
 
@@ -143,8 +144,8 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return new RunAllBits(swerve, shooter, conveyor, intake, flap, hood, helicopter);
-//        return autonomousCommand;
+//        return new RunAllBits(swerve, shooter, conveyor, intake, flap, hood, helicopter);
+        return autonomousCommand;
     }
 
     /**

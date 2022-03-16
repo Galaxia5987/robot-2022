@@ -11,6 +11,7 @@ import frc.robot.Robot;
 import frc.robot.commandgroups.PickUpCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
+import frc.robot.subsystems.drivetrain.commands.TurnToAngle;
 import frc.robot.subsystems.drivetrain.commands.auto.FollowPath;
 import frc.robot.subsystems.drivetrain.commands.testing.SimpleAdjustWithVision;
 import frc.robot.subsystems.flap.Flap;
@@ -96,13 +97,20 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
         );
     }
 
-    protected CommandBase pickup(int timeout) {
+    protected CommandBase pickup(double timeout) {
         return new PickUpCargo(
                 conveyor,
                 flap,
                 intake,
                 Constants.Conveyor.DEFAULT_POWER.get(),
                 Constants.Intake.DEFAULT_POWER::get
+        ).withTimeout(timeout);
+    }
+
+    protected CommandBase turnToAngle(Supplier<Rotation2d> target, double timeout) {
+        return new TurnToAngle(
+                swerveDrive,
+                target
         ).withTimeout(timeout);
     }
 
