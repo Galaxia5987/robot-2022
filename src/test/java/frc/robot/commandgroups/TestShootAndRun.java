@@ -2,8 +2,10 @@ package frc.robot.commandgroups;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import org.junit.Test;
 
 public class TestShootAndRun {
@@ -30,5 +32,11 @@ public class TestShootAndRun {
         assertEquals(new Translation2d(1, -1), ShootAndRun.calculateCurrentGoal(Math.sqrt(2), 315),
                 "should give coordinates of (-1, 0)");
 
+    }
+    @Test
+    public void testCalculateVirtualGoal(){
+
+        assertEquals(new Translation2d(8,3), ShootAndRun.calculateVirtualGoal(new Translation2d(8,4), new ChassisSpeeds(0, 1, Math.toRadians(90)), 1),
+                "should return coordinated of (8,3)");
     }
 }
