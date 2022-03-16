@@ -31,7 +31,7 @@ public class ShootAndRun extends ParallelCommandGroup {
 
     }
     
-    public Translation2d calculateCurrentGoal(double distance, double yaw) {
+    public static Translation2d calculateCurrentGoal(double distance, double yaw) {
         return new Translation2d(distance * Math.cos(Math.toRadians(yaw)), distance * Math.sin(Math.toRadians(yaw)));
     }
 
