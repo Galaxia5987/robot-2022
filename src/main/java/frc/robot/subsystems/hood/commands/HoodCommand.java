@@ -14,13 +14,17 @@ public class HoodCommand extends CommandBase {
     private final DoubleSupplier distance;
     private final Timer timer = new Timer();
     private final boolean last = false;
+    private final BooleanSupplier hasTarget;
+    private final DoubleSupplier odometryDistance;
     private Hood.Mode mode = Hood.Mode.ShortDistance;
     private boolean starting = true;
 
-    public HoodCommand(Hood hood, BooleanSupplier postFlap, DoubleSupplier distance) {
+    public HoodCommand(Hood hood, BooleanSupplier postFlap, DoubleSupplier distance, BooleanSupplier hasTarget, DoubleSupplier odometryDistance) {
         this.hood = hood;
         this.postFlap = postFlap;
         this.distance = distance;
+        this.hasTarget = hasTarget;
+        this.odometryDistance = odometryDistance;
         addRequirements(hood);
     }
 
@@ -28,7 +32,11 @@ public class HoodCommand extends CommandBase {
     public void initialize() {
         timer.reset();
         timer.start();
-        mode = distance.getAsDouble() < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD ? Hood.Mode.ShortDistance : Hood.Mode.LongDistance;
+        if (hasTarget.getAsBoolean()) {
+            mode = distance.getAsDouble() < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD ? Hood.Mode.ShortDistance : Hood.Mode.LongDistance;
+        } else {
+            mode = odometryDistance.getAsDouble() < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD ? Hood.Mode.ShortDistance : Hood.Mode.LongDistance;
+        }
     }
 
     @Override

@@ -2,6 +2,8 @@ package frc.robot.commandgroups;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey3;
 import frc.robot.subsystems.flap.Flap;
@@ -25,8 +27,8 @@ public class ShootCargo extends ParallelCommandGroup {
         DoubleSupplier setpointVelocity = () -> Shoot.getSetpointVelocity(distanceFromTarget.getAsDouble());
 
         addCommands(
-                new HoodCommand(hood, () -> !conveyor.isPostFlapBeamConnected(), distanceFromTarget),
-                new Convey3(conveyor, () -> !conveyor.isPreFlapBeamConnected(), setpointVelocity, shooter::getVelocity),
+                new HoodCommand(hood, () -> !conveyor.isPostFlapBeamConnected(), RobotContainer.hardCodedVelocity ? () -> 3.6 : distanceFromTarget, hasTarget, odometryDistance),
+                new Convey3(conveyor, () -> !conveyor.isPreFlapBeamConnected(), RobotContainer.hardCodedVelocity ? () -> Constants.Shooter.TARMAC_VELOCITY : setpointVelocity, shooter::getVelocity),
                 new InstantCommand(flap::allowShooting),
                 new Shoot(shooter, hood, distanceFromTarget, bool, hasTarget, odometryDistance)
         );

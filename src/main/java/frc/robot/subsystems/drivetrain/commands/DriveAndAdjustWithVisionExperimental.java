@@ -97,11 +97,11 @@ public class DriveAndAdjustWithVisionExperimental extends HolonomicDrive {
                         var robotPose = swerveDrive.getPose().getTranslation();
                         var hubPose = Constants.Vision.HUB_POSE.getTranslation();
                         var poseRelativeToTarget = hubPose.minus(robotPose);
-                        var value = robotAngle.plus(new Rotation2d(
+                        var value = new Rotation2d(
                                 Math.atan2(
                                         poseRelativeToTarget.getY(),
                                         poseRelativeToTarget.getX()
-                                )));
+                                ));
                         target = value;
                     } else {
                         target = Robot.getAngle().minus(Rotation2d.fromDegrees(yawSupplier.getAsDouble()));

@@ -35,7 +35,7 @@ import java.util.function.Supplier;
 
 public class RobotContainer {
     public static final boolean playWithoutVision = false;
-    public static final boolean hardCodedVelocity = false;
+    public static final boolean hardCodedVelocity = true;
 
     // The robot's subsystems and commands are defined here...
     public static LedSubsystem ledSubsystem = new LedSubsystem();
@@ -109,7 +109,7 @@ public class RobotContainer {
             Xbox.rt.whileActiveContinuous(new BackAndShootCargo(
                     shooter, hood, conveyor, flap,
                     () -> Constants.Conveyor.SHOOT_POWER,
-                    distanceFromTarget, photonVisionModule::hasTargets, swerve::getOdometryDistance));
+                    () -> 0, photonVisionModule::hasTargets, swerve::getOdometryDistance));
             Xbox.lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, Constants.Conveyor.DEFAULT_POWER.get(), Constants.Intake.DEFAULT_POWER::get));
             Xbox.lb.whileHeld(new Outtake(intake, conveyor, flap, shooter, hood, () -> false));
             Xbox.rb.whileHeld(new Convey(conveyor, -Constants.Conveyor.SHOOT_POWER));
@@ -135,8 +135,8 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return new RunAllBits(swerve, shooter, conveyor, intake, flap, hood, helicopter);
-//        return autonomousCommand;
+//        return new RunAllBits(swerve, shooter, conveyor, intake, flap, hood, helicopter);
+        return autonomousCommand;
     }
 
     /**

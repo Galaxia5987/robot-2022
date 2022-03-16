@@ -96,11 +96,11 @@ public class DriveAndAdjustWithVision extends HolonomicDrive {
                     var robotPose = swerveDrive.getPose().getTranslation();
                     var hubPose = Constants.Vision.HUB_POSE.getTranslation();
                     var poseRelativeToTarget = hubPose.minus(robotPose);
-                    var value = robotAngle.plus(new Rotation2d(
+                    var value = new Rotation2d(
                             Math.atan2(
                                     poseRelativeToTarget.getY(),
                                     poseRelativeToTarget.getX()
-                            )));
+                            ));
                     target = value;
                 } else {
                     if (sampleYawTimer.hasElapsed(Constants.SwerveDrive.SAMPLE_YAW_PERIOD)) {
