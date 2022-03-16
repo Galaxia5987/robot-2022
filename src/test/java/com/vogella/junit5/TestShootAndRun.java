@@ -27,6 +27,8 @@ public class TestShootAndRun {
         shootAndRun = new ShootAndRun(Shooter.getInstance(), SwerveDrive.getFieldOrientedInstance(() -> null), Hood.getInstance(), Conveyor.getInstance(), Flap.getInstance(), () -> 0, () -> 0);
     }
 
+    }
+
     @Test
     @DisplayName("Test Shoot and run functions")
     Translation2d testCalculateCurrentGoal() {
