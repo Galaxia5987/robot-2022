@@ -1,6 +1,7 @@
 package frc.robot.subsystems.conveyor.commands.bits;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.conveyor.Conveyor;
@@ -10,12 +11,12 @@ public class TestColorSensor extends SequentialCommandGroup {
 
     public TestColorSensor(Conveyor conveyor, Intake intake) {
         addCommands(
-                new RunCommand(intake::closeRetractor),
+                new InstantCommand(intake::closeRetractor),
                 new RunCommand(() -> System.out.println("Enter blue cargo")).withTimeout(4),
                 new RunCommand(() -> checkColorBlue(conveyor)).withInterrupt(() -> conveyor.getColor() == DriverStation.Alliance.Blue),
                 new RunCommand(() -> System.out.println("Enter red cargo")).withTimeout(4),
                 new RunCommand(() -> checkColorRed(conveyor)).withInterrupt(() -> conveyor.getColor() == DriverStation.Alliance.Red),
-                new RunCommand(() -> System.out.println("Sensor works!"))
+                new InstantCommand(() -> System.out.println("Sensor works!"))
         );
     }
 
