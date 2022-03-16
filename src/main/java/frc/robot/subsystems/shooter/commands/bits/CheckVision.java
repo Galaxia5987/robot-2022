@@ -1,9 +1,6 @@
 package frc.robot.subsystems.shooter.commands.bits;
 
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.shooter.Shooter;
@@ -16,7 +13,7 @@ public class CheckVision extends SequentialCommandGroup {
     public CheckVision(Shooter shooter, Hood hood, PhotonVisionModule photonVisionModule) {
         addCommands(
                 new ParallelRaceGroup(
-                        new RunCommand(() -> photonVisionModule.setLeds(false)),
+                        new InstantCommand(() -> photonVisionModule.setLeds(false)),
                         new WaitCommand(0.5),
 
                         new Shoot(
@@ -25,7 +22,7 @@ public class CheckVision extends SequentialCommandGroup {
                                 photonVisionModule.getDistance(Constants.Vision.BIT_CAMERA_HEIGHT, Constants.Vision.BIT_TARGET_HEIGHT_FROM_GROUND)).withTimeout(8),
 
                         new RunCommand(() -> System.out.println("Current velocity for " + photonVisionModule.getDistance(Constants.Vision.BIT_CAMERA_HEIGHT, Constants.Vision.BIT_TARGET_HEIGHT_FROM_GROUND) + ": " + shooter.getVelocity())),
-
+                        new WaitCommand(10),
                         new RunCommand(() -> System.out.println("Desired velocity for " + photonVisionModule.getDistance(Constants.Vision.BIT_CAMERA_HEIGHT, Constants.Vision.BIT_TARGET_HEIGHT_FROM_GROUND) + ": " + Shoot.getSetpointVelocity(2, hood.isOpen())))
                 ));
     }
