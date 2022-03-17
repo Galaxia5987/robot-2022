@@ -108,33 +108,26 @@ public final class Constants {
 
         public static final HashMap<Double, Double> SHORT_MEASUREMENTS = new HashMap<>() {{
             put(-99999.0, 3350.0);
-            put(1.9, 3350.0);
-            put(2.15, 3500.0);
-            put(2.39, 3800.0);
-            put(2.67, 3925.0);
             put(99999.0, 3925.0);
         }};
         public static final HashMap<Double, Double> LONG_MEASUREMENTS = new HashMap<>() {{
-            put(-99999.0, 3350.0);
-            put(2.67, 3350.0);
-            put(2.89, 3500.0);
-            put(3.04, 3550.0);
-            put(3.16, 3600.0);
-            put(3.29, 3640.0);
-            put(3.42, 3665.0);
-            put(3.6, 3700.0);
-            put(3.73, 3750.0);
-            put(3.87, 3850.0);
-            put(4.02, 3950.0);
-            put(4.25, 3880.0);
-            put(4.41, 4015.0);
-            put(4.61, 4165.0);
-            put(4.82, 4219.0);
-            put(5.06, 4250.0);
-            put(5.23, 4325.0);
-            put(5.37, 4400.0);
-            put(5.65, 4550.0);
-            put(99999.0, 4550.0);
+            put(-99999.0, 3425.0);
+            put(2.87, 3425.0);
+            put(3.07, 3540.0);
+            put(3.23, 3700.0);
+            put(3.42, 3810.0);
+            put(3.58, 3860.0);
+            put(3.81, 3940.0);
+            put(4.06, 4000.0);
+            put(4.22, 4150.0);
+            put(4.52, 4180.0);
+            put(4.73, 4250.0);
+            put(5.06, 4350.0);
+            put(5.4, 4560.0);
+            put(5.71, 4750.0);
+            put(6.0, 4850.0);
+            put(7.5, 5600.0);
+            put(99999.0, 5600.0);
         }};
 
         public static TalonFXConfiguration getConfiguration() {
