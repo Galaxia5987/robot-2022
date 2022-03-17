@@ -39,7 +39,7 @@ public class ShootAndRun extends ParallelCommandGroup {
         return currentGoal.minus(new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond).times(flightTime));
     }
 
-    public double getYawToVirtualGoal(Translation2d virtualGoal) {
+    public static double getYawToVirtualGoal(Translation2d virtualGoal) {
         return Math.toDegrees(Robot.getAngle().getRadians() - Math.atan2(virtualGoal.getY() , virtualGoal.getX()));
     }
 
