@@ -35,7 +35,7 @@ import java.util.function.Supplier;
 
 public class RobotContainer {
     public static final boolean playWithoutVision = false;
-    public static final boolean hardCodedVelocity = true;
+    public static boolean hardCodedVelocity = false;
 
     // The robot's subsystems and commands are defined here...
     public static LedSubsystem ledSubsystem = new LedSubsystem();
@@ -116,6 +116,10 @@ public class RobotContainer {
 
             Xbox.start.whenPressed(photonVisionModule::toggleLeds);
             Xbox.back.whenPressed(new OneBallOuttake(intake, conveyor, () -> conveyor.getColorSensorProximity() >= 150));
+
+            Xbox.rightJoystickButton
+                    .whileHeld(() -> hardCodedVelocity = true)
+                    .whenReleased(() -> hardCodedVelocity = false);
         }
 
         { // Joystick button bindings.
@@ -184,5 +188,7 @@ public class RobotContainer {
         public static final Trigger downPov = new Trigger(() -> controller.getPOV() == 180);
         public static final Trigger rightPov = new Trigger(() -> controller.getPOV() == 90);
         public static final Trigger leftPov = new Trigger(() -> controller.getPOV() == 270);
+
+        public static final JoystickButton rightJoystickButton = new JoystickButton(controller, XboxController.Button.kRightStick.value);
     }
 }
