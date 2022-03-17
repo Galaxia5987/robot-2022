@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
 import frc.robot.subsystems.UnitModel;
+import frc.robot.utils.LedSubsystem;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -151,6 +152,7 @@ public class Conveyor extends SubsystemBase {
         colorSensor.updateColorSensor();
         updateActualBallPositions();
 
+
         SmartDashboard.putString("Positions", cargoPositions.toString());
         SmartDashboard.putNumber("Proximity", colorSensor.getProximityValue());
         SmartDashboard.putBoolean("Pre flap", preFlapBeam.get());
@@ -173,6 +175,10 @@ public class Conveyor extends SubsystemBase {
             secondColor = cargoPositions.getFirst().equals(DriverStation.Alliance.Blue) ? "blue" : "red";
         }
 
+        SmartDashboard.putNumber("current color r", colorSensor.getRawColor()[0]);
+        SmartDashboard.putNumber("current color g", colorSensor.getRawColor()[1]);
+        SmartDashboard.putNumber("current color b", colorSensor.getRawColor()[2]);
+        SmartDashboard.putString("detected-color", getColor().name());
         SmartDashboard.putString("first_color", firstColor);
         SmartDashboard.putString("second_color", secondColor);
     }

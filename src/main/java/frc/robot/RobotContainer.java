@@ -16,6 +16,8 @@ import frc.robot.commandgroups.PickUpCargo;
 import frc.robot.commandgroups.bits.RunAllBits;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
+import frc.robot.subsystems.conveyor.commands.bits.CheckColorSensor;
+import frc.robot.subsystems.conveyor.commands.bits.TestColorSensor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.DriveAndAdjustWithVision;
 import frc.robot.subsystems.drivetrain.commands.TurnToAngle;
@@ -27,6 +29,7 @@ import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.BackAndShootCargo;
+import frc.robot.subsystems.shooter.commands.bits.CheckShooterLogic;
 import frc.robot.utils.LedSubsystem;
 import frc.robot.utils.PhotonVisionModule;
 import webapp.Webserver;
@@ -143,7 +146,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return new RunAllBits(swerve, shooter, conveyor, intake, flap, hood, helicopter);
+        return new TestColorSensor(conveyor, intake, ledSubsystem);
 //        return autonomousCommand;
     }
 
