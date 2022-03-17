@@ -82,7 +82,7 @@ public final class Constants {
 
         private static final double Rx = SwerveDrive.ROBOT_LENGTH / 2; // [m]
         private static final double Ry = SwerveDrive.ROBOT_WIDTH / 2; // [m]
-        
+
         // Axis systems
         public static final Translation2d[] SWERVE_POSITIONS = new Translation2d[]{
                 new Translation2d(Rx, -Ry),
@@ -100,7 +100,7 @@ public final class Constants {
         public static final double RECOMMENDED_ACCELERATION_TIME = 1.3; // Recommended time for the shooter to get to it's setpoint. [s]
         public static final double CARGO_OFFSET = 0; // Desired offset from the middle of the target where you want the cargo to hit. [m]
 
-        public static final WebConstant kP = WebConstant.of("Shooter", "kP", 0.035);
+        public static final WebConstant kP = WebConstant.of("Shooter", "kP", 0.03);
         public static final WebConstant kI = WebConstant.of("Shooter", "kI", 0);
         public static final WebConstant kD = WebConstant.of("Shooter", "kD", 2);
         public static final WebConstant kF = WebConstant.of("Shooter", "kf", 0.047);
@@ -279,7 +279,7 @@ public final class Constants {
 
     public static class Hood {
         public static final double HOOD_PRESSURE_BIT_DELTA_TIME = 0.1; // [s]
-        public static final double DISTANCE_FROM_TARGET_THRESHOLD = 2.67; // [m]
+        public static final double DISTANCE_FROM_TARGET_THRESHOLD = 2.87; // [m]
     }
 
     public static class Control {
