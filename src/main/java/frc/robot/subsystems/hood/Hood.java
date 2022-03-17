@@ -75,8 +75,8 @@ public class Hood extends SubsystemBase {
     }
 
     public enum Mode {
-        ShortDistance(true),
-        LongDistance(false);
+        ShortDistance(false),
+        LongDistance(true);
 
         public final boolean value;
 

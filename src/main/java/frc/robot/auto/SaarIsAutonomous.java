@@ -114,5 +114,12 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
         ).withTimeout(timeout);
     }
 
+    protected CommandBase turnToAngle(Supplier<Rotation2d> target) {
+        return new TurnToAngle(
+                swerveDrive,
+                target
+        );
+    }
+
 
 }

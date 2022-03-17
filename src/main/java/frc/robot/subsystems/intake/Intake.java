@@ -3,6 +3,7 @@ package frc.robot.subsystems.intake;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.util.datalog.BooleanLogEntry;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
@@ -15,7 +16,7 @@ import frc.robot.Ports;
 
 public class Intake extends SubsystemBase {
     private static Intake INSTANCE;
-    private final WPI_TalonSRX motor = new WPI_TalonSRX(Ports.Intake.MOTOR);
+    private final WPI_VictorSPX motor = new WPI_VictorSPX(Ports.Intake.MOTOR);
     private final Solenoid retractor = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Intake.SOLENOID);
     private final DoubleLogEntry power;
     private final BooleanLogEntry retracted;
@@ -25,8 +26,8 @@ public class Intake extends SubsystemBase {
         motor.enableVoltageCompensation(true);
         motor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE, Constants.TALON_TIMEOUT);
         motor.setNeutralMode(NeutralMode.Coast);
-        motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 50, 5, 0.02));
-        motor.enableCurrentLimit(true);
+//        motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 50, 5, 0.02));
+//        motor.enableCurrentLimit(true);
 
 
         DataLog log = DataLogManager.getLog();
