@@ -20,19 +20,21 @@ public class FiveCargoAuto extends SaarIsAutonomous {
 
         addCommands(followPathAndPickup("FiveCargoAutoPart1"));
 
+        addCommands(turnToAngle(() -> Rotation2d.fromDegrees(83.45), 0.5));
+
         addCommands(shootAndAdjust(3));
 
-        addCommands(turnToAngle(() -> Rotation2d.fromDegrees(143.39), 1));
+        addCommands(turnToAngle(() -> Rotation2d.fromDegrees(143.39), 0.5));
 
         addCommands(followPathAndPickup("FiveCargoAutoPart2"));
 
-        addCommands(turnToAngle(() -> Rotation2d.fromDegrees(37.23), 1));
+        addCommands(turnToAngle(() -> Rotation2d.fromDegrees(37.23), 0.5));
 
-        addCommands(shootAndAdjust(3));
+        addCommands(shootAndAdjust(1.5));
 
         addCommands(followPathAndPickup("FiveCargoAutoPart3"));
 
-        addCommands(pickup(1));
+        addCommands(pickup(0.5));
 
         addCommands(followPath("FiveCargoAutoPart4"));
 

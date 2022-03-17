@@ -82,7 +82,7 @@ public final class Constants {
 
         private static final double Rx = SwerveDrive.ROBOT_LENGTH / 2; // [m]
         private static final double Ry = SwerveDrive.ROBOT_WIDTH / 2; // [m]
-        
+
         // Axis systems
         public static final Translation2d[] SWERVE_POSITIONS = new Translation2d[]{
                 new Translation2d(Rx, -Ry),
@@ -100,41 +100,34 @@ public final class Constants {
         public static final double RECOMMENDED_ACCELERATION_TIME = 1.3; // Recommended time for the shooter to get to it's setpoint. [s]
         public static final double CARGO_OFFSET = 0; // Desired offset from the middle of the target where you want the cargo to hit. [m]
 
-        public static final WebConstant kP = WebConstant.of("Shooter", "kP", 0.045);
+        public static final WebConstant kP = WebConstant.of("Shooter", "kP", 0.03);
         public static final WebConstant kI = WebConstant.of("Shooter", "kI", 0);
         public static final WebConstant kD = WebConstant.of("Shooter", "kD", 2);
-        public static final WebConstant kF = WebConstant.of("Shooter", "kf", 0.04965);
+        public static final WebConstant kF = WebConstant.of("Shooter", "kf", 0.047);
         public static final WebConstant SHOOTER_VELOCITY_DEADBAND = WebConstant.of("Shooter", "Velocity deadband", 50); // Dead band for shooter velocity setpoint. [rpm]
 
         public static final HashMap<Double, Double> SHORT_MEASUREMENTS = new HashMap<>() {{
             put(-99999.0, 3350.0);
-            put(1.9, 3350.0);
-            put(2.15, 3500.0);
-            put(2.39, 3800.0);
-            put(2.67, 3925.0);
             put(99999.0, 3925.0);
         }};
         public static final HashMap<Double, Double> LONG_MEASUREMENTS = new HashMap<>() {{
-            put(-99999.0, 3350.0);
-            put(2.67, 3350.0);
-            put(2.89, 3500.0);
-            put(3.04, 3550.0);
-            put(3.16, 3600.0);
-            put(3.29, 3640.0);
-            put(3.42, 3665.0);
-            put(3.6, 3700.0);
-            put(3.73, 3750.0);
-            put(3.87, 3850.0);
-            put(4.02, 3950.0);
-            put(4.25, 3880.0);
-            put(4.41, 4015.0);
-            put(4.61, 4165.0);
-            put(4.82, 4219.0);
-            put(5.06, 4250.0);
-            put(5.23, 4325.0);
-            put(5.37, 4400.0);
-            put(5.65, 4550.0);
-            put(99999.0, 4550.0);
+            put(-99999.0, 3425.0);
+            put(2.87, 3425.0);
+            put(3.07, 3540.0);
+            put(3.23, 3700.0);
+            put(3.42, 3810.0);
+            put(3.58, 3860.0);
+            put(3.81, 3940.0);
+            put(4.06, 4000.0);
+            put(4.22, 4150.0);
+            put(4.52, 4180.0);
+            put(4.73, 4250.0);
+            put(5.06, 4350.0);
+            put(5.4, 4560.0);
+            put(5.71, 4750.0);
+            put(6.0, 4850.0);
+            put(7.5, 5600.0);
+            put(99999.0, 5600.0);
         }};
 
         public static TalonFXConfiguration getConfiguration() {
@@ -286,7 +279,7 @@ public final class Constants {
 
     public static class Hood {
         public static final double HOOD_PRESSURE_BIT_DELTA_TIME = 0.1; // [s]
-        public static final double DISTANCE_FROM_TARGET_THRESHOLD = 2.67; // [m]
+        public static final double DISTANCE_FROM_TARGET_THRESHOLD = 2.87; // [m]
     }
 
     public static class Control {
