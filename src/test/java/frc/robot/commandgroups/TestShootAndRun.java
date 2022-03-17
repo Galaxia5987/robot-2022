@@ -61,6 +61,43 @@ public class TestShootAndRun {
     }
     @Test
     public void testGetYawToVirtualGoal(){
-        assertEquals(45, ShootAndRun.getYawToVirtualGoal(new Translation2d(1,1)), "should give an output of 45 degrees");
+       // Movements within the first quadrant
+        assertEquals(0, ShootAndRun.getYawToVirtualGoal(new Translation2d(1,1), 45),
+                "The Robot needs to rotate 0 degrees");
+        assertEquals(-45, ShootAndRun.getYawToVirtualGoal(new Translation2d(1,0), 45),
+                "The Robot needs to rotate -45 degrees");
+        assertEquals(90, ShootAndRun.getYawToVirtualGoal(new Translation2d(0,1), 0),
+                "The Robot needs to rotate 90 degrees");
+        assertEquals(-90, ShootAndRun.getYawToVirtualGoal(new Translation2d(1,0), 90),
+                "The Robot needs to rotate -90 degrees");
+        //From first quadrant to second quadrant
+        assertEquals(135, ShootAndRun.getYawToVirtualGoal(new Translation2d(-1,1), 0),
+                "The Robot needs to rotate 135 degrees");
+        assertEquals(180, ShootAndRun.getYawToVirtualGoal(new Translation2d(-1,0), 0),
+                "The Robot needs to rotate 180 degrees");
+        //From first quadrant to third quadrant
+        assertEquals(-135, ShootAndRun.getYawToVirtualGoal(new Translation2d(-1,-1), 0),
+                "The Robot needs to rotate -135 degrees");
+        //From first quadrant to fourth quadrant
+        assertEquals(-90, ShootAndRun.getYawToVirtualGoal(new Translation2d(0,-1), 0),
+                "The Robot needs to rotate -90 degrees");
+        assertEquals(-45, ShootAndRun.getYawToVirtualGoal(new Translation2d(1,-1), 0),
+                "The Robot needs to rotate -45 degrees");
+
+    }
+    @Test
+    public void testGetShootingDistance(){
+        assertEquals(Math.sqrt(2), ShootAndRun.getShootingDistance(new Translation2d(1,1)),
+                "The target is 1.41 meters away from the robot");
+        assertEquals(Math.sqrt(2), ShootAndRun.getShootingDistance(new Translation2d(-1,1)),
+                "The target is 1.41 meters away from the robot");
+        assertEquals(Math.sqrt(2), ShootAndRun.getShootingDistance(new Translation2d(-1,-1)),
+                "The target is 1.41 meters away from the robot");
+        assertEquals(Math.sqrt(2), ShootAndRun.getShootingDistance(new Translation2d(1,-1)),
+                "The target is 1.41 meters away from the robot");
+
+
+
+
     }
 }

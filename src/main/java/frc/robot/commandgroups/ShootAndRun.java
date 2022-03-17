@@ -26,8 +26,8 @@ public class ShootAndRun extends ParallelCommandGroup {
         Supplier<Translation2d> virtualGoal = () -> calculateVirtualGoal(currentGoal.get(), swerveDrive.getChassisSpeeds(), flightTime.getAsDouble());
         addCommands(
                 new ShootCargo(shooter, hood, conveyor, flap, Constants.Conveyor.DEFAULT_POWER::get, () -> getShootingDistance(virtualGoal.get())),
-                new TurnWhileRunning(swerveDrive, () -> getYawToVirtualGoal(virtualGoal.get()))
-        );
+                new TurnWhileRunning(swerveDrive, () -> getYawToVirtualGoal(virtualGoal.get(), 5)
+                ));
 
     }
     
@@ -39,11 +39,11 @@ public class ShootAndRun extends ParallelCommandGroup {
         return currentGoal.minus(new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond).times(flightTime));
     }
 
-    public static double getYawToVirtualGoal(Translation2d virtualGoal) {
-        return Math.toDegrees(Robot.getAngle().getRadians() - Math.atan2(virtualGoal.getY() , virtualGoal.getX()));
+    public static double getYawToVirtualGoal(Translation2d virtualGoal, double RobotAngle) {
+        return Math.toDegrees(Math.atan2(virtualGoal.getY() , virtualGoal.getX()) - Math.toRadians(RobotAngle));
     }
 
-    public double getShootingDistance(Translation2d virtualGoal) {
+    public static double getShootingDistance(Translation2d virtualGoal) {
         return Math.hypot(virtualGoal.getX(), virtualGoal.getY());
     }
 
