@@ -100,10 +100,10 @@ public final class Constants {
         public static final double RECOMMENDED_ACCELERATION_TIME = 1.3; // Recommended time for the shooter to get to it's setpoint. [s]
         public static final double CARGO_OFFSET = 0; // Desired offset from the middle of the target where you want the cargo to hit. [m]
 
-        public static final WebConstant kP = WebConstant.of("Shooter", "kP", 0.045);
+        public static final WebConstant kP = WebConstant.of("Shooter", "kP", 0.035);
         public static final WebConstant kI = WebConstant.of("Shooter", "kI", 0);
         public static final WebConstant kD = WebConstant.of("Shooter", "kD", 2);
-        public static final WebConstant kF = WebConstant.of("Shooter", "kf", 0.04965);
+        public static final WebConstant kF = WebConstant.of("Shooter", "kf", 0.047);
         public static final WebConstant SHOOTER_VELOCITY_DEADBAND = WebConstant.of("Shooter", "Velocity deadband", 50); // Dead band for shooter velocity setpoint. [rpm]
 
         public static final HashMap<Double, Double> SHORT_MEASUREMENTS = new HashMap<>() {{
