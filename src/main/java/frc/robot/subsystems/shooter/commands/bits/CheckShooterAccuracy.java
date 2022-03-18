@@ -23,14 +23,14 @@ public class CheckShooterAccuracy extends Shoot {
         timer.reset();
         timer.start();
         lastTime = timer.get();
-        lastVelocity = getSetpointVelocity(distance.getAsDouble(), hood.isOpen());
+        lastVelocity = getSetpointVelocity(distance.getAsDouble(), distance.getAsDouble() < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD);
     }
 
     @Override
     public void execute() {
         super.execute();
 
-        double setpoint = getSetpointVelocity(distance.getAsDouble(), hood.isOpen());
+        double setpoint = getSetpointVelocity(distance.getAsDouble(), distance.getAsDouble() < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD);
         double currentVelocity = shooter.getVelocity();
         double acceleration = (currentVelocity - lastVelocity) / (timer.get() - lastTime);
 
