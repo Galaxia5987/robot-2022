@@ -11,16 +11,19 @@ import frc.robot.Robot;
 import frc.robot.commandgroups.PickUpCargo;
 import frc.robot.commandgroups.ShootCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
+import frc.robot.subsystems.conveyor.commands.Convey;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.AdjustToTargetOnCommand;
 import frc.robot.subsystems.drivetrain.commands.TurnToAngle;
 import frc.robot.subsystems.drivetrain.commands.auto.FollowPath;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.hood.commands.HoodCommand;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.commands.IntakeCargo;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.BackAndShootCargo;
+import frc.robot.subsystems.shooter.commands.Shoot;
 import frc.robot.utils.PhotonVisionModule;
 
 import java.util.function.DoubleSupplier;
@@ -123,6 +126,32 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
                 ));
     }
 
+    protected CommandBase shoot3(double timeout) {
+        Supplier<Pose2d> swervePose = swerveDrive::getPose;
+        Supplier<Transform2d> poseRelativeToTarget = () -> Constants.Vision.HUB_POSE.minus(swervePose.get());
+        DoubleSupplier distanceFromTarget = visionModule::getDistance;
+        DoubleSupplier conveyorPower = Constants.Conveyor.DEFAULT_POWER::get;
+        DoubleSupplier yaw = () -> visionModule.getYaw().orElse(Robot.getAngle().minus(new Rotation2d(
+                        Math.atan2(
+                                poseRelativeToTarget.get().getY(),
+                                poseRelativeToTarget.get().getX()
+                        )
+                )
+        ).getDegrees());
+        return new SequentialCommandGroup(
+                new ParallelRaceGroup(new ShootCargo(
+                        shooter,
+                        hood,
+                        conveyor,
+                        flap,
+                        conveyorPower,
+                        () -> 2.95)
+                        .withTimeout(timeout),
+                        new IntakeCargo(intake, Constants.Intake.DEFAULT_POWER::get)
+                ));
+    }
+
+
     protected CommandBase pickup(double timeout) {
         return new PickUpCargo(
                 conveyor,
@@ -145,6 +174,32 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
                 swerveDrive,
                 target
         );
+    }
+
+    protected CommandBase shoot2(double timeout) {
+        Supplier<Pose2d> swervePose = swerveDrive::getPose;
+        Supplier<Transform2d> poseRelativeToTarget = () -> Constants.Vision.HUB_POSE.minus(swervePose.get());
+        DoubleSupplier distanceFromTarget = visionModule::getDistance;
+        DoubleSupplier conveyorPower = Constants.Conveyor.DEFAULT_POWER::get;
+        DoubleSupplier yaw = () -> visionModule.getYaw().orElse(Robot.getAngle().minus(new Rotation2d(
+                        Math.atan2(
+                                poseRelativeToTarget.get().getY(),
+                                poseRelativeToTarget.get().getX()
+                        )
+                )
+        ).getDegrees());
+        return new SequentialCommandGroup(
+                new InstantCommand(flap::allowShooting),
+                new ParallelRaceGroup(new Shoot(
+                        shooter,
+                        hood,
+                        distanceFromTarget,
+                        true)
+                        .withTimeout(timeout),
+                        new HoodCommand(hood, () -> !conveyor.isPostFlapBeamConnected(), distanceFromTarget),
+                        new Convey(conveyor, 1),
+                        new IntakeCargo(intake, Constants.Intake.DEFAULT_POWER::get)
+                ));
     }
 
 

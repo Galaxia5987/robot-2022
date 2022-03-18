@@ -40,7 +40,7 @@ public class TurnToAngle extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return Math.abs(Robot.getAngle().minus(targetAngle.get()).getDegrees()) <= 8;
+        return Math.abs(Robot.getAngle().minus(targetAngle.get()).getDegrees()) <= 5;
     }
 
     @Override
