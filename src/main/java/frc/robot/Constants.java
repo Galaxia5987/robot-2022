@@ -100,34 +100,39 @@ public final class Constants {
         public static final double RECOMMENDED_ACCELERATION_TIME = 1.3; // Recommended time for the shooter to get to it's setpoint. [s]
         public static final double CARGO_OFFSET = 0; // Desired offset from the middle of the target where you want the cargo to hit. [m]
 
-        public static final WebConstant kP = WebConstant.of("Shooter", "kP", 0.03);
+        public static final WebConstant kP = WebConstant.of("Shooter", "kP", 0.028);
         public static final WebConstant kI = WebConstant.of("Shooter", "kI", 0);
         public static final WebConstant kD = WebConstant.of("Shooter", "kD", 2);
-        public static final WebConstant kF = WebConstant.of("Shooter", "kf", 0.047);
+        public static final WebConstant kF = WebConstant.of("Shooter", "kf", 0.0465);
         public static final WebConstant SHOOTER_VELOCITY_DEADBAND = WebConstant.of("Shooter", "Velocity deadband", 50); // Dead band for shooter velocity setpoint. [rpm]
 
         public static final HashMap<Double, Double> SHORT_MEASUREMENTS = new HashMap<>() {{
-            put(-99999.0, 3350.0);
-            put(99999.0, 3925.0);
+            put(-99999.0, 3575.0);
+            put(2.12, 3575.0);
+            put(2.3, 2590.0);
+            put(2.58, 3450.0);
+            put(2.77, 3250.0);
+            put(2.98, 3400.0);
+            put(3.11, 3550.0);
+            put(3.32, 4000.0);
+            put(99999.0, 4000.0);
         }};
         public static final HashMap<Double, Double> LONG_MEASUREMENTS = new HashMap<>() {{
-            put(-99999.0, 3425.0);
-            put(2.87, 3425.0);
-            put(3.07, 3540.0);
-            put(3.23, 3700.0);
-            put(3.42, 3810.0);
-            put(3.58, 3860.0);
-            put(3.81, 3940.0);
-            put(4.06, 4000.0);
-            put(4.22, 4150.0);
-            put(4.52, 4180.0);
-            put(4.73, 4250.0);
-            put(5.06, 4350.0);
-            put(5.4, 4560.0);
-            put(5.71, 4750.0);
+            put(-99999.0, 3675.0);
+            put(3.32, 3675.0);
+            put(3.49, 3730.0);
+            put(3.69, 3900.0);
+            put(3.9, 3935.0);
+            put(4.08, 3925.0);
+            put(4.25, 3925.0);
+            put(4.5, 4085.0);
+            put(4.79, 4300.0);
+            put(5.0, 4350.0);
+            put(5.25, 4550.0);
+            put(5.58, 4780.0);
             put(6.0, 4850.0);
-            put(7.5, 5600.0);
-            put(99999.0, 5600.0);
+            put(6.4, 5100.0);
+            put(99999.0, 5100.0);
         }};
 
         public static TalonFXConfiguration getConfiguration() {
@@ -279,7 +284,7 @@ public final class Constants {
 
     public static class Hood {
         public static final double HOOD_PRESSURE_BIT_DELTA_TIME = 0.1; // [s]
-        public static final double DISTANCE_FROM_TARGET_THRESHOLD = 2.87; // [m]
+        public static final double DISTANCE_FROM_TARGET_THRESHOLD = 3.32; // [m]
     }
 
     public static class Control {
