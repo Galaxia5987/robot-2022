@@ -3,16 +3,14 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.auto.TaxiFromLowRightPickShootPickShoot;
-import frc.robot.commandgroups.BackAndShootCargoSort;
-import frc.robot.commandgroups.OneBallOuttake;
-import frc.robot.commandgroups.Outtake;
-import frc.robot.commandgroups.PickUpCargo;
+import frc.robot.commandgroups.*;
 import frc.robot.commandgroups.bits.RunAllBits;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
@@ -29,6 +27,7 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.BackAndShootCargo;
 import frc.robot.utils.LedSubsystem;
 import frc.robot.utils.PhotonVisionModule;
+import frc.robot.utils.Utils;
 import webapp.Webserver;
 
 import java.util.function.DoubleSupplier;
@@ -49,6 +48,22 @@ public class RobotContainer {
     private final CommandBase autonomousCommand;
     private double speedMultiplier = 1;
     private double thetaMultiplier = 1.5;
+    private final Supplier<Pose2d> swervePose = swerve::getPose;
+    private final Supplier<Transform2d> poseRelativeToTarget = () -> Constants.Vision.HUB_POSE.minus(swervePose.get());
+    private final DoubleSupplier distanceFromTarget = () -> photonVisionModule.hasTargets() ?
+            photonVisionModule.getDistance() :
+            Math.hypot(poseRelativeToTarget.get().getX(), poseRelativeToTarget.get().getY());
+    private final DoubleSupplier yaw = () -> photonVisionModule.getYaw().orElse(Robot.getAngle().minus(new Rotation2d(
+                    Math.atan2(
+                            poseRelativeToTarget.get().getY(),
+                            poseRelativeToTarget.get().getX()
+                    )
+            )
+    ).getDegrees());
+    private final DoubleSupplier flightTime = () -> Utils.timeByDistance(distanceFromTarget.getAsDouble());
+    private final Supplier<Translation2d> currentGoal = () -> ShootAndRun.calculateCurrentGoal(distanceFromTarget.getAsDouble(), yaw.getAsDouble());
+    private final Supplier<Translation2d> virtualGoal = () -> ShootAndRun.calculateVirtualGoal(currentGoal.get(), swerve.getChassisSpeeds(), flightTime.getAsDouble());
+    private final DoubleSupplier virtualYaw = () -> ShootAndRun.getYawToVirtualGoal(virtualGoal.get(), Robot.getAngle().getDegrees());
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -66,22 +81,13 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        Supplier<Pose2d> swervePose = swerve::getPose;
-        Supplier<Transform2d> poseRelativeToTarget = () -> Constants.Vision.HUB_POSE.minus(swervePose.get());
-        DoubleSupplier yaw = () -> photonVisionModule.getYaw().orElse(Robot.getAngle().minus(new Rotation2d(
-                        Math.atan2(
-                                poseRelativeToTarget.get().getY(),
-                                poseRelativeToTarget.get().getX()
-                        )
-                )
-        ).getDegrees());
         swerve.setDefaultCommand(
                 new DriveAndAdjustWithVision(
                         swerve,
                         () -> -Joysticks.leftJoystick.getY() * speedMultiplier,
                         () -> -Joysticks.leftJoystick.getX() * speedMultiplier,
                         () -> -Joysticks.rightJoystick.getX() * thetaMultiplier,
-                        yaw,
+                        virtualYaw,
                         Joysticks.rightTrigger::get,
                         photonVisionModule::getDistance
                 )
@@ -90,12 +96,6 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        Supplier<Pose2d> swervePose = swerve::getPose;
-        Supplier<Transform2d> poseRelativeToTarget = () -> Constants.Vision.HUB_POSE.minus(swervePose.get());
-        DoubleSupplier distanceFromTarget = () -> photonVisionModule.hasTargets() ?
-                photonVisionModule.getDistance() :
-                Math.hypot(poseRelativeToTarget.get().getX(), poseRelativeToTarget.get().getY());
-
         { // Xbox controller button bindings.
             Xbox.b.whileHeld(new ParallelCommandGroup(
                     new InstantCommand(flap::allowShooting),
@@ -107,7 +107,7 @@ public class RobotContainer {
             }, shooter).withInterrupt(Xbox.rt::get));
             Xbox.a.whileHeld(new BackAndShootCargoSort(shooter, hood, conveyor, flap,
                     () -> Constants.Conveyor.SHOOT_POWER,
-                    distanceFromTarget));
+                    () -> ShootAndRun.getShootingDistance(virtualGoal.get())));
 
             Xbox.leftPov.whileActiveOnce(new InstantCommand(hood::toggle));
             Xbox.rightPov.whileActiveOnce(new InstantCommand(helicopter::toggleStopper));
@@ -117,7 +117,7 @@ public class RobotContainer {
             Xbox.rt.whileActiveContinuous(new BackAndShootCargo(
                     shooter, hood, conveyor, flap,
                     () -> Constants.Conveyor.SHOOT_POWER,
-                    distanceFromTarget));
+                    () -> ShootAndRun.getShootingDistance(virtualGoal.get())));
             Xbox.lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, Constants.Conveyor.DEFAULT_POWER.get(), Constants.Intake.DEFAULT_POWER::get));
             Xbox.lb.whileHeld(new Outtake(intake, conveyor, flap, shooter, hood, () -> false));
             Xbox.rb.whileHeld(new Convey(conveyor, -Constants.Conveyor.SHOOT_POWER));

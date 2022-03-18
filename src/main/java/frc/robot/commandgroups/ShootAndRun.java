@@ -18,18 +18,6 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 public class ShootAndRun extends ParallelCommandGroup {
-
-
-    public ShootAndRun(Shooter shooter, SwerveDrive swerveDrive, Hood hood, Conveyor conveyor, Flap flap, DoubleSupplier visionDistance, DoubleSupplier visionYaw) {
-        DoubleSupplier flightTime = () -> Utils.timeByDistance(visionDistance.getAsDouble());
-        Supplier<Translation2d> currentGoal = () -> calculateCurrentGoal(visionDistance.getAsDouble(), visionYaw.getAsDouble());
-        Supplier<Translation2d> virtualGoal = () -> calculateVirtualGoal(currentGoal.get(), swerveDrive.getChassisSpeeds(), flightTime.getAsDouble());
-        addCommands(
-                new ShootCargo(shooter, hood, conveyor, flap, Constants.Conveyor.DEFAULT_POWER::get, () -> getShootingDistance(virtualGoal.get())),
-                new TurnWhileRunning(swerveDrive, () -> getYawToVirtualGoal(virtualGoal.get(), 5)
-                ));
-
-    }
     
     public static Translation2d calculateCurrentGoal(double distance, double yaw) {
         return new Translation2d(distance * Math.cos(Math.toRadians(yaw)), distance * Math.sin(Math.toRadians(yaw)));
