@@ -261,7 +261,7 @@ public class LedSubsystem extends SubsystemBase {
 //        m_rainbowFirstPixelHue %= 180;
 
         if (climbTime) {
-            for (var i = 37; i < m_ledBuffer.getLength(); i++) {
+            for (var i = 0; i < 20; i++) {
                 final var hue = ((180 - m_rainbowFirstPixelHue) + (i * 180 / 17)) % 180;
                 m_ledBuffer.setHSV(i, hue, 223, 217);
                 m_ledBuffer.setHSV(36 - (i - 37), hue, 223, 217);
