@@ -32,6 +32,8 @@ public class Conveyor extends SubsystemBase {
 
     private final DoubleLogEntry power;
     private final StringLogEntry positions;
+    private boolean isIntaking = true;
+    private double lastPower = 0.1;
 
     private Conveyor() {
         motor.setInverted(MOTOR_INVERSION);
@@ -96,6 +98,10 @@ public class Conveyor extends SubsystemBase {
      */
     public void setPower(double power) {
         motor.set(power);
+
+        if (power != 0) {
+            lastPower = power;
+        }
     }
 
     public double getVelocity() {
@@ -122,23 +128,28 @@ public class Conveyor extends SubsystemBase {
      * Logic documentation is included in the function.
      */
     public void updateActualBallPositions() {
-        double power = getPower();
-        if (colorSensor.getProximityValue() >= MIN_PROXIMITY_VALUE && colorSensor.hasColorChanged()) {
+        boolean currentlyIntaking = getPower() >= 0;
+        if (colorSensor.getProximityValue() >= MIN_PROXIMITY_VALUE && (colorSensor.hasColorChanged() || (currentlyIntaking != isIntaking))) {
             var color = colorSensor.getColor();
             if (color != DriverStation.Alliance.Invalid) {
-                if (power >= 0) {
+                if (currentlyIntaking) {
                     cargoPositions.addLast(color);
                 } else if (!cargoPositions.isEmpty()) {
                     cargoPositions.removeLast();
                 }
             }
         }
+        isIntaking = currentlyIntaking;
 
         if (postFlapBeam.hasChanged() && postFlapBeam.hasObject()) {
             if (!cargoPositions.isEmpty()) {
                 cargoPositions.removeFirst();
             }
         }
+    }
+
+    public void clearStack() {
+        cargoPositions.clear();
     }
 
     public int getColorSensorProximity() {
