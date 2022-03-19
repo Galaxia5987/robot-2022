@@ -19,7 +19,7 @@ public class TestShooterVelocity extends SequentialCommandGroup {
                                 () -> shooter.setVelocity(0)).withTimeout(5),
                         new RunCommand(
                                 () -> System.out.println("shooter vel0: " + shooter.getVelocity())),
-                        new RunCommand(() -> velocityLed(ledSubsystem, shooter, 3000))),
+                        new RunCommand(() -> velocityLed(ledSubsystem, shooter, 0))),
 
 
                 new ParallelRaceGroup(
@@ -38,7 +38,16 @@ public class TestShooterVelocity extends SequentialCommandGroup {
                                 () -> System.out.println("shooter vel3000: " + shooter.getVelocity()
                                 )),
                         new RunCommand(() -> velocityLed(ledSubsystem, shooter, 3000))
-                ));
+                ),
+
+                new ParallelRaceGroup(
+                        new RunCommand(
+                                () -> shooter.setVelocity(0)).withTimeout(5),
+                        new RunCommand(
+                                () -> System.out.println("shooter vel0: " + shooter.getVelocity())),
+                        new RunCommand(() -> velocityLed(ledSubsystem, shooter, 0))
+                )
+        );
     }
 
     public static void velocityLed(LedSubsystem ledSubsystem, Shooter shooter, double velocity) {
