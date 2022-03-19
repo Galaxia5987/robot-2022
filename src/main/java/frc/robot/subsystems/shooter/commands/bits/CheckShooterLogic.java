@@ -20,8 +20,8 @@ public class CheckShooterLogic extends SequentialCommandGroup {
                                 hood,
                                 () -> 2).withTimeout(5),
                         new RunCommand(() -> System.out.println("Current vel for distance 2m: " + shooter.getVelocity())),
-                        new RunCommand(()-> System.out.println("desired vel for distance 2m: " + Shoot.getSetpointVelocity(2,2<Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD)
-                ))),
+                        new RunCommand(() -> System.out.println("desired vel for distance 2m: " + Shoot.getSetpointVelocity(2, 2 < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD)))
+                ),
 
                 new ParallelRaceGroup(
                         new Shoot(
@@ -29,8 +29,8 @@ public class CheckShooterLogic extends SequentialCommandGroup {
                                 hood,
                                 () -> 3.5).withTimeout(5),
                         new RunCommand(() -> System.out.println("Current vel for distance 3.5m: " + shooter.getVelocity())),
-                        new RunCommand(()-> System.out.println("Desired vel for distance 3.5m: " + Shoot.getSetpointVelocity(3.5, 3.5<Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD)
-                        )),
+                        new RunCommand(() -> System.out.println("Desired vel for distance 3.5m: " + Shoot.getSetpointVelocity(3.5, 3.5 < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD)))
+                ),
 
                 new ParallelRaceGroup(
                         new Shoot(
@@ -38,7 +38,8 @@ public class CheckShooterLogic extends SequentialCommandGroup {
                                 hood,
                                 () -> 5).withTimeout(5),
                         new RunCommand(() -> System.out.println("Current vel for distance 5m: " + shooter.getVelocity())),
-                        new RunCommand(()-> System.out.println("Desired vel for distance 5m: " + Shoot.getSetpointVelocity(5, 5<Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD))
-        ))));
+                        new RunCommand(() -> System.out.println("Desired vel for distance 5m: " + Shoot.getSetpointVelocity(5, 5 < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD)))
+                )
+        );
     }
 }
