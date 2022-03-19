@@ -145,7 +145,7 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
                         conveyor,
                         flap,
                         conveyorPower,
-                        () -> 2.95)
+                        () -> 2.42)
                         .withTimeout(timeout),
                         new IntakeCargo(intake, Constants.Intake.DEFAULT_POWER::get)
                 ));
