@@ -66,7 +66,7 @@ public class Hood extends SubsystemBase {
      * @return whether the solenoid is open.
      */
     public boolean isOpen() {
-        return angleChanger.get();
+        return !angleChanger.get();
     }
 
     @Override
@@ -75,8 +75,8 @@ public class Hood extends SubsystemBase {
     }
 
     public enum Mode {
-        ShortDistance(true),
-        LongDistance(false);
+        ShortDistance(false),
+        LongDistance(true);
 
         public final boolean value;
 

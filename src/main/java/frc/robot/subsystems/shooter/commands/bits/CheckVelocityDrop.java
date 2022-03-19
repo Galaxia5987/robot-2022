@@ -1,5 +1,6 @@
 package frc.robot.subsystems.shooter.commands.bits;
 
+import frc.robot.Constants;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.Shoot;
@@ -19,7 +20,7 @@ public class CheckVelocityDrop extends Shoot {
     public void execute() {
         super.execute();
         double velocity = shooter.getVelocity();
-        double setpoint = getSetpointVelocity(distance.getAsDouble(), hood.isOpen());
+        double setpoint = getSetpointVelocity(distance.getAsDouble(), distance.getAsDouble() < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD);
         maximalDrop = Math.max(maximalDrop, lastVelocity - velocity);
 
         FireLog.log("Setpoint", setpoint);
