@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
+import webapp.FireLog;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -52,6 +53,9 @@ public class DriveAndAdjustWithVision extends HolonomicDrive {
 
     @Override
     public void execute() {
+
+        FireLog.log("virtual yaw",  yawSupplier.getAsDouble());
+
         ChassisSpeeds speeds = calculateVelocities();
         double forward = speeds.vxMetersPerSecond;
         double strafe = speeds.vyMetersPerSecond;

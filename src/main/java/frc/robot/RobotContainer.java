@@ -1,9 +1,11 @@
 package frc.robot;
 
+import com.pathplanner.lib.PathPlanner;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.*;
@@ -28,6 +30,7 @@ import frc.robot.subsystems.shooter.commands.BackAndShootCargo;
 import frc.robot.utils.LedSubsystem;
 import frc.robot.utils.PhotonVisionModule;
 import frc.robot.utils.Utils;
+import webapp.FireLog;
 import webapp.Webserver;
 
 import java.util.function.DoubleSupplier;
@@ -39,6 +42,32 @@ public class RobotContainer {
     public static LedSubsystem ledSubsystem = new LedSubsystem();
     final PhotonVisionModule photonVisionModule = new PhotonVisionModule("photonvision", null);
     private final SwerveDrive swerve = SwerveDrive.getFieldOrientedInstance(photonVisionModule::estimatePose);
+    private final Supplier<Pose2d> swervePose = swerve::getPose;
+    private final Supplier<Transform2d> poseRelativeToTarget = () -> Constants.Vision.HUB_POSE.minus(swervePose.get());
+    private final DoubleSupplier distanceFromTarget = () -> photonVisionModule.hasTargets() ?
+            photonVisionModule.getDistance() :
+            Math.hypot(poseRelativeToTarget.get().getX(), poseRelativeToTarget.get().getY());
+    private final DoubleSupplier flightTime = () -> Utils.timeByDistance(distanceFromTarget.getAsDouble());
+    private final DoubleSupplier yaw = () -> {
+
+        var res = photonVisionModule.getYaw().orElse(Robot.getAngle().minus(new Rotation2d(
+                        Math.atan2(
+                                poseRelativeToTarget.get().getY(),
+                                poseRelativeToTarget.get().getX()
+                        )
+                )
+        ).getDegrees());
+
+        FireLog.log("yaw", res);
+        return res;
+    };
+    private final Supplier<Translation2d> currentGoal = () -> ShootAndRun.calculateCurrentGoal(distanceFromTarget.getAsDouble(), yaw.getAsDouble());
+    private final Supplier<Translation2d> virtualGoal = () -> {
+        var res = ShootAndRun.calculateVirtualGoal(currentGoal.get(), swerve.getChassisSpeeds(), flightTime.getAsDouble());
+        System.out.println("CurrentGoal: " + currentGoal.get() + " virtual: " + res);
+        return res;
+    };
+    private final DoubleSupplier virtualYaw = () -> ShootAndRun.getYawToVirtualGoal(virtualGoal.get(), Robot.getAngle().getDegrees());
     private final Intake intake = Intake.getInstance();
     private final Conveyor conveyor = Conveyor.getInstance();
     private final Flap flap = Flap.getInstance();
@@ -48,28 +77,14 @@ public class RobotContainer {
     private final CommandBase autonomousCommand;
     private double speedMultiplier = 1;
     private double thetaMultiplier = 1.5;
-    private final Supplier<Pose2d> swervePose = swerve::getPose;
-    private final Supplier<Transform2d> poseRelativeToTarget = () -> Constants.Vision.HUB_POSE.minus(swervePose.get());
-    private final DoubleSupplier distanceFromTarget = () -> photonVisionModule.hasTargets() ?
-            photonVisionModule.getDistance() :
-            Math.hypot(poseRelativeToTarget.get().getX(), poseRelativeToTarget.get().getY());
-    private final DoubleSupplier yaw = () -> photonVisionModule.getYaw().orElse(Robot.getAngle().minus(new Rotation2d(
-                    Math.atan2(
-                            poseRelativeToTarget.get().getY(),
-                            poseRelativeToTarget.get().getX()
-                    )
-            )
-    ).getDegrees());
-    private final DoubleSupplier flightTime = () -> Utils.timeByDistance(distanceFromTarget.getAsDouble());
-    private final Supplier<Translation2d> currentGoal = () -> ShootAndRun.calculateCurrentGoal(distanceFromTarget.getAsDouble(), yaw.getAsDouble());
-    private final Supplier<Translation2d> virtualGoal = () -> ShootAndRun.calculateVirtualGoal(currentGoal.get(), swerve.getChassisSpeeds(), flightTime.getAsDouble());
-    private final DoubleSupplier virtualYaw = () -> ShootAndRun.getYawToVirtualGoal(virtualGoal.get(), Robot.getAngle().getDegrees());
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
         autonomousCommand = new TaxiFromLowRightPickShootPickShoot(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
+        var initialState = PathPlanner.loadPath("p2 - Taxi from low right tarmac and pickup low cargo(7.1)", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL).getInitialState();
+        swerve.resetOdometry(initialState.poseMeters, initialState.holonomicRotation);
         // Configure the button bindings and default commands
         configureDefaultCommands();
         if (Robot.debug) {
@@ -143,8 +158,8 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return new RunAllBits(swerve, shooter, conveyor, intake, flap, hood, helicopter);
-//        return autonomousCommand;
+//        return new RunAllBits(swerve, shooter, conveyor, intake, flap, hood, helicopter);
+        return autonomousCommand;
     }
 
     /**

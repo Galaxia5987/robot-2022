@@ -28,7 +28,7 @@ public class ShootAndRun extends ParallelCommandGroup {
     }
 
     public static double getYawToVirtualGoal(Translation2d virtualGoal, double RobotAngle) {
-        return Math.toDegrees(Math.atan2(virtualGoal.getY() , virtualGoal.getX()) - Math.toRadians(RobotAngle));
+        return Math.toDegrees(Math.atan2(virtualGoal.getY() , virtualGoal.getX()));
     }
 
     public static double getShootingDistance(Translation2d virtualGoal) {
