@@ -6,6 +6,7 @@ import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
+import frc.robot.utils.DeadbandProximity;
 
 import static frc.robot.Constants.Conveyor.*;
 
@@ -14,9 +15,11 @@ public class ColorSensor {
     private final ColorMatch colorMatch = new ColorMatch();
     private DriverStation.Alliance lastSeenColor = DriverStation.Alliance.Invalid;
     private DriverStation.Alliance currentColor = DriverStation.Alliance.Invalid;
+    private final DeadbandProximity proximity;
 
     public ColorSensor(I2C.Port colorSensorPort) {
         this.sensor = new ColorSensorV3(colorSensorPort);
+        proximity = new DeadbandProximity(sensor::getProximity, 170, 200);
 
         colorMatch.addColorMatch(RED);
         colorMatch.addColorMatch(BLUE);
@@ -28,7 +31,7 @@ public class ColorSensor {
      * @return the color sensor value as a {@link edu.wpi.first.wpilibj.DriverStation.Alliance} enum.
      */
     public DriverStation.Alliance getColor() {
-        if (getProximityValue() < MIN_PROXIMITY_VALUE) return DriverStation.Alliance.Invalid;
+        if (!proximity.getState()) return DriverStation.Alliance.Invalid;
         ColorMatchResult result = colorMatch.matchClosestColor(sensor.getColor());
         Color resultColor = result.color;
 
@@ -55,6 +58,7 @@ public class ColorSensor {
      * Call this function every loop, unless you're a psycho.
      */
     public void updateColorSensor() {
+        proximity.update();
         lastSeenColor = currentColor;
         currentColor = getColor();
     }

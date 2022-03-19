@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
 import frc.robot.subsystems.UnitModel;
+import frc.robot.subsystems.flap.Flap;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -129,9 +130,9 @@ public class Conveyor extends SubsystemBase {
      */
     public void updateActualBallPositions() {
         boolean currentlyIntaking = getPower() >= 0;
-        if (colorSensor.getProximityValue() >= MIN_PROXIMITY_VALUE && (colorSensor.hasColorChanged() || (currentlyIntaking != isIntaking))) {
+        if (colorSensor.getProximityValue() >= MIN_PROXIMITY_VALUE && (colorSensor.hasColorChanged())) {
             var color = colorSensor.getColor();
-            if (color != DriverStation.Alliance.Invalid) {
+            if ((color != DriverStation.Alliance.Invalid) == currentlyIntaking) {
                 if (currentlyIntaking) {
                     cargoPositions.addLast(color);
                 } else if (!cargoPositions.isEmpty()) {
@@ -141,7 +142,7 @@ public class Conveyor extends SubsystemBase {
         }
         isIntaking = currentlyIntaking;
 
-        if (postFlapBeam.hasChanged() && postFlapBeam.hasObject()) {
+        if (postFlapBeam.hasChanged() && !postFlapBeam.hasObject() && Flap.getInstance().getFlapMode().equals(Flap.FlapMode.ALLOW_SHOOTING)) {
             if (!cargoPositions.isEmpty()) {
                 cargoPositions.removeFirst();
             }
