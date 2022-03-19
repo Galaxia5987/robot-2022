@@ -109,7 +109,7 @@ public final class Constants {
         public static final HashMap<Double, Double> SHORT_MEASUREMENTS = new HashMap<>() {{
             put(-99999.0, 3575.0);
             put(2.12, 3575.0);
-            put(2.3, 2590.0);
+            put(2.3, 3590.0);
             put(2.58, 3450.0);
             put(2.77, 3250.0);
             put(2.98, 3400.0);
