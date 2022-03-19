@@ -101,7 +101,6 @@ public class Utils {
     }
 
     public static double timeByDistance(double distance) {
-//        return 8;
-        return distance / 3;
+        return 0.1959 * distance + 0.4946;
     }
 }

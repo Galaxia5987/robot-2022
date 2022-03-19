@@ -18,6 +18,7 @@ import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.DriveAndAdjustWithVision;
+import frc.robot.subsystems.drivetrain.commands.DriveAndShoot;
 import frc.robot.subsystems.drivetrain.commands.TurnToAngle;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.helicopter.Helicopter;
@@ -97,12 +98,13 @@ public class RobotContainer {
 
     private void configureDefaultCommands() {
         swerve.setDefaultCommand(
-                new DriveAndAdjustWithVision(
+                new DriveAndShoot(
                         swerve,
                         () -> -Joysticks.leftJoystick.getY() * speedMultiplier,
                         () -> -Joysticks.leftJoystick.getX() * speedMultiplier,
                         () -> -Joysticks.rightJoystick.getX() * thetaMultiplier,
-                        virtualYaw,
+                        yaw,
+                        () -> virtualYaw.getAsDouble() - yaw.getAsDouble(),
                         Joysticks.rightTrigger::get,
                         photonVisionModule::getDistance
                 )

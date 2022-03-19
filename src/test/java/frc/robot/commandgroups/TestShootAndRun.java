@@ -1,7 +1,18 @@
 package frc.robot.commandgroups;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import frc.robot.Constants;
+import frc.robot.Robot;
+import frc.robot.utils.Utils;
 import org.junit.Test;
+import webapp.FireLog;
+
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestShootAndRun {
@@ -100,4 +111,17 @@ public class TestShootAndRun {
 
 
     }
+
+    @Test
+    public void everything() {
+//        double distance = 3.5;
+//        double yaw = 0;
+//        Translation2d goal = ShootAndRun.calculateCurrentGoal(distance, yaw);
+//        Translation2d virtual = ShootAndRun.calculateVirtualGoal(goal, new ChassisSpeeds(0, 1, 0), Utils.timeByDistance(distance));
+//        double offset = ShootAndRun.getYawToVirtualGoal(virtual, 0);
+//        double distance_offset = ShootAndRun.getShootingDistance(virtual);
+//        System.out.println(offset);
+//        System.out.println(distance_offset);
+    }
+
 }
