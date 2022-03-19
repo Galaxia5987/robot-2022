@@ -2,6 +2,10 @@ package frc.robot.subsystems.conveyor;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.util.datalog.StringLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -26,10 +30,19 @@ public class Conveyor extends SubsystemBase {
     private final UnitModel unitModel = new UnitModel(Constants.Conveyor.TICKS_PER_UNIT);
     private final ColorSensor colorSensor = new ColorSensor(I2C.Port.kMXP);
 
+    private final DoubleLogEntry power;
+    private final StringLogEntry positions;
+    private boolean isIntaking = true;
+    private double lastPower = 0.1;
+
     private Conveyor() {
         motor.setInverted(MOTOR_INVERSION);
         motor.enableVoltageCompensation(IS_COMPENSATING_VOLTAGE);
         motor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
+
+        DataLog log = DataLogManager.getLog();
+        power = new DoubleLogEntry(log, "/conveyor/power");
+        positions = new StringLogEntry(log, "/conveyor/positions");
     }
 
     /**
@@ -85,6 +98,10 @@ public class Conveyor extends SubsystemBase {
      */
     public void setPower(double power) {
         motor.set(power);
+
+        if (power != 0) {
+            lastPower = power;
+        }
     }
 
     public double getVelocity() {
@@ -111,23 +128,28 @@ public class Conveyor extends SubsystemBase {
      * Logic documentation is included in the function.
      */
     public void updateActualBallPositions() {
-        double power = getPower();
-        if (colorSensor.getProximityValue() >= MIN_PROXIMITY_VALUE && colorSensor.hasColorChanged()) {
+        boolean currentlyIntaking = getPower() >= 0;
+        if (colorSensor.getProximityValue() >= MIN_PROXIMITY_VALUE && (colorSensor.hasColorChanged() || (currentlyIntaking != isIntaking))) {
             var color = colorSensor.getColor();
             if (color != DriverStation.Alliance.Invalid) {
-                if (power >= 0) {
+                if (currentlyIntaking) {
                     cargoPositions.addLast(color);
                 } else if (!cargoPositions.isEmpty()) {
                     cargoPositions.removeLast();
                 }
             }
         }
+        isIntaking = currentlyIntaking;
 
         if (postFlapBeam.hasChanged() && postFlapBeam.hasObject()) {
             if (!cargoPositions.isEmpty()) {
                 cargoPositions.removeFirst();
             }
         }
+    }
+
+    public void clearStack() {
+        cargoPositions.clear();
     }
 
     public int getColorSensorProximity() {
@@ -168,5 +190,8 @@ public class Conveyor extends SubsystemBase {
 
         SmartDashboard.putString("first_color", firstColor);
         SmartDashboard.putString("second_color", secondColor);
+
+        power.append(getPower());
+        positions.append(cargoPositions.toString());
     }
 }

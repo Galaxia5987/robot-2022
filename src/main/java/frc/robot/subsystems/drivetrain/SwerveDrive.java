@@ -7,6 +7,9 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -47,9 +50,11 @@ public class SwerveDrive extends SubsystemBase {
     private final TimeDelayedBoolean rotationDelay = new TimeDelayedBoolean();
     private final boolean fieldOriented;
     private final Supplier<VisionEstimationData> visionPose;
-    Timer timer = new Timer();
-    double prevSpeed = 0;
-    boolean bool = true;
+    private final Timer timer = new Timer();
+
+    private final DoubleLogEntry xVelocity;
+    private final DoubleLogEntry yVelocity;
+    private final DoubleLogEntry rotationVelocity;
 
     private SwerveDrive(boolean fieldOriented, Supplier<VisionEstimationData> visionPose) {
         this.fieldOriented = fieldOriented;
@@ -64,7 +69,13 @@ public class SwerveDrive extends SubsystemBase {
         headingController.setTolerance(Constants.SwerveDrive.ALLOWABLE_HEADING_ERROR);
         timer.start();
         timer.reset();
-        SmartDashboard.putNumber("max_vel_bruh", 0);
+
+
+        DataLog log = DataLogManager.getLog();
+        xVelocity = new DoubleLogEntry(log, "/swerveDrive/x-velocity");
+        yVelocity = new DoubleLogEntry(log, "/swerveDrive/y-velocity");
+        rotationVelocity = new DoubleLogEntry(log, "/swerveDrive/rotational-velocity");
+
     }
 
     /**
@@ -184,7 +195,8 @@ public class SwerveDrive extends SubsystemBase {
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
         for (SwerveModule module : modules) {
             states[module.getWheel()] = SwerveModuleState.optimize(states[module.getWheel()], module.getAngle());
-            if (!(Math.abs(states[module.getWheel()].angle.minus(module.getAngle()).getDegrees()) < 7)) { // TODO: Remove the magic number
+            if (!(Math.abs(states[module.getWheel()].angle.minus(module.getAngle())
+                    .getDegrees()) < 7)) { // TODO: Remove the magic number
                 return false;
             }
         }
@@ -364,12 +376,13 @@ public class SwerveDrive extends SubsystemBase {
 //        String outputPosition = poseEstimator.getEstimatedPosition().getX() + ", " + poseEstimator.getEstimatedPosition().getY();
 //        SmartDashboard.putString("robot_position", outputPosition);
 
-//        String outputPosition = getPose().getX() + ", " + getPose().getY();
-//        SmartDashboard.putString("robot_position", outputPosition);
         String outputRotation = String.valueOf(Robot.getAngle().getDegrees());
         SmartDashboard.putString("robot_rotation", outputRotation);
 
-
+        var speeds = getChassisSpeeds();
+        xVelocity.append(speeds.vxMetersPerSecond);
+        yVelocity.append(speeds.vyMetersPerSecond);
+        rotationVelocity.append(speeds.omegaRadiansPerSecond);
     }
 }
 

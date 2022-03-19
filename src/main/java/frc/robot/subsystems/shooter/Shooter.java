@@ -2,9 +2,12 @@ package frc.robot.subsystems.shooter;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
+import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -18,17 +21,16 @@ import frc.robot.utils.Utils;
 import webapp.FireLog;
 
 import static frc.robot.Constants.Shooter.*;
-import static frc.robot.Ports.Shooter.INVERSION_TYPE;
-import static frc.robot.Ports.Shooter.MOTOR;
+import static frc.robot.Ports.Shooter.*;
 
 public class Shooter extends SubsystemBase {
     private static final ShuffleboardTab tab = Shuffleboard.getTab("Velocity");
-    public static NetworkTableEntry shooterVelocity =
-            tab.add("Velocity", 0)
-                    .getEntry();
     private static Shooter INSTANCE;
     private final UnitModel unitModel = new UnitModel(TICKS_PER_REVOLUTION);
-    private final WPI_TalonFX motor = new WPI_TalonFX(MOTOR);
+    private final WPI_TalonFX mainMotor = new WPI_TalonFX(MAIN_MOTOR);
+    private final WPI_TalonFX auxMotor = new WPI_TalonFX(AUX_MOTOR);
+    private final DoubleLogEntry shooterVelocity;
+    private final DoubleLogEntry shooterVoltage;
     private FlywheelSim flywheelSim;
     private TalonFXSimCollection simCollection;
     private double currentTime = 0;
@@ -37,8 +39,13 @@ public class Shooter extends SubsystemBase {
     private Shooter() {
         configureMotor();
         if (Robot.isSimulation()) {
-            simCollection = motor.getSimCollection();
+            simCollection = mainMotor.getSimCollection();
         }
+
+        DataLog log = DataLogManager.getLog();
+        shooterVelocity = new DoubleLogEntry(log, "/shooter/velocity");
+        shooterVoltage = new DoubleLogEntry(log, "/shooter/voltage");
+
     }
 
     /**
@@ -54,10 +61,16 @@ public class Shooter extends SubsystemBase {
     }
 
     private void configureMotor() {
-        motor.configAllSettings(getConfiguration());
-        motor.setInverted(INVERSION_TYPE);
-        motor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
-        motor.enableVoltageCompensation(true);
+        mainMotor.configAllSettings(getConfiguration());
+        mainMotor.setInverted(INVERSION_TYPE);
+        mainMotor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
+        mainMotor.enableVoltageCompensation(true);
+
+        auxMotor.follow(mainMotor);
+        auxMotor.configAllSettings(getConfiguration());
+        auxMotor.setInverted(TalonFXInvertType.OpposeMaster);
+        auxMotor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
+        auxMotor.enableVoltageCompensation(true);
     }
 
     /**
@@ -69,7 +82,7 @@ public class Shooter extends SubsystemBase {
         if (Robot.isSimulation()) {
             return flywheelSim.getAngularVelocityRPM();
         }
-        return Utils.rpsToRpm(unitModel.toVelocity(motor.getSelectedSensorVelocity()));
+        return Utils.rpsToRpm(unitModel.toVelocity(mainMotor.getSelectedSensorVelocity()));
     }
 
     /**
@@ -78,7 +91,7 @@ public class Shooter extends SubsystemBase {
      * @param velocity is the velocity setpoint. [rpm]
      */
     public void setVelocity(double velocity) {
-        motor.set(ControlMode.Velocity, unitModel.toTicks100ms(Utils.rpmToRps(velocity)), DemandType.ArbitraryFeedForward, 0.01);
+        mainMotor.set(ControlMode.Velocity, unitModel.toTicks100ms(Utils.rpmToRps(velocity)), DemandType.ArbitraryFeedForward, 0.01);
     }
 
     /**
@@ -88,26 +101,28 @@ public class Shooter extends SubsystemBase {
      * @param power is the power for the motor. [%]
      */
     public void setPower(double power) {
-        motor.set(ControlMode.PercentOutput, power);
+        mainMotor.set(ControlMode.PercentOutput, power);
     }
 
     /**
      * Terminates the movement of the wheel.
      */
     public void terminate() {
-        motor.stopMotor();
+        mainMotor.stopMotor();
     }
 
     @Override
     public void periodic() {
         lastTime = currentTime;
         currentTime = Timer.getFPGATimestamp();
+        shooterVelocity.append(getVelocity());
+        shooterVoltage.append(mainMotor.getMotorOutputVoltage());
         FireLog.log("Shooter-velocity", getVelocity());
 
-        motor.config_kP(0, kP.get());
-        motor.config_kI(0, kI.get());
-        motor.config_kD(0, kD.get());
-        motor.config_kF(0, kF.get());
+        mainMotor.config_kP(0, kP.get());
+        mainMotor.config_kI(0, kI.get());
+        mainMotor.config_kD(0, kD.get());
+        mainMotor.config_kF(0, kF.get());
     }
 
     @Override
