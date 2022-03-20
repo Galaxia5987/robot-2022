@@ -108,8 +108,9 @@ public class RobotContainer {
                     shooter, hood, conveyor, flap,
                     () -> Constants.Conveyor.SHOOT_POWER,
                     () -> 0, photonVisionModule::hasTargets, swerve::getOdometryDistance));
-            Xbox.lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, 0.7,
-                    () -> Utils.map(MathUtil.clamp(Math.hypot(swerve.getChassisSpeeds().vxMetersPerSecond, swerve.getChassisSpeeds().vyMetersPerSecond), 0, 4), 0, 4, 0.7, 0.4)));
+//            Xbox.lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, 0.7,
+//                    () -> Utils.map(MathUtil.clamp(Math.hypot(swerve.getChassisSpeeds().vxMetersPerSecond, swerve.getChassisSpeeds().vyMetersPerSecond), 0, 4), 0, 4, 0.7, 0.4)));
+            Xbox.lt.whileActiveContinuous(new SmartIndexing(shooter, conveyor, intake, flap));
             Xbox.lb.whileHeld(new Outtake(intake, conveyor, flap, shooter, hood, () -> false));
             Xbox.rb.whileHeld(new Convey(conveyor, -Constants.Conveyor.SHOOT_POWER));
 
