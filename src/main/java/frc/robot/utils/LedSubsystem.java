@@ -9,8 +9,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LedSubsystem extends SubsystemBase {
     public static boolean climbTime = false;
-    private final AddressableLED m_led = new AddressableLED(1);
-    private final AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(54);
+//    private final AddressableLED hoodLeds = new AddressableLED(6);
+//    private final AddressableLEDBuffer hoodLedBuffer = new AddressableLEDBuffer(18); //18
+//    private final AddressableLED conveyorLeds = new AddressableLED(3);
+//    private final AddressableLEDBuffer conveyorLedBuffer = new AddressableLEDBuffer(6); //34
     private final int m_water = 80;
     private final int sign = 1;
     Timer timer = new Timer();
@@ -20,11 +22,28 @@ public class LedSubsystem extends SubsystemBase {
     private int m_rainbowFirstPixelHue = 0;
     private int percent = 0;
     private boolean neutralMode = true;
+    private AddressableLED led;
+    private AddressableLEDBuffer ledBuffer;
 
     public LedSubsystem() {
-        m_led.setLength(m_ledBuffer.getLength());
-        m_led.setData(m_ledBuffer);
-        m_led.start();
+        led = new AddressableLED(6);
+
+        // Reuse buffer
+        // Default to a length of 60, start empty output
+        // Length is expensive to set, so only set it once, then just update data
+        ledBuffer = new AddressableLEDBuffer(18);
+        led.setLength(ledBuffer.getLength());
+
+        // Set the data
+        led.setData(ledBuffer);
+        led.start();
+//        new SnakeSubsystem();
+//        hoodLeds.setLength(hoodLedBuffer.getLength());
+//        hoodLeds.setData(hoodLedBuffer);
+//        hoodLeds.start();
+//        conveyorLeds.setLength(conveyorLedBuffer.getLength());
+//        conveyorLeds.setData(conveyorLedBuffer);
+//        conveyorLeds.start();
         timer.start();
         timer.reset();
         timer2.start();
@@ -35,37 +54,37 @@ public class LedSubsystem extends SubsystemBase {
     public static int[] switchOfGods(int idx) { // 6 states
         switch (idx) {
             case 0:
-                return new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                return new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0,
                         0, 0, 0, 0, 0, 0, 0, 0, 0};
             case 1:
-                return new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+                return new int[]{0, 0, 0, 0, 0, 0, 0, 0, 1,
                         1, 0, 0, 0, 0, 0, 0, 0, 0};
             case 2:
-                return new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
+                return new int[]{0, 0, 0, 0, 0, 0, 0, 1, 1,
                         1, 1, 0, 0, 0, 0, 0, 0, 0};
             case 3:
-                return new int[]{0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1,
+                return new int[]{0, 0, 0, 0, 0, 0, 1, 1, 1,
                         1, 1, 1, 0, 0, 0, 0, 0, 0};
             case 4:
-                return new int[]{0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1,
+                return new int[]{0, 0, 0, 0, 0, 1, 1, 1, 1,
                         1, 1, 1, 1, 0, 0, 0, 0, 0};
             case 5:
-                return new int[]{0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1,
+                return new int[]{0, 0, 0, 0, 1, 1, 1, 1, 1,
                         1, 1, 1, 1, 1, 0, 0, 0, 0};
             case 6:
-                return new int[]{0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,
+                return new int[]{0, 0, 0, 1, 1, 1, 1, 1, 1,
                         1, 1, 1, 1, 1, 1, 0, 0, 0};
 
             case 7:
-                return new int[]{0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1,
+                return new int[]{0, 0, 1, 1, 1, 1, 1, 1, 1,
                         1, 1, 1, 1, 1, 1, 1, 0, 0};
 
             case 8:
-                return new int[]{0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
+                return new int[]{0, 1, 1, 1, 1, 1, 1, 1, 1,
                         1, 1, 1, 1, 1, 1, 1, 1, 0};
 
             case 9:
-                return new int[]{0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                return new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1,
                         1, 1, 1, 1, 1, 1, 1, 1, 1};
         }
         return null;
@@ -133,7 +152,7 @@ public class LedSubsystem extends SubsystemBase {
     public void updateCurrent(int states) {
         current++;
         if (current == states) {
-            current = 1;
+            current = 0;
         }
     }
 
@@ -162,33 +181,29 @@ public class LedSubsystem extends SubsystemBase {
             timer.reset();
         }
         if (neutralMode) {
-            for (var i = 0; i < 20; i++) {
+            for (var i = 0; i < 18; i++) {
                 if (switchOfGods(current)[i] == 1) {
 //                    m_ledBuffer.setHSV(i, 10, 255, 128);
-                    m_ledBuffer.setRGB(i, 0, 158, 189);
+                    ledBuffer.setRGB(i, 0, 158, 189);
                 } else {
-                    m_ledBuffer.setRGB(i, 25, 25, 25);
+                    ledBuffer.setRGB(i, 25, 25, 25);
                 }
             }
         } else {
-            for (var i = 0; i < 20; i++) {
+            for (var i = 0; i < 18; i++) {
                 if (switchOfGods(percent)[i] == 1) {
-                    m_ledBuffer.setRGB(i, 0, 255, 0);
+                    ledBuffer.setRGB(i, 0, 255, 0);
                 } else {
-                    m_ledBuffer.setRGB(i, 25, 25, 25);
+                    ledBuffer.setRGB(i, 25, 25, 25);
                 }
             }
         }
 
         if (climbTime) {
-            for (var i = 0; i < 20; i++) {
-                m_ledBuffer.setRGB(i, 0, 158, 189);
+            for (var i = 0; i < 18; i++) {
+                ledBuffer.setRGB(i, 0, 158, 189);
             }
         }
-
-
-        m_ledBuffer.setRGB(0, 0, 0, 0);
-        m_ledBuffer.setRGB(1, 0, 0, 0);
 
 /*        for (var i = 20; i < m_ledBuffer.getLength(); i++) {
 //            final var hue = (m_rainbowFirstPixelHue + (i * 180 / m_ledBuffer.getLength())) % 180;
@@ -212,8 +227,9 @@ public class LedSubsystem extends SubsystemBase {
 //        if (m_water <= 80) {
 //            sign = 1;
 //        }
-        rainbow2();
-        m_led.setData(m_ledBuffer);
+//        rainbow2();
+        led.setData(ledBuffer);
+//        conveyorLeds.setData(conveyorLedBuffer);
         // Increase by to make the rainbow "move"
         m_rainbowFirstPixelHue += 3;
         // Check bounds
@@ -222,33 +238,33 @@ public class LedSubsystem extends SubsystemBase {
 
     private void rainbow2() {
         // For every pixel
-        for (var i = 37; i < m_ledBuffer.getLength(); i++) {
+      /*  for (var i = 0; i < conveyorLedBuffer.getLength(); i++) {
             // Calculate the hue - hue is easier for rainbows because the color
             // shape is a circle so only one value needs to precess
             final var hue = ((180 - m_rainbowFirstPixelHue) + (i * 180 / 17)) % 180;
             // Set the value
             if (neutralMode) {
-                m_ledBuffer.setLED(i, Color.kPurple);
+                conveyorLedBuffer.setLED(i, Color.kPurple);
 //                m_ledBuffer.setRGB(i, 219, 127, 142);
-                m_ledBuffer.setLED(36 - (i - 37), Color.kPurple);
+                conveyorLedBuffer.setLED(36 - (i - 37), Color.kPurple);
 //                m_ledBuffer.setRGB(36 - (i - 37), 219, 127, 142);
             } else {
-                m_ledBuffer.setHSV(i, hue, 223, 217);
-                m_ledBuffer.setHSV(36 - (i - 37), hue, 223, 217);
+                conveyorLedBuffer.setHSV(i, hue, 223, 217);
+                conveyorLedBuffer.setHSV(36 - (i - 37), hue, 223, 217);
             }
-        }
+        }*/
         // Increase by to make the rainbow "move"
 //        m_rainbowFirstPixelHue += 3;
         // Check bounds
 //        m_rainbowFirstPixelHue %= 180;
 
-        if (climbTime) {
-            for (var i = 37; i < m_ledBuffer.getLength(); i++) {
+/*        if (climbTime) {
+            for (var i = 0; i < conveyorLedBuffer.getLength(); i++) {
                 final var hue = ((180 - m_rainbowFirstPixelHue) + (i * 180 / 17)) % 180;
-                m_ledBuffer.setHSV(i, hue, 223, 217);
-                m_ledBuffer.setHSV(36 - (i - 37), hue, 223, 217);
+                conveyorLedBuffer.setHSV(i, hue, 223, 217);
+                conveyorLedBuffer.setHSV(36 - (i - 37), hue, 223, 217);
             }
-        }
+        }*/
     }
 
     public void setNeutralMode(boolean neutralMode) {

@@ -7,7 +7,6 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
-import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 /**
@@ -28,21 +27,20 @@ public class TurnToAngle extends CommandBase {
      * @param swerveDrive the SwerveDrive subsystem
      * @param targetAngle the target angle. [rad]
      */
-    public TurnToAngle(SwerveDrive swerveDrive, DoubleSupplier targetAngle) {
+    public TurnToAngle(SwerveDrive swerveDrive, Supplier<Rotation2d> targetAngle) {
         this.swerveDrive = swerveDrive;
-        this.targetAngle = () -> Rotation2d.fromDegrees(targetAngle.getAsDouble());
+        this.targetAngle = targetAngle;
         addRequirements(swerveDrive);
     }
 
     @Override
     public void execute() {
         swerveDrive.holonomicDrive(0, 0, adjustController.calculate(Robot.getAngle().getRadians(), targetAngle.get().getRadians()));
-
     }
 
     @Override
     public boolean isFinished() {
-        return adjustController.atSetpoint();
+        return Math.abs(Robot.getAngle().minus(targetAngle.get()).getDegrees()) <= 5;
     }
 
     @Override
