@@ -226,6 +226,9 @@ public final class Constants {
         public static final double TARGET_HEIGHT = 0.05; // Height of the vision target strip. [m]
         public static final double TARGET_RADIUS = 0.678;
 
+        public static final double BIT_CAMERA_HEIGHT = 0.73; // [m]
+        public static final double BIT_TARGET_HEIGHT_FROM_GROUND = 2.65; // [m] Pefzener 2.62
+
         public static final Pose2d HUB_POSE = new Pose2d( // Position of the hub relative to the field.
                 new Translation2d(FIELD_LENGTH / 2, FIELD_WIDTH / 2), new Rotation2d());
         public static final Transform2d CAMERA_TO_ROBOT = new Transform2d(
