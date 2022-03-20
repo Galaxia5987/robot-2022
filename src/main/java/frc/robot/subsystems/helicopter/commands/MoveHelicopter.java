@@ -26,6 +26,7 @@ public class MoveHelicopter extends CommandBase {
         helicopter.setAbsolutePosition(new Rotation2d(desiredRad));
     }
 
+
     @Override
     public boolean isFinished() {
         return Math.abs(helicopter.getAbsolutePosition() - desiredRad) <= Constants.Helicopter.POSITION_TOLERANCE;
