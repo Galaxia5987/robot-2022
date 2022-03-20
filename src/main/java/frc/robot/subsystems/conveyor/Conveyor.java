@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
@@ -157,6 +158,10 @@ public class Conveyor extends SubsystemBase {
         return colorSensor.getProximityValue();
     }
 
+    public DriverStation.Alliance getColor() {
+        return colorSensor.getColor();
+    }
+
     /**
      * removes the string representing the cargo from the list if the cargo is ejected and adds if the cargo is consumed
      */
@@ -171,6 +176,8 @@ public class Conveyor extends SubsystemBase {
         SmartDashboard.putNumber("Proximity", colorSensor.getProximityValue());
         SmartDashboard.putBoolean("Pre flap", preFlapBeam.get());
         SmartDashboard.putBoolean("Post flap", postFlapBeam.get());
+        System.out.println("Pre flap: " + preFlapBeam.get());
+        System.out.println("Post flap: " + postFlapBeam.get());
         int minutes = (int) Math.round(DriverStation.getMatchTime()) / 60;
         String minutesString = "0" + minutes;
         int seconds = (int) Math.round(DriverStation.getMatchTime()) % 60;
