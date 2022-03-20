@@ -8,10 +8,7 @@ import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.auto.TaxiFromLowRightPickShootPickShoot;
-import frc.robot.commandgroups.BackAndShootCargoSort;
-import frc.robot.commandgroups.OneBallOuttake;
-import frc.robot.commandgroups.Outtake;
-import frc.robot.commandgroups.PickUpCargo;
+import frc.robot.commandgroups.*;
 import frc.robot.commandgroups.bits.RunAllBits;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
@@ -104,7 +101,7 @@ public class RobotContainer {
             Xbox.leftPov.whileActiveOnce(new InstantCommand(hood::toggle));
             Xbox.rightPov.whileActiveOnce(new InstantCommand(helicopter::toggleStopper));
             Xbox.upPov.and(Xbox.start).whileActiveOnce(new MoveHelicopter(helicopter, Constants.Helicopter.SECOND_RUNG));
-            Xbox.downPov.and(Xbox.start).whileActiveOnce(new MoveHelicopter(helicopter, 0));
+            Xbox.downPov.whileActiveOnce(new LowGoalShot(shooter, conveyor, flap, hood));
 
             Xbox.rt.whileActiveContinuous(new BackAndShootCargo(
                     shooter, hood, conveyor, flap,
@@ -120,6 +117,7 @@ public class RobotContainer {
             Xbox.rightJoystickButton
                     .whileHeld(() -> hardCodedVelocity = true)
                     .whenReleased(() -> hardCodedVelocity = false);
+
         }
 
         { // Joystick button bindings.

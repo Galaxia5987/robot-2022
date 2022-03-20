@@ -97,6 +97,7 @@ public final class Constants {
         public static final double NEUTRAL_DEADBAND = 0.1; // [%]
         public static final double OUTPUT_MULTIPLIER = 0.1; // Multiplies the output for manual control in the bits. [%]
         public static final double OUTTAKE_POWER = 0.2; // Power to give to the shooter when taking balls out. [%]
+        public static final double LOW_GOAL_VELOCITY = 2500;
         public static final double RECOMMENDED_ACCELERATION_TIME = 1.3; // Recommended time for the shooter to get to it's setpoint. [s]
         public static final double CARGO_OFFSET = 0; // Desired offset from the middle of the target where you want the cargo to hit. [m]
 
