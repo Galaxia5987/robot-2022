@@ -15,6 +15,8 @@ import frc.robot.subsystems.shooter.commands.Shoot;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import static frc.robot.Constants.Shooter.SHOOTER_VELOCITY_DEADBAND;
+
 public class ShootCargo extends ParallelCommandGroup {
 
     public ShootCargo(Shooter shooter,
@@ -23,17 +25,14 @@ public class ShootCargo extends ParallelCommandGroup {
                       Flap flap,
                       DoubleSupplier conveyorPower,
                       DoubleSupplier distanceFromTarget,
-                      boolean bool) {
-        DoubleSupplier setpointVelocity = () -> Shoot.getSetpointVelocity(distanceFromTarget.getAsDouble(), distanceFromTarget.getAsDouble() < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD);
-        BooleanSupplier isFlywheelAtSetpoint = () -> Math.abs(setpointVelocity.getAsDouble() - shooter.getVelocity()) < SHOOTER_VELOCITY_DEADBAND.get();
                       boolean bool, BooleanSupplier hasTarget, DoubleSupplier odometryDistance) {
         DoubleSupplier setpointVelocity = () -> Shoot.getSetpointVelocity(distanceFromTarget.getAsDouble());
+        BooleanSupplier isFlywheelAtSetpoint = () -> Math.abs(setpointVelocity.getAsDouble() - shooter.getVelocity()) < SHOOTER_VELOCITY_DEADBAND.get();
 
         addCommands(
                 new HoodCommand(hood, () -> !conveyor.isPostFlapBeamConnected(), RobotContainer.hardCodedVelocity ? () -> 3.6 : distanceFromTarget, hasTarget, odometryDistance),
                 new Convey3(conveyor, () -> !conveyor.isPreFlapBeamConnected(), RobotContainer.hardCodedVelocity ? () -> Constants.Shooter.TARMAC_VELOCITY : setpointVelocity, shooter::getVelocity),
                 new InstantCommand(flap::allowShooting),
-                new Shoot(shooter, hood, setpointVelocity, bool)
                 new Shoot(shooter, hood, distanceFromTarget, bool, hasTarget, odometryDistance)
         );
     }
