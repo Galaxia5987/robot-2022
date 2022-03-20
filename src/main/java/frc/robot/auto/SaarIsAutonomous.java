@@ -139,15 +139,18 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
                 )
         ).getDegrees());
         return new SequentialCommandGroup(
-                new ParallelRaceGroup(new ShootCargo(
+                new InstantCommand(flap::allowShooting),
+                new InstantCommand(() -> shooter.setVelocity(Shoot.getSetpointVelocity(distanceFromTarget.getAsDouble(), distanceFromTarget.getAsDouble() < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD))),
+                new WaitUntilCommand(() -> Math.abs(shooter.getVelocity() - (Shoot.getSetpointVelocity(distanceFromTarget.getAsDouble(), distanceFromTarget.getAsDouble() < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD))) <= Constants.Shooter.SHOOTER_VELOCITY_DEADBAND.get()),
+                new ParallelRaceGroup(new Shoot(
                         shooter,
                         hood,
-                        conveyor,
-                        flap,
-                        conveyorPower,
-                        () -> 2.42)
+                        distanceFromTarget,
+                        true)
                         .withTimeout(timeout),
-                        new IntakeCargo(intake, Constants.Intake.DEFAULT_POWER::get)
+                        new IntakeCargo(intake, Constants.Intake.DEFAULT_POWER::get),
+                        new Convey(conveyor, Constants.Conveyor.SHOOT_POWER),
+                        new HoodCommand(hood, () -> true, distanceFromTarget)
                 ));
     }
 

@@ -81,9 +81,9 @@ public class Robot extends TimedRobot {
             NetworkTableConstant.initializeAllConstants();
         }
         m_robotContainer = new RobotContainer();
-        UsbCamera usbCamera = new UsbCamera("USB Camera 0", 0);
-        MjpegServer mjpegServer1 = new MjpegServer("serve_USB Camera 0", 1181);
-        mjpegServer1.setSource(usbCamera);
+//        UsbCamera usbCamera = new UsbCamera("USB Camera 0", 0);
+//        MjpegServer mjpegServer1 = new MjpegServer("serve_USB Camera 0", 1181);
+//        mjpegServer1.setSource(usbCamera);
 
 //        led.setLength(buffer.getLength());
 //        led.start();

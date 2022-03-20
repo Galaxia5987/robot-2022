@@ -172,7 +172,7 @@ public class PhotonVisionModule extends SubsystemBase {
 
     @Override
     public void periodic() {
-        System.out.println("Distance: " + getDistance());
+//        System.out.println("Distance: " + getDistance());
 //        System.out.println("Pose with vision = " + HUB_POSE.plus(poseRelativeToTarget()));
 
 

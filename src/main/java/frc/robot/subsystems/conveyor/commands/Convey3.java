@@ -4,7 +4,9 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.conveyor.Conveyor;
+import webapp.FireLog;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -41,12 +43,15 @@ public class Convey3 extends CommandBase {
         setpoint = setpointSuppier.getAsDouble();
         wait = true;
         last = false;
+        setpoint = RobotContainer.setpointSupplier.getAsDouble();
     }
 
     @Override
     public void execute() {
+        FireLog.log("Shooter velocity", velocitySupplier.getAsDouble());
+        FireLog.log("Shooter setpoint", RobotContainer.cachedSetpoint);
         if (wait) {
-            if (Math.abs(setpoint - velocitySupplier.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get()) {
+            if (Math.abs(RobotContainer.cachedSetpoint - velocitySupplier.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get()) {
                 wait = false;
             }
             SmartDashboard.putString("Saar", "Mama");
@@ -55,7 +60,7 @@ public class Convey3 extends CommandBase {
             SmartDashboard.putNumber("Saar2", timer.get());
 
             if (getBallToPreFlap) {
-                conveyor.setPower(Constants.Conveyor.DEFAULT_POWER.get());
+                conveyor.setPower(Constants.Conveyor.SHOOT_POWER);
             } else {
                 conveyor.setPower(0);
             }

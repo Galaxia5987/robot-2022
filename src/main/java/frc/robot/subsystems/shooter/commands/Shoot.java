@@ -85,29 +85,29 @@ public class Shoot extends CommandBase {
 
     @Override
     public void initialize() {
-        RobotContainer.ledSubsystem.setNeutralMode(false);
-        timer.start();
-        timer.reset();
-        if (bool) {
-            setpointVelocity = getSetpointVelocity(distance.getAsDouble(), distance.getAsDouble() < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD);
-        } else {
-            setpointVelocity = distance.getAsDouble();
-        }
+//        RobotContainer.ledSubsystem.setNeutralMode(false);
+//        timer.start();
+//        timer.reset();
+//        if (bool) {
+//            setpointVelocity = RobotContainer.cachedSetpoint;
+//        } else {
+//            setpointVelocity = distance.getAsDouble();
+//        }
     }
 
     @Override
     public void execute() {
         if (power.isEmpty()) {
-            shooter.setVelocity(setpointVelocity);
-            SmartDashboard.putString("speed_state", Math.abs(setpointVelocity - shooter.getVelocity()) <= 30 ? "green" : Math.abs(setpointVelocity - shooter.getVelocity()) <= 100 ? "yellow" : "red");
+            shooter.setVelocity(RobotContainer.cachedSetpoint);
+            SmartDashboard.putString("speed_state", Math.abs(RobotContainer.cachedSetpoint - shooter.getVelocity()) <= 30 ? "green" : Math.abs(RobotContainer.cachedSetpoint - shooter.getVelocity()) <= 100 ? "yellow" : "red");
         } else {
             shooter.setPower(power.getAsDouble());
         }
         SmartDashboard.putNumber("something_velocity", shooter.getVelocity());
-        FireLog.log("Shooter velocity", shooter.getVelocity());
-        FireLog.log("Shooter setpoint", setpointVelocity);
-        if (setpointVelocity != 0) {
-            RobotContainer.ledSubsystem.setPercent((int) Math.round((MathUtil.clamp(shooter.getVelocity(), 0, setpointVelocity) / setpointVelocity) * 9));
+        FireLog.log("Shooter velocity2", shooter.getVelocity());
+        FireLog.log("Shooter setpoint2", RobotContainer.cachedSetpoint);
+        if (RobotContainer.cachedSetpoint != 0) {
+            RobotContainer.ledSubsystem.setPercent((int) Math.round((MathUtil.clamp(shooter.getVelocity(), 0, RobotContainer.cachedSetpoint) / RobotContainer.cachedSetpoint) * 9));
         }
     }
 
