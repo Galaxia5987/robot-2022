@@ -387,7 +387,7 @@ public class SwerveDrive extends SubsystemBase {
 
         String outputRotation = String.valueOf(Robot.getAngle().getDegrees());
         SmartDashboard.putString("robot_rotation", outputRotation);
-        System.out.println("distance: " + getOdometryDistance());
+//        System.out.println("distance: " + getOdometryDistance());
 
         var speeds = getChassisSpeeds();
         xVelocity.append(speeds.vxMetersPerSecond);

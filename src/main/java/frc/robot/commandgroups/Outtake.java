@@ -13,7 +13,6 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.Shoot;
 
 import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
 
 public class Outtake extends ParallelCommandGroup {
 
@@ -22,15 +21,13 @@ public class Outtake extends ParallelCommandGroup {
                    Flap flap,
                    Shooter shooter,
                    Hood hood,
-                   BooleanSupplier condition,
-                   BooleanSupplier hasTarget,
-                   DoubleSupplier odometry) {
+                   BooleanSupplier condition) {
         addCommands(
                 new FlapCommand(flap, Flap.FlapMode.ALLOW_SHOOTING),
                 new Convey(conveyor, () -> Constants.Conveyor.DEFAULT_POWER.get() * (condition.getAsBoolean() ? 1 : -1)),
                 new DynamicConditionalCommand(
                         condition,
-                        new Shoot(shooter, hood, Constants.Shooter.OUTTAKE_POWER, hasTarget, odometry),
+                        new Shoot(shooter, hood, Constants.Shooter.OUTTAKE_POWER),
                         new IntakeCargo(intake, Constants.Intake.DEFAULT_POWER::get)
                 )
         );

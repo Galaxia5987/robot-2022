@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -28,6 +29,7 @@ import frc.robot.utils.PhotonVisionModule;
 import frc.robot.utils.Utils;
 import webapp.Webserver;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -38,7 +40,11 @@ public class RobotContainer {
     // The robot's subsystems and commands are defined here...
 //    public static SnakeSubsystem snakeSubsystem = new SnakeSubsystem();
     public static DoubleSupplier setpointSupplier;
+    public static DoubleSupplier distanceSupplier;
     public static double cachedSetpoint = 0;
+    public static double cachedDistance = 0;
+
+    public static BooleanSupplier hasTarget;
     public static LedSubsystem ledSubsystem = new LedSubsystem();
     final PhotonVisionModule photonVisionModule = new PhotonVisionModule("photonvision", null);
     private final SwerveDrive swerve = SwerveDrive.getFieldOrientedInstance(photonVisionModule::estimatePose);
@@ -57,6 +63,8 @@ public class RobotContainer {
      */
     public RobotContainer() {
         setpointSupplier = () -> Shoot.getSetpointVelocity(photonVisionModule.getDistance());
+        distanceSupplier = photonVisionModule::getDistance;
+        hasTarget = photonVisionModule::hasTargets;
         autonomousCommand = new FiveCargoAuto(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
 //        autonomousCommand = new Yoni(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
         // Configure the button bindings and default commands
@@ -112,11 +120,11 @@ public class RobotContainer {
             Xbox.rt.whileActiveContinuous(new BackAndShootCargo(
                     shooter, hood, conveyor, flap,
                     () -> Constants.Conveyor.SHOOT_POWER,
-                    () -> 0, photonVisionModule::hasTargets, swerve::getOdometryDistance));
+                    () -> 0));
 //            Xbox.lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, 0.7,
 //                    () -> Utils.map(MathUtil.clamp(Math.hypot(swerve.getChassisSpeeds().vxMetersPerSecond, swerve.getChassisSpeeds().vyMetersPerSecond), 0, 4), 0, 4, 0.7, 0.4)));
             Xbox.lt.whileActiveContinuous(new SmartIndexing(shooter, conveyor, intake, flap, () -> Utils.map(MathUtil.clamp(Math.hypot(swerve.getChassisSpeeds().vxMetersPerSecond, swerve.getChassisSpeeds().vyMetersPerSecond), 0, 4), 0, 4, 0.7, 0.4)));
-            Xbox.lb.whileHeld(new Outtake(intake, conveyor, flap, shooter, hood, () -> false, () -> true, () -> 0));
+            Xbox.lb.whileHeld(new Outtake(intake, conveyor, flap, shooter, hood, () -> false));
             Xbox.rb.whileHeld(new Convey(conveyor, -Constants.Conveyor.SHOOT_POWER));
 
             Xbox.start.whenPressed(photonVisionModule::toggleLeds);

@@ -3,6 +3,7 @@ package frc.robot.subsystems.hood.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.hood.Hood;
 
 import java.util.function.BooleanSupplier;
@@ -14,17 +15,13 @@ public class HoodCommand extends CommandBase {
     private final DoubleSupplier distance;
     private final Timer timer = new Timer();
     private final boolean last = false;
-    private final BooleanSupplier hasTarget;
-    private final DoubleSupplier odometryDistance;
     private Hood.Mode mode = Hood.Mode.ShortDistance;
     private boolean starting = true;
 
-    public HoodCommand(Hood hood, BooleanSupplier postFlap, DoubleSupplier distance, BooleanSupplier hasTarget, DoubleSupplier odometryDistance) {
+    public HoodCommand(Hood hood, BooleanSupplier postFlap, DoubleSupplier distance) {
         this.hood = hood;
         this.postFlap = postFlap;
         this.distance = distance;
-        this.hasTarget = hasTarget;
-        this.odometryDistance = odometryDistance;
         addRequirements(hood);
     }
 
@@ -32,11 +29,11 @@ public class HoodCommand extends CommandBase {
     public void initialize() {
         timer.reset();
         timer.start();
-        if (hasTarget.getAsBoolean()) {
-            mode = distance.getAsDouble() < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD ? Hood.Mode.ShortDistance : Hood.Mode.LongDistance;
-        } else {
-            mode = odometryDistance.getAsDouble() < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD ? Hood.Mode.ShortDistance : Hood.Mode.LongDistance;
-        }
+//        if (hasTarget.getAsBoolean()) {
+        mode = RobotContainer.cachedDistance < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD ? Hood.Mode.ShortDistance : Hood.Mode.LongDistance;
+//        } else {
+//            mode = odometryDistance.getAsDouble() < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD ? Hood.Mode.ShortDistance : Hood.Mode.LongDistance;
+//        }
     }
 
     @Override

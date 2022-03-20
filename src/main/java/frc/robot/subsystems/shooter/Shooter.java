@@ -121,6 +121,7 @@ public class Shooter extends SubsystemBase {
 
         mainMotor.config_kP(0, kP.get());
         mainMotor.config_kI(0, kI.get());
+        mainMotor.config_IntegralZone(0, kIZone.get());
         mainMotor.config_kD(0, kD.get());
         mainMotor.config_kF(0, kF.get());
     }

@@ -31,7 +31,7 @@ public class ShootCargo2 extends ParallelCommandGroup {
 //                new HoodCommand(hood, () -> !conveyor.isPostFlapBeamConnected(), distanceFromTarget),
                 new Convey4(conveyor, hood, () -> !conveyor.isPreFlapBeamConnected(), setpointVelocity, shooter::getVelocity, distanceFromTarget),
                 new InstantCommand(flap::allowShooting),
-                new Shoot(shooter, hood, distanceFromTarget, bool, hasTarget, odometryDistance)
+                new Shoot(shooter, hood, distanceFromTarget, bool)
         );
     }
 
