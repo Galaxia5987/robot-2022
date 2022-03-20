@@ -171,9 +171,9 @@ public class Helicopter extends SubsystemBase {
     }
 
     public void vroomVroom(double power) {
-        if (!isStopperEngaged()) {
+//        if (!isStopperEngaged()) {
             mainMotor.set(ControlMode.PercentOutput, power);
-        }
+//        }
     }
 
     /**

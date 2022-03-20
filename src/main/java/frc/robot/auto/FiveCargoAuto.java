@@ -17,6 +17,7 @@ public class FiveCargoAuto extends SaarIsAutonomous {
      park near up tarmac, shoot.(10)
      */
     public FiveCargoAuto(Shooter shooter, SwerveDrive swerveDrive, Conveyor conveyor, Intake intake, Hood hood, Flap flap, PhotonVisionModule visionModule) {
+<<<<<<< Updated upstream
         super(swerveDrive, shooter, conveyor, intake, hood, flap, visionModule, "p4 - Taxi from low right tarmac and pickup low cargo(10.1)");
         addCommands(
                 followPathAndPickup("p4 - Taxi from low right tarmac and pickup low cargo(10.1)")
@@ -54,5 +55,27 @@ public class FiveCargoAuto extends SaarIsAutonomous {
                 )
         );
         addCommands(shootAndAdjust(3));
+=======
+        super(swerveDrive, shooter, conveyor, intake, hood, flap, visionModule, "FiveCargoAutoPart1");
+        addCommands(shoot3(1.55));
+
+        addCommands(new InstantCommand(() -> shooter.setVelocity(3530.0)));
+
+        addCommands(followPathAndPickup("FiveCargoAutoPart1"));
+
+        addCommands(turnToAngle(() -> Rotation2d.fromDegrees(40.15)));
+
+        addCommands(shootAndAdjust(3)); // 1.8
+
+        addCommands(new InstantCommand(() -> shooter.setVelocity(3530.0)));
+
+        addCommands(followPathAndPickup("FiveCargoAutoPart2"));
+
+        addCommands(followPathAndPickup("FiveCargoAutoPart3"));
+
+        addCommands(new InstantCommand(swerveDrive::terminate));
+
+        addCommands(shootAndAdjust(5));
+>>>>>>> Stashed changes
     }
 }

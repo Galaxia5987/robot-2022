@@ -205,7 +205,7 @@ public final class Constants {
         public static final Color RED = new Color(0.511, 0.346, 0.143);
         public static final Color NONE = new Color(0.31, 0.415, 0.275);
 
-        public static final WebConstant DEFAULT_POWER = WebConstant.of("Conveyor", "Default velocity", 0.5); // [%]
+        public static final WebConstant DEFAULT_POWER = WebConstant.of("Conveyor", "Default velocity", 0.7); // [%]
     }
 
     public static class Vision { //TODO: change for competition
