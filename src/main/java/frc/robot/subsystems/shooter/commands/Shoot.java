@@ -89,7 +89,8 @@ public class Shoot extends CommandBase {
         timer.start();
         timer.reset();
         if (bool) {
-            setpointVelocity = getSetpointVelocity(distance.getAsDouble(), distance.getAsDouble() < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD);
+//            setpointVelocity = getSetpointVelocity(distance.getAsDouble(), distance.getAsDouble() < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD);
+            setpointVelocity = distance.getAsDouble();
         } else {
             setpointVelocity = distance.getAsDouble();
         }

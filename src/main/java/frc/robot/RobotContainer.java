@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -29,6 +30,7 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.BackAndShootCargo;
 import frc.robot.utils.LedSubsystem;
 import frc.robot.utils.PhotonVisionModule;
+import frc.robot.utils.Utils;
 import webapp.Webserver;
 
 import java.util.function.DoubleSupplier;
@@ -118,7 +120,8 @@ public class RobotContainer {
                     shooter, hood, conveyor, flap,
                     () -> Constants.Conveyor.SHOOT_POWER,
                     distanceFromTarget));
-            Xbox.lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, Constants.Conveyor.DEFAULT_POWER.get(), Constants.Intake.DEFAULT_POWER::get));
+            Xbox.lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, 0.7,
+                    () -> Utils.map(MathUtil.clamp(Math.hypot(swerve.getChassisSpeeds().vxMetersPerSecond, swerve.getChassisSpeeds().vyMetersPerSecond), 0, 4), 0, 4, 0.7, 0.4)));
             Xbox.lb.whileHeld(new Outtake(intake, conveyor, flap, shooter, hood, () -> false));
             Xbox.rb.whileHeld(new Convey(conveyor, -Constants.Conveyor.SHOOT_POWER));
 

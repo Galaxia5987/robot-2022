@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.conveyor.Conveyor;
+import webapp.FireLog;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -45,6 +46,8 @@ public class Convey3 extends CommandBase {
 
     @Override
     public void execute() {
+        FireLog.log("Shooter velocity2", velocitySupplier.getAsDouble());
+        FireLog.log("Shooter setpoint2", setpoint);
         if (wait) {
             if (Math.abs(setpoint - velocitySupplier.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get()) {
                 wait = false;

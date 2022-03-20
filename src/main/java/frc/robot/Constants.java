@@ -104,7 +104,7 @@ public final class Constants {
         public static final WebConstant kI = WebConstant.of("Shooter", "kI", 0.000222);
         public static final WebConstant kD = WebConstant.of("Shooter", "kD", 0.25);
         public static final WebConstant kF = WebConstant.of("Shooter", "kf", 0);
-        public static final WebConstant SHOOTER_VELOCITY_DEADBAND = WebConstant.of("Shooter", "Velocity deadband", 50); // Dead band for shooter velocity setpoint. [rpm]
+        public static final WebConstant SHOOTER_VELOCITY_DEADBAND = WebConstant.of("Shooter", "Velocity deadband", 20); // Dead band for shooter velocity setpoint. [rpm]
 
         public static final HashMap<Double, Double> SHORT_MEASUREMENTS = new HashMap<>() {{
             put(-99999.0, 3530.0);

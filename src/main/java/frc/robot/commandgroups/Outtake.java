@@ -28,7 +28,7 @@ public class Outtake extends ParallelCommandGroup {
                 new DynamicConditionalCommand(
                         condition,
                         new Shoot(shooter, hood, Constants.Shooter.OUTTAKE_POWER),
-                        new IntakeCargo(intake, () -> -Constants.Intake.DEFAULT_POWER.get())
+                        new IntakeCargo(intake, Constants.Intake.DEFAULT_POWER::get)
                 )
         );
     }
