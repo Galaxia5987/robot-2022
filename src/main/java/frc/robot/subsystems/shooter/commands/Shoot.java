@@ -12,6 +12,7 @@ import webapp.FireLog;
 
 import java.util.HashMap;
 import java.util.OptionalDouble;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class Shoot extends CommandBase {
@@ -21,28 +22,34 @@ public class Shoot extends CommandBase {
     private final boolean bool;
     private final OptionalDouble power;
     private final Timer timer = new Timer();
+    private final BooleanSupplier hasTarget;
+    private final DoubleSupplier odometryDistance;
     private double setpointVelocity = 0;
 
-    public Shoot(Shooter shooter, Hood hood, double power) {
+    public Shoot(Shooter shooter, Hood hood, double power, BooleanSupplier hasTarget, DoubleSupplier odometryDistance) {
         this.shooter = shooter;
         this.hood = hood;
+        this.hasTarget = () -> true;
+        this.odometryDistance = () -> 0;
         this.distance = () -> 8;
         this.power = OptionalDouble.of(power);
         bool = false;
         addRequirements(shooter);
     }
 
-    public Shoot(Shooter shooter, Hood hood, DoubleSupplier distance, boolean bool) {
+    public Shoot(Shooter shooter, Hood hood, DoubleSupplier distance, boolean bool, BooleanSupplier hasTarget, DoubleSupplier odometryDistance) {
         this.shooter = shooter;
         this.hood = hood;
         this.distance = distance;
         this.bool = bool;
+        this.hasTarget = hasTarget;
+        this.odometryDistance = odometryDistance;
         this.power = OptionalDouble.empty();
         addRequirements(shooter);
     }
 
-    public Shoot(Shooter shooter, Hood hood, DoubleSupplier distance) {
-        this(shooter, hood, distance, false);
+    public Shoot(Shooter shooter, Hood hood, DoubleSupplier distance, BooleanSupplier hasTarget, DoubleSupplier odometryDistance) {
+        this(shooter, hood, distance, false, hasTarget, odometryDistance);
     }
 
     /**
@@ -52,9 +59,9 @@ public class Shoot extends CommandBase {
      * @param distance is the distance from the target. [m]
      * @return 15. [rpm]
      */
-    public static double getSetpointVelocity(double distance, boolean isShort) {
+    public static double getSetpointVelocity(double distance) {
         HashMap<Double, Double> measurements;
-        if (isShort) {
+        if (distance < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD) {
             measurements = Constants.Shooter.SHORT_MEASUREMENTS;
         } else {
             measurements = Constants.Shooter.LONG_MEASUREMENTS;
@@ -89,8 +96,14 @@ public class Shoot extends CommandBase {
         timer.start();
         timer.reset();
         if (bool) {
-//            setpointVelocity = getSetpointVelocity(distance.getAsDouble(), distance.getAsDouble() < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD);
-            setpointVelocity = distance.getAsDouble();
+            if (hasTarget.getAsBoolean()) {
+                setpointVelocity = getSetpointVelocity(distance.getAsDouble());
+            } else {
+                setpointVelocity = getSetpointVelocity(odometryDistance.getAsDouble());
+            }
+            if (RobotContainer.hardCodedVelocity) {
+                setpointVelocity = Constants.Shooter.TARMAC_VELOCITY;
+            }
         } else {
             setpointVelocity = distance.getAsDouble();
         }

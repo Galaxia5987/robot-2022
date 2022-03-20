@@ -3,6 +3,7 @@ package frc.robot.commandgroups;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey3;
 import frc.robot.subsystems.flap.Flap;
@@ -13,8 +14,6 @@ import frc.robot.subsystems.shooter.commands.Shoot;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-
-import static frc.robot.Constants.Shooter.SHOOTER_VELOCITY_DEADBAND;
 
 public class ShootCargo extends ParallelCommandGroup {
 
@@ -27,12 +26,15 @@ public class ShootCargo extends ParallelCommandGroup {
                       boolean bool) {
         DoubleSupplier setpointVelocity = () -> Shoot.getSetpointVelocity(distanceFromTarget.getAsDouble(), distanceFromTarget.getAsDouble() < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD);
         BooleanSupplier isFlywheelAtSetpoint = () -> Math.abs(setpointVelocity.getAsDouble() - shooter.getVelocity()) < SHOOTER_VELOCITY_DEADBAND.get();
+                      boolean bool, BooleanSupplier hasTarget, DoubleSupplier odometryDistance) {
+        DoubleSupplier setpointVelocity = () -> Shoot.getSetpointVelocity(distanceFromTarget.getAsDouble());
 
         addCommands(
-                new HoodCommand(hood, () -> !conveyor.isPostFlapBeamConnected(), distanceFromTarget),
-                new Convey3(conveyor, () -> !conveyor.isPreFlapBeamConnected(), setpointVelocity, shooter::getVelocity),
+                new HoodCommand(hood, () -> !conveyor.isPostFlapBeamConnected(), RobotContainer.hardCodedVelocity ? () -> 3.6 : distanceFromTarget, hasTarget, odometryDistance),
+                new Convey3(conveyor, () -> !conveyor.isPreFlapBeamConnected(), RobotContainer.hardCodedVelocity ? () -> Constants.Shooter.TARMAC_VELOCITY : setpointVelocity, shooter::getVelocity),
                 new InstantCommand(flap::allowShooting),
                 new Shoot(shooter, hood, setpointVelocity, bool)
+                new Shoot(shooter, hood, distanceFromTarget, bool, hasTarget, odometryDistance)
         );
     }
 
@@ -41,7 +43,7 @@ public class ShootCargo extends ParallelCommandGroup {
                       Conveyor conveyor,
                       Flap flap,
                       DoubleSupplier conveyorPower,
-                      DoubleSupplier distanceFromTarget) {
-        this(shooter, hood, conveyor, flap, conveyorPower, distanceFromTarget, true);
+                      DoubleSupplier distanceFromTarget, BooleanSupplier hasTarget, DoubleSupplier odometryDistance) {
+        this(shooter, hood, conveyor, flap, conveyorPower, distanceFromTarget, true, hasTarget, odometryDistance);
     }
 }

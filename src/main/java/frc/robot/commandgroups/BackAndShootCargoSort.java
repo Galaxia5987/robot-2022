@@ -7,6 +7,7 @@ import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.shooter.Shooter;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class BackAndShootCargoSort extends SequentialCommandGroup {
@@ -15,8 +16,8 @@ public class BackAndShootCargoSort extends SequentialCommandGroup {
                                  Conveyor conveyor,
                                  Flap flap,
                                  DoubleSupplier conveyorPower,
-                                 DoubleSupplier distanceFromTarget) {
+                                 DoubleSupplier distanceFromTarget, BooleanSupplier hasTarget, DoubleSupplier odometryDistance) {
         addCommands(new Convey(conveyor, -0.25).withTimeout(0.075).withInterrupt(conveyor::isPreFlapBeamConnected),
-                new ShootCargo2(shooter, hood, conveyor, flap, conveyorPower, distanceFromTarget));
+                new ShootCargo2(shooter, hood, conveyor, flap, conveyorPower, distanceFromTarget, hasTarget, odometryDistance));
     }
 }

@@ -13,14 +13,14 @@ public class CheckVelocityDrop extends Shoot {
     private double maximalDrop = 0;
 
     public CheckVelocityDrop(Shooter shooter, Hood hood, DoubleSupplier distance) {
-        super(shooter, hood, distance);
+        super(shooter, hood, distance, () -> true, () -> 0);
     }
 
     @Override
     public void execute() {
         super.execute();
         double velocity = shooter.getVelocity();
-        double setpoint = getSetpointVelocity(distance.getAsDouble(), distance.getAsDouble() < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD);
+        double setpoint = getSetpointVelocity(distance.getAsDouble());
         maximalDrop = Math.max(maximalDrop, lastVelocity - velocity);
 
         FireLog.log("Setpoint", setpoint);

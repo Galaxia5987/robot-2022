@@ -2,7 +2,6 @@ package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -10,10 +9,7 @@ import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.auto.TaxiFromLowRightPickShootPickShoot;
-import frc.robot.commandgroups.BackAndShootCargoSort;
-import frc.robot.commandgroups.OneBallOuttake;
-import frc.robot.commandgroups.Outtake;
-import frc.robot.commandgroups.PickUpCargo;
+import frc.robot.commandgroups.*;
 import frc.robot.commandgroups.bits.RunAllBits;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
@@ -23,7 +19,6 @@ import frc.robot.subsystems.drivetrain.commands.TurnToAngle;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.helicopter.Helicopter;
 import frc.robot.subsystems.helicopter.commands.JoystickPowerHelicopter;
-import frc.robot.subsystems.helicopter.commands.MoveHelicopter;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
@@ -37,6 +32,8 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 public class RobotContainer {
+    public static final boolean playWithoutVision = false;
+    public static boolean hardCodedVelocity = false;
 
     // The robot's subsystems and commands are defined here...
     public static LedSubsystem ledSubsystem = new LedSubsystem();
@@ -68,25 +65,16 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        Supplier<Pose2d> swervePose = swerve::getPose;
-        Supplier<Transform2d> poseRelativeToTarget = () -> Constants.Vision.HUB_POSE.minus(swervePose.get());
-        DoubleSupplier yaw = () -> photonVisionModule.getYaw().orElse(Robot.getAngle().minus(new Rotation2d(
-                        Math.atan2(
-                                poseRelativeToTarget.get().getY(),
-                                poseRelativeToTarget.get().getX()
-                        )
-                )
-        ).getDegrees());
         swerve.setDefaultCommand(
                 new DriveAndAdjustWithVision(
                         swerve,
                         () -> -Joysticks.leftJoystick.getY() * speedMultiplier,
                         () -> -Joysticks.leftJoystick.getX() * speedMultiplier,
                         () -> -Joysticks.rightJoystick.getX() * thetaMultiplier,
-                        yaw,
+                        () -> photonVisionModule.getYaw().orElse(0),
                         Joysticks.rightTrigger::get,
-                        photonVisionModule::getDistance
-                )
+                        photonVisionModule::getDistance,
+                        photonVisionModule::hasTargets)
         );
         helicopter.setDefaultCommand(new JoystickPowerHelicopter(helicopter, Xbox.controller::getLeftY));
     }
@@ -109,17 +97,17 @@ public class RobotContainer {
             }, shooter).withInterrupt(Xbox.rt::get));
             Xbox.a.whileHeld(new BackAndShootCargoSort(shooter, hood, conveyor, flap,
                     () -> Constants.Conveyor.SHOOT_POWER,
-                    distanceFromTarget));
+                    distanceFromTarget, photonVisionModule::hasTargets, swerve::getOdometryDistance));
 
             Xbox.leftPov.whileActiveOnce(new InstantCommand(hood::toggle));
             Xbox.rightPov.whileActiveOnce(new InstantCommand(helicopter::toggleStopper));
-            Xbox.upPov.and(Xbox.start).whileActiveOnce(new MoveHelicopter(helicopter, Constants.Helicopter.SECOND_RUNG));
-            Xbox.downPov.and(Xbox.start).whileActiveOnce(new MoveHelicopter(helicopter, 0));
+            Xbox.upPov.whileActiveOnce(new SafetyShootCargo(shooter, conveyor, flap, hood, distanceFromTarget));
+            Xbox.downPov.whileActiveOnce(new LowGoalShot(shooter, conveyor, flap, hood));
 
             Xbox.rt.whileActiveContinuous(new BackAndShootCargo(
                     shooter, hood, conveyor, flap,
                     () -> Constants.Conveyor.SHOOT_POWER,
-                    distanceFromTarget));
+                    () -> 0, photonVisionModule::hasTargets, swerve::getOdometryDistance));
             Xbox.lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, 0.7,
                     () -> Utils.map(MathUtil.clamp(Math.hypot(swerve.getChassisSpeeds().vxMetersPerSecond, swerve.getChassisSpeeds().vyMetersPerSecond), 0, 4), 0, 4, 0.7, 0.4)));
             Xbox.lb.whileHeld(new Outtake(intake, conveyor, flap, shooter, hood, () -> false));
@@ -127,6 +115,11 @@ public class RobotContainer {
 
             Xbox.start.whenPressed(photonVisionModule::toggleLeds);
             Xbox.back.whenPressed(new OneBallOuttake(intake, conveyor, () -> conveyor.getColorSensorProximity() >= 150));
+
+            Xbox.rightJoystickButton
+                    .whileHeld(() -> hardCodedVelocity = true)
+                    .whenReleased(() -> hardCodedVelocity = false);
+
         }
 
         { // Joystick button bindings.
@@ -146,8 +139,8 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return new RunAllBits(swerve, shooter, conveyor, intake, flap, hood, helicopter);
-//        return autonomousCommand;
+//        return new RunAllBits(swerve, shooter, conveyor, intake, flap, hood, helicopter);
+        return autonomousCommand;
     }
 
     /**
@@ -195,5 +188,7 @@ public class RobotContainer {
         public static final Trigger downPov = new Trigger(() -> controller.getPOV() == 180);
         public static final Trigger rightPov = new Trigger(() -> controller.getPOV() == 90);
         public static final Trigger leftPov = new Trigger(() -> controller.getPOV() == 270);
+
+        public static final JoystickButton rightJoystickButton = new JoystickButton(controller, XboxController.Button.kRightStick.value);
     }
 }

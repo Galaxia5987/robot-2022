@@ -97,6 +97,7 @@ public final class Constants {
         public static final double NEUTRAL_DEADBAND = 0.1; // [%]
         public static final double OUTPUT_MULTIPLIER = 0.1; // Multiplies the output for manual control in the bits. [%]
         public static final double OUTTAKE_POWER = 0.2; // Power to give to the shooter when taking balls out. [%]
+        public static final double LOW_GOAL_VELOCITY = 2500;
         public static final double RECOMMENDED_ACCELERATION_TIME = 1.3; // Recommended time for the shooter to get to it's setpoint. [s]
         public static final double CARGO_OFFSET = 0; // Desired offset from the middle of the target where you want the cargo to hit. [m]
 
@@ -133,6 +134,7 @@ public final class Constants {
             put(6.41, 5060.0);
             put(99999.0, 5060.0);
         }};
+        public static final double TARMAC_VELOCITY = 3700; // [rpm]
 
         public static TalonFXConfiguration getConfiguration() {
             final TalonFXConfiguration configuration = new TalonFXConfiguration();
@@ -278,7 +280,7 @@ public final class Constants {
         public static final double POWER_TO_VELOCITY_RATIO = -3 / 16.0; // Ratio of power to velocity. [% / m/s]
         public static final double TIME_BETWEEN_RUNS = 1.7; // time intake will wait before toggling the retractor (for testing only). [s]
 
-        public static final WebConstant DEFAULT_POWER = WebConstant.of("Intake", "power", 0.6); // power intake will receive on the basic command. [%]
+        public static final WebConstant DEFAULT_POWER = WebConstant.of("Intake", "power", 0.8); // power intake will receive on the basic command. [%]
     }
 
     public static class Hood {

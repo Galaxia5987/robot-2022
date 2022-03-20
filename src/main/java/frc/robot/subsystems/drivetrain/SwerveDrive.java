@@ -354,6 +354,15 @@ public class SwerveDrive extends SubsystemBase {
         modules[1].setAngle(Rotation2d.fromDegrees(-45));
     }
 
+    /**
+     * Get the distance of the robot from the hub using odometry.
+     *
+     * @return distance from hub. [m]
+     */
+    public double getOdometryDistance() {
+        return Constants.Vision.HUB_POSE.getTranslation().minus(getPose().getTranslation()).getNorm();
+    }
+
     @Override
     public void periodic() {
         odometry.updateWithTime(
@@ -378,6 +387,7 @@ public class SwerveDrive extends SubsystemBase {
 
         String outputRotation = String.valueOf(Robot.getAngle().getDegrees());
         SmartDashboard.putString("robot_rotation", outputRotation);
+        System.out.println("distance: " + getOdometryDistance());
 
         var speeds = getChassisSpeeds();
         xVelocity.append(speeds.vxMetersPerSecond);
