@@ -18,7 +18,6 @@ import frc.robot.subsystems.drivetrain.commands.TurnToAngle;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.helicopter.Helicopter;
 import frc.robot.subsystems.helicopter.commands.JoystickPowerHelicopter;
-import frc.robot.subsystems.helicopter.commands.MoveHelicopter;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
@@ -100,7 +99,7 @@ public class RobotContainer {
 
             Xbox.leftPov.whileActiveOnce(new InstantCommand(hood::toggle));
             Xbox.rightPov.whileActiveOnce(new InstantCommand(helicopter::toggleStopper));
-            Xbox.upPov.and(Xbox.start).whileActiveOnce(new MoveHelicopter(helicopter, Constants.Helicopter.SECOND_RUNG));
+            Xbox.upPov.whileActiveOnce(new SafetyShootCargo(shooter, conveyor, flap, hood, distanceFromTarget));
             Xbox.downPov.whileActiveOnce(new LowGoalShot(shooter, conveyor, flap, hood));
 
             Xbox.rt.whileActiveContinuous(new BackAndShootCargo(
