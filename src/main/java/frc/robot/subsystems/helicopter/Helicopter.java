@@ -1,19 +1,17 @@
 package frc.robot.subsystems.helicopter;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.util.datalog.BooleanLogEntry;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
@@ -38,19 +36,21 @@ public class Helicopter extends SubsystemBase {
     private final WPI_TalonFX auxMotor = new WPI_TalonFX(Ports.Helicopter.AUX);
     private final Solenoid stopper = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Helicopter.STOPPER);
     private final UnitModel unitModelPosition = new UnitModel(Constants.Helicopter.TICKS_PER_RAD);
+    private final UnitModel unitModelPositionAbsolute = new UnitModel(Constants.Helicopter.TICKS_PER_RAD_ABSOLUTE_ENCODER);
     private final DutyCycleEncoder dutyCycleEncoder = new DutyCycleEncoder(Ports.Helicopter.ENCODER);
 
     private final PIDController controller;
     private final SingleJointedArmSim armSim;
-    private final ArmFeedforward feedforward;
     private final MechanismLigament2d arm;
 
+    private final DoubleLogEntry power;
+    private final DoubleLogEntry voltage;
+    private final BooleanLogEntry isStopped;
 
     private Helicopter() {
         if (Robot.isSimulation()) {
 
-            controller = new PIDController(Constants.Helicopter.KP.get(), Constants.Helicopter.KI.get(), Constants.Helicopter.KD.get());
-            feedforward = new ArmFeedforward(Constants.Helicopter.F_FORWARD_S, Constants.Helicopter.F_FORWARD_COS, Constants.Helicopter.F_FORWARD_V, Constants.Helicopter.F_FORWARD_A);
+            controller = new PIDController(Constants.Helicopter.KP, Constants.Helicopter.KI, Constants.Helicopter.KD);
             DCMotor armGearbox = DCMotor.getFalcon500(2);
 
 
@@ -87,7 +87,6 @@ public class Helicopter extends SubsystemBase {
         } else {
             controller = null;
             armSim = null;
-            feedforward = null;
             arm = null;
         }
 
@@ -99,6 +98,7 @@ public class Helicopter extends SubsystemBase {
          Set the right motor on Brake mode.
          */
         mainMotor.setNeutralMode(NeutralMode.Brake);
+        auxMotor.setNeutralMode(NeutralMode.Brake);
 
         /*
          Setting the motor to go clockwise.
@@ -110,9 +110,7 @@ public class Helicopter extends SubsystemBase {
          */
         mainMotor.configMotionCruiseVelocity(Constants.Helicopter.CRUISE_VELOCITY);
         mainMotor.configMotionAcceleration(Constants.Helicopter.MAXIMAL_ACCELERATION);
-        mainMotor.config_kP(0, Constants.Helicopter.KP.get(), Constants.TALON_TIMEOUT);
-        mainMotor.config_kI(0, Constants.Helicopter.KI.get(), Constants.TALON_TIMEOUT);
-        mainMotor.config_kD(0, Constants.Helicopter.KD.get(), Constants.TALON_TIMEOUT);
+        configPID();
 
 
         auxMotor.follow(mainMotor);
@@ -134,6 +132,11 @@ public class Helicopter extends SubsystemBase {
          Setting the motor to go clockwise.
          */
         auxMotor.setInverted(Ports.Helicopter.IS_AUX_INVERTED);
+
+        DataLog log = DataLogManager.getLog();
+        power = new DoubleLogEntry(log, "/helicopter/power");
+        voltage = new DoubleLogEntry(log, "/helicopter/voltage");
+        isStopped = new BooleanLogEntry(log, "/helicopter/isStopped");
     }
 
     /**
@@ -159,14 +162,18 @@ public class Helicopter extends SubsystemBase {
     public void setVelocity(double velocity) {
         if (Robot.isSimulation()) {
             double volts = controller.calculate(getVelocity(), velocity);
-            mainMotor.setVoltage(volts + feedforward.calculate(0, 0));
+            mainMotor.setVoltage(volts);
         } else {
-            mainMotor.set(ControlMode.Velocity, unitModelPosition.toTicks100ms(velocity));
+            if (!isStopperEngaged()) {
+                mainMotor.set(ControlMode.Velocity, unitModelPosition.toTicks100ms(velocity));
+            }
         }
     }
 
     public void vroomVroom(double power) {
-        mainMotor.set(ControlMode.PercentOutput, power);
+//        if (!isStopperEngaged()) {
+            mainMotor.set(ControlMode.PercentOutput, power);
+//        }
     }
 
     /**
@@ -182,15 +189,25 @@ public class Helicopter extends SubsystemBase {
      * @return the absolute position of the Helicopter.
      */
     public double getAbsolutePosition() {
-        return unitModelPosition.toUnits(dutyCycleEncoder.getDistance() - Constants.Helicopter.ZERO_POSITION);
+        return Math.IEEEremainder(unitModelPositionAbsolute.toUnits(dutyCycleEncoder.get() - Constants.Helicopter.ZERO_POSITION), 2 * Math.PI);
     }
 
+    /**
+     * @param position the absolute position of the motors. [rad]
+     */
+    public void setAbsolutePosition(Rotation2d position) {
+        var currentPosition = new Rotation2d(getAbsolutePosition());
+        var error = position.minus(currentPosition);
+        if (!isStopperEngaged()) {
+            mainMotor.set(ControlMode.Position, unitModelPosition.toTicks(error.getRadians()) + mainMotor.getSelectedSensorPosition());
+        }
+    }
 
     /**
      * @return get motors position. [rad]
      */
     public Rotation2d getPosition() {
-        return new Rotation2d(Math.IEEEremainder(unitModelPosition.toUnits(mainMotor.getSelectedSensorPosition(0)), Math.PI*2));
+        return new Rotation2d(Math.IEEEremainder(unitModelPosition.toUnits(mainMotor.getSelectedSensorPosition(0)), Math.PI * 2));
     }
 
     /**
@@ -199,10 +216,11 @@ public class Helicopter extends SubsystemBase {
     public void setPosition(Rotation2d position) {
         var currentPosition = getPosition();
         var error = position.minus(currentPosition);
-        Rotation2d minMove = new Rotation2d(Math.IEEEremainder(unitModelPosition.toTicks(error.getRadians()), Math.PI *2));
-        mainMotor.set(ControlMode.MotionMagic, unitModelPosition.toTicks(minMove.getRadians()),
-              DemandType.ArbitraryFeedForward, feedforward.calculate(getPosition().getRadians(), getVelocity()));
-}
+        Rotation2d minMove = new Rotation2d(Math.IEEEremainder(unitModelPosition.toTicks(error.getRadians()), Math.PI * 2));
+        if (!isStopperEngaged()) {
+            mainMotor.set(ControlMode.MotionMagic, unitModelPosition.toTicks(minMove.getRadians()));
+        }
+    }
 
     /**
      * Get the stopper's mode.
@@ -210,7 +228,7 @@ public class Helicopter extends SubsystemBase {
      * @return the stopper's mode.
      */
     public boolean isStopperEngaged() {
-        return stopper.get();
+        return !stopper.get();
     }
 
     /**
@@ -238,9 +256,9 @@ public class Helicopter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        mainMotor.config_kP(0, Constants.Helicopter.KP.get(), Constants.TALON_TIMEOUT);
-        mainMotor.config_kI(0, Constants.Helicopter.KI.get(), Constants.TALON_TIMEOUT);
-        mainMotor.config_kD(0, Constants.Helicopter.KD.get(), Constants.TALON_TIMEOUT);
+        power.append(mainMotor.get());
+        voltage.append(mainMotor.getMotorOutputVoltage());
+        isStopped.append(isStopperEngaged());
     }
 
     /**
@@ -256,5 +274,11 @@ public class Helicopter extends SubsystemBase {
                 BatterySim.calculateDefaultBatteryLoadedVoltage(armSim.getCurrentDrawAmps()));
         mainMotor.getSimCollection().setIntegratedSensorRawPosition(unitModelPosition.toTicks(armSim.getAngleRads()));
         arm.setAngle(Units.radiansToDegrees(armSim.getAngleRads()));
+    }
+
+    private void configPID() {
+        mainMotor.config_kP(0, Constants.Helicopter.KP, Constants.TALON_TIMEOUT);
+        mainMotor.config_kI(0, Constants.Helicopter.KI, Constants.TALON_TIMEOUT);
+        mainMotor.config_kD(0, Constants.Helicopter.KD, Constants.TALON_TIMEOUT);
     }
 }

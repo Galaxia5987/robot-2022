@@ -5,13 +5,14 @@
 package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.cscore.MjpegServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.flap.Flap;
+import frc.robot.subsystems.intake.Intake;
 import frc.robot.valuetuner.NetworkTableConstant;
 
 /**
@@ -21,12 +22,15 @@ import frc.robot.valuetuner.NetworkTableConstant;
  * project.
  */
 public class Robot extends TimedRobot {
-    public static final boolean debug = !DriverStation.isFMSAttached();
+    public static final boolean debug = true;//!DriverStation.isFMSAttached();
     public static final AHRS navx = new AHRS(SPI.Port.kMXP);
+    //    private final AddressableLED led = new AddressableLED(1);
+    private static final Rotation2d startAngle = new Rotation2d();
     private static Rotation2d zeroAngle = new Rotation2d();
     public PowerDistribution pdp = new PowerDistribution();
     private Command m_autonomousCommand;
     private RobotContainer m_robotContainer;
+//    private AddressableLEDBuffer buffer = new AddressableLEDBuffer(54);
 
     /**
      * Gets the current angle of the robot in respect to the start angle.
@@ -68,12 +72,21 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        navx.reset();
+        DataLogManager.start();
+        DriverStation.startDataLog(DataLogManager.getLog());
+
+//        startAngle = Robot.navx.getRotation2d();
         resetAngle();
         if (debug) {
             NetworkTableConstant.initializeAllConstants();
         }
         m_robotContainer = new RobotContainer();
+//        UsbCamera usbCamera = new UsbCamera("USB Camera 0", 0);
+//        MjpegServer mjpegServer1 = new MjpegServer("serve_USB Camera 0", 1181);
+//        mjpegServer1.setSource(usbCamera);
+
+//        led.setLength(buffer.getLength());
+//        led.start();
     }
 
     /**
@@ -86,6 +99,10 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
+//        for (int i = 0; i < buffer.getLength(); i++) {
+//            buffer.setLED(i, Color.kPurple);
+//        }
+//        led.setData(buffer);
     }
 
     /**
@@ -130,7 +147,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
-
     }
 
     /**
@@ -138,6 +154,9 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void disabledInit() {
+        Intake.getInstance().closeRetractor();
+        Flap.getInstance().blockShooter();
+        m_robotContainer.photonVisionModule.setLeds(true);
     }
 
     /**

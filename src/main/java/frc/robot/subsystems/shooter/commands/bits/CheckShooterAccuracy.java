@@ -3,10 +3,10 @@ package frc.robot.subsystems.shooter.commands.bits;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.Shoot;
 
-import java.util.OptionalDouble;
 import java.util.function.DoubleSupplier;
 
 public class CheckShooterAccuracy extends Shoot {
@@ -14,8 +14,8 @@ public class CheckShooterAccuracy extends Shoot {
     private double lastVelocity;
     private double lastTime;
 
-    public CheckShooterAccuracy(Shooter shooter, DoubleSupplier distance, OptionalDouble power) {
-        super(shooter, distance, power);
+    public CheckShooterAccuracy(Shooter shooter, Hood hood, DoubleSupplier distance) {
+        super(shooter, hood, distance);
     }
 
     @Override

@@ -1,36 +1,53 @@
 package frc.robot.subsystems.hood.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.hood.Hood;
 
-import java.util.function.Supplier;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 public class HoodCommand extends CommandBase {
     private final Hood hood;
-    private final Supplier<Hood.Mode> modeSupplier;
-    private boolean isInstant = false;
+    private final BooleanSupplier postFlap;
+    private final DoubleSupplier distance;
+    private final Timer timer = new Timer();
+    private final boolean last = false;
+    private Hood.Mode mode = Hood.Mode.ShortDistance;
+    private boolean starting = true;
 
-    public HoodCommand(Hood hood, Supplier<Hood.Mode> modeSupplier) {
+    public HoodCommand(Hood hood, BooleanSupplier postFlap, DoubleSupplier distance) {
         this.hood = hood;
-        this.modeSupplier = modeSupplier;
+        this.postFlap = postFlap;
+        this.distance = distance;
         addRequirements(hood);
-    }
-
-    public HoodCommand(Hood hood, Hood.Mode mode) {
-        this(hood, () -> mode);
-        isInstant = true;
     }
 
     @Override
     public void initialize() {
-        if (isInstant) {
-            execute();
-            cancel();
+        timer.reset();
+        timer.start();
+        if (RobotContainer.hardCodedVelocity) {
+            mode = RobotContainer.hardCodedDistance < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD ? Hood.Mode.ShortDistance : Hood.Mode.LongDistance;
+        } else {
+            if (RobotContainer.cachedHasTarget) {
+                mode = RobotContainer.cachedDistance < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD ? Hood.Mode.ShortDistance : Hood.Mode.LongDistance;
+            } else {
+                mode = RobotContainer.odometryCachedSetpoint < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD ? Hood.Mode.ShortDistance : Hood.Mode.LongDistance;
+            }
         }
     }
 
     @Override
     public void execute() {
-        hood.setSolenoid(modeSupplier.get());
+        hood.setSolenoid(mode);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        timer.stop();
+        starting = true;
     }
 }

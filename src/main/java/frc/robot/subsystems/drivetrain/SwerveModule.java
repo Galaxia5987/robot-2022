@@ -18,6 +18,9 @@ import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -41,6 +44,11 @@ public class SwerveModule extends SubsystemBase {
     private double currentTime, lastTime;
     private double lastJ;
 
+    private final DoubleLogEntry angle;
+    private final DoubleLogEntry velocity;
+    private final DoubleLogEntry velocityVoltage;
+    private final DoubleLogEntry angleVoltage;
+
     public SwerveModule(SwerveModuleConfigBase config) {
         this.config = config;
         driveMotor = new WPI_TalonFX(config.driveMotorPort());
@@ -54,6 +62,8 @@ public class SwerveModule extends SubsystemBase {
         // configure feedback sensors
         angleMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, Constants.TALON_TIMEOUT);
         angleMotor.configFeedbackNotContinuous(false, Constants.TALON_TIMEOUT);
+
+        driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, Constants.TALON_TIMEOUT);
 
         angleMotor.setNeutralMode(NeutralMode.Brake);
         driveMotor.setNeutralMode(NeutralMode.Brake);
@@ -81,9 +91,9 @@ public class SwerveModule extends SubsystemBase {
         configPID(config.angleKp(), config.angleKi(), config.angleKd(), config.angleKf());
         angleMotor.config_IntegralZone(0, 5);
         angleMotor.configAllowableClosedloopError(0, angleUnitModel.toTicks(Constants.SwerveDrive.ALLOWABLE_ANGLE_ERROR));
-
         angleMotor.configMotionAcceleration(Constants.SwerveDrive.ANGLE_MOTION_ACCELERATION);
         angleMotor.configMotionCruiseVelocity(Constants.SwerveDrive.ANGLE_CRUISE_VELOCITY);
+
         angleMotor.configMotionSCurveStrength(Constants.SwerveDrive.ANGLE_CURVE_STRENGTH);
 
         // set voltage compensation and saturation
@@ -94,8 +104,13 @@ public class SwerveModule extends SubsystemBase {
         driveMotor.selectProfileSlot(1, 0);
         driveMotor.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToZero);
 
-        driveMotor.configOpenloopRamp(Constants.SwerveModule.RAMP_RATE, Constants.TALON_TIMEOUT);
-        driveMotor.configClosedloopRamp(Constants.SwerveModule.RAMP_RATE, Constants.TALON_TIMEOUT);
+        selectTuneDownMode(true);
+
+        DataLog log = DataLogManager.getLog();
+        angle = new DoubleLogEntry(log, "/swerveAngle-" + config.wheel() + "/angle");
+        velocity = new DoubleLogEntry(log, "/swerveAngle-" + config.wheel() + "/velocity");
+        velocityVoltage = new DoubleLogEntry(log, "/swerveAngle-" + config.wheel() + "/velocity-voltage");
+        angleVoltage = new DoubleLogEntry(log, "/swerveAngle-" + config.wheel() + "/angle-voltage");
 /*
         driveMotor.configNeutralDeadband(Constants.SwerveModule.DRIVE_NEUTRAL_DEADBAND);
         angleMotor.configNeutralDeadband(Constants.SwerveModule.ANGLE_NEUTRAL_DEADBAND);
@@ -193,9 +208,7 @@ public class SwerveModule extends SubsystemBase {
      */
     public void setState(SwerveModuleState state) {
         setVelocity(state.speedMetersPerSecond);
-        if (state.speedMetersPerSecond != 0) {
-            setAngle(state.angle);
-        }
+        setAngle(state.angle);
     }
 
     /**
@@ -253,6 +266,20 @@ public class SwerveModule extends SubsystemBase {
         angleMotor.config_kF(0, kf, Constants.TALON_TIMEOUT);
     }
 
+    private void selectTuneDownMode(boolean isUserDefined) {
+        double ramp;
+        if (isUserDefined) {
+            ramp = 0;
+            angleMotor.configOpenloopRamp(0, Constants.TALON_TIMEOUT);
+            angleMotor.configClosedloopRamp(0, Constants.TALON_TIMEOUT);
+        } else {
+            ramp = Constants.SwerveModule.RAMP_RATE;
+        }
+        driveMotor.configOpenloopRamp(ramp, Constants.TALON_TIMEOUT);
+        driveMotor.configClosedloopRamp(ramp, Constants.TALON_TIMEOUT);
+
+    }
+
     @Override
     public void periodic() {
         if (config.debug()) {
@@ -269,5 +296,10 @@ public class SwerveModule extends SubsystemBase {
         stateSpace.getObserver().reset();
         lastTime = currentTime;
         currentTime = Timer.getFPGATimestamp();
+
+        angle.append(getAngle().getDegrees());
+        angleVoltage.append(angleMotor.getMotorOutputVoltage());
+        velocity.append(getVelocity());
+        velocityVoltage.append(driveMotor.getMotorOutputVoltage());
     }
 }

@@ -1,5 +1,8 @@
 package frc.robot.subsystems.flap;
 
+import edu.wpi.first.util.datalog.BooleanLogEntry;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -9,8 +12,11 @@ import static frc.robot.Ports.Flap.SOLENOID;
 public class Flap extends SubsystemBase {
     private static Flap INSTANCE;
     private final Solenoid flap = new Solenoid(PneumaticsModuleType.CTREPCM, SOLENOID);
+    private final BooleanLogEntry isStopping;
 
     private Flap() {
+        DataLog log = DataLogManager.getLog();
+        isStopping = new BooleanLogEntry(log, "/flap/isBlocking");
     }
 
     public static Flap getInstance() {
@@ -23,15 +29,15 @@ public class Flap extends SubsystemBase {
     /**
      * open the flap
      */
-    public void openFlap() {
-        flap.set(FlapMode.Open.mode);
+    public void allowShooting() {
+        flap.set(FlapMode.ALLOW_SHOOTING.mode);
     }
 
     /**
      * closes the flap
      */
-    public void closeFlap() {
-        flap.set(FlapMode.Closed.mode);
+    public void blockShooter() {
+        flap.set(FlapMode.STOP_CARGO.mode);
     }
 
     /**
@@ -59,9 +65,14 @@ public class Flap extends SubsystemBase {
         flap.set(flapMode.mode);
     }
 
+    @Override
+    public void periodic() {
+        isStopping.append(getFlapMode().mode);
+    }
+
     public enum FlapMode {
-        Open(false),
-        Closed(true);
+        ALLOW_SHOOTING(true),
+        STOP_CARGO(false);
 
         public final boolean mode;
 
@@ -76,10 +87,10 @@ public class Flap extends SubsystemBase {
          * @return the flap mode as an enum.
          */
         public static FlapMode getValue(boolean val) {
-            if (val) {
-                return Closed;
+            if (!val) {
+                return STOP_CARGO;
             }
-            return Open;
+            return ALLOW_SHOOTING;
         }
     }
 }

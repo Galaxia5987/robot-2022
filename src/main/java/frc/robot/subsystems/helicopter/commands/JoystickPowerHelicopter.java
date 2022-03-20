@@ -1,6 +1,5 @@
 package frc.robot.subsystems.helicopter.commands;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.helicopter.Helicopter;
@@ -19,16 +18,11 @@ public class JoystickPowerHelicopter extends CommandBase {
         addRequirements(helicopter);
     }
 
-
     @Override
     public void execute() {
-        double flyFly= Utils.deadband(joystickOutput.getAsDouble(), Constants.Helicopter.JOYSTICK_DEADBAND);
+        System.out.println(joystickOutput.getAsDouble());
+        double flyFly = Utils.conventionalDeadband(joystickOutput.getAsDouble(), Constants.Helicopter.JOYSTICK_DEADBAND);
         helicopter.vroomVroom(flyFly);
-    }
-
-    @Override
-    public boolean isFinished() {
-        return Timer.getFPGATimestamp() > Constants.Helicopter.STOP_HELICOPTER_TIMESTAMP;
     }
 
     @Override
