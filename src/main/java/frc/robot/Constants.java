@@ -233,6 +233,8 @@ public final class Constants {
         public static final double KI = 0;
         public static final double KD = 0;
 
+        public static final double CLIMB_ANGLE = 0.98436569812; //rads
+
         public static final double CRUISE_VELOCITY = 0; // [ticks/100ms]
         public static final double MAXIMAL_ACCELERATION = 0; // [ticks/100ms*sec]
 
