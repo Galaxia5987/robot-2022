@@ -26,8 +26,8 @@ public class TestBallFlow extends SequentialCommandGroup {
         this.intake = intake;
         this.shooter = shooter;
         this.conveyor = conveyor;
-        this.shootCargo = new ShootCargo(shooter, hood, conveyor, flap, () -> 8, () -> Constants.Conveyor.DEFAULT_POWER);
-        this.pickUpCargo = new PickUpCargo(conveyor, intake, Constants.Conveyor.DEFAULT_POWER, Constants.Intake.DEFAULT_POWER);
+        this.shootCargo = new ShootCargo(shooter, hood, conveyor, flap, () -> 8, Constants.Conveyor.DEFAULT_POWER::get);
+        this.pickUpCargo = new PickUpCargo(conveyor, flap, intake, Constants.Conveyor.DEFAULT_POWER.get(), () -> 0.5);
 
         addCommands(
                 pickUpCargo.withInterrupt(pickUpCargoIsFinished),
@@ -40,16 +40,12 @@ public class TestBallFlow extends SequentialCommandGroup {
     public void execute() {
         super.execute();
 
-        if (pickUpCargo.isScheduled()) {
-            SmartDashboard.putNumber("Intake power", intake.getPower());
-        } else if (shootCargo.isScheduled()) {
-            SmartDashboard.putBoolean("Is post flap beam connected", conveyor.isPostFlapBeamConnected());
-            SmartDashboard.putNumber("Shooter velocity", shooter.getVelocity());
-        }
-
+        SmartDashboard.putNumber("Intake power", intake.getPower());
+        SmartDashboard.putBoolean("Is post flap beam connected", conveyor.isPostFlapBeamConnected());
+        SmartDashboard.putNumber("Shooter velocity", shooter.getVelocity());
         SmartDashboard.putNumber("Conveyor power", conveyor.getPower());
-        SmartDashboard.putString("First in queue", conveyor.getQueue().getFirst());
-        SmartDashboard.putString("Last in queue", conveyor.getQueue().getLast());
+        SmartDashboard.putString("First in queue", conveyor.getQueue().getFirst().name());
+        SmartDashboard.putString("Last in queue", conveyor.getQueue().getLast().name());
         SmartDashboard.putNumber("Number of balls in conveyor", conveyor.getCargoCount());
         SmartDashboard.putBoolean("Is pre flap beam connected", conveyor.isPreFlapBeamConnected());
     }

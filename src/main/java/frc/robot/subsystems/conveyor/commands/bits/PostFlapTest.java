@@ -18,7 +18,7 @@ public class PostFlapTest extends CommandBase {
 
     @Override
     public void execute() {
-        conveyor.setPower(Constants.Conveyor.DEFAULT_POWER);
+        conveyor.setPower(Constants.Conveyor.DEFAULT_POWER.get());
         boolean isConnected = conveyor.isPostFlapBeamConnected();
 
         if (wasConnected && !isConnected) {

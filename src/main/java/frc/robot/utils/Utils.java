@@ -1,29 +1,34 @@
 package frc.robot.utils;
 
+import edu.wpi.first.math.filter.LinearFilter;
+
+import java.util.function.DoubleUnaryOperator;
+
 public class Utils {
 
+
     /**
-     * Sets the value of the joystick to 0 if the value is less than the threshold.
+     * This method ensures that any accidental input is set to 0.
+     * In other words, if the value is less than the threshold the function returns 0.
      *
-     * @param val       the joystick value.
+     * @param val       the input value.
      * @param threshold the threshold value.
      * @return 0 if the value is less than the threshold else the value.
      */
-    public static double deadband(double val, double threshold) {
+    public static double conventionalDeadband(double val, double threshold) {
         if (Math.abs(val) < threshold)
             return 0;
         return val;
     }
 
     /**
-     * @param input     the joystick input.
-     * @param threshold the joystick deadband threshold.
+     * @param val       the input value.
+     * @param threshold the threshold value.
      * @return the updated value after the deadband.
      */
-    public static double rotationalDeadband(double input, double threshold) {
-        if (Math.abs(input) < threshold)
-            return 0;
-        return (input - (Math.signum(input) * threshold)) / (1 - threshold);
+    public static double continuousDeadband(double val, double threshold) {
+        val = conventionalDeadband(val, threshold);
+        return (val - (Math.signum(val) * threshold)) / (1 - threshold);
     }
 
     /**
@@ -47,4 +52,55 @@ public class Utils {
         return rpm / 60.0;
     }
 
+    /**
+     * Smoothing method making use of a moving average filter,
+     * fulfilling the purpose of slowing down an input and filtering noise.
+     *
+     * @param value               the value to smooth.
+     * @param exponent            the exponent to smooth the value by.
+     * @param movingAverageFilter the filter to lower input noise.
+     * @return the smoothed value.
+     */
+    public static double smoothed(double value, double exponent, LinearFilter movingAverageFilter) {
+        double filteredValue = movingAverageFilter.calculate(value);
+        return Math.pow(Math.abs(filteredValue), exponent) * Math.signum(filteredValue);
+    }
+
+    /**
+     * Method used for smoothing with any threshold.
+     * See functions implemented here visually at {@link <a href="https://www.math3d.org/EQBPTCQu3">...</a>}
+     * The y-axis represents the threshold.
+     * Note that the function h(x,y) doesn't extend beyond a y-value of 0.5.
+     * This is because I doubt you need a threshold larger than 0.5.
+     *
+     * @param val       the input value to smooth. [%]
+     * @param threshold the threshold to apply. [%]
+     * @return the smoothed value with the threshold.
+     */
+    public static double swerveSmoothing(double val, double threshold) {
+        if (Math.abs(val) < threshold) {
+            return 0;
+        }
+
+        final int X = 0;
+        final int Y = 1;
+
+        /*
+        All mathematical functions implemented here are an exact replica
+        of the functions displayed visually in the link above.
+         */
+        DoubleUnaryOperator Fx = x -> Math.pow(x + 1, 2) - 1;
+        MultivariableFunction Gxy = (inputs) ->
+                (-Fx.applyAsDouble(-inputs[X]) + Fx.applyAsDouble(-inputs[Y])) /
+                        (1 + Fx.applyAsDouble(-inputs[Y]));
+        MultivariableFunction Hxy = (inputs) ->
+                Gxy.apply(Math.abs(inputs[X]), inputs[Y]) *
+                        Math.signum(inputs[X]);
+
+        return Hxy.apply(val, threshold);
+    }
+
+    public static double timeByDistance(double distance) {
+        return 0.1959 * distance + 0.4946;
+    }
 }

@@ -26,7 +26,7 @@ public class JoystickHelicopter extends CommandBase {
 
     @Override
     public void execute() {
-        double climbVelocity = Utils.deadband(joystickOutput.getAsDouble(), Constants.Helicopter.JOYSTICK_DEADBAND) * Constants.Helicopter.MAX_VELOCITY;
+        double climbVelocity = Utils.conventionalDeadband(joystickOutput.getAsDouble(), Constants.Helicopter.JOYSTICK_DEADBAND) * Constants.Helicopter.MAX_VELOCITY;
         helicopter.setVelocity(climbVelocity);
     }
 

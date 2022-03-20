@@ -1,25 +1,38 @@
 package frc.robot.subsystems.intake;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import edu.wpi.first.util.datalog.BooleanLogEntry;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
 
-import static frc.robot.Constants.Intake.IS_COMPENSATING_VOLTAGE;
-
 public class Intake extends SubsystemBase {
     private static Intake INSTANCE;
-    private final CANSparkMax motor = new CANSparkMax(Ports.Intake.MOTOR, CANSparkMaxLowLevel.MotorType.kBrushless);
+    private final WPI_VictorSPX motor = new WPI_VictorSPX(Ports.Intake.MOTOR);
     private final Solenoid retractor = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Intake.SOLENOID);
-
+    private final DoubleLogEntry power;
+    private final BooleanLogEntry retracted;
+    
     private Intake() {
         motor.setInverted(Ports.Intake.IS_MOTOR_INVERTED);
+        motor.enableVoltageCompensation(true);
+        motor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE, Constants.TALON_TIMEOUT);
+        motor.setNeutralMode(NeutralMode.Coast);
+//        motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 50, 5, 0.02));
+//        motor.enableCurrentLimit(true);
+
+
+        DataLog log = DataLogManager.getLog();
+        power = new DoubleLogEntry(log, "/intake/power");
+        retracted = new BooleanLogEntry(log, "/intake/retracted");
     }
 
 
@@ -79,6 +92,12 @@ public class Intake extends SubsystemBase {
      */
     public boolean getRetractorState() {
         return retractor.get();
+    }
+
+    @Override
+    public void periodic() {
+        power.append(getPower());
+        retracted.append(retractor.get());
     }
 
     public enum RetractorState {

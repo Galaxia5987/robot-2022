@@ -18,7 +18,7 @@ public class CheckColorSensor extends Convey {
 
     @Override
     public void initialize() {
-        flap.openFlap();
+        flap.allowShooting();
     }
 
     @Override
@@ -27,8 +27,8 @@ public class CheckColorSensor extends Convey {
 
         var queue = conveyor.getQueue();
 
-        SmartDashboard.putString("First", queue.getFirst());
-        SmartDashboard.putString("Last", queue.getLast());
+        SmartDashboard.putString("First", queue.getFirst().name());
+        SmartDashboard.putString("Last", queue.getLast().name());
         SmartDashboard.putNumber("Number of cargo", conveyor.getCargoCount());
     }
 
@@ -36,6 +36,6 @@ public class CheckColorSensor extends Convey {
     public void end(boolean interrupted) {
         super.end(interrupted);
 
-        flap.closeFlap();
+        flap.blockShooter();
     }
 }
