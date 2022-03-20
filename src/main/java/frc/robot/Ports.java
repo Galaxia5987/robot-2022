@@ -16,8 +16,8 @@ public final class Ports {
         public static final int DRIVE_MOTOR_FL = 3;
         public static final int ANGLE_MOTOR_FL = 4;
         public static final boolean DRIVE_INVERTED_FL = false;
-        public static final boolean ANGLE_INVERTED_FL = false;
-        public static final boolean ANGLE_SENSOR_PHASE_FL = true;
+        public static final boolean ANGLE_INVERTED_FL = true;
+        public static final boolean ANGLE_SENSOR_PHASE_FL = false;
 
         // rear right
         public static final int DRIVE_MOTOR_RR = 5;

@@ -98,30 +98,45 @@ public class Shoot extends CommandBase {
     @Override
     public void execute() {
         if (power.isEmpty()) {
-            if (RobotContainer.cachedHasTarget) {
-                shooter.setVelocity(RobotContainer.cachedSetpoint);
+            if (RobotContainer.hardCodedVelocity) {
+                shooter.setVelocity(RobotContainer.hardCodedVelocityValue);
                 SmartDashboard.putString("speed_state", Math.abs(RobotContainer.cachedSetpoint - shooter.getVelocity()) <= 30 ? "green" : Math.abs(RobotContainer.cachedSetpoint - shooter.getVelocity()) <= 100 ? "yellow" : "red");
             } else {
-                shooter.setVelocity(RobotContainer.odometryCachedSetpoint);
-                SmartDashboard.putString("speed_state", Math.abs(RobotContainer.odometryCachedSetpoint - shooter.getVelocity()) <= 30 ? "green" : Math.abs(RobotContainer.odometryCachedSetpoint - shooter.getVelocity()) <= 100 ? "yellow" : "red");
+                if (RobotContainer.cachedHasTarget) {
+                    shooter.setVelocity(RobotContainer.cachedSetpoint);
+                    SmartDashboard.putString("speed_state", Math.abs(RobotContainer.cachedSetpoint - shooter.getVelocity()) <= 30 ? "green" : Math.abs(RobotContainer.cachedSetpoint - shooter.getVelocity()) <= 100 ? "yellow" : "red");
+                } else {
+                    shooter.setVelocity(RobotContainer.odometryCachedSetpoint);
+                    SmartDashboard.putString("speed_state", Math.abs(RobotContainer.odometryCachedSetpoint - shooter.getVelocity()) <= 30 ? "green" : Math.abs(RobotContainer.odometryCachedSetpoint - shooter.getVelocity()) <= 100 ? "yellow" : "red");
+                }
             }
         } else {
             shooter.setPower(power.getAsDouble());
         }
         SmartDashboard.putNumber("something_velocity", shooter.getVelocity());
         FireLog.log("Shooter velocity2", shooter.getVelocity());
-        if (RobotContainer.cachedHasTarget) {
-            FireLog.log("Shooter setpoint2", RobotContainer.cachedSetpoint);
+        if (RobotContainer.hardCodedVelocity) {
+            FireLog.log("Shooter setpoint2", RobotContainer.hardCodedVelocityValue);
         } else {
-            FireLog.log("Shooter setpoint2", RobotContainer.odometryCachedSetpoint);
-        }
-        if(RobotContainer.cachedHasTarget) {
-            if (RobotContainer.cachedSetpoint != 0) {
-                RobotContainer.ledSubsystem.setPercent((int) Math.round((MathUtil.clamp(shooter.getVelocity(), 0, RobotContainer.cachedSetpoint) / RobotContainer.cachedSetpoint) * 9));
+            if (RobotContainer.cachedHasTarget) {
+                FireLog.log("Shooter setpoint2", RobotContainer.cachedSetpoint);
+            } else {
+                FireLog.log("Shooter setpoint2", RobotContainer.odometryCachedSetpoint);
             }
-        } else{
-            if (RobotContainer.odometryCachedSetpoint != 0) {
-                RobotContainer.ledSubsystem.setPercent((int) Math.round((MathUtil.clamp(shooter.getVelocity(), 0, RobotContainer.odometryCachedSetpoint) / RobotContainer.odometryCachedSetpoint) * 9));
+        }
+        if (RobotContainer.hardCodedVelocity) {
+            if (RobotContainer.hardCodedVelocityValue != 0) {
+                RobotContainer.ledSubsystem.setPercent((int) Math.round((MathUtil.clamp(shooter.getVelocity(), 0, RobotContainer.hardCodedVelocityValue) / RobotContainer.hardCodedVelocityValue) * 9));
+            }
+        } else {
+            if (RobotContainer.cachedHasTarget) {
+                if (RobotContainer.cachedSetpoint != 0) {
+                    RobotContainer.ledSubsystem.setPercent((int) Math.round((MathUtil.clamp(shooter.getVelocity(), 0, RobotContainer.cachedSetpoint) / RobotContainer.cachedSetpoint) * 9));
+                }
+            } else {
+                if (RobotContainer.odometryCachedSetpoint != 0) {
+                    RobotContainer.ledSubsystem.setPercent((int) Math.round((MathUtil.clamp(shooter.getVelocity(), 0, RobotContainer.odometryCachedSetpoint) / RobotContainer.odometryCachedSetpoint) * 9));
+                }
             }
         }
     }

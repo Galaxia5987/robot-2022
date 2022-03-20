@@ -29,10 +29,14 @@ public class HoodCommand extends CommandBase {
     public void initialize() {
         timer.reset();
         timer.start();
-        if (RobotContainer.cachedHasTarget) {
-            mode = RobotContainer.cachedDistance < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD ? Hood.Mode.ShortDistance : Hood.Mode.LongDistance;
+        if (RobotContainer.hardCodedVelocity) {
+            mode = RobotContainer.hardCodedDistance < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD ? Hood.Mode.ShortDistance : Hood.Mode.LongDistance;
         } else {
-            mode = RobotContainer.odometryCachedSetpoint < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD ? Hood.Mode.ShortDistance : Hood.Mode.LongDistance;
+            if (RobotContainer.cachedHasTarget) {
+                mode = RobotContainer.cachedDistance < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD ? Hood.Mode.ShortDistance : Hood.Mode.LongDistance;
+            } else {
+                mode = RobotContainer.odometryCachedSetpoint < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD ? Hood.Mode.ShortDistance : Hood.Mode.LongDistance;
+            }
         }
     }
 

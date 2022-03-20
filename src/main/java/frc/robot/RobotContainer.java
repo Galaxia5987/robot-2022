@@ -34,8 +34,10 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 public class RobotContainer {
-    public static final boolean playWithoutVision = false;
-    public static boolean hardCodedVelocity = false;
+    public static final boolean playWithoutVision = true;
+    public static boolean hardCodedVelocity = true;
+    public static double hardCodedDistance = 3.8;
+    public static double hardCodedVelocityValue = Shoot.getSetpointVelocity(hardCodedDistance);
 
     // The robot's subsystems and commands are defined here...
 //    public static SnakeSubsystem snakeSubsystem = new SnakeSubsystem();

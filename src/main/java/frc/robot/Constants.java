@@ -102,7 +102,7 @@ public final class Constants {
         public static final double CARGO_OFFSET = 0; // Desired offset from the middle of the target where you want the cargo to hit. [m]
 
         public static final WebConstant kP = WebConstant.of("Shooter", "kP", 0.031);
-        public static final WebConstant kI = WebConstant.of("Shooter", "kI", 0.000132   );
+        public static final WebConstant kI = WebConstant.of("Shooter", "kI", 0.000132);
         public static final WebConstant kIZone = WebConstant.of("Shooter", "kIZone", 0.2);
         public static final WebConstant kD = WebConstant.of("Shooter", "kD", 0.1);
         public static final WebConstant kF = WebConstant.of("Shooter", "kf", 0.003);
@@ -151,7 +151,7 @@ public final class Constants {
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]
         public static final double RAMP_RATE = 0; // seconds from neutral to max
 
-        public static final int[] ZERO_POSITIONS = {-635, -103, -1054, -434}; // fr, fl, rr, rl
+        public static final int[] ZERO_POSITIONS = {-1664, -12390, -2077, -1474}; // fr, fl, rr, rl
 
         public static final SwerveModuleConfigBase frConfig = new SwerveModuleConfigBase.Builder(0)
                 .configPorts(DRIVE_MOTOR_FR, ANGLE_MOTOR_FR)

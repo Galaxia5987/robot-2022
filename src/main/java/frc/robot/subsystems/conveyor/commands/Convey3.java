@@ -49,19 +49,29 @@ public class Convey3 extends CommandBase {
     @Override
     public void execute() {
         FireLog.log("Shooter velocity", velocitySupplier.getAsDouble());
-        if (RobotContainer.cachedHasTarget) {
-            FireLog.log("Shooter setpoint", RobotContainer.cachedSetpoint);
+        if (RobotContainer.hardCodedVelocity) {
+            FireLog.log("Shooter setpoint", RobotContainer.hardCodedVelocityValue);
         } else {
-            FireLog.log("Shooter setpoint", RobotContainer.odometryCachedSetpoint);
+            if (RobotContainer.cachedHasTarget) {
+                FireLog.log("Shooter setpoint", RobotContainer.cachedSetpoint);
+            } else {
+                FireLog.log("Shooter setpoint", RobotContainer.odometryCachedSetpoint);
+            }
         }
         if (wait) {
-            if (RobotContainer.cachedHasTarget) {
-                if (Math.abs(RobotContainer.cachedSetpoint - velocitySupplier.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get()) {
+            if (RobotContainer.hardCodedVelocity) {
+                if (Math.abs(RobotContainer.hardCodedVelocityValue - velocitySupplier.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get()) {
                     wait = false;
                 }
             } else {
-                if (Math.abs(RobotContainer.odometryCachedSetpoint - velocitySupplier.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get()) {
-                    wait = false;
+                if (RobotContainer.cachedHasTarget) {
+                    if (Math.abs(RobotContainer.cachedSetpoint - velocitySupplier.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get()) {
+                        wait = false;
+                    }
+                } else {
+                    if (Math.abs(RobotContainer.odometryCachedSetpoint - velocitySupplier.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get()) {
+                        wait = false;
+                    }
                 }
             }
             SmartDashboard.putString("Saar", "Mama");
