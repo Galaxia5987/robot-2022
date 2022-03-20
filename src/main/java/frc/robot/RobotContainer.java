@@ -41,8 +41,13 @@ public class RobotContainer {
 //    public static SnakeSubsystem snakeSubsystem = new SnakeSubsystem();
     public static DoubleSupplier setpointSupplier;
     public static DoubleSupplier distanceSupplier;
+    public static DoubleSupplier odometrySetpointSupplier;
+    public static DoubleSupplier odometryDistanceSupplier;
     public static double cachedSetpoint = 0;
     public static double cachedDistance = 0;
+    public static double odometryCachedSetpoint = 0;
+    public static double odometryCachedDistance = 0;
+    public static boolean cachedHasTarget = true;
 
     public static BooleanSupplier hasTarget;
     public static LedSubsystem ledSubsystem = new LedSubsystem();
@@ -64,7 +69,10 @@ public class RobotContainer {
     public RobotContainer() {
         setpointSupplier = () -> Shoot.getSetpointVelocity(photonVisionModule.getDistance());
         distanceSupplier = photonVisionModule::getDistance;
+        odometrySetpointSupplier = () -> Shoot.getSetpointVelocity(swerve.getOdometryDistance());
+        odometryDistanceSupplier = swerve::getOdometryDistance;
         hasTarget = photonVisionModule::hasTargets;
+
         autonomousCommand = new FiveCargoAuto(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
 //        autonomousCommand = new Yoni(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
         // Configure the button bindings and default commands

@@ -49,10 +49,20 @@ public class Convey3 extends CommandBase {
     @Override
     public void execute() {
         FireLog.log("Shooter velocity", velocitySupplier.getAsDouble());
-        FireLog.log("Shooter setpoint", RobotContainer.cachedSetpoint);
+        if (RobotContainer.cachedHasTarget) {
+            FireLog.log("Shooter setpoint", RobotContainer.cachedSetpoint);
+        } else {
+            FireLog.log("Shooter setpoint", RobotContainer.odometryCachedSetpoint);
+        }
         if (wait) {
-            if (Math.abs(RobotContainer.cachedSetpoint - velocitySupplier.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get()) {
-                wait = false;
+            if (RobotContainer.cachedHasTarget) {
+                if (Math.abs(RobotContainer.cachedSetpoint - velocitySupplier.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get()) {
+                    wait = false;
+                }
+            } else {
+                if (Math.abs(RobotContainer.odometryCachedSetpoint - velocitySupplier.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get()) {
+                    wait = false;
+                }
             }
             SmartDashboard.putString("Saar", "Mama");
         } else {
