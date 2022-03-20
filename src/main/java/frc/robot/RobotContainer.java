@@ -9,10 +9,7 @@ import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.auto.FiveCargoAuto;
-import frc.robot.commandgroups.BackAndShootCargoSort;
-import frc.robot.commandgroups.OneBallOuttake;
-import frc.robot.commandgroups.Outtake;
-import frc.robot.commandgroups.PickUpCargo;
+import frc.robot.commandgroups.*;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
@@ -59,7 +56,7 @@ public class RobotContainer {
      * The container for the robot.  Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        setpointSupplier = () -> Shoot.getSetpointVelocity(photonVisionModule.getDistance(), photonVisionModule.getDistance() < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD);
+        setpointSupplier = () -> Shoot.getSetpointVelocity(photonVisionModule.getDistance());
         autonomousCommand = new FiveCargoAuto(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
 //        autonomousCommand = new Yoni(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
         // Configure the button bindings and default commands
