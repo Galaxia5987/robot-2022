@@ -65,7 +65,7 @@ public class SmartIndexing extends CommandBase {
             intake.setPower(intakePower.getAsDouble());
             conveyor.setPower(Constants.Conveyor.DEFAULT_POWER.get());
             System.out.println(conveyor.getColor().name());
-            if (!conveyor.getColor().equals(DriverStation.Alliance.Red) && !conveyor.getColor().equals(DriverStation.Alliance.Invalid) && conveyor.getColorSensorProximity() > Constants.Conveyor.MIN_PROXIMITY_VALUE) {
+            if (!conveyor.getColor().equals(DriverStation.Alliance.Blue) && !conveyor.getColor().equals(DriverStation.Alliance.Invalid) && conveyor.getColorSensorProximity() > Constants.Conveyor.MIN_PROXIMITY_VALUE) {
                 if (!conveyor.isPreFlapBeamConnected()) {
                     outtakingIntake = true;
                 } else {

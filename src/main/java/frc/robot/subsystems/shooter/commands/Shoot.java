@@ -85,7 +85,7 @@ public class Shoot extends CommandBase {
 
     @Override
     public void initialize() {
-//        RobotContainer.ledSubsystem.setNeutralMode(false);
+        RobotContainer.ledSubsystem.setNeutralMode(false);
 //        timer.start();
 //        timer.reset();
 //        if (bool) {

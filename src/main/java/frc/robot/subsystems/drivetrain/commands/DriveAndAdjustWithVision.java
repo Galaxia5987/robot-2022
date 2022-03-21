@@ -87,8 +87,6 @@ public class DriveAndAdjustWithVision extends HolonomicDrive {
             }
 
         } else {
-
-
             // if you want to adjust to the target
             if (condition.getAsBoolean()) {
                 if (!hasTarget.getAsBoolean()) {
