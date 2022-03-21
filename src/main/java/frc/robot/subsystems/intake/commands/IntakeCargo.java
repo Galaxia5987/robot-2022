@@ -2,6 +2,7 @@ package frc.robot.subsystems.intake.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.intake.Intake;
+import webapp.FireLog;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -37,6 +38,8 @@ public class IntakeCargo extends CommandBase {
     public void execute() {
         if (condition.getAsBoolean()) {
             intake.setPower(power.getAsDouble());
+            FireLog.log("Intake power", intake.getPower());
+            FireLog.log("Intake setpoint", power.getAsDouble());
         } else {
             intake.setPower(0);
         }

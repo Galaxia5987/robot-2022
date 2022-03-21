@@ -15,7 +15,6 @@ import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.DriveAndAdjustWithVision;
-import frc.robot.subsystems.drivetrain.commands.DriveAndAdjustWithVisionExperimental;
 import frc.robot.subsystems.drivetrain.commands.TurnToAngle;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.helicopter.Helicopter;
@@ -40,6 +39,8 @@ public class RobotContainer {
     public static double hardCodedDistance = 3.8;
     public static double hardCodedVelocityValue = Shoot.getSetpointVelocity(hardCodedDistance);
     public static boolean shooting = false;
+
+//    private final WebConstant intakeVelocity = WebConstant.of("Intake", "velocity", 0);
 
     public static DoubleSupplier proximity;
 
@@ -105,7 +106,7 @@ public class RobotContainer {
                         photonVisionModule::getDistance,
                         photonVisionModule::hasTargets)
         );
-        helicopter.setDefaultCommand(new JoystickPowerHelicopter(helicopter, Xbox.controller::getLeftY));
+        helicopter.setDefaultCommand(new JoystickPowerHelicopter(helicopter, () -> -Xbox.controller.getLeftY()));
     }
 
     private void configureButtonBindings() {
@@ -137,9 +138,15 @@ public class RobotContainer {
                     shooter, hood, conveyor, flap,
                     () -> Constants.Conveyor.SHOOT_POWER,
                     () -> 0)).whenInactive(() -> shooting = false);
-//            Xbox.lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, 0.7,
-//                    () -> Utils.map(MathUtil.clamp(Math.hypot(swerve.getChassisSpeeds().vxMetersPerSecond, swerve.getChassisSpeeds().vyMetersPerSecond), 0, 4), 0, 4, 0.7, 0.4)));
-            Xbox.lt.whileActiveContinuous(new SmartIndexing(shooter, conveyor, intake, flap, () -> Utils.map(MathUtil.clamp(Math.hypot(swerve.getChassisSpeeds().vxMetersPerSecond, swerve.getChassisSpeeds().vyMetersPerSecond), 0, 4), 0, 4, 0.7, 0.4)));
+            Xbox.lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, 0.7,
+                    () -> Utils.map(MathUtil.clamp(Math.hypot(swerve.getChassisSpeeds().vxMetersPerSecond, swerve.getChassisSpeeds().vyMetersPerSecond), 0, 4), 0, 4, 0.4, 0.25)));
+//            Xbox.lt.whileActiveContinuous(new SmartIndexing(shooter, conveyor, intake, flap, () -> Utils.map(MathUtil.clamp(Math.hypot(swerve.getChassisSpeeds().vxMetersPerSecond, swerve.getChassisSpeeds().vyMetersPerSecond), 0, 4), 0, 4, 0.7, 0.4)));
+//            Xbox.lt.whileActiveContinuous(new ParallelCommandGroup(
+//                    new InstantCommand(flap::blockShooter),
+//                    new InstantCommand(intake::openRetractor),
+//                    new IntakeWithPID(intake, () -> Utils.map(MathUtil.clamp(Math.hypot(swerve.getChassisSpeeds().vxMetersPerSecond, swerve.getChassisSpeeds().vyMetersPerSecond), 0, 4), 0, 4, 20, 10)),
+//                    new Convey(conveyor, Constants.Conveyor.DEFAULT_POWER::get)
+//            ));
             Xbox.lb.whileHeld(new Outtake(intake, conveyor, flap, shooter, hood, () -> false));
             Xbox.rb.whileHeld(new Convey(conveyor, -Constants.Conveyor.SHOOT_POWER));
 
@@ -153,16 +160,13 @@ public class RobotContainer {
         }
 
         { // Joystick button bindings.
-            Joysticks.leftTrigger.whenPressed(() -> {
-                speedMultiplier = (speedMultiplier == 0.5 ? 1 : 0.5);
+            Joysticks.leftTrigger.whileHeld(() -> {
+                speedMultiplier = 0.5;
+                thetaMultiplier = 1.5 * speedMultiplier;
+            }).whenReleased(() -> {
+                speedMultiplier = 1;
                 thetaMultiplier = 1.5 * speedMultiplier;
             });
-
-            Joysticks.rightTrigger.whenPressed(new InstantCommand(() -> {
-                if (!shooting) {
-                    shooter.setVelocity(3530.0);
-                }
-            }));
 
             Joysticks.leftTwo.whenPressed((Runnable) Robot::resetAngle);
             Joysticks.rightTwo.whileHeld(new TurnToAngle(swerve, () -> new Rotation2d()));

@@ -63,14 +63,14 @@ public class Shooter extends SubsystemBase {
     private void configureMotor() {
         mainMotor.configAllSettings(getConfiguration());
         mainMotor.setInverted(INVERSION_TYPE);
-        mainMotor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
-        mainMotor.enableVoltageCompensation(true);
+//        mainMotor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
+        mainMotor.enableVoltageCompensation(false);
 
         auxMotor.follow(mainMotor);
         auxMotor.configAllSettings(getConfiguration());
         auxMotor.setInverted(TalonFXInvertType.OpposeMaster);
-        auxMotor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
-        auxMotor.enableVoltageCompensation(true);
+//        auxMotor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
+        auxMotor.enableVoltageCompensation(false);
     }
 
     /**
@@ -121,7 +121,9 @@ public class Shooter extends SubsystemBase {
 
         mainMotor.config_kP(0, kP.get());
         mainMotor.config_kI(0, kI.get());
-        mainMotor.config_IntegralZone(0, kIZone.get());
+//        mainMotor.configMaxIntegralAccumulator(0, maxIntegralAccumulation.get());
+        FireLog.log("accI", mainMotor.getIntegralAccumulator());
+        System.out.println(mainMotor.getIntegralAccumulator());
         mainMotor.config_kD(0, kD.get());
         mainMotor.config_kF(0, kF.get());
     }

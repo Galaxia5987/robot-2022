@@ -19,7 +19,7 @@ public class FiveCargoAuto extends SaarIsAutonomous {
      */
     public FiveCargoAuto(Shooter shooter, SwerveDrive swerveDrive, Conveyor conveyor, Intake intake, Hood hood, Flap flap, PhotonVisionModule visionModule) {
         super(swerveDrive, shooter, conveyor, intake, hood, flap, visionModule, "FiveCargoAutoPart1");
-        addCommands(shoot3(1.8));
+        addCommands(shoot3(0.8));
 
 //        addCommands(new InstantCommand(() -> shooter.setVelocity(3530.0)));
 //
@@ -27,16 +27,16 @@ public class FiveCargoAuto extends SaarIsAutonomous {
 //
 //        addCommands(quickReleaseShoot(1.8)); // 1.8
 
-        addCommands(new InstantCommand(() -> shooter.setVelocity(3530.0)));
+        addCommands(new InstantCommand(() -> shooter.setVelocity(3600.0)));
 
         addCommands(followPathAndPickup("FiveCargoAutoPart1"));
 
         addCommands(turnToAngle(() -> Rotation2d.fromDegrees(40.15)));
 
-        addCommands(new Convey(conveyor, -0.25).withTimeout(0.075));
-        addCommands(quickReleaseBackShootAndAdjust(2.5)); // 1.8
+        addCommands(new Convey(conveyor, -0.25).withTimeout(0.05));
+        addCommands(quickReleaseBackShootAndAdjust(1.3)); // 1.8
 
-        addCommands(new InstantCommand(() -> shooter.setVelocity(3530.0)));
+        addCommands(new InstantCommand(() -> shooter.setVelocity(3800.0)));
 
         addCommands(followPathAndPickup("FiveCargoAutoPart2"));
 
@@ -44,7 +44,7 @@ public class FiveCargoAuto extends SaarIsAutonomous {
 
         addCommands(new InstantCommand(swerveDrive::terminate));
 
-        addCommands(new Convey(conveyor, -0.25).withTimeout(0.075));
+        addCommands(new Convey(conveyor, -0.25).withTimeout(0.05));
         addCommands(quickReleaseBackShootAndAdjust(5));
     }
 }

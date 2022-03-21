@@ -17,6 +17,7 @@ import org.photonvision.PhotonUtils;
 import org.photonvision.SimPhotonCamera;
 import org.photonvision.SimVisionSystem;
 import org.photonvision.targeting.PhotonPipelineResult;
+import webapp.FireLog;
 
 import java.util.Optional;
 import java.util.OptionalDouble;
@@ -91,6 +92,21 @@ public class PhotonVisionModule extends SubsystemBase {
             }
 
             return filter.calculate(distance) + TARGET_RADIUS;
+        }
+        return 0;
+    }
+
+    public double getDistance2() {
+        var results = camera.getLatestResult();
+        if (results.hasTargets()) {
+            double distance = PhotonUtils.calculateDistanceToTargetMeters(
+                    CAMERA_HEIGHT,
+                    TARGET_HEIGHT_FROM_GROUND,
+                    Math.toRadians(CAMERA_PITCH),
+                    Math.toRadians(results.getBestTarget().getPitch())
+            );
+
+            return distance + TARGET_RADIUS;
         }
         return 0;
     }
@@ -185,6 +201,8 @@ public class PhotonVisionModule extends SubsystemBase {
         SmartDashboard.putString("visible_state", camera.getLatestResult().hasTargets() ? "green" : "red");
         double yaw = getYaw().orElse(100);
         SmartDashboard.putString("aim_state", Math.abs(yaw) <= 5 ? "green" : Math.abs(yaw) <= 13 ? "yellow" : "red");
+        FireLog.log("filtered_distance", getDistance());
+        FireLog.log("not_filtered_distance", getDistance2());
     }
 
     @Override
@@ -199,5 +217,6 @@ public class PhotonVisionModule extends SubsystemBase {
         SmartDashboard.putBoolean("hasTarget", hasTargets());
         SmartDashboard.putNumber("pose x", robotPose.getX());
         SmartDashboard.putNumber("pose y", robotPose.getY());
+
     }
 }

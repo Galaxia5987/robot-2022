@@ -168,7 +168,7 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
                 )
         ).getDegrees());
         return new SequentialCommandGroup(
-                new AdjustToTargetOnCommand(swerveDrive, () -> visionModule.getYaw().orElse(0), () -> visionModule.hasTargets()).withTimeout(0.3),
+                new AdjustToTargetOnCommand(swerveDrive, () -> visionModule.getYaw().orElse(0), () -> visionModule.hasTargets()).withTimeout(0.1),
                 new ParallelRaceGroup(new QuickReleaseBackAndShootCargo(
                         shooter,
                         hood,
@@ -224,7 +224,7 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
                 flap,
                 intake,
                 Constants.Conveyor.DEFAULT_POWER.get(),
-                () -> Utils.map(MathUtil.clamp(Math.hypot(swerveDrive.getChassisSpeeds().vxMetersPerSecond, swerveDrive.getChassisSpeeds().vyMetersPerSecond), 0, 4), 0, 4, 0.7, 0.4)
+                () -> Utils.map(MathUtil.clamp(Math.hypot(swerveDrive.getChassisSpeeds().vxMetersPerSecond, swerveDrive.getChassisSpeeds().vyMetersPerSecond), 0, 4), 0, 4, 0.3, 0.2)
         ).withTimeout(timeout);
     }
 

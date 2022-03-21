@@ -34,8 +34,8 @@ public final class Constants {
 
     // The order of modules is ALWAYS front-right (fr), front-left (fl), rear-right (rr), rear-left (rl)
     public static final class SwerveDrive {
-        public static final double VELOCITY_MULTIPLIER = 3;
-        public static final double ROTATION_MULTIPLIER = 3;
+        public static final double VELOCITY_MULTIPLIER = 4;
+        public static final double ROTATION_MULTIPLIER = 4;
 
         public static final int TICKS_PER_ROTATION_DRIVE_MOTOR = 2048;
         public static final int TICKS_PER_ROTATION_ANGLE_MOTOR = 1024;
@@ -101,13 +101,11 @@ public final class Constants {
         public static final double RECOMMENDED_ACCELERATION_TIME = 1.3; // Recommended time for the shooter to get to it's setpoint. [s]
         public static final double CARGO_OFFSET = 0; // Desired offset from the middle of the target where you want the cargo to hit. [m]
 
-        public static final WebConstant kP = WebConstant.of("Shooter", "kP", 0.089);
-        public static final WebConstant kI = WebConstant.of("Shooter", "kI", 0.000155);
-        public static final WebConstant kIZone = WebConstant.of("Shooter", "kIZone", 0);
-        public static final WebConstant kD = WebConstant.of("Shooter", "kD", 1);
-        public static final WebConstant kF = WebConstant.of("Shooter", "kf", 0.0101);
+        public static final WebConstant kP = WebConstant.of("Shooter", "kP", 0.75);
+        public static final WebConstant kI = WebConstant.of("Shooter", "kI", 0.00019);
+        public static final WebConstant kD = WebConstant.of("Shooter", "kD", 9);
+        public static final WebConstant kF = WebConstant.of("Shooter", "kf", 0);
         public static final WebConstant SHOOTER_VELOCITY_DEADBAND = WebConstant.of("Shooter", "Velocity deadband", 50); // Dead band for shooter velocity setpoint. [rpm]
-
         public static final HashMap<Double, Double> SHORT_MEASUREMENTS = new HashMap<>() {{
             put(-99999.0, 3530.0);
             put(2.3, 3530.0);
@@ -284,6 +282,11 @@ public final class Constants {
     public static class Intake {
         public static final double POWER_TO_VELOCITY_RATIO = -3 / 16.0; // Ratio of power to velocity. [% / m/s]
         public static final double TIME_BETWEEN_RUNS = 1.7; // time intake will wait before toggling the retractor (for testing only). [s]
+
+        public static final WebConstant kP = WebConstant.of("Intake", "kP", 1);
+        public static final WebConstant kI = WebConstant.of("Intake", "kI", 0);
+        public static final WebConstant kD = WebConstant.of("Intake", "kD", 0);
+        public static final WebConstant kF = WebConstant.of("Intake", "kF", 0);
 
         public static final WebConstant DEFAULT_POWER = WebConstant.of("Intake", "power", 0.8); // power intake will receive on the basic command. [%]
     }
