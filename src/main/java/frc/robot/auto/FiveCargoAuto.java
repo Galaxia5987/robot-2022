@@ -3,6 +3,7 @@ package frc.robot.auto;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.conveyor.Conveyor;
+import frc.robot.subsystems.conveyor.commands.Convey;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.hood.Hood;
@@ -28,6 +29,7 @@ public class FiveCargoAuto extends SaarIsAutonomous {
 
         addCommands(turnToAngle(() -> Rotation2d.fromDegrees(40.15)));
 
+        addCommands(new Convey(conveyor, -0.25).withTimeout(0.075));
         addCommands(shootAndAdjust(5)); // 1.8
 
         addCommands(new InstantCommand(() -> shooter.setVelocity(3530.0)));
@@ -38,6 +40,7 @@ public class FiveCargoAuto extends SaarIsAutonomous {
 
         addCommands(new InstantCommand(swerveDrive::terminate));
 
+        addCommands(new Convey(conveyor, -0.25).withTimeout(0.075));
         addCommands(shootAndAdjust(5));
     }
 }
