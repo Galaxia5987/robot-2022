@@ -31,7 +31,7 @@ public class PhotonVisionModule extends SubsystemBase {
     private final SimVisionSystem simVisionSystem;
     private final SimulateDrivetrain simulateDrivetrain;
     private final DigitalOutput leds = new DigitalOutput(Ports.Vision.LEDS);
-    private final LinearFilter filter = LinearFilter.movingAverage(10);
+    private final LinearFilter filter = LinearFilter.movingAverage(5);
     private final Timer timer = new Timer();
     private boolean startedLeds = false;
 
@@ -80,33 +80,7 @@ public class PhotonVisionModule extends SubsystemBase {
                     Math.toRadians(results.getBestTarget().getPitch())
             );
 
-            if (startedLeds) {
-                if (!timer.hasElapsed(0.2)) {
-                    filter.calculate(distance);
-                    return distance + TARGET_RADIUS;
-                } else {
-                    startedLeds = false;
-                    timer.stop();
-                    timer.reset();
-                }
-            }
-
             return filter.calculate(distance) + TARGET_RADIUS;
-        }
-        return 0;
-    }
-
-    public double getDistance2() {
-        var results = camera.getLatestResult();
-        if (results.hasTargets()) {
-            double distance = PhotonUtils.calculateDistanceToTargetMeters(
-                    CAMERA_HEIGHT,
-                    TARGET_HEIGHT_FROM_GROUND,
-                    Math.toRadians(CAMERA_PITCH),
-                    Math.toRadians(results.getBestTarget().getPitch())
-            );
-
-            return distance + TARGET_RADIUS;
         }
         return 0;
     }
@@ -202,7 +176,6 @@ public class PhotonVisionModule extends SubsystemBase {
         double yaw = getYaw().orElse(100);
         SmartDashboard.putString("aim_state", Math.abs(yaw) <= 5 ? "green" : Math.abs(yaw) <= 13 ? "yellow" : "red");
         FireLog.log("filtered_distance", getDistance());
-        FireLog.log("not_filtered_distance", getDistance2());
     }
 
     @Override
