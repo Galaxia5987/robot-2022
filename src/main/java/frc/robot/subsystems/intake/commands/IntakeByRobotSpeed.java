@@ -7,7 +7,6 @@ import frc.robot.subsystems.intake.Intake;
 import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.Intake.DEFAULT_POWER;
-import static frc.robot.Constants.Intake.POWER_TO_VELOCITY_RATIO;
 
 /**
  * Intakes cargo according to robot speed. (robot speed is in m/s)

@@ -51,11 +51,11 @@ public class TestShooterVelocity extends SequentialCommandGroup {
     }
 
     public static void velocityLed(LedSubsystem ledSubsystem, Shooter shooter, double velocity) {
-       new InstantCommand(()-> ledSubsystem.setTesting(true));
+        new InstantCommand(() -> ledSubsystem.setTesting(true));
         if (velocity - Constants.Shooter.SHOOTER_VELOCITY_DEADBAND.get() < shooter.getVelocity()
                 && shooter.getVelocity() < velocity + Constants.Shooter.SHOOTER_VELOCITY_DEADBAND.get()) {
             ledSubsystem.setColor(Color.kForestGreen);
         } else ledSubsystem.setColor(Color.kRed);
-        new InstantCommand(()-> ledSubsystem.setTesting(false));
+        new InstantCommand(() -> ledSubsystem.setTesting(false));
     }
 }

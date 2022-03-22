@@ -6,22 +6,13 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.hood.Hood;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
 public class HoodCommand extends CommandBase {
     private final Hood hood;
-    private final BooleanSupplier postFlap;
-    private final DoubleSupplier distance;
     private final Timer timer = new Timer();
-    private final boolean last = false;
     private Hood.Mode mode = Hood.Mode.ShortDistance;
-    private boolean starting = true;
 
-    public HoodCommand(Hood hood, BooleanSupplier postFlap, DoubleSupplier distance) {
+    public HoodCommand(Hood hood) {
         this.hood = hood;
-        this.postFlap = postFlap;
-        this.distance = distance;
         addRequirements(hood);
     }
 
@@ -48,6 +39,5 @@ public class HoodCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         timer.stop();
-        starting = true;
     }
 }

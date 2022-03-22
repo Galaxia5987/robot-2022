@@ -5,12 +5,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.Ports;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import org.photonvision.PhotonCamera;
@@ -20,7 +17,6 @@ import org.photonvision.SimVisionSystem;
 import org.photonvision.targeting.PhotonPipelineResult;
 import webapp.FireLog;
 
-import java.sql.Connection;
 import java.util.Optional;
 import java.util.OptionalDouble;
 
@@ -32,10 +28,7 @@ public class PhotonVisionModule extends SubsystemBase {
     private final SimPhotonCamera simCamera;
     private final SimVisionSystem simVisionSystem;
     private final SimulateDrivetrain simulateDrivetrain;
-    private final DigitalOutput leds = new DigitalOutput(Ports.Vision.LEDS);
     private final LinearFilter filter = LinearFilter.movingAverage(5);
-    private final Timer timer = new Timer();
-    private boolean startedLeds = false;
 
     public PhotonVisionModule(String cameraName, SimulateDrivetrain simulateDrivetrain) {
         this.simulateDrivetrain = simulateDrivetrain;
@@ -121,33 +114,6 @@ public class PhotonVisionModule extends SubsystemBase {
             return Optional.of(PhotonUtils.estimateCameraToTargetTranslation(distance, Rotation2d.fromDegrees(-results.getBestTarget().getYaw())));
         }
         return Optional.empty();
-    }
-
-    /**
-     * @param off whether to turn on the leds.
-     *            Turns the leds on or off.
-     */
-    public void setLeds(boolean off) {
-        leds.set(off);
-        if (!off) {
-            timer.reset();
-            timer.start();
-        }
-        startedLeds = !off;
-    }
-
-    /**
-     * Toggle the leds mode.
-     */
-    public void toggleLeds() {
-        setLeds(!getLedsState());
-    }
-
-    /**
-     * @return the state of the leds - either on or off.
-     */
-    public boolean getLedsState() {
-        return leds.get();
     }
 
     public VisionEstimationData estimatePose() {

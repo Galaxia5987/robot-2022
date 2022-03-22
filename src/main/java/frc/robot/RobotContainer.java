@@ -1,20 +1,19 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.auto.FiveCargoAuto;
-import frc.robot.commandgroups.*;
+import frc.robot.commandgroups.LowGoalShot;
+import frc.robot.commandgroups.OneBallOuttake;
+import frc.robot.commandgroups.Outtake;
+import frc.robot.commandgroups.PickUpCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
-import frc.robot.subsystems.conveyor.commands.bits.CheckColorSensor;
-import frc.robot.subsystems.conveyor.commands.bits.TestColorSensor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.DriveAndAdjustWithVision;
 import frc.robot.subsystems.drivetrain.commands.TurnToAngle;
@@ -33,21 +32,16 @@ import webapp.Webserver;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 
 public class RobotContainer {
-    public static final boolean playWithoutVision = false;
+    public static boolean playWithoutVision = false;
     public static boolean hardCodedVelocity = false;
     public static double hardCodedDistance = 3.8;
     public static double hardCodedVelocityValue = Shoot.getSetpointVelocity(hardCodedDistance);
     public static boolean shooting = false;
-
-//    private final WebConstant intakeVelocity = WebConstant.of("Intake", "velocity", 0);
-
     public static DoubleSupplier proximity;
 
     // The robot's subsystems and commands are defined here...
-//    public static SnakeSubsystem snakeSubsystem = new SnakeSubsystem();
     public static DoubleSupplier setpointSupplier;
     public static DoubleSupplier distanceSupplier;
     public static DoubleSupplier odometrySetpointSupplier;
@@ -61,7 +55,7 @@ public class RobotContainer {
     public static BooleanSupplier hasTarget;
     public static LedSubsystem ledSubsystem = new LedSubsystem();
     final PhotonVisionModule photonVisionModule = new PhotonVisionModule("photonvision", null);
-    private final SwerveDrive swerve = SwerveDrive.getFieldOrientedInstance(photonVisionModule::estimatePose);
+    private final SwerveDrive swerve = SwerveDrive.getFieldOrientedInstance();
     private final Intake intake = Intake.getInstance();
     private final Conveyor conveyor = Conveyor.getInstance();
     private final Flap flap = Flap.getInstance();
@@ -76,7 +70,7 @@ public class RobotContainer {
      * The container for the robot.  Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        distanceSupplier = () -> photonVisionModule.getDistance();
+        distanceSupplier = photonVisionModule::getDistance;
         setpointSupplier = () -> Shoot.getSetpointVelocity(distanceSupplier.getAsDouble());
         odometrySetpointSupplier = () -> Shoot.getSetpointVelocity(swerve.getOdometryDistance());
         odometryDistanceSupplier = swerve::getOdometryDistance;
@@ -85,7 +79,6 @@ public class RobotContainer {
         proximity = conveyor::getColorSensorProximity;
 
         autonomousCommand = new FiveCargoAuto(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
-//        autonomousCommand = new Yoni(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
         // Configure the button bindings and default commands
         configureDefaultCommands();
         if (Robot.debug) {
@@ -105,7 +98,6 @@ public class RobotContainer {
                         () -> -Joysticks.rightJoystick.getX() * thetaMultiplier,
                         () -> photonVisionModule.getYaw().orElse(0),
                         Joysticks.rightTrigger::get,
-                        () -> photonVisionModule.getDistance(Constants.Vision.CAMERA_HEIGHT, Constants.Vision.TARGET_HEIGHT),
                         photonVisionModule::hasTargets
                 )
         );
@@ -113,11 +105,6 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        Supplier<Pose2d> swervePose = swerve::getPose;
-        Supplier<Transform2d> poseRelativeToTarget = () -> Constants.Vision.HUB_POSE.minus(swervePose.get());
-        DoubleSupplier distanceFromTarget = () -> photonVisionModule.hasTargets() ?
-                 photonVisionModule.getDistance(Constants.Vision.CAMERA_HEIGHT, Constants.Vision.TARGET_HEIGHT) :
-                Math.hypot(poseRelativeToTarget.get().getX(), poseRelativeToTarget.get().getY());
 
         { // Xbox controller button bindings.
             Xbox.b.whileHeld(new ParallelCommandGroup(
@@ -125,21 +112,14 @@ public class RobotContainer {
                     new Convey(conveyor, Constants.Conveyor.DEFAULT_POWER.get())
             ));
             Xbox.x.whenPressed(intake::toggleRetractor);
-            Xbox.y.whenPressed(new RunCommand(() -> {
-                shooter.setVelocity(3530.0);
-            }, shooter).withInterrupt(Xbox.rt::get));
-            Xbox.a.whileHeld(new BackAndShootCargoSort(shooter, hood, conveyor, flap,
-                    () -> Constants.Conveyor.SHOOT_POWER,
-                    distanceFromTarget, photonVisionModule::hasTargets, swerve::getOdometryDistance));
+            Xbox.y.whenPressed(new RunCommand(() -> shooter.setVelocity(3530.0), shooter).withInterrupt(Xbox.rt::get));
+            Xbox.a.whileHeld(() -> playWithoutVision = true).whenReleased(() -> playWithoutVision = false);
 
             Xbox.leftPov.whileActiveOnce(new InstantCommand(hood::toggle));
-            Xbox.rightPov.whileActiveOnce(new InstantCommand(helicopter::toggleStopper));
-            Xbox.upPov.whileActiveOnce(new SafetyShootCargo(shooter, conveyor, flap, hood, distanceFromTarget));
-            Xbox.downPov.whileActiveOnce(new LowGoalShot(shooter, conveyor, flap, hood));
+            Xbox.downPov.whileActiveOnce(new LowGoalShot(shooter, flap, hood));
 
             Xbox.rt.whileActiveContinuous(new BackAndShootCargo(
                     shooter, hood, conveyor, flap,
-                    () -> Constants.Conveyor.SHOOT_POWER,
                     () -> 0)).whenInactive(() -> shooting = false);
             Xbox.lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, 0.7,
                     () -> Utils.map(MathUtil.clamp(Math.hypot(swerve.getChassisSpeeds().vxMetersPerSecond, swerve.getChassisSpeeds().vyMetersPerSecond), 0, 4), 0, 4, 0.4, 0.25)));
@@ -153,7 +133,6 @@ public class RobotContainer {
             Xbox.lb.whileHeld(new Outtake(intake, conveyor, flap, shooter, hood, () -> false));
             Xbox.rb.whileHeld(new Convey(conveyor, -Constants.Conveyor.SHOOT_POWER));
 
-            Xbox.start.whenPressed(photonVisionModule::toggleLeds);
             Xbox.back.whenPressed(new OneBallOuttake(intake, conveyor, () -> conveyor.getColorSensorProximity() >= 150));
 
             Xbox.rightJoystickButton
@@ -172,7 +151,7 @@ public class RobotContainer {
             });
 
             Joysticks.leftTwo.whenPressed((Runnable) Robot::resetAngle);
-            Joysticks.rightTwo.whileHeld(new TurnToAngle(swerve, () -> new Rotation2d()));
+            Joysticks.rightTwo.whileHeld(new TurnToAngle(swerve, Rotation2d::new));
         }
     }
 

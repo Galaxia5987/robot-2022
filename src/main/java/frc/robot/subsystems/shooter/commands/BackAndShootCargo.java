@@ -17,7 +17,6 @@ public class BackAndShootCargo extends SequentialCommandGroup {
                              Hood hood,
                              Conveyor conveyor,
                              Flap flap,
-                             DoubleSupplier conveyorPower,
                              DoubleSupplier distanceFromTarget) {
         addCommands(new InstantCommand(() -> RobotContainer.cachedSetpoint = RobotContainer.setpointSupplier.getAsDouble()));
         addCommands(new InstantCommand(() -> RobotContainer.cachedDistance = RobotContainer.distanceSupplier.getAsDouble()));
@@ -27,7 +26,7 @@ public class BackAndShootCargo extends SequentialCommandGroup {
         addCommands(new InstantCommand(() -> RobotContainer.shooting = true));
 
         addCommands(new Convey(conveyor, -0.25).withTimeout(0.075),
-                new ShootCargo(shooter, hood, conveyor, flap, conveyorPower, distanceFromTarget));
+                new ShootCargo(shooter, hood, conveyor, flap, distanceFromTarget));
 
 
     }

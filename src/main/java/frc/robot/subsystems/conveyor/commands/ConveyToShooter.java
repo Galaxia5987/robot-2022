@@ -13,22 +13,19 @@ import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.Shooter.SHOOTER_VELOCITY_DEADBAND;
 
-public class Convey3 extends CommandBase {
+public class ConveyToShooter extends CommandBase {
     private final Conveyor conveyor;
     private final BooleanSupplier preFlapSupplier;
     private final Timer timer = new Timer();
-    private final DoubleSupplier setpointSuppier;
     private final DoubleSupplier velocitySupplier;
     private final Timer delayTimer = new Timer();
     private boolean last = false;
     private boolean getBallToPreFlap = true;
-    private double setpoint = 0;
     private boolean wait = true;
 
-    public Convey3(Conveyor conveyor, BooleanSupplier preFlapSupplier, DoubleSupplier setpointSupplier, DoubleSupplier velocitySupplier) {
+    public ConveyToShooter(Conveyor conveyor, BooleanSupplier preFlapSupplier, DoubleSupplier velocitySupplier) {
         this.conveyor = conveyor;
         this.preFlapSupplier = preFlapSupplier;
-        this.setpointSuppier = setpointSupplier;
         this.velocitySupplier = velocitySupplier;
         addRequirements(conveyor);
     }
@@ -40,10 +37,8 @@ public class Convey3 extends CommandBase {
         if (preFlapSupplier.getAsBoolean()) {
             getBallToPreFlap = false;
         }
-        setpoint = setpointSuppier.getAsDouble();
         wait = true;
         last = false;
-        setpoint = RobotContainer.setpointSupplier.getAsDouble();
     }
 
     @Override

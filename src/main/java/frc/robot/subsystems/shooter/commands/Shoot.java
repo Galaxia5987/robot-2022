@@ -18,31 +18,23 @@ public class Shoot extends CommandBase {
     protected final Shooter shooter;
     protected final Hood hood;
     protected final DoubleSupplier distance;
-    private final boolean bool;
     private final OptionalDouble power;
     private final Timer timer = new Timer();
-    private double setpointVelocity = 0;
 
     public Shoot(Shooter shooter, Hood hood, double power) {
         this.shooter = shooter;
         this.hood = hood;
         this.distance = () -> 8;
         this.power = OptionalDouble.of(power);
-        bool = false;
-        addRequirements(shooter);
-    }
-
-    public Shoot(Shooter shooter, Hood hood, DoubleSupplier distance, boolean bool) {
-        this.shooter = shooter;
-        this.hood = hood;
-        this.distance = distance;
-        this.bool = bool;
-        this.power = OptionalDouble.empty();
         addRequirements(shooter);
     }
 
     public Shoot(Shooter shooter, Hood hood, DoubleSupplier distance) {
-        this(shooter, hood, distance, true);
+        this.shooter = shooter;
+        this.hood = hood;
+        this.distance = distance;
+        this.power = OptionalDouble.empty();
+        addRequirements(shooter);
     }
 
     /**
@@ -82,17 +74,9 @@ public class Shoot extends CommandBase {
         return (1 - t) * y1 + t * y2;
     }
 
-
     @Override
     public void initialize() {
         RobotContainer.ledSubsystem.setNeutralMode(false);
-//        timer.start();
-//        timer.reset();
-//        if (bool) {
-//            setpointVelocity = RobotContainer.cachedSetpoint;
-//        } else {
-//            setpointVelocity = distance.getAsDouble();
-//        }
     }
 
     @Override

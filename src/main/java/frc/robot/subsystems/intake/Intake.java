@@ -1,6 +1,5 @@
 package frc.robot.subsystems.intake;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.util.datalog.BooleanLogEntry;
@@ -12,7 +11,6 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
-import frc.robot.subsystems.UnitModel;
 import webapp.FireLog;
 
 public class Intake extends SubsystemBase {
@@ -21,14 +19,12 @@ public class Intake extends SubsystemBase {
     private final Solenoid retractor = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Intake.SOLENOID);
     private final DoubleLogEntry power;
     private final BooleanLogEntry retracted;
-    private final UnitModel unitModel = new UnitModel(2048);
 
     private Intake() {
         motor.setInverted(Ports.Intake.IS_MOTOR_INVERTED);
         motor.enableVoltageCompensation(true);
         motor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE, Constants.TALON_TIMEOUT);
         motor.setNeutralMode(NeutralMode.Brake);
-//        motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 45, 5, 0.02));
         motor.configClosedloopRamp(0);
         motor.configOpenloopRamp(0);
 
@@ -69,14 +65,6 @@ public class Intake extends SubsystemBase {
         motor.set(power);
     }
 
-    public void setVelocity(double velocity) {
-        motor.set(ControlMode.Velocity, unitModel.toTicks100ms(velocity));
-    }
-
-    public double getVelocity() {
-        return unitModel.toVelocity(motor.getSelectedSensorVelocity());
-    }
-
     /**
      * Open intake.
      */
@@ -109,11 +97,6 @@ public class Intake extends SubsystemBase {
     public void periodic() {
         power.append(getPower());
         retracted.append(retractor.get());
-
-//        motor.config_kP(0, Constants.Intake.kP.get(), Constants.TALON_TIMEOUT);
-//        motor.config_kI(0, Constants.Intake.kI.get(), Constants.TALON_TIMEOUT);
-//        motor.config_kD(0, Constants.Intake.kD.get(), Constants.TALON_TIMEOUT);
-//        motor.config_kF(0, Constants.Intake.kF.get(), Constants.TALON_TIMEOUT);
     }
 
     public enum RetractorState {

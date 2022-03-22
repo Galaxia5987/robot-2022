@@ -15,7 +15,7 @@ public class Utils {
      * @param threshold the threshold value.
      * @return 0 if the value is less than the threshold else the value.
      */
-public static double conventionalDeadband(double val, double threshold) {
+    public static double conventionalDeadband(double val, double threshold) {
         if (Math.abs(val) < threshold)
             return 0;
         return val;

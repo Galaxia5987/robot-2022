@@ -27,7 +27,6 @@ public class DriveAndAdjustWithVision extends HolonomicDrive {
     private final Timer sampleYawTimer = new Timer();
     private final DoubleSupplier yawSupplier;
     private final BooleanSupplier condition;
-    private final DoubleSupplier distanceSupplier;
     private final BooleanSupplier hasTarget;
     private boolean newSetpoint = false;
     private Rotation2d setpoint;
@@ -35,11 +34,10 @@ public class DriveAndAdjustWithVision extends HolonomicDrive {
     private double current = 0;
     private Rotation2d target;
 
-    public DriveAndAdjustWithVision(SwerveDrive swerveDrive, DoubleSupplier forwardSupplier, DoubleSupplier strafeSupplier, DoubleSupplier rotationSupplier, DoubleSupplier yawSupplier, BooleanSupplier condition, DoubleSupplier distanceSupplier, BooleanSupplier hasTarget) {
+    public DriveAndAdjustWithVision(SwerveDrive swerveDrive, DoubleSupplier forwardSupplier, DoubleSupplier strafeSupplier, DoubleSupplier rotationSupplier, DoubleSupplier yawSupplier, BooleanSupplier condition, BooleanSupplier hasTarget) {
         super(swerveDrive, forwardSupplier, strafeSupplier, rotationSupplier);
         this.yawSupplier = yawSupplier;
         this.condition = condition;
-        this.distanceSupplier = distanceSupplier;
         this.hasTarget = hasTarget;
         target = Robot.getAngle();
     }
@@ -90,16 +88,14 @@ public class DriveAndAdjustWithVision extends HolonomicDrive {
             // if you want to adjust to the target
             if (condition.getAsBoolean()) {
                 if (!hasTarget.getAsBoolean()) {
-                    var robotAngle = Robot.getAngle();
                     var robotPose = swerveDrive.getPose().getTranslation();
                     var hubPose = Constants.Vision.HUB_POSE.getTranslation();
                     var poseRelativeToTarget = hubPose.minus(robotPose);
-                    var value = new Rotation2d(
+                    target = new Rotation2d(
                             Math.atan2(
                                     poseRelativeToTarget.getY(),
                                     poseRelativeToTarget.getX()
                             ));
-                    target = value;
                 } else {
                     if (sampleYawTimer.hasElapsed(Constants.SwerveDrive.SAMPLE_YAW_PERIOD)) {
                         target = Robot.getAngle().minus(Rotation2d.fromDegrees(yawSupplier.getAsDouble()));

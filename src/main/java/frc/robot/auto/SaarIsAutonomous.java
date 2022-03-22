@@ -12,7 +12,6 @@ import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.commandgroups.PickUpCargo;
 import frc.robot.commandgroups.QuickReleaseBackAndShootCargo;
-import frc.robot.commandgroups.QuickReleaseShootCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
@@ -56,7 +55,6 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
             swerveDrive.resetOdometry(initialState.poseMeters, initialState.holonomicRotation);
             Robot.resetAngle(initialState.holonomicRotation);
         }));
-        addCommands(new InstantCommand(() -> visionModule.setLeds(false)));
     }
 
     protected FollowPath followPath(String path) {
@@ -81,7 +79,7 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
     protected CommandBase shootAndAdjust(double timeout) {
         Supplier<Pose2d> swervePose = swerveDrive::getPose;
         Supplier<Transform2d> poseRelativeToTarget = () -> Constants.Vision.HUB_POSE.minus(swervePose.get());
-        DoubleSupplier distanceFromTarget = ()-> visionModule.getDistance(Constants.Vision.CAMERA_HEIGHT, Constants.Vision.TARGET_HEIGHT);
+        DoubleSupplier distanceFromTarget = () -> visionModule.getDistance(Constants.Vision.CAMERA_HEIGHT, Constants.Vision.TARGET_HEIGHT);
         DoubleSupplier conveyorPower = Constants.Conveyor.DEFAULT_POWER::get;
         DoubleSupplier yaw = () -> visionModule.getYaw().orElse(Robot.getAngle().minus(new Rotation2d(
                         Math.atan2(
@@ -90,111 +88,60 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
                         )
                 )
         ).getDegrees());
+
         return new SequentialCommandGroup(
-                new AdjustToTargetOnCommand(swerveDrive, () -> visionModule.getYaw().orElse(0), () -> visionModule.hasTargets()).withTimeout(0.3),
+                new AdjustToTargetOnCommand(swerveDrive, yaw, visionModule::hasTargets).withTimeout(0.3),
                 new ParallelRaceGroup(new BackAndShootCargo(
                         shooter,
                         hood,
                         conveyor,
                         flap,
-                        conveyorPower,
                         distanceFromTarget)
                         .withTimeout(timeout),
                         new IntakeCargo(intake, Constants.Intake.DEFAULT_POWER::get),
-                        new AdjustToTargetOnCommand(swerveDrive, () -> visionModule.getYaw().orElse(0), () -> visionModule.hasTargets())
+                        new AdjustToTargetOnCommand(swerveDrive, () -> visionModule.getYaw().orElse(0), visionModule::hasTargets)
                 ));
     }
 
     protected CommandBase shoot(double timeout) {
-        Supplier<Pose2d> swervePose = swerveDrive::getPose;
-        Supplier<Transform2d> poseRelativeToTarget = () -> Constants.Vision.HUB_POSE.minus(swervePose.get());
         DoubleSupplier distanceFromTarget = visionModule::getDistance;
         DoubleSupplier conveyorPower = Constants.Conveyor.DEFAULT_POWER::get;
-        DoubleSupplier yaw = () -> visionModule.getYaw().orElse(Robot.getAngle().minus(new Rotation2d(
-                        Math.atan2(
-                                poseRelativeToTarget.get().getY(),
-                                poseRelativeToTarget.get().getX()
-                        )
-                )
-        ).getDegrees());
+
         return new SequentialCommandGroup(
                 new ParallelRaceGroup(new BackAndShootCargo(
                         shooter,
                         hood,
                         conveyor,
                         flap,
-                        conveyorPower,
                         distanceFromTarget)
                         .withTimeout(timeout),
                         new IntakeCargo(intake, Constants.Intake.DEFAULT_POWER::get)
                 ));
     }
 
-    protected CommandBase quickReleaseShoot(double timeout) {
-        Supplier<Pose2d> swervePose = swerveDrive::getPose;
-        Supplier<Transform2d> poseRelativeToTarget = () -> Constants.Vision.HUB_POSE.minus(swervePose.get());
-        DoubleSupplier distanceFromTarget = visionModule::getDistance;
-        DoubleSupplier conveyorPower = Constants.Conveyor.DEFAULT_POWER::get;
-        DoubleSupplier yaw = () -> visionModule.getYaw().orElse(Robot.getAngle().minus(new Rotation2d(
-                        Math.atan2(
-                                poseRelativeToTarget.get().getY(),
-                                poseRelativeToTarget.get().getX()
-                        )
-                )
-        ).getDegrees());
-        return new SequentialCommandGroup(
-                new ParallelRaceGroup(new QuickReleaseShootCargo(
-                        shooter,
-                        hood,
-                        conveyor,
-                        flap,
-                        conveyorPower,
-                        distanceFromTarget)
-                        .withTimeout(timeout),
-                        new IntakeCargo(intake, Constants.Intake.DEFAULT_POWER::get)
-                ));
-    }
 
     protected CommandBase quickReleaseBackShootAndAdjust(double timeout) {
-        Supplier<Pose2d> swervePose = swerveDrive::getPose;
-        Supplier<Transform2d> poseRelativeToTarget = () -> Constants.Vision.HUB_POSE.minus(swervePose.get());
         DoubleSupplier distanceFromTarget = visionModule::getDistance;
         DoubleSupplier conveyorPower = Constants.Conveyor.DEFAULT_POWER::get;
-        DoubleSupplier yaw = () -> visionModule.getYaw().orElse(Robot.getAngle().minus(new Rotation2d(
-                        Math.atan2(
-                                poseRelativeToTarget.get().getY(),
-                                poseRelativeToTarget.get().getX()
-                        )
-                )
-        ).getDegrees());
+
         return new SequentialCommandGroup(
-                new AdjustToTargetOnCommand(swerveDrive, () -> visionModule.getYaw().orElse(0), () -> visionModule.hasTargets()).withTimeout(0.1),
+                new AdjustToTargetOnCommand(swerveDrive, () -> visionModule.getYaw().orElse(0), visionModule::hasTargets).withTimeout(0.1),
                 new ParallelRaceGroup(new QuickReleaseBackAndShootCargo(
                         shooter,
                         hood,
                         conveyor,
                         flap,
-                        conveyorPower,
                         distanceFromTarget)
                         .withTimeout(timeout),
                         new IntakeCargo(intake, Constants.Intake.DEFAULT_POWER::get),
-                        new AdjustToTargetOnCommand(swerveDrive, () -> visionModule.getYaw().orElse(0), () -> visionModule.hasTargets())
+                        new AdjustToTargetOnCommand(swerveDrive, () -> visionModule.getYaw().orElse(0), visionModule::hasTargets)
                 ));
     }
 
 
     protected CommandBase shoot3(double timeout) {
-        Supplier<Pose2d> swervePose = swerveDrive::getPose;
-        Supplier<Transform2d> poseRelativeToTarget = () -> Constants.Vision.HUB_POSE.minus(swervePose.get());
         DoubleSupplier distanceFromTarget = visionModule::getDistance;
-        DoubleSupplier conveyorPower = Constants.Conveyor.DEFAULT_POWER::get;
-        DoubleSupplier yaw = () -> visionModule.getYaw().orElse(Robot.getAngle().minus(new Rotation2d(
-                        Math.atan2(
-                                poseRelativeToTarget.get().getY(),
-                                poseRelativeToTarget.get().getX()
-                        )
-                )
-        ).getDegrees());
+
         return new SequentialCommandGroup(
                 new InstantCommand(() -> RobotContainer.cachedSetpoint = RobotContainer.setpointSupplier.getAsDouble()),
                 new InstantCommand(() -> RobotContainer.cachedDistance = RobotContainer.distanceSupplier.getAsDouble()),
@@ -208,12 +155,12 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
                 new ParallelRaceGroup(new Shoot(
                         shooter,
                         hood,
-                        distanceFromTarget,
-                        true)
+                        distanceFromTarget
+                )
                         .withTimeout(timeout),
                         new IntakeCargo(intake, Constants.Intake.DEFAULT_POWER::get),
                         new Convey(conveyor, Constants.Conveyor.SHOOT_POWER),
-                        new HoodCommand(hood, () -> true, distanceFromTarget)
+                        new HoodCommand(hood)
                 ));
     }
 
@@ -228,52 +175,10 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
         ).withTimeout(timeout);
     }
 
-    protected CommandBase turnToAngle(Supplier<Rotation2d> target, double timeout) {
-        return new TurnToAngle(
-                swerveDrive,
-                target
-        ).withTimeout(timeout);
-    }
-
     protected CommandBase turnToAngle(Supplier<Rotation2d> target) {
         return new TurnToAngle(
                 swerveDrive,
                 target
-        );
-    }
-
-    protected CommandBase shoot2(double timeout) {
-        Supplier<Pose2d> swervePose = swerveDrive::getPose;
-        Supplier<Transform2d> poseRelativeToTarget = () -> Constants.Vision.HUB_POSE.minus(swervePose.get());
-        DoubleSupplier distanceFromTarget = visionModule::getDistance;
-        DoubleSupplier conveyorPower = Constants.Conveyor.DEFAULT_POWER::get;
-        DoubleSupplier yaw = () -> visionModule.getYaw().orElse(Robot.getAngle().minus(new Rotation2d(
-                        Math.atan2(
-                                poseRelativeToTarget.get().getY(),
-                                poseRelativeToTarget.get().getX()
-                        )
-                )
-        ).getDegrees());
-        return new SequentialCommandGroup(
-                new InstantCommand(flap::allowShooting),
-                new ParallelRaceGroup(new Shoot(
-                        shooter,
-                        hood,
-                        distanceFromTarget,
-                        true)
-                        .withTimeout(timeout),
-                        new HoodCommand(hood, () -> !conveyor.isPostFlapBeamConnected(), distanceFromTarget),
-                        new Convey(conveyor, 1),
-                        new IntakeCargo(intake, Constants.Intake.DEFAULT_POWER::get)
-                ));
-    }
-
-    protected CommandBase warmupWithOdometry() {
-        Supplier<Transform2d> poseToTarget = () -> Constants.Vision.HUB_POSE.minus(swerveDrive.getPose());
-        return new Shoot(
-                shooter,
-                hood,
-                () -> Math.hypot(poseToTarget.get().getX(), poseToTarget.get().getY())
         );
     }
 }

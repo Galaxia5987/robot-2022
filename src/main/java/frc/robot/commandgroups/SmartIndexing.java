@@ -47,19 +47,17 @@ public class SmartIndexing extends CommandBase {
             if (!conveyor.isPostFlapBeamConnected()) { // delay
                 outtakingShooter = false;
             }
-        }
-        else if (outtakingIntake) {
+        } else if (outtakingIntake) {
             outtakingShooter = false;
             shooter.setPower(0);
             flap.blockShooter();
             conveyor.setPower(-Constants.Conveyor.DEFAULT_POWER.get());
             intake.setPower(intakePower.getAsDouble());
-            if (timer.hasElapsed(0.35)){
+            if (timer.hasElapsed(0.35)) {
                 timer.stop();
                 outtakingIntake = false;
             }
-        }
-        else {
+        } else {
             shooter.setPower(0);
             flap.blockShooter();
             intake.setPower(intakePower.getAsDouble());

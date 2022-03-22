@@ -11,7 +11,6 @@ public class Convey extends CommandBase {
     protected final DoubleSupplier power;
     protected final Conveyor conveyor;
     private final BooleanSupplier condition;
-    private double maximalProximity = 0;
 
     public Convey(Conveyor conveyor, DoubleSupplier power, BooleanSupplier condition) {
         this.power = power;
@@ -30,11 +29,6 @@ public class Convey extends CommandBase {
 
     public Convey(Conveyor conveyor, double power) {
         this(conveyor, () -> power, () -> true);
-    }
-
-    @Override
-    public void initialize() {
-        maximalProximity = 0;
     }
 
     @Override

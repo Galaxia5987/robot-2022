@@ -2,7 +2,6 @@ package frc.robot.subsystems.shooter.commands.bits;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.Constants;
 import frc.robot.commandgroups.ShootCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.flap.Flap;
@@ -79,7 +78,7 @@ public class TryVelocities extends SequentialCommandGroup {
 
         addCommands(
                 new ShootCargo(shooter, hood, conveyor, flap,
-                        Constants.Conveyor.DEFAULT_POWER::get, () -> distanceFromTarget)
+                        () -> distanceFromTarget)
                         .withInterrupt(() -> getOutputs()[2]),
                 new WaitUntilCommand(isFinished).andThen(() -> {
                     if (getOutputs()[0]) {

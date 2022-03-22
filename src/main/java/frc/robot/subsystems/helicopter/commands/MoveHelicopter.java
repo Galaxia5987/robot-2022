@@ -17,11 +17,6 @@ public class MoveHelicopter extends CommandBase {
     }
 
     @Override
-    public void initialize() {
-        helicopter.setStopperMode(false);
-    }
-
-    @Override
     public void execute() {
         helicopter.setAbsolutePosition(new Rotation2d(desiredRad));
     }

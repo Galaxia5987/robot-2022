@@ -8,27 +8,19 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.conveyor.Conveyor;
 import webapp.FireLog;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.Shooter.SHOOTER_VELOCITY_DEADBAND;
 
 public class QuickReleaseConvey extends CommandBase {
     private final Conveyor conveyor;
-    private final BooleanSupplier preFlapSupplier;
     private final Timer timer = new Timer();
-    private final DoubleSupplier setpointSuppier;
     private final DoubleSupplier velocitySupplier;
     private final Timer delayTimer = new Timer();
-    private boolean last = false;
-    private boolean getBallToPreFlap = true;
-    private double setpoint = 0;
     private boolean wait = true;
 
-    public QuickReleaseConvey(Conveyor conveyor, BooleanSupplier preFlapSupplier, DoubleSupplier setpointSupplier, DoubleSupplier velocitySupplier) {
+    public QuickReleaseConvey(Conveyor conveyor, DoubleSupplier velocitySupplier) {
         this.conveyor = conveyor;
-        this.preFlapSupplier = preFlapSupplier;
-        this.setpointSuppier = setpointSupplier;
         this.velocitySupplier = velocitySupplier;
         addRequirements(conveyor);
     }
@@ -37,13 +29,7 @@ public class QuickReleaseConvey extends CommandBase {
     public void initialize() {
         timer.stop();
         delayTimer.stop();
-        if (preFlapSupplier.getAsBoolean()) {
-            getBallToPreFlap = false;
-        }
-        setpoint = setpointSuppier.getAsDouble();
         wait = true;
-        last = false;
-        setpoint = RobotContainer.setpointSupplier.getAsDouble();
     }
 
     @Override

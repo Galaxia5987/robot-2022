@@ -13,7 +13,7 @@ import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.Shooter.SHOOTER_VELOCITY_DEADBAND;
 
-public class Convey4 extends CommandBase {
+public class ConveyWhileFiltering extends CommandBase {
     private final Conveyor conveyor;
     private final BooleanSupplier preFlapSupplier;
     private final Timer timer = new Timer();
@@ -21,16 +21,14 @@ public class Convey4 extends CommandBase {
     private final DoubleSupplier velocitySupplier;
     private final Hood hood;
     private final DoubleSupplier distance;
-    private final boolean first = true;
     private final Timer delayTimer = new Timer();
-    boolean go = false;
     private boolean last = false;
     private boolean getBallToPreFlap = true;
     private double setpoint = 0;
     private boolean wait = true;
     private Hood.Mode mode = Hood.Mode.ShortDistance;
 
-    public Convey4(Conveyor conveyor, Hood hood, BooleanSupplier preFlapSupplier, DoubleSupplier distanceSupplier, DoubleSupplier velocitySupplier, DoubleSupplier distance) {
+    public ConveyWhileFiltering(Conveyor conveyor, Hood hood, BooleanSupplier preFlapSupplier, DoubleSupplier distanceSupplier, DoubleSupplier velocitySupplier, DoubleSupplier distance) {
         this.conveyor = conveyor;
         this.hood = hood;
         this.preFlapSupplier = preFlapSupplier;
@@ -65,7 +63,6 @@ public class Convey4 extends CommandBase {
         if (wait) {
             if (Math.abs(setpoint - velocitySupplier.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get()) {
                 wait = false;
-//                last = false;
             }
             SmartDashboard.putString("Saar", "Mama");
         } else {
@@ -75,14 +72,12 @@ public class Convey4 extends CommandBase {
             if (getBallToPreFlap) {
                 conveyor.setPower(Constants.Conveyor.DEFAULT_POWER.get());
             } else {
-//            if (delayTimer.hasElapsed(0.1))
                 conveyor.setPower(0);
             }
 
             if (preFlapSupplier.getAsBoolean()) {
                 if (!last) {
                     if (!conveyor.getQueue().isEmpty()) {
-//                        if (!conveyor.getQueue().getFirst().equals(DriverStation.getAlliance())) {
                         if (!conveyor.getQueue().getFirst().equals(DriverStation.Alliance.Blue)) {
                             if (Hood.Mode.LongDistance != mode) {
                                 hood.setSolenoid(Hood.Mode.LongDistance);
@@ -107,14 +102,12 @@ public class Convey4 extends CommandBase {
                 getBallToPreFlap = true;
             }
 
-//            if (Math.abs(setpoint - velocitySupplier.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get()) {
             if (timer.hasElapsed(0.8)) {
                 getBallToPreFlap = true;
                 SmartDashboard.putNumber("time", timer.get());
                 timer.reset();
                 timer.stop();
             }
-//            }
         }
     }
 

@@ -15,11 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
-import frc.robot.utils.TimeDelayedBoolean;
-import frc.robot.utils.VisionEstimationData;
 import webapp.FireLog;
-
-import java.util.function.Supplier;
 
 /**
  * The {@code SwerveDrive} Subsystem is responsible for the integration of modules together in order to move the robot honolomicaly.
@@ -33,32 +29,21 @@ public class SwerveDrive extends SubsystemBase {
     private final SwerveModule[] modules = new SwerveModule[4];
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(Constants.SwerveDrive.SWERVE_POSITIONS);
     private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, new Rotation2d());
-    //    private final SwerveDrivePoseEstimator poseEstimator =
-//            new SwerveDrivePoseEstimator(
-//                    new Rotation2d(),
-//                    new Pose2d(),
-//                    kinematics,
-//                    VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(5)),
-//                    VecBuilder.fill(Units.degreesToRadians(0.01)),
-//                    VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(30)));
+
     private final ProfiledPIDController headingController = new ProfiledPIDController(
             Constants.SwerveDrive.HEADING_KP,
             Constants.SwerveDrive.HEADING_KI,
             Constants.SwerveDrive.HEADING_KD,
             Constants.SwerveDrive.HEADING_CONTROLLER_CONSTRAINTS
     );
-    private final TimeDelayedBoolean rotationDelay = new TimeDelayedBoolean();
     private final boolean fieldOriented;
-    private final Supplier<VisionEstimationData> visionPose;
-    private final Timer timer = new Timer();
 
     private final DoubleLogEntry xVelocity;
     private final DoubleLogEntry yVelocity;
     private final DoubleLogEntry rotationVelocity;
 
-    private SwerveDrive(boolean fieldOriented, Supplier<VisionEstimationData> visionPose) {
+    private SwerveDrive(boolean fieldOriented) {
         this.fieldOriented = fieldOriented;
-        this.visionPose = visionPose;
         modules[Constants.SwerveModule.frConfig.wheel()] = new SwerveModule(Constants.SwerveModule.frConfig);
         modules[Constants.SwerveModule.flConfig.wheel()] = new SwerveModule(Constants.SwerveModule.flConfig);
         modules[Constants.SwerveModule.rrConfig.wheel()] = new SwerveModule(Constants.SwerveModule.rrConfig);
@@ -67,9 +52,6 @@ public class SwerveDrive extends SubsystemBase {
         headingController.enableContinuousInput(-Math.PI, Math.PI);
         headingController.reset(0, 0);
         headingController.setTolerance(Constants.SwerveDrive.ALLOWABLE_HEADING_ERROR);
-        timer.start();
-        timer.reset();
-
 
         DataLog log = DataLogManager.getLog();
         xVelocity = new DoubleLogEntry(log, "/swerveDrive/x-velocity");
@@ -81,9 +63,9 @@ public class SwerveDrive extends SubsystemBase {
     /**
      * @return the swerve in robot oriented mode.
      */
-    public static SwerveDrive getRobotOrientedInstance(Supplier<VisionEstimationData> visionPose) {
+    public static SwerveDrive getRobotOrientedInstance() {
         if (ROBOT_ORIENTED_INSTANCE == null) {
-            ROBOT_ORIENTED_INSTANCE = new SwerveDrive(false, visionPose);
+            ROBOT_ORIENTED_INSTANCE = new SwerveDrive(false);
         }
         return ROBOT_ORIENTED_INSTANCE;
     }
@@ -91,9 +73,9 @@ public class SwerveDrive extends SubsystemBase {
     /**
      * @return the swerve in field oriented mode.
      */
-    public static SwerveDrive getFieldOrientedInstance(Supplier<VisionEstimationData> visionPose) {
+    public static SwerveDrive getFieldOrientedInstance() {
         if (FIELD_ORIENTED_INSTANCE == null) {
-            FIELD_ORIENTED_INSTANCE = new SwerveDrive(true, visionPose);
+            FIELD_ORIENTED_INSTANCE = new SwerveDrive(true);
         }
         return FIELD_ORIENTED_INSTANCE;
     }
@@ -127,13 +109,6 @@ public class SwerveDrive extends SubsystemBase {
      * @param rotation the rotational velocity counter-clockwise positive. [rad/s]
      */
     public void holonomicDrive(double forward, double strafe, double rotation) {
-//        if (rotation == 0 || rotationDelay.update(Math.abs(headingController.getGoal().position - Robot.getAngle()
-//                        .getRadians()) < Constants.SwerveDrive.ALLOWABLE_HEADING_ERROR,
-//                Constants.SwerveDrive.ROTATION_DELAY)) {
-//            rotation = headingController.calculate(Robot.getAngle().getRadians());
-//        } else {
-//            headingController.setGoal(Robot.getAngle().getRadians());
-//        }
         ChassisSpeeds speeds = fieldOriented ?
                 ChassisSpeeds.fromFieldRelativeSpeeds(forward, strafe, rotation, Robot.getAngle()) :
                 new ChassisSpeeds(forward, strafe, rotation);
@@ -204,20 +179,6 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     /**
-     * Rotates the robot to a desired angle.
-     *
-     * @param desiredAngle the desired angle of the robot.
-     */
-    public double getHeadingOutput(Rotation2d desiredAngle) {
-        double lastGoal = headingController.getGoal().position;
-        headingController.setGoal(desiredAngle.getRadians());
-        double output = headingController.calculate(Robot.getAngle().getRadians());
-
-        headingController.setGoal(lastGoal);
-        return output;
-    }
-
-    /**
      * Gets the states of every module.
      *
      * @return the states of every module.
@@ -236,14 +197,6 @@ public class SwerveDrive extends SubsystemBase {
      * @param states the states of the modules.
      */
     public void setStates(SwerveModuleState[] states) {
-        for (SwerveModule module : modules) {
-            states[module.getWheel()] = SwerveModuleState.optimize(states[module.getWheel()], module.getAngle());
-            module.setState(states[module.getWheel()]);
-        }
-    }
-
-    public void desaturatedSetStates(SwerveModuleState[] states) {
-        SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.Autonomous.MAX_VEL);
         for (SwerveModule module : modules) {
             states[module.getWheel()] = SwerveModuleState.optimize(states[module.getWheel()], module.getAngle());
             module.setState(states[module.getWheel()]);
@@ -302,10 +255,6 @@ public class SwerveDrive extends SubsystemBase {
     public void resetOdometry(Pose2d pose, Rotation2d angle) {
         odometry.resetPosition(new Pose2d(pose.getTranslation(), angle), angle);
     }
-
-//    public void resetPoseEstimator(Pose2d pose2d) {
-//        poseEstimator.resetPosition(pose2d, Robot.getAngle());
-//    }
 
     /**
      * Resets the heading controller target angle.
@@ -371,23 +320,8 @@ public class SwerveDrive extends SubsystemBase {
                 getStates()
         );
 
-//        poseEstimator.updateWithTime(
-//                Timer.getFPGATimestamp(),
-//                Robot.getAngle(),
-//                getStates()
-//        );
-
-//        var visionData = visionPose.get();
-//        if (visionData.hasTarget()) {
-//            poseEstimator.addVisionMeasurement(visionData.estimatedPose(), visionData.time());
-//        }
-
-//        String outputPosition = poseEstimator.getEstimatedPosition().getX() + ", " + poseEstimator.getEstimatedPosition().getY();
-//        SmartDashboard.putString("robot_position", outputPosition);
-
         String outputRotation = String.valueOf(Robot.getAngle().getDegrees());
         SmartDashboard.putString("robot_rotation", outputRotation);
-//        System.out.println("distance: " + getOdometryDistance());
 
         var speeds = getChassisSpeeds();
         xVelocity.append(speeds.vxMetersPerSecond);

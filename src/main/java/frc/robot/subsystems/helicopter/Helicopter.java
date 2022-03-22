@@ -8,10 +8,11 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.util.datalog.BooleanLogEntry;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
-import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
@@ -34,7 +35,6 @@ public class Helicopter extends SubsystemBase {
 
     private final WPI_TalonFX mainMotor = new WPI_TalonFX(Ports.Helicopter.MAIN);
     private final WPI_TalonFX auxMotor = new WPI_TalonFX(Ports.Helicopter.AUX);
-    private final Solenoid stopper = new Solenoid(PneumaticsModuleType.CTREPCM, Ports.Helicopter.STOPPER);
     private final UnitModel unitModelPosition = new UnitModel(Constants.Helicopter.TICKS_PER_RAD);
     private final UnitModel unitModelPositionAbsolute = new UnitModel(Constants.Helicopter.TICKS_PER_RAD_ABSOLUTE_ENCODER);
     private final DutyCycleEncoder dutyCycleEncoder = new DutyCycleEncoder(Ports.Helicopter.ENCODER);
@@ -45,7 +45,6 @@ public class Helicopter extends SubsystemBase {
 
     private final DoubleLogEntry power;
     private final DoubleLogEntry voltage;
-    private final BooleanLogEntry isStopped;
 
     private Helicopter() {
         if (Robot.isSimulation()) {
@@ -136,7 +135,6 @@ public class Helicopter extends SubsystemBase {
         DataLog log = DataLogManager.getLog();
         power = new DoubleLogEntry(log, "/helicopter/power");
         voltage = new DoubleLogEntry(log, "/helicopter/voltage");
-        isStopped = new BooleanLogEntry(log, "/helicopter/isStopped");
     }
 
     /**
@@ -164,26 +162,14 @@ public class Helicopter extends SubsystemBase {
             double volts = controller.calculate(getVelocity(), velocity);
             mainMotor.setVoltage(volts);
         } else {
-            if (!isStopperEngaged()) {
-                mainMotor.set(ControlMode.Velocity, unitModelPosition.toTicks100ms(velocity));
-            }
+            mainMotor.set(ControlMode.Velocity, unitModelPosition.toTicks100ms(velocity));
         }
     }
 
     public void vroomVroom(double power) {
-//        if (!isStopperEngaged()) {
-            mainMotor.set(ControlMode.PercentOutput, power);
-//        }
+        mainMotor.set(ControlMode.PercentOutput, power);
     }
 
-    /**
-     * Set Helicopter position to zero.
-     * Zero is the balanced position of the arms.
-     */
-    public void setAngleZero() {
-        double angle = getAbsolutePosition();
-        setPosition(getPosition().minus(new Rotation2d(angle)));
-    }
 
     /**
      * @return the absolute position of the Helicopter.
@@ -198,9 +184,7 @@ public class Helicopter extends SubsystemBase {
     public void setAbsolutePosition(Rotation2d position) {
         var currentPosition = new Rotation2d(getAbsolutePosition());
         var error = position.minus(currentPosition);
-        if (!isStopperEngaged()) {
-            mainMotor.set(ControlMode.Position, unitModelPosition.toTicks(error.getRadians()) + mainMotor.getSelectedSensorPosition());
-        }
+        mainMotor.set(ControlMode.Position, unitModelPosition.toTicks(error.getRadians()) + mainMotor.getSelectedSensorPosition());
     }
 
     /**
@@ -217,35 +201,9 @@ public class Helicopter extends SubsystemBase {
         var currentPosition = getPosition();
         var error = position.minus(currentPosition);
         Rotation2d minMove = new Rotation2d(Math.IEEEremainder(unitModelPosition.toTicks(error.getRadians()), Math.PI * 2));
-        if (!isStopperEngaged()) {
-            mainMotor.set(ControlMode.MotionMagic, unitModelPosition.toTicks(minMove.getRadians()));
-        }
+        mainMotor.set(ControlMode.MotionMagic, unitModelPosition.toTicks(minMove.getRadians()));
     }
 
-    /**
-     * Get the stopper's mode.
-     *
-     * @return the stopper's mode.
-     */
-    public boolean isStopperEngaged() {
-        return !stopper.get();
-    }
-
-    /**
-     * Set the stopper's mode.
-     *
-     * @param engaged whether the stopper is engaged.
-     */
-    public void setStopperMode(boolean engaged) {
-        stopper.set(!engaged);
-    }
-
-    /**
-     * Toggle the value of the stopper.
-     */
-    public void toggleStopper() {
-        stopper.toggle();
-    }
 
     /**
      * Stop both motors in the place they were.
@@ -258,7 +216,6 @@ public class Helicopter extends SubsystemBase {
     public void periodic() {
         power.append(mainMotor.get());
         voltage.append(mainMotor.getMotorOutputVoltage());
-        isStopped.append(isStopperEngaged());
     }
 
     /**

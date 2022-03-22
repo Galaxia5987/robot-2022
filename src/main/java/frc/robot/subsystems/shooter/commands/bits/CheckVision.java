@@ -1,6 +1,9 @@
 package frc.robot.subsystems.shooter.commands.bits;
 
-import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.shooter.Shooter;
@@ -13,9 +16,6 @@ public class CheckVision extends SequentialCommandGroup {
     public CheckVision(Shooter shooter, Hood hood, PhotonVisionModule photonVisionModule) {
         addCommands(
                 new ParallelRaceGroup(
-                        new InstantCommand(() -> photonVisionModule.setLeds(false)),
-                        new WaitCommand(0.5),
-
                         new Shoot(
                                 shooter,
                                 hood,

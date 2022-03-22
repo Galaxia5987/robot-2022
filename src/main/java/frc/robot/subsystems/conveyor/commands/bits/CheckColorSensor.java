@@ -7,8 +7,6 @@ import frc.robot.subsystems.flap.Flap;
 
 public class CheckColorSensor extends Convey {
     private final Flap flap;
-    private final int cargoIn = 0;
-    private final int cargoOut = 0;
 
     public CheckColorSensor(Flap flap, Conveyor conveyor, double power) {
         super(conveyor, () -> power);

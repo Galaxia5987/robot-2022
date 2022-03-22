@@ -1,6 +1,5 @@
 package frc.robot.subsystems.conveyor;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
@@ -9,13 +8,12 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
+import frc.robot.Robot;
 import frc.robot.subsystems.UnitModel;
 import frc.robot.subsystems.flap.Flap;
-import frc.robot.utils.LedSubsystem;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -35,8 +33,6 @@ public class Conveyor extends SubsystemBase {
 
     private final DoubleLogEntry power;
     private final StringLogEntry positions;
-    private boolean isIntaking = true;
-    private double lastPower = 0.1;
 
     private Conveyor() {
         motor.setInverted(MOTOR_INVERSION);
@@ -101,18 +97,6 @@ public class Conveyor extends SubsystemBase {
      */
     public void setPower(double power) {
         motor.set(power);
-
-        if (power != 0) {
-            lastPower = power;
-        }
-    }
-
-    public double getVelocity() {
-        return unitModel.toVelocity(motor.getSelectedSensorVelocity()) * 60;
-    }
-
-    public void setVelocity(double velocity) {
-        motor.set(ControlMode.Velocity, unitModel.toTicks100ms(velocity / 60));
     }
 
     /**
@@ -142,7 +126,6 @@ public class Conveyor extends SubsystemBase {
                 }
             }
         }
-        isIntaking = currentlyIntaking;
 
         if (postFlapBeam.hasChanged() && !postFlapBeam.hasObject() && Flap.getInstance().getFlapMode().equals(Flap.FlapMode.ALLOW_SHOOTING)) {
             if (!cargoPositions.isEmpty()) {
@@ -174,18 +157,24 @@ public class Conveyor extends SubsystemBase {
         updateActualBallPositions();
 
 
-        SmartDashboard.putString("Positions", cargoPositions.toString());
-        SmartDashboard.putNumber("Proximity", colorSensor.getProximityValue());
-        SmartDashboard.putBoolean("Pre flap", preFlapBeam.get());
-        SmartDashboard.putBoolean("Post flap", postFlapBeam.get());
-        System.out.println("Pre flap: " + preFlapBeam.get());
-        System.out.println("Post flap: " + postFlapBeam.get());
-        int minutes = (int) Math.round(DriverStation.getMatchTime()) / 60;
-        String minutesString = "0" + minutes;
-        int seconds = (int) Math.round(DriverStation.getMatchTime()) % 60;
-        String secondsString = seconds < 10 ? "0" + seconds : seconds + "";
-        String timerString = minutesString + ":" + secondsString;
-        SmartDashboard.putString("timer", timerString);
+        if (Robot.debug) {
+            SmartDashboard.putString("Positions", cargoPositions.toString());
+            SmartDashboard.putNumber("Proximity", colorSensor.getProximityValue());
+            SmartDashboard.putBoolean("Pre flap", preFlapBeam.get());
+            SmartDashboard.putBoolean("Post flap", postFlapBeam.get());
+            System.out.println("Pre flap: " + preFlapBeam.get());
+            System.out.println("Post flap: " + postFlapBeam.get());
+            int minutes = (int) Math.round(DriverStation.getMatchTime()) / 60;
+            String minutesString = "0" + minutes;
+            int seconds = (int) Math.round(DriverStation.getMatchTime()) % 60;
+            String secondsString = seconds < 10 ? "0" + seconds : seconds + "";
+            String timerString = minutesString + ":" + secondsString;
+            SmartDashboard.putString("timer", timerString);
+            SmartDashboard.putNumber("current color r", colorSensor.getRawColor()[0]);
+            SmartDashboard.putNumber("current color g", colorSensor.getRawColor()[1]);
+            SmartDashboard.putNumber("current color b", colorSensor.getRawColor()[2]);
+            SmartDashboard.putString("detected-color", getColor().name());
+        }
 
         String firstColor = "";
         String secondColor = "";
@@ -198,10 +187,6 @@ public class Conveyor extends SubsystemBase {
             secondColor = cargoPositions.getFirst().equals(DriverStation.Alliance.Blue) ? "blue" : "red";
         }
 
-        SmartDashboard.putNumber("current color r", colorSensor.getRawColor()[0]);
-        SmartDashboard.putNumber("current color g", colorSensor.getRawColor()[1]);
-        SmartDashboard.putNumber("current color b", colorSensor.getRawColor()[2]);
-        SmartDashboard.putString("detected-color", getColor().name());
         SmartDashboard.putString("first_color", firstColor);
         SmartDashboard.putString("second_color", secondColor);
 

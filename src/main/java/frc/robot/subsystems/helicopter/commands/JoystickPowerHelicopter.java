@@ -28,7 +28,6 @@ public class JoystickPowerHelicopter extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         helicopter.stop();
-        helicopter.setStopperMode(false);
     }
 }
 

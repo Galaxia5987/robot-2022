@@ -246,10 +246,10 @@ public class LedSubsystem extends SubsystemBase {
             // Check bounds
             m_rainbowFirstPixelHue %= 180;
         } else {
-           for (int i = 37; i < ledBuffer.getLength(); i++) {
-               ledBuffer.setLED(i, color);
-           }
-           led.setData(ledBuffer);
+            for (int i = 37; i < ledBuffer.getLength(); i++) {
+                ledBuffer.setLED(i, color);
+            }
+            led.setData(ledBuffer);
         }
     }
 

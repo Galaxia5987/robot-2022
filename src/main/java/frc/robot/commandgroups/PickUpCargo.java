@@ -6,7 +6,6 @@ import frc.robot.subsystems.conveyor.commands.Convey;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.flap.commands.FlapCommand;
 import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.intake.commands.IntakeByRobotSpeed;
 import frc.robot.subsystems.intake.commands.IntakeCargo;
 
 import java.util.function.DoubleSupplier;

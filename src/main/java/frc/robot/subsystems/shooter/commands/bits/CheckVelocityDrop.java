@@ -1,6 +1,5 @@
 package frc.robot.subsystems.shooter.commands.bits;
 
-import frc.robot.Constants;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.Shoot;

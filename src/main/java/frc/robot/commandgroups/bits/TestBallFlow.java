@@ -18,16 +18,14 @@ public class TestBallFlow extends SequentialCommandGroup {
     private final Intake intake;
     private final Shooter shooter;
     private final Conveyor conveyor;
-    private final ShootCargo shootCargo;
-    private final PickUpCargo pickUpCargo;
 
     public TestBallFlow(Hood hood, Flap flap, Conveyor conveyor, Intake intake, Shooter shooter,
                         BooleanSupplier pickUpCargoIsFinished, BooleanSupplier shootCargoIsFinished) {
         this.intake = intake;
         this.shooter = shooter;
         this.conveyor = conveyor;
-        this.shootCargo = new ShootCargo(shooter, hood, conveyor, flap, () -> 8, Constants.Conveyor.DEFAULT_POWER::get);
-        this.pickUpCargo = new PickUpCargo(conveyor, flap, intake, Constants.Conveyor.DEFAULT_POWER.get(), () -> 0.5);
+        ShootCargo shootCargo = new ShootCargo(shooter, hood, conveyor, flap, Constants.Conveyor.DEFAULT_POWER::get);
+        PickUpCargo pickUpCargo = new PickUpCargo(conveyor, flap, intake, Constants.Conveyor.DEFAULT_POWER.get(), () -> 0.5);
 
         addCommands(
                 pickUpCargo.withInterrupt(pickUpCargoIsFinished),

@@ -2,7 +2,6 @@ package frc.robot.commandgroups;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
@@ -17,7 +16,6 @@ public class QuickReleaseBackAndShootCargo extends SequentialCommandGroup {
                                          Hood hood,
                                          Conveyor conveyor,
                                          Flap flap,
-                                         DoubleSupplier conveyorPower,
                                          DoubleSupplier distanceFromTarget) {
         addCommands(new InstantCommand(() -> RobotContainer.cachedSetpoint = RobotContainer.setpointSupplier.getAsDouble()));
         addCommands(new InstantCommand(() -> RobotContainer.cachedDistance = RobotContainer.distanceSupplier.getAsDouble()));
@@ -27,7 +25,7 @@ public class QuickReleaseBackAndShootCargo extends SequentialCommandGroup {
         addCommands(new InstantCommand(() -> RobotContainer.shooting = true));
 
         addCommands(new Convey(conveyor, -0.25).withTimeout(0.075),
-                new QuickReleaseShootCargo(shooter, hood, conveyor, flap, conveyorPower, distanceFromTarget));
+                new QuickReleaseShootCargo(shooter, hood, conveyor, flap, distanceFromTarget));
 
 
     }
