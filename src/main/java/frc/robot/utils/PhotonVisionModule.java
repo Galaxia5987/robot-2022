@@ -45,7 +45,7 @@ public class PhotonVisionModule extends SubsystemBase {
 
             PortForwarder.add(5800, "photonvision.local", 5800);
             PortForwarder.add(1183, "photonvision.local", 1183);
-            PortForwarder.add(1184, "photonvision.local", 118   4);
+            PortForwarder.add(1184, "photonvision.local", 1184);
         }
     }
 
