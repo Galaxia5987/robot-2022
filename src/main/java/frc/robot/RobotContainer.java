@@ -76,8 +76,8 @@ public class RobotContainer {
      * The container for the robot.  Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        setpointSupplier = () -> Shoot.getSetpointVelocity(photonVisionModule.getDistance());
-        distanceSupplier = photonVisionModule::getDistance;
+        distanceSupplier = () -> photonVisionModule.getDistance();
+        setpointSupplier = () -> Shoot.getSetpointVelocity(distanceSupplier.getAsDouble());
         odometrySetpointSupplier = () -> Shoot.getSetpointVelocity(swerve.getOdometryDistance());
         odometryDistanceSupplier = swerve::getOdometryDistance;
         hasTarget = photonVisionModule::hasTargets;
@@ -105,7 +105,8 @@ public class RobotContainer {
                         () -> -Joysticks.rightJoystick.getX() * thetaMultiplier,
                         () -> photonVisionModule.getYaw().orElse(0),
                         Joysticks.rightTrigger::get,
-                        () -> photonVisionModule.getDistance(Constants.Vision.CAMERA_HEIGHT, Constants.Vision.TARGET_HEIGHT)
+                        () -> photonVisionModule.getDistance(Constants.Vision.CAMERA_HEIGHT, Constants.Vision.TARGET_HEIGHT),
+                        photonVisionModule::hasTargets
                 )
         );
         helicopter.setDefaultCommand(new JoystickPowerHelicopter(helicopter, () -> -Xbox.controller.getLeftY()));

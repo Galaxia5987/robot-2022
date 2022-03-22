@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Ports;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
@@ -19,6 +20,7 @@ import org.photonvision.SimVisionSystem;
 import org.photonvision.targeting.PhotonPipelineResult;
 import webapp.FireLog;
 
+import java.sql.Connection;
 import java.util.Optional;
 import java.util.OptionalDouble;
 
@@ -83,6 +85,15 @@ public class PhotonVisionModule extends SubsystemBase {
             return filter.calculate(distance) + TARGET_RADIUS;
         }
         return 0;
+    }
+
+    /**
+     * Gets the distance of the robot from the target.
+     *
+     * @return the distance of the vision module from the target. [m]
+     */
+    public double getDistance() {
+        return getDistance(CAMERA_HEIGHT, TARGET_HEIGHT_FROM_GROUND);
     }
 
     public OptionalDouble getYaw() {

@@ -23,7 +23,7 @@ public class CheckVision extends SequentialCommandGroup {
 
                         new WaitCommand(10),
                         new RunCommand(() -> System.out.println("Current velocity for " + photonVisionModule.getDistance(Constants.Vision.BIT_CAMERA_HEIGHT, Constants.Vision.BIT_TARGET_HEIGHT_FROM_GROUND) + ": " + shooter.getVelocity())),
-                        new RunCommand(() -> System.out.println("Desired velocity for " + photonVisionModule.getDistance(Constants.Vision.BIT_CAMERA_HEIGHT, Constants.Vision.BIT_TARGET_HEIGHT_FROM_GROUND) + ": " + Shoot.getSetpointVelocity(2, hood.isOpen())))
+                        new RunCommand(() -> System.out.println("Desired velocity for " + photonVisionModule.getDistance(Constants.Vision.BIT_CAMERA_HEIGHT, Constants.Vision.BIT_TARGET_HEIGHT_FROM_GROUND) + ": " + Shoot.getSetpointVelocity(2)))
                 ));
     }
 }

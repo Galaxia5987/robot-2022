@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
 import frc.robot.subsystems.UnitModel;
+import frc.robot.subsystems.flap.Flap;
 import frc.robot.utils.LedSubsystem;
 
 import java.util.ArrayDeque;
@@ -162,12 +163,6 @@ public class Conveyor extends SubsystemBase {
         return colorSensor.getColor();
     }
 
-    /**
-     * @return The color the color sensor sensed.
-     */
-    public DriverStation.Alliance getColor() {
-        return colorSensor.getColor();
-    }
     /**
      * removes the string representing the cargo from the list if the cargo is ejected and adds if the cargo is consumed
      */

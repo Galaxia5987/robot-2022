@@ -9,10 +9,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LedSubsystem extends SubsystemBase {
     public static boolean climbTime = false;
-//    private final AddressableLED hoodLeds = new AddressableLED(6);
-//    private final AddressableLEDBuffer hoodLedBuffer = new AddressableLEDBuffer(18); //18
-//    private final AddressableLED conveyorLeds = new AddressableLED(3);
-//    private final AddressableLEDBuffer conveyorLedBuffer = new AddressableLEDBuffer(6); //34
+    private final AddressableLED led;
+    private final AddressableLEDBuffer ledBuffer;
     private final int m_water = 80;
     private final int sign = 1;
     Timer timer = new Timer();
@@ -194,30 +192,30 @@ public class LedSubsystem extends SubsystemBase {
                 for (var i = 0; i < 20; i++) {
                     if (switchOfGods(current)[i] == 1) {
 //                    m_ledBuffer.setHSV(i, 10, 255, 128);
-                        m_ledBuffer.setRGB(i, 0, 158, 189);
+                        ledBuffer.setRGB(i, 0, 158, 189);
                     } else {
-                        m_ledBuffer.setRGB(i, 25, 25, 25);
+                        ledBuffer.setRGB(i, 25, 25, 25);
                     }
                 }
             } else {
                 for (var i = 0; i < 20; i++) {
                     if (switchOfGods(percent)[i] == 1) {
-                        m_ledBuffer.setRGB(i, 0, 255, 0);
+                        ledBuffer.setRGB(i, 0, 255, 0);
                     } else {
-                        m_ledBuffer.setRGB(i, 25, 25, 25);
+                        ledBuffer.setRGB(i, 25, 25, 25);
                     }
                 }
             }
 
             if (climbTime) {
                 for (var i = 0; i < 20; i++) {
-                    m_ledBuffer.setRGB(i, 0, 158, 189);
+                    ledBuffer.setRGB(i, 0, 158, 189);
                 }
             }
 
 
-            m_ledBuffer.setRGB(0, 0, 0, 0);
-            m_ledBuffer.setRGB(1, 0, 0, 0);
+            ledBuffer.setRGB(0, 0, 0, 0);
+            ledBuffer.setRGB(1, 0, 0, 0);
 
 /*        for (var i = 20; i < m_ledBuffer.getLength(); i++) {
 //            final var hue = (m_rainbowFirstPixelHue + (i * 180 / m_ledBuffer.getLength())) % 180;
@@ -242,16 +240,16 @@ public class LedSubsystem extends SubsystemBase {
 //            sign = 1;
 //        }
             rainbow2();
-            m_led.setData(m_ledBuffer);
+            led.setData(ledBuffer);
             // Increase by to make the rainbow "move"
             m_rainbowFirstPixelHue += 3;
             // Check bounds
             m_rainbowFirstPixelHue %= 180;
         } else {
-           for (int i = 37; i < m_ledBuffer.getLength(); i++) {
-               m_ledBuffer.setLED(i, color);
+           for (int i = 37; i < ledBuffer.getLength(); i++) {
+               ledBuffer.setLED(i, color);
            }
-           m_led.setData(m_ledBuffer);
+           led.setData(ledBuffer);
         }
     }
 
@@ -264,7 +262,7 @@ public class LedSubsystem extends SubsystemBase {
             // Set the value
             if (neutralMode) {
                 conveyorLedBuffer.setLED(i, Color.kPurple);
-//                m_ledBuffer.setRGB(i, 219, 127, 142);
+//                ledBuffer.setRGB(i, 219, 127, 142);
                 conveyorLedBuffer.setLED(36 - (i - 37), Color.kPurple);
 //                m_ledBuffer.setRGB(36 - (i - 37), 219, 127, 142);
             } else {
@@ -280,10 +278,10 @@ public class LedSubsystem extends SubsystemBase {
         if (climbTime) {
             for (var i = 0; i < 20; i++) {
                 final var hue = ((180 - m_rainbowFirstPixelHue) + (i * 180 / 17)) % 180;
-                conveyorLedBuffer.setHSV(i, hue, 223, 217);
-                conveyorLedBuffer.setHSV(36 - (i - 37), hue, 223, 217);
+                ledBuffer.setHSV(i, hue, 223, 217);
+                ledBuffer.setHSV(36 - (i - 37), hue, 223, 217);
             }
-        }*/
+        }
     }
 
     public void setNeutralMode(boolean neutralMode) {
