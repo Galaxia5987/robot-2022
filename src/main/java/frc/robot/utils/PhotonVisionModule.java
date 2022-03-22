@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -41,6 +42,10 @@ public class PhotonVisionModule extends SubsystemBase {
             camera = new PhotonCamera(cameraName);
             simCamera = null;
             simVisionSystem = null;
+
+            PortForwarder.add(5800, "photonvision.local", 5800);
+            PortForwarder.add(1183, "photonvision.local", 1183);
+            PortForwarder.add(1184, "photonvision.local", 118   4);
         }
     }
 
