@@ -19,11 +19,11 @@ public class CheckVision extends SequentialCommandGroup {
                         new Shoot(
                                 shooter,
                                 hood,
-                                photonVisionModule.getDistance()).withTimeout(8),
+                                photonVisionModule.getDistance(Constants.Vision.BIT_CAMERA_HEIGHT, Constants.Vision.BIT_TARGET_HEIGHT_FROM_GROUND)).withTimeout(8),
 
                         new WaitCommand(10),
-                        new RunCommand(() -> System.out.println("Current velocity for " + photonVisionModule.getDistance() + ": " + shooter.getVelocity())),
-                        new RunCommand(() -> System.out.println("Desired velocity for " + photonVisionModule.getDistance() + ": " + Shoot.getSetpointVelocity(2)))
+                        new RunCommand(() -> System.out.println("Current velocity for " + photonVisionModule.getDistance(Constants.Vision.BIT_CAMERA_HEIGHT, Constants.Vision.BIT_TARGET_HEIGHT_FROM_GROUND) + ": " + shooter.getVelocity())),
+                        new RunCommand(() -> System.out.println("Desired velocity for " + photonVisionModule.getDistance(Constants.Vision.BIT_CAMERA_HEIGHT, Constants.Vision.BIT_TARGET_HEIGHT_FROM_GROUND) + ": " + Shoot.getSetpointVelocity(2, hood.isOpen())))
                 ));
     }
 }

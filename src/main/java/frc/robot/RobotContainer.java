@@ -13,6 +13,8 @@ import frc.robot.auto.FiveCargoAuto;
 import frc.robot.commandgroups.*;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
+import frc.robot.subsystems.conveyor.commands.bits.CheckColorSensor;
+import frc.robot.subsystems.conveyor.commands.bits.TestColorSensor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.DriveAndAdjustWithVision;
 import frc.robot.subsystems.drivetrain.commands.TurnToAngle;
@@ -103,8 +105,8 @@ public class RobotContainer {
                         () -> -Joysticks.rightJoystick.getX() * thetaMultiplier,
                         () -> photonVisionModule.getYaw().orElse(0),
                         Joysticks.rightTrigger::get,
-                        photonVisionModule::getDistance,
-                        photonVisionModule::hasTargets)
+                        () -> photonVisionModule.getDistance(Constants.Vision.CAMERA_HEIGHT, Constants.Vision.TARGET_HEIGHT)
+                )
         );
         helicopter.setDefaultCommand(new JoystickPowerHelicopter(helicopter, () -> -Xbox.controller.getLeftY()));
     }
@@ -113,7 +115,7 @@ public class RobotContainer {
         Supplier<Pose2d> swervePose = swerve::getPose;
         Supplier<Transform2d> poseRelativeToTarget = () -> Constants.Vision.HUB_POSE.minus(swervePose.get());
         DoubleSupplier distanceFromTarget = () -> photonVisionModule.hasTargets() ?
-                photonVisionModule.getDistance() :
+                 photonVisionModule.getDistance(Constants.Vision.CAMERA_HEIGHT, Constants.Vision.TARGET_HEIGHT) :
                 Math.hypot(poseRelativeToTarget.get().getX(), poseRelativeToTarget.get().getY());
 
         { // Xbox controller button bindings.

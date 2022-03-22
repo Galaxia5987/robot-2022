@@ -42,7 +42,7 @@ public class Shoot extends CommandBase {
     }
 
     public Shoot(Shooter shooter, Hood hood, DoubleSupplier distance) {
-        this(shooter, hood, distance, false);
+        this(shooter, hood, distance, true);
     }
 
     /**

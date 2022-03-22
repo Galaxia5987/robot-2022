@@ -22,8 +22,8 @@ public class LedSubsystem extends SubsystemBase {
     private int m_rainbowFirstPixelHue = 0;
     private int percent = 0;
     private boolean neutralMode = true;
-    private AddressableLED led;
-    private AddressableLEDBuffer ledBuffer;
+    private boolean isTesting = false;
+    private Color color = new Color(0, 0, 0);
 
     public LedSubsystem() {
         led = new AddressableLED(6);
@@ -49,6 +49,14 @@ public class LedSubsystem extends SubsystemBase {
         timer2.start();
         timer2.reset();
         climbTime = false;
+    }
+
+    public void setTesting(boolean testing) {
+        isTesting = testing;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 
     public static int[] switchOfGods(int idx) { // 6 states
@@ -165,45 +173,51 @@ public class LedSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (DriverStation.isAutonomous() || DriverStation.getMatchTime() == -1) {
-            climbTime = false;
-        }
-        if (!DriverStation.isAutonomous() && DriverStation.getMatchTime() != -1 && DriverStation.getMatchTime() <= 30) {
-            climbTime = true;
-        }
-        double time = 0.2;
-        if (current == 9) {
-            time = 0.4;
-        }
-        if (timer.hasElapsed(time)) {
-            updateCurrent(10);
-            updateCurrent2(17);
-            timer.reset();
-        }
-        if (neutralMode) {
-            for (var i = 0; i < 18; i++) {
-                if (switchOfGods(current)[i] == 1) {
-//                    m_ledBuffer.setHSV(i, 10, 255, 128);
-                    ledBuffer.setRGB(i, 0, 158, 189);
-                } else {
-                    ledBuffer.setRGB(i, 25, 25, 25);
-                }
-            }
-        } else {
-            for (var i = 0; i < 18; i++) {
-                if (switchOfGods(percent)[i] == 1) {
-                    ledBuffer.setRGB(i, 0, 255, 0);
-                } else {
-                    ledBuffer.setRGB(i, 25, 25, 25);
-                }
-            }
-        }
 
-        if (climbTime) {
-            for (var i = 0; i < 18; i++) {
-                ledBuffer.setRGB(i, 0, 158, 189);
+        if (!isTesting) {
+            if (DriverStation.isAutonomous() || DriverStation.getMatchTime() == -1) {
+                climbTime = false;
             }
-        }
+            if (!DriverStation.isAutonomous() && DriverStation.getMatchTime() != -1 && DriverStation.getMatchTime() <= 30) {
+                climbTime = true;
+            }
+            double time = 0.2;
+            if (current == 9) {
+                time = 0.4;
+            }
+            if (timer.hasElapsed(time)) {
+                updateCurrent(10);
+                updateCurrent2(17);
+                timer.reset();
+            }
+            if (neutralMode) {
+                for (var i = 0; i < 20; i++) {
+                    if (switchOfGods(current)[i] == 1) {
+//                    m_ledBuffer.setHSV(i, 10, 255, 128);
+                        m_ledBuffer.setRGB(i, 0, 158, 189);
+                    } else {
+                        m_ledBuffer.setRGB(i, 25, 25, 25);
+                    }
+                }
+            } else {
+                for (var i = 0; i < 20; i++) {
+                    if (switchOfGods(percent)[i] == 1) {
+                        m_ledBuffer.setRGB(i, 0, 255, 0);
+                    } else {
+                        m_ledBuffer.setRGB(i, 25, 25, 25);
+                    }
+                }
+            }
+
+            if (climbTime) {
+                for (var i = 0; i < 20; i++) {
+                    m_ledBuffer.setRGB(i, 0, 158, 189);
+                }
+            }
+
+
+            m_ledBuffer.setRGB(0, 0, 0, 0);
+            m_ledBuffer.setRGB(1, 0, 0, 0);
 
 /*        for (var i = 20; i < m_ledBuffer.getLength(); i++) {
 //            final var hue = (m_rainbowFirstPixelHue + (i * 180 / m_ledBuffer.getLength())) % 180;
@@ -227,13 +241,18 @@ public class LedSubsystem extends SubsystemBase {
 //        if (m_water <= 80) {
 //            sign = 1;
 //        }
-//        rainbow2();
-        led.setData(ledBuffer);
-//        conveyorLeds.setData(conveyorLedBuffer);
-        // Increase by to make the rainbow "move"
-        m_rainbowFirstPixelHue += 3;
-        // Check bounds
-        m_rainbowFirstPixelHue %= 180;
+            rainbow2();
+            m_led.setData(m_ledBuffer);
+            // Increase by to make the rainbow "move"
+            m_rainbowFirstPixelHue += 3;
+            // Check bounds
+            m_rainbowFirstPixelHue %= 180;
+        } else {
+           for (int i = 37; i < m_ledBuffer.getLength(); i++) {
+               m_ledBuffer.setLED(i, color);
+           }
+           m_led.setData(m_ledBuffer);
+        }
     }
 
     private void rainbow2() {
@@ -258,8 +277,8 @@ public class LedSubsystem extends SubsystemBase {
         // Check bounds
 //        m_rainbowFirstPixelHue %= 180;
 
-/*        if (climbTime) {
-            for (var i = 0; i < conveyorLedBuffer.getLength(); i++) {
+        if (climbTime) {
+            for (var i = 0; i < 20; i++) {
                 final var hue = ((180 - m_rainbowFirstPixelHue) + (i * 180 / 17)) % 180;
                 conveyorLedBuffer.setHSV(i, hue, 223, 217);
                 conveyorLedBuffer.setHSV(36 - (i - 37), hue, 223, 217);
