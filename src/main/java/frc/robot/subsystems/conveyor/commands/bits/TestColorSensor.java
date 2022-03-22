@@ -13,16 +13,16 @@ public class TestColorSensor extends SequentialCommandGroup {
 
     public TestColorSensor(Conveyor conveyor, Intake intake, LedSubsystem ledSubsystem) {
         addCommands(
-                new InstantCommand(() -> ledSubsystem.setTesting(true)),
-                new InstantCommand(intake::closeRetractor),
-                new InstantCommand(() -> ledSubsystem.setColor(Color.kBlue)),
-                new RunCommand(() -> System.out.println("Enter blue cargo")).withTimeout(4),
-                new RunCommand(() -> checkColorBlue(conveyor)).withInterrupt(() -> conveyor.getColor() == DriverStation.Alliance.Blue),
-                new InstantCommand(() -> ledSubsystem.setColor(Color.kRed)),
-                new RunCommand(() -> System.out.println("Enter red cargo")).withTimeout(4),
-                new RunCommand(() -> checkColorRed(conveyor)).withInterrupt(() -> conveyor.getColor() == DriverStation.Alliance.Red),
-                new InstantCommand(() -> System.out.println("Sensor works!")),
-                new InstantCommand(() -> ledSubsystem.setTesting(false))
+//                new InstantCommand(() -> ledSubsystem.setTesting(true)),
+//                new InstantCommand(intake::closeRetractor),
+//                new InstantCommand(() -> ledSubsystem.setColor(Color.kBlue)),
+//                new RunCommand(() -> System.out.println("Enter blue cargo")).withTimeout(4),
+//                new RunCommand(() -> checkColorBlue(conveyor)).withInterrupt(() -> conveyor.getColor() == DriverStation.Alliance.Blue),
+//                new InstantCommand(() -> ledSubsystem.setColor(Color.kRed)),
+//                new RunCommand(() -> System.out.println("Enter red cargo")).withTimeout(4),
+//                new RunCommand(() -> checkColorRed(conveyor)).withInterrupt(() -> conveyor.getColor() == DriverStation.Alliance.Red),
+//                new InstantCommand(() -> System.out.println("Sensor works!")),
+//                new InstantCommand(() -> ledSubsystem.setTesting(false))
         );
     }
 

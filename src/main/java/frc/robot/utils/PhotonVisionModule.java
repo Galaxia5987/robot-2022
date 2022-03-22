@@ -149,7 +149,7 @@ public class PhotonVisionModule extends SubsystemBase {
 
     @Override
     public void periodic() {
-        System.out.println("Distance: " + getDistance(CAMERA_HEIGHT, TARGET_HEIGHT));
+        System.out.println("Distance: " + getDistance(CAMERA_HEIGHT, TARGET_HEIGHT_FROM_GROUND));
 //        System.out.println("Pose with vision = " + HUB_POSE.plus(poseRelativeToTarget()));
 
 
@@ -157,6 +157,7 @@ public class PhotonVisionModule extends SubsystemBase {
         double yaw = getYaw().orElse(100);
         SmartDashboard.putString("aim_state", Math.abs(yaw) <= 5 ? "green" : Math.abs(yaw) <= 13 ? "yellow" : "red");
         FireLog.log("filtered_distance", getDistance());
+        System.out.println("target: " + hasTargets());
     }
 
     @Override

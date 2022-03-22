@@ -223,7 +223,6 @@ public final class Constants {
         public static final double LED_RANGE = 6; // Visible range of LEDs. [m]
         public static final double MIN_TARGET_AREA = 10; // Minimal area of target. [pixel^2]
         public static final double TARGET_WIDTH = 1.36; // Width of vision target strip. [m]
-        public static final double TARGET_HEIGHT = 0.05; // Height of the vision target strip. [m]
         public static final double TARGET_RADIUS = 0.678; // [m]
 
         public static final Pose2d HUB_POSE = new Pose2d( // Position of the hub relative to the field.
@@ -232,7 +231,7 @@ public final class Constants {
                 new Translation2d(0.038, 0.171), new Rotation2d()); // Position of the vision relative to the robot.
 
         public static final SimVisionTarget SIM_TARGET_HUB = new SimVisionTarget( // Hub target for vision simulation.
-                HUB_POSE, TARGET_HEIGHT_FROM_GROUND, TARGET_WIDTH, TARGET_HEIGHT);
+                HUB_POSE, TARGET_HEIGHT_FROM_GROUND, TARGET_WIDTH, TARGET_HEIGHT_FROM_GROUND);
 
     }
 
