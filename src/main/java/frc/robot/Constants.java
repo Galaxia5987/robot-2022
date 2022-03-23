@@ -101,10 +101,10 @@ public final class Constants {
         public static final double RECOMMENDED_ACCELERATION_TIME = 1.3; // Recommended time for the shooter to get to it's setpoint. [s]
         public static final double CARGO_OFFSET = 0; // Desired offset from the middle of the target where you want the cargo to hit. [m]
 
-        public static final WebConstant kP = WebConstant.of("Shooter", "kP", 0.75);
-        public static final WebConstant kI = WebConstant.of("Shooter", "kI", 0.00019);
+        public static final WebConstant kP = WebConstant.of("Shooter", "kP", 0.08);
+        public static final WebConstant kI = WebConstant.of("Shooter", "kI", 0.0000075);
         public static final WebConstant kD = WebConstant.of("Shooter", "kD", 9);
-        public static final WebConstant kF = WebConstant.of("Shooter", "kf", 0);
+        public static final WebConstant kF = WebConstant.of("Shooter", "kf", 0.0465);
 //        public static final WebConstant kP = WebConstant.of("Shooter", "kP", 0.03);
 //        public static final WebConstant kI = WebConstant.of("Shooter", "kI", 0.00);
 //        public static final WebConstant kD = WebConstant.of("Shooter", "kD", 0);

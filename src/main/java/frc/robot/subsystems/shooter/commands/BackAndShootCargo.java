@@ -19,13 +19,7 @@ public class BackAndShootCargo extends SequentialCommandGroup {
                              Flap flap,
                              DoubleSupplier distanceFromTarget) {
         addCommands(new InstantCommand(() -> RobotContainer.cachedSetpoint = RobotContainer.setpointSupplier.getAsDouble()));
-        addCommands(new InstantCommand(() -> {
-            if (RobotContainer.distanceSupplier.getAsDouble() > 3.4 && RobotContainer.distanceSupplier.getAsDouble() < 4.5)
-                RobotContainer.cachedDistance = RobotContainer.distanceSupplier.getAsDouble() - 0.2;
-            else RobotContainer.cachedDistance = RobotContainer.distanceSupplier.getAsDouble();
-//                RobotContainer.cachedDistance = RobotContainer.distanceSupplier.getAsDouble();
-
-        }));
+        addCommands(new InstantCommand(() -> RobotContainer.cachedDistance = RobotContainer.distanceSupplier.getAsDouble()));
         addCommands(new InstantCommand(() -> RobotContainer.odometryCachedSetpoint = RobotContainer.odometrySetpointSupplier.getAsDouble()));
         addCommands(new InstantCommand(() -> RobotContainer.odometryCachedDistance = RobotContainer.odometryDistanceSupplier.getAsDouble()));
         addCommands(new InstantCommand(() -> RobotContainer.cachedHasTarget = !RobotContainer.playWithoutVision && RobotContainer.hasTarget.getAsBoolean()));
