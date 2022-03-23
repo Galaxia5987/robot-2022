@@ -328,5 +328,11 @@ public class SwerveDrive extends SubsystemBase {
         yVelocity.append(speeds.vyMetersPerSecond);
         rotationVelocity.append(speeds.omegaRadiansPerSecond);
     }
+
+    public void setPowerVelocity() {
+        for (var module : modules)  {
+            module.setVelocity(100);
+        }
+    }
 }
 

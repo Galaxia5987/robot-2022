@@ -157,9 +157,9 @@ public class Conveyor extends SubsystemBase {
         updateActualBallPositions();
 
 
-        if (Robot.debug) {
-            SmartDashboard.putString("Positions", cargoPositions.toString());
+//        if (Robot.debug) {
             SmartDashboard.putNumber("Proximity", colorSensor.getProximityValue());
+            SmartDashboard.putString("Positions", cargoPositions.toString());
             SmartDashboard.putBoolean("Pre flap", preFlapBeam.get());
             SmartDashboard.putBoolean("Post flap", postFlapBeam.get());
             System.out.println("Pre flap: " + preFlapBeam.get());
@@ -173,8 +173,8 @@ public class Conveyor extends SubsystemBase {
             SmartDashboard.putNumber("current color r", colorSensor.getRawColor()[0]);
             SmartDashboard.putNumber("current color g", colorSensor.getRawColor()[1]);
             SmartDashboard.putNumber("current color b", colorSensor.getRawColor()[2]);
-            SmartDashboard.putString("detected-color", getColor().name());
-        }
+       // }
+        SmartDashboard.putString("detected-color", getColor().name());
 
         String firstColor = "";
         String secondColor = "";

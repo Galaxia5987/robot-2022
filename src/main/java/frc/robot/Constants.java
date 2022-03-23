@@ -97,7 +97,7 @@ public final class Constants {
         public static final double NEUTRAL_DEADBAND = 0.1; // [%]
         public static final double OUTPUT_MULTIPLIER = 0.1; // Multiplies the output for manual control in the bits. [%]
         public static final double OUTTAKE_POWER = 0.2; // Power to give to the shooter when taking balls out. [%]
-        public static final double LOW_GOAL_VELOCITY = 2500;
+        public static final double LOW_GOAL_VELOCITY = 2000;
         public static final double RECOMMENDED_ACCELERATION_TIME = 1.3; // Recommended time for the shooter to get to it's setpoint. [s]
         public static final double CARGO_OFFSET = 0; // Desired offset from the middle of the target where you want the cargo to hit. [m]
 
@@ -198,7 +198,7 @@ public final class Constants {
     }
 
     public static class Conveyor {
-        public static final int MIN_PROXIMITY_VALUE = 200; // Minimum distance from the color sensor in order to induce detection (arbitrary bit units).
+        public static final int MIN_PROXIMITY_VALUE = 110; // Minimum distance from the color sensor in order to induce detection (arbitrary bit units).
 
         public static final double TICKS_PER_UNIT = 2048 * 2;
         public static final double SHOOT_POWER = 0.5;
@@ -207,7 +207,7 @@ public final class Constants {
         public static final Color RED = new Color(0.511, 0.346, 0.143);
         public static final Color NONE = new Color(0.31, 0.415, 0.275);
 
-        public static final WebConstant DEFAULT_POWER = WebConstant.of("Conveyor", "Default velocity", 0.7); // [%]
+        public static final WebConstant DEFAULT_POWER = WebConstant.of("Conveyor", "Default velocity", 0.9); // [%]
     }
 
     public static class Vision { //TODO: change for competition
@@ -216,8 +216,8 @@ public final class Constants {
 
         public static final double CAMERA_HEIGHT = 0.73; // [m]
         public static final double TARGET_HEIGHT_FROM_GROUND = 2.65; // [m] Pefzener 2.62
-        public static final double BIT_CAMERA_HEIGHT = 0.73; // [m]
-        public static final double BIT_TARGET_HEIGHT_FROM_GROUND = 2.65; // [m] Pefzener 2.62
+        public static final double BIT_CAMERA_HEIGHT = 1.2; // [m]
+        public static final double BIT_TARGET_HEIGHT_FROM_GROUND = 2.1; // [m] Pefzener 2.62
         public static final double CAMERA_PITCH = 36.2; // Pitch of the vision. [deg]
         public static final double DIAG_FOV = 75; // Diagonal FOV. [deg]
         public static final double LED_RANGE = 6; // Visible range of LEDs. [m]

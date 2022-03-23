@@ -13,7 +13,7 @@ public class LowGoalShot extends ParallelCommandGroup {
     public LowGoalShot(Shooter shooter, Flap flap, Hood hood) {
 
         addCommands(
-                new InstantCommand(() -> hood.setSolenoid(Hood.Mode.ShortDistance)),
+                new InstantCommand(() -> hood.setSolenoid(Hood.Mode.LongDistance)),
                 new InstantCommand(flap::allowShooting),
                 new RunCommand(() -> shooter.setVelocity(Constants.Shooter.LOW_GOAL_VELOCITY))
         );

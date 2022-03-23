@@ -35,7 +35,7 @@
     {
       "groupId": "org.photonvision",
       "artifactId": "PhotonTargeting-java",
-      "version": "v2022.1.5"
+      "version": "v2022.1.6"
     }
   ]
 }

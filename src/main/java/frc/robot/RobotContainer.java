@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.*;
@@ -9,15 +10,15 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.auto.FiveCargoAuto;
 import frc.robot.auto.FourCargoAuto;
-import frc.robot.commandgroups.LowGoalShot;
-import frc.robot.commandgroups.OneBallOuttake;
-import frc.robot.commandgroups.Outtake;
-import frc.robot.commandgroups.PickUpCargo;
+import frc.robot.commandgroups.*;
+import frc.robot.commandgroups.bits.RunAllBits;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
+import frc.robot.subsystems.conveyor.commands.bits.TestColorSensor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.DriveAndAdjustWithVision;
 import frc.robot.subsystems.drivetrain.commands.TurnToAngle;
+import frc.robot.subsystems.drivetrain.commands.testing.DriveForwardBITS;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.helicopter.Helicopter;
 import frc.robot.subsystems.helicopter.commands.JoystickPowerHelicopter;
@@ -26,6 +27,7 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.BackAndShootCargo;
 import frc.robot.subsystems.shooter.commands.Shoot;
+import frc.robot.subsystems.shooter.commands.bits.TestShooterVelocity;
 import frc.robot.utils.LedSubsystem;
 import frc.robot.utils.PhotonVisionModule;
 import frc.robot.utils.Utils;
@@ -79,14 +81,17 @@ public class RobotContainer {
 
         proximity = conveyor::getColorSensorProximity;
 
+        // autonomousCommand = null;
 //        autonomousCommand = new FiveCargoAuto(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
-        autonomousCommand = new FourCargoAuto(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
+//        autonomousCommand = new TaxiFrom(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
         // Configure the button bindings and default commands
+        autonomousCommand = new FourCargoAuto(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
         configureDefaultCommands();
         if (Robot.debug) {
             startFireLog();
         }
 
+        PortForwarder.add(5801, "localhost", 5801);
         configureButtonBindings();
 
     }
@@ -109,10 +114,9 @@ public class RobotContainer {
     private void configureButtonBindings() {
 
         { // Xbox controller button bindings.
-            Xbox.b.whileHeld(new ParallelCommandGroup(
-                    new InstantCommand(flap::allowShooting),
-                    new Convey(conveyor, Constants.Conveyor.DEFAULT_POWER.get())
-            ));
+            Xbox.b.whileHeld(new BackAndShootCargo2(
+                    shooter, hood, conveyor, flap,
+                    () -> 0)).whenInactive(() -> shooting = false);
             Xbox.x.whenPressed(intake::toggleRetractor);
             Xbox.y.whenPressed(new RunCommand(() -> shooter.setVelocity(3530.0), shooter).withInterrupt(Xbox.rt::get));
             Xbox.a.whileHeld(() -> playWithoutVision = true).whenReleased(() -> playWithoutVision = false);
@@ -123,7 +127,7 @@ public class RobotContainer {
             Xbox.rt.whileActiveContinuous(new BackAndShootCargo(
                     shooter, hood, conveyor, flap,
                     () -> 0)).whenInactive(() -> shooting = false);
-            Xbox.lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, 0.7,() -> Utils.map(MathUtil.clamp(Math.hypot(swerve.getChassisSpeeds().vxMetersPerSecond, swerve.getChassisSpeeds().vyMetersPerSecond), 0, 4), 0, 4, 0.4, 0.25)));
+            Xbox.lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, 0.7, () -> Utils.map(MathUtil.clamp(Math.hypot(swerve.getChassisSpeeds().vxMetersPerSecond, swerve.getChassisSpeeds().vyMetersPerSecond), 0, 4), 0, 4, 0.4, 0.25)));
 //            Xbox.lt.whileActiveContinuous(new SmartIndexing(shooter, conveyor, intake, flap, () -> Utils.map(MathUtil.clamp(Math.hypot(swerve.getChassisSpeeds().vxMetersPerSecond, swerve.getChassisSpeeds().vyMetersPerSecond), 0, 4), 0, 4, 0.7, 0.4)));
 //            Xbox.lt.whileActiveContinuous(new ParallelCommandGroup(
 //                    new InstantCommand(flap::blockShooter),
@@ -162,8 +166,10 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-//        return new RunAllBits(swerve, shooter, conveyor, intake, flap, hood, helicopter);
-        return autonomousCommand;
+        // return new TestColorSensor(conveyor, intake, ledSubsystem);
+        return new RunAllBits(swerve, shooter, conveyor, intake, flap, hood);
+        //     return new TestShooterVelocity(shooter, ledSubsystem);
+//        return autonomousCommand;
     }
 
     /**

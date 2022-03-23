@@ -3,6 +3,7 @@ package frc.robot.commandgroups.bits;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
+import frc.robot.subsystems.drivetrain.commands.testing.DriveForwardBITS;
 import frc.robot.subsystems.drivetrain.commands.testing.HelpfulZeroing;
 import frc.robot.subsystems.drivetrain.commands.testing.OscillateModules;
 import frc.robot.subsystems.flap.Flap;
@@ -31,6 +32,7 @@ public class RunAllBits extends SequentialCommandGroup {
                 new HelpfulZeroing(swerve)
                         .raceWith(new RunCommand(() -> System.out.println("Zeroing swerve modules")))
                         .andThen(waitFor[2]),
+                new DriveForwardBITS(swerve).withTimeout(4),
                 new OscillateModules(swerve)
                         .withTimeout(5)
                         .raceWith(new RunCommand(() -> System.out.println("Oscillating swerve modules")))

@@ -19,7 +19,7 @@ public class ColorSensor {
 
     public ColorSensor(I2C.Port colorSensorPort) {
         this.sensor = new ColorSensorV3(colorSensorPort);
-        proximity = new DeadbandProximity(sensor::getProximity, 170, 200);
+        proximity = new DeadbandProximity(sensor::getProximity, 90, 120);
 
         colorMatch.addColorMatch(RED);
         colorMatch.addColorMatch(BLUE);
