@@ -1,6 +1,7 @@
 package webapp;
 
 import com.google.gson.JsonObject;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
 import java.util.HashMap;
@@ -13,6 +14,9 @@ public class FireLog {
     public static synchronized void log(String topic, Object value) {
         if (Robot.debug)
             topics.put(topic, value);
+        else {
+            SmartDashboard.putString(topic, value.toString());
+        }
     }
 
     public static synchronized JsonObject toJsonObject() {

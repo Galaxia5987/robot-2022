@@ -118,11 +118,13 @@ public class RobotContainer {
                     shooter, hood, conveyor, flap,
                     () -> 0)).whenInactive(() -> shooting = false);
             Xbox.x.whenPressed(intake::toggleRetractor);
+//            Xbox.x.whileHeld(()->shooter.setVelocity(3600));
             Xbox.y.whenPressed(new RunCommand(() -> shooter.setVelocity(3530.0), shooter).withInterrupt(Xbox.rt::get));
             Xbox.a.whileHeld(() -> playWithoutVision = true).whenReleased(() -> playWithoutVision = false);
 
             Xbox.leftPov.whileActiveOnce(new InstantCommand(hood::toggle));
             Xbox.downPov.whileActiveOnce(new LowGoalShot(shooter, flap, hood));
+            Xbox.upPov.whileActiveContinuous(new JoystickPowerHelicopter(helicopter, () -> -0.1));
 
             Xbox.rt.whileActiveContinuous(new BackAndShootCargo(
                     shooter, hood, conveyor, flap,
@@ -166,10 +168,10 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        // return new TestColorSensor(conveyor, intake, ledSubsystem);
+//         return new TestColorSensor(conveyor, intake, ledSubsystem);
         return new RunAllBits(swerve, shooter, conveyor, intake, flap, hood);
-        //     return new TestShooterVelocity(shooter, ledSubsystem);
-//        return autonomousCommand;
+//             return new TestShooterVelocity(shooter, ledSubsystem);
+     //   return autonomousCommand;
     }
 
     /**

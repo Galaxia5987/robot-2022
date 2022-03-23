@@ -51,10 +51,11 @@ public class Shooter extends SubsystemBase {
         mainMotor.configAllSettings(getConfiguration());
         mainMotor.setInverted(INVERSION_TYPE);
         mainMotor.setNeutralMode(NeutralMode.Coast);
+
         var currentLimit = new SupplyCurrentLimitConfiguration(true, 45, 5, 0.1);
         mainMotor.configSupplyCurrentLimit(currentLimit);
         mainMotor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
-        mainMotor.enableVoltageCompensation(false);
+        mainMotor.enableVoltageCompensation(true);
         mainMotor.config_IntegralZone(0, 0);
 
         auxMotor.configFactoryDefault();
@@ -64,9 +65,8 @@ public class Shooter extends SubsystemBase {
         auxMotor.setNeutralMode(NeutralMode.Coast);
         auxMotor.setInverted(TalonFXInvertType.Clockwise);
         auxMotor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
-        auxMotor.enableVoltageCompensation(false);
+        auxMotor.enableVoltageCompensation(true);
         auxMotor.config_IntegralZone(0, 0);
-
     }
 
     /**
@@ -111,14 +111,17 @@ public class Shooter extends SubsystemBase {
         shooterVelocity.append(getVelocity());
         shooterVoltage.append(mainMotor.getMotorOutputVoltage());
         FireLog.log("Shooter-velocity", getVelocity());
+        System.out.println("Shooter'd velocity: "+ getVelocity());
 
         mainMotor.config_kP(0, kP.get());
         mainMotor.config_kI(0, kI.get());
         mainMotor.config_kD(0, kD.get());
         mainMotor.config_kF(0, kF.get());
-        auxMotor.config_kP(0, kP.get());
-        auxMotor.config_kI(0, kI.get());
-        auxMotor.config_kD(0, kD.get());
-        auxMotor.config_kF(0, kF.get());
+/*
+        mainMotor.config_kP(1, 0.01);
+        mainMotor.config_kI(1, 0);
+        mainMotor.config_kD(1, 0);
+        mainMotor.config_kF(1, 0.485);*/
+
     }
 }

@@ -105,6 +105,10 @@ public final class Constants {
         public static final WebConstant kI = WebConstant.of("Shooter", "kI", 0.00019);
         public static final WebConstant kD = WebConstant.of("Shooter", "kD", 9);
         public static final WebConstant kF = WebConstant.of("Shooter", "kf", 0);
+//        public static final WebConstant kP = WebConstant.of("Shooter", "kP", 0.03);
+//        public static final WebConstant kI = WebConstant.of("Shooter", "kI", 0.00);
+//        public static final WebConstant kD = WebConstant.of("Shooter", "kD", 0);
+//        public static final WebConstant kF = WebConstant.of("Shooter", "kf", 0.0475);
         public static final WebConstant SHOOTER_VELOCITY_DEADBAND = WebConstant.of("Shooter", "Velocity deadband", 50); // Dead band for shooter velocity setpoint. [rpm]
         public static final HashMap<Double, Double> SHORT_MEASUREMENTS = new HashMap<>() {{
             put(-99999.0, 3530.0);
@@ -149,7 +153,7 @@ public final class Constants {
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]
         public static final double RAMP_RATE = 0; // seconds from neutral to max
 
-        public static final int[] ZERO_POSITIONS = {-1664, -12390, -2077, -1474}; // fr, fl, rr, rl
+        public static final int[] ZERO_POSITIONS = {-1664, -12390, -2077, -454}; // fr, fl, rr, rl
 
         public static final SwerveModuleConfigBase frConfig = new SwerveModuleConfigBase.Builder(0)
                 .configPorts(DRIVE_MOTOR_FR, ANGLE_MOTOR_FR)
@@ -250,7 +254,7 @@ public final class Constants {
         public static final double TICKS_PER_RAD = 2048 * GEAR_RATIO / (2 * Math.PI);
         public static final double TICKS_PER_RAD_ABSOLUTE_ENCODER = 1 / (2 * Math.PI);
 
-        public static final double JOYSTICK_DEADBAND = 0.05; // [%]
+        public static final double JOYSTICK_DEADBAND = 0.15; // [%]
 
         public static final double ARM_ENCODER_DIST_PER_PULSE = 2.0 * Math.PI / 2048;
         public static final double ARM_MASS = 5.0; // Kilograms
