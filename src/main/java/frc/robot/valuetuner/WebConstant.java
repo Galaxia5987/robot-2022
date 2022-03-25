@@ -27,4 +27,6 @@ public interface WebConstant {
      * @return the value of the constant.
      */
     double get();
+
+    void set(double value);
 }

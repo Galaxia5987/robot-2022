@@ -4,7 +4,7 @@ package frc.robot.valuetuner;
  * A wrapper class to the constant, that is being used to return the value in the competition.
  */
 public class WrapperConstant implements WebConstant {
-    private final double defaultValue;
+    private double defaultValue;
 
     WrapperConstant(double defaultValue) {
         this.defaultValue = defaultValue;
@@ -18,5 +18,10 @@ public class WrapperConstant implements WebConstant {
     @Override
     public double get() {
         return defaultValue;
+    }
+
+    @Override
+    public void set(double value) {
+        defaultValue = value;
     }
 }

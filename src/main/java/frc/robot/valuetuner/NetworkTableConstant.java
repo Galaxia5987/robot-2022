@@ -18,7 +18,7 @@ public class NetworkTableConstant implements WebConstant {
 
     private final String table;
     private final String key;
-    private final double defaultValue;
+    private double defaultValue;
     private NetworkTableEntry constant;
 
     NetworkTableConstant(String table, String key, double defaultValue) {
@@ -61,5 +61,11 @@ public class NetworkTableConstant implements WebConstant {
     @Override
     public double get() {
         return constant.getDouble(defaultValue);
+    }
+
+    @Override
+    public void set(double value) {
+        defaultValue = value;
+        constant.setDouble(value);
     }
 }
