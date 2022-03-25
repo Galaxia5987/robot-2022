@@ -40,14 +40,13 @@ public class SwerveModule extends SubsystemBase {
     private final UnitModel angleUnitModel;
 
     private final SwerveModuleConfigBase config;
-    private LinearSystemLoop<N1, N1, N1> stateSpace;
-    private double currentTime, lastTime;
-    private double lastJ;
-
     private final DoubleLogEntry angle;
     private final DoubleLogEntry velocity;
     private final DoubleLogEntry velocityVoltage;
     private final DoubleLogEntry angleVoltage;
+    private LinearSystemLoop<N1, N1, N1> stateSpace;
+    private double currentTime, lastTime;
+    private double lastJ;
 
     public SwerveModule(SwerveModuleConfigBase config) {
         this.config = config;
