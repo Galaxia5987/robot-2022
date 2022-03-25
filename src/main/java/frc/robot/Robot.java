@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.valuetuner.NetworkTableConstant;
 
@@ -19,7 +20,7 @@ import frc.robot.valuetuner.NetworkTableConstant;
  * project.
  */
 public class Robot extends TimedRobot {
-    public static final boolean debug = false;//!DriverStation.isFMSAttached();
+    public static final boolean debug = true;//!DriverStation.isFMSAttached();
     public static final AHRS navx = new AHRS(SPI.Port.kMXP);
     //    private final AddressableLED led = new AddressableLED(1);
     private static Rotation2d zeroAngle = new Rotation2d();
@@ -129,6 +130,7 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
+        new InstantCommand(() -> RobotContainer.shooting = false);
     }
 
     /**

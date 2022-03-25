@@ -7,7 +7,6 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
-import frc.robot.subsystems.conveyor.commands.ConveyToShooter;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.hood.commands.HoodCommand;
@@ -17,8 +16,6 @@ import webapp.FireLog;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-
-import static frc.robot.Constants.Shooter.SHOOTER_VELOCITY_DEADBAND;
 
 public class BackAndShootCargo2 extends SequentialCommandGroup {
 
@@ -57,7 +54,7 @@ public class BackAndShootCargo2 extends SequentialCommandGroup {
                 FireLog.log("Shooter setpoint", RobotContainer.hardCodedVelocityValue);
             } else {
                 if (RobotContainer.cachedHasTarget) {
-                    FireLog.log("Shooter setpoint", RobotContainer.cachedSetpoint);
+                    FireLog.log("Shooter setpoint", RobotContainer.cachedSetpointForShooter);
                 } else {
                     FireLog.log("Shooter setpoint", RobotContainer.odometryCachedSetpoint);
                 }
@@ -104,9 +101,9 @@ public class BackAndShootCargo2 extends SequentialCommandGroup {
         }
     }
     public BackAndShootCargo2(Shooter shooter, Hood hood, Conveyor conveyor, Flap flap, DoubleSupplier distanceFromTarget) {
-        addCommands(new InstantCommand(() -> RobotContainer.cachedSetpoint = RobotContainer.setpointSupplier.getAsDouble()));
+        addCommands(new InstantCommand(() -> RobotContainer.cachedSetpointForShooter = RobotContainer.setpointSupplierForShooterFromVision.getAsDouble()));
         addCommands(new InstantCommand(() -> {
-                RobotContainer.cachedDistance = RobotContainer.distanceSupplier.getAsDouble() - 0.5;
+                RobotContainer.cachedDistanceForHood = RobotContainer.distanceSupplierFromVision.getAsDouble() - 0.5;
 
 //            if (RobotContainer.distanceSupplier.getAsDouble() > 3.4 && RobotContainer.distanceSupplier.getAsDouble() < 4.5)
 //                RobotContainer.cachedDistance = RobotContainer.distanceSupplier.getAsDouble() - 0.3;

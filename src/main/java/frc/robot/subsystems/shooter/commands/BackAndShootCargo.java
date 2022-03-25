@@ -18,19 +18,19 @@ public class BackAndShootCargo extends SequentialCommandGroup {
                              Conveyor conveyor,
                              Flap flap,
                              DoubleSupplier distanceFromTarget) {
-        addCommands(new InstantCommand(() -> RobotContainer.cachedSetpoint = RobotContainer.setpointSupplier.getAsDouble()));
+        addCommands(new InstantCommand(() -> RobotContainer.shooting = true));
+        addCommands(new InstantCommand(() -> RobotContainer.cachedSetpointForShooter = RobotContainer.setpointSupplierForShooterFromVision.getAsDouble()));
         addCommands(new InstantCommand(() -> {
-            double distance = RobotContainer.distanceSupplier.getAsDouble();
-            if (distance <= 4.5)
-                RobotContainer.cachedDistance = distance - 0.5;
-            else {
-                RobotContainer.cachedDistance = distance;
-            }
+//            double distance = RobotContainer.distanceSupplierFromVision.getAsDouble();
+//            if (distance <= 4.5)
+//                RobotContainer.cachedDistanceForHood = distance - 0.5;
+//            else {
+            RobotContainer.cachedDistanceForHood = RobotContainer.distanceSupplierFromVision.getAsDouble();
+//            }
         }));
         addCommands(new InstantCommand(() -> RobotContainer.odometryCachedSetpoint = RobotContainer.odometrySetpointSupplier.getAsDouble()));
         addCommands(new InstantCommand(() -> RobotContainer.odometryCachedDistance = RobotContainer.odometryDistanceSupplier.getAsDouble()));
         addCommands(new InstantCommand(() -> RobotContainer.cachedHasTarget = !RobotContainer.playWithoutVision && RobotContainer.hasTarget.getAsBoolean()));
-        addCommands(new InstantCommand(() -> RobotContainer.shooting = true));
 
         addCommands(new Convey(conveyor, -0.25).withTimeout(0.075),
                 new ShootCargo(shooter, hood, conveyor, flap, distanceFromTarget));

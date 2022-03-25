@@ -3,6 +3,7 @@ package frc.robot.subsystems.drivetrain;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -10,11 +11,14 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.shooter.commands.Shoot;
 import webapp.FireLog;
 
 /**
@@ -290,7 +294,7 @@ public class SwerveDrive extends SubsystemBase {
      * Terminates the modules from moving.
      */
     public void terminate() {
-       for (SwerveModule module : modules) {
+        for (SwerveModule module : modules) {
             module.stopDriveMotor();
             module.stopAngleMotor();
         }
@@ -329,10 +333,29 @@ public class SwerveDrive extends SubsystemBase {
         xVelocity.append(speeds.vxMetersPerSecond);
         yVelocity.append(speeds.vyMetersPerSecond);
         rotationVelocity.append(speeds.omegaRadiansPerSecond);
+
+        if (!RobotContainer.shooting && !DriverStation.isAutonomous()) {
+            RobotContainer.cachedSetpointForShooter = Shoot.getSetpointVelocity(getOdometryDistance());
+        }
+        if (RobotContainer.hasTarget.getAsBoolean() && !RobotContainer.playWithoutVision && !DriverStation.isAutonomous()) {
+            if (Math.abs(RobotContainer.yawSupplierFromVision.getAsDouble()) < 6) {
+                var odom = odometry.getPoseMeters().getTranslation();
+                var target = Constants.Vision.HUB_POSE.getTranslation();
+                Translation2d relative = odom.minus(target);
+                double alpha = Math.atan2(relative.getY(), relative.getX());
+                double visionDistance = RobotContainer.distanceSupplierFromVision.getAsDouble();
+                Translation2d newTranslation = new Translation2d(Math.cos(alpha) * visionDistance, Math.sin(alpha) * visionDistance);
+                odometry.resetPosition(new Pose2d(target.plus(newTranslation), Robot.getAngle()), Robot.getAngle());
+            }
+        }
+
+        System.out.println("Saar's distance: " + getOdometryDistance());
+        System.out.println("hasTargetttt: " + RobotContainer.hasTarget.getAsBoolean());
+        FireLog.log("distance", getOdometryDistance() * 1000);
     }
 
     public void setPowerVelocity() {
-        for (var module : modules)  {
+        for (var module : modules) {
             module.setVelocity(100);
         }
     }

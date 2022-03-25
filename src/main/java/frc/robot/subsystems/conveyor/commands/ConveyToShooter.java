@@ -22,6 +22,7 @@ public class ConveyToShooter extends CommandBase {
     private boolean last = false;
     private boolean getBallToPreFlap = true;
     private boolean wait = true;
+    private boolean firstBall = true;
 
     public ConveyToShooter(Conveyor conveyor, BooleanSupplier preFlapSupplier, DoubleSupplier velocitySupplier) {
         this.conveyor = conveyor;
@@ -39,28 +40,29 @@ public class ConveyToShooter extends CommandBase {
         }
         wait = true;
         last = false;
+        firstBall = true;
     }
 
     @Override
     public void execute() {
-        FireLog.log("Shooter velocity", velocitySupplier.getAsDouble());
         if (RobotContainer.hardCodedVelocity) {
             FireLog.log("Shooter setpoint", RobotContainer.hardCodedVelocityValue);
         } else {
             if (RobotContainer.cachedHasTarget) {
-                FireLog.log("Shooter setpoint", RobotContainer.cachedSetpoint);
+                FireLog.log("Shooter setpoint", RobotContainer.cachedSetpointForShooter);
             } else {
                 FireLog.log("Shooter setpoint", RobotContainer.odometryCachedSetpoint);
             }
         }
         if (wait) {
+            FireLog.log("wait", 2000);
             if (RobotContainer.hardCodedVelocity) {
                 if (Math.abs(RobotContainer.hardCodedVelocityValue - velocitySupplier.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get()) {
                     wait = false;
                 }
             } else {
                 if (RobotContainer.cachedHasTarget) {
-                    if (Math.abs(RobotContainer.cachedSetpoint - velocitySupplier.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get()) {
+                    if (Math.abs(RobotContainer.cachedSetpointForShooter - velocitySupplier.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get()) {
                         wait = false;
                     }
                 } else {
@@ -71,34 +73,42 @@ public class ConveyToShooter extends CommandBase {
             }
             SmartDashboard.putString("Saar", "Mama");
         } else {
-            SmartDashboard.putString("Saar", "Joe");
-            SmartDashboard.putNumber("Saar2", timer.get());
-
-            if (getBallToPreFlap) {
+            FireLog.log("wait", 4000);
+            if (firstBall) {
                 conveyor.setPower(Constants.Conveyor.SHOOT_POWER);
-            } else {
-                conveyor.setPower(0);
-            }
-
-            if (preFlapSupplier.getAsBoolean()) {
-                if (!last) {
-                    last = true;
-                    getBallToPreFlap = false;
-                    timer.start();
-                    timer.reset();
-                    delayTimer.start();
-                    delayTimer.reset();
+                if (preFlapSupplier.getAsBoolean()) {
+                    firstBall = false;
                 }
             } else {
-                last = false;
-                getBallToPreFlap = true;
-            }
+                SmartDashboard.putString("Saar", "Joe");
+                SmartDashboard.putNumber("Saar2", timer.get());
 
-            if (timer.hasElapsed(0.3)) {
-                getBallToPreFlap = true;
-                SmartDashboard.putNumber("time", timer.get());
-                timer.reset();
-                timer.stop();
+                if (getBallToPreFlap) {
+                    conveyor.setPower(Constants.Conveyor.SHOOT_POWER);
+                } else {
+                    conveyor.setPower(0);
+                }
+
+                if (preFlapSupplier.getAsBoolean()) {
+                    if (!last) {
+                        last = true;
+                        getBallToPreFlap = false;
+                        timer.start();
+                        timer.reset();
+                        delayTimer.start();
+                        delayTimer.reset();
+                    }
+                } else {
+                    last = false;
+                    getBallToPreFlap = true;
+                }
+
+                if (timer.hasElapsed(0.3)) {
+                    getBallToPreFlap = true;
+                    SmartDashboard.putNumber("time", timer.get());
+                    timer.reset();
+                    timer.stop();
+                }
             }
         }
     }

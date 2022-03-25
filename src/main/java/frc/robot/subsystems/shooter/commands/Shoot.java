@@ -81,16 +81,17 @@ public class Shoot extends CommandBase {
 
     @Override
     public void execute() {
+        System.out.println("helloooooo");
         if (power.isEmpty()) {
             if (RobotContainer.hardCodedVelocity) {
-                shooter.setVelocity(RobotContainer.hardCodedVelocityValue);
-                SmartDashboard.putString("speed_state", Math.abs(RobotContainer.cachedSetpoint - shooter.getVelocity()) <= 30 ? "green" : Math.abs(RobotContainer.cachedSetpoint - shooter.getVelocity()) <= 100 ? "yellow" : "red");
+//                shooter.setVelocity(RobotContainer.hardCodedVelocityValue);
+                SmartDashboard.putString("speed_state", Math.abs(RobotContainer.cachedSetpointForShooter - shooter.getVelocity()) <= 30 ? "green" : Math.abs(RobotContainer.cachedSetpointForShooter - shooter.getVelocity()) <= 100 ? "yellow" : "red");
             } else {
                 if (RobotContainer.cachedHasTarget) {
-                    shooter.setVelocity(RobotContainer.cachedSetpoint);
-                    SmartDashboard.putString("speed_state", Math.abs(RobotContainer.cachedSetpoint - shooter.getVelocity()) <= 30 ? "green" : Math.abs(RobotContainer.cachedSetpoint - shooter.getVelocity()) <= 100 ? "yellow" : "red");
+//                    shooter.setVelocity(RobotContainer.cachedSetpointForShooter);
+                    SmartDashboard.putString("speed_state", Math.abs(RobotContainer.cachedSetpointForShooter - shooter.getVelocity()) <= 30 ? "green" : Math.abs(RobotContainer.cachedSetpointForShooter - shooter.getVelocity()) <= 100 ? "yellow" : "red");
                 } else {
-                    shooter.setVelocity(RobotContainer.odometryCachedSetpoint);
+//                    shooter.setVelocity(RobotContainer.odometryCachedSetpoint);
                     SmartDashboard.putString("speed_state", Math.abs(RobotContainer.odometryCachedSetpoint - shooter.getVelocity()) <= 30 ? "green" : Math.abs(RobotContainer.odometryCachedSetpoint - shooter.getVelocity()) <= 100 ? "yellow" : "red");
                 }
             }
@@ -103,7 +104,7 @@ public class Shoot extends CommandBase {
             FireLog.log("Shooter setpoint2", RobotContainer.hardCodedVelocityValue);
         } else {
             if (RobotContainer.cachedHasTarget) {
-                FireLog.log("Shooter setpoint2", RobotContainer.cachedSetpoint);
+                FireLog.log("Shooter setpoint2", RobotContainer.cachedSetpointForShooter);
             } else {
                 FireLog.log("Shooter setpoint2", RobotContainer.odometryCachedSetpoint);
             }
@@ -114,8 +115,8 @@ public class Shoot extends CommandBase {
             }
         } else {
             if (RobotContainer.cachedHasTarget) {
-                if (RobotContainer.cachedSetpoint != 0) {
-                    RobotContainer.ledSubsystem.setPercent((int) Math.round((MathUtil.clamp(shooter.getVelocity(), 0, RobotContainer.cachedSetpoint) / RobotContainer.cachedSetpoint) * 9));
+                if (RobotContainer.cachedSetpointForShooter != 0) {
+                    RobotContainer.ledSubsystem.setPercent((int) Math.round((MathUtil.clamp(shooter.getVelocity(), 0, RobotContainer.cachedSetpointForShooter) / RobotContainer.cachedSetpointForShooter) * 9));
                 }
             } else {
                 if (RobotContainer.odometryCachedSetpoint != 0) {

@@ -39,7 +39,7 @@ public class QuickReleaseConvey extends CommandBase {
             FireLog.log("Shooter setpoint", RobotContainer.hardCodedVelocityValue);
         } else {
             if (RobotContainer.cachedHasTarget) {
-                FireLog.log("Shooter setpoint", RobotContainer.cachedSetpoint);
+                FireLog.log("Shooter setpoint", RobotContainer.cachedSetpointForShooter);
             } else {
                 FireLog.log("Shooter setpoint", RobotContainer.odometryCachedSetpoint);
             }
@@ -51,7 +51,7 @@ public class QuickReleaseConvey extends CommandBase {
                 }
             } else {
                 if (RobotContainer.cachedHasTarget) {
-                    if (Math.abs(RobotContainer.cachedSetpoint - velocitySupplier.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get()) {
+                    if (Math.abs(RobotContainer.cachedSetpointForShooter - velocitySupplier.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get()) {
                         wait = false;
                     }
                 } else {

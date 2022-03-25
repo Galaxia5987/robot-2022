@@ -8,11 +8,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.auto.FourBallAuto;
-import frc.robot.auto.FourCargoAuto;
 import frc.robot.commandgroups.*;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
@@ -26,6 +24,7 @@ import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.BackAndShootCargo;
+import frc.robot.subsystems.shooter.commands.ReachVelocity;
 import frc.robot.subsystems.shooter.commands.Shoot;
 import frc.robot.utils.LedSubsystem;
 import frc.robot.utils.PhotonVisionModule;
@@ -44,15 +43,19 @@ public class RobotContainer {
     public static DoubleSupplier proximity;
 
     // The robot's subsystems and commands are defined here...
-    public static DoubleSupplier setpointSupplier;
-    public static DoubleSupplier distanceSupplier;
+    public static DoubleSupplier setpointSupplierForShooterFromVision;
+    public static DoubleSupplier distanceSupplierFromVision;
     public static DoubleSupplier odometrySetpointSupplier;
     public static DoubleSupplier odometryDistanceSupplier;
-    public static double cachedSetpoint = 0;
-    public static double cachedDistance = 0;
+    public static double cachedSetpointForShooter = 0;
+    public static double cachedDistanceForHood = 0;
     public static double odometryCachedSetpoint = 0;
     public static double odometryCachedDistance = 0;
     public static boolean cachedHasTarget = true;
+
+    public static DoubleSupplier yawSupplierFromVision;
+
+    public static boolean warmUpShooting = false;
 
     public static BooleanSupplier hasTarget;
     public static LedSubsystem ledSubsystem = new LedSubsystem();
@@ -72,19 +75,21 @@ public class RobotContainer {
      * The container for the robot.  Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        distanceSupplier = photonVisionModule::getDistance;
-        setpointSupplier = () -> Shoot.getSetpointVelocity(distanceSupplier.getAsDouble());
+        distanceSupplierFromVision = photonVisionModule::getDistance;
+        setpointSupplierForShooterFromVision = () -> Shoot.getSetpointVelocity(distanceSupplierFromVision.getAsDouble());
         odometrySetpointSupplier = () -> Shoot.getSetpointVelocity(swerve.getOdometryDistance());
         odometryDistanceSupplier = swerve::getOdometryDistance;
         hasTarget = photonVisionModule::hasTargets;
 
+        yawSupplierFromVision = () -> photonVisionModule.getYaw().orElse(0);
         proximity = conveyor::getColorSensorProximity;
 
         // autonomousCommand = null;
 //        autonomousCommand = new FiveCargoAuto(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
 //        autonomousCommand = new TaxiFrom(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
         // Configure the button bindings and default commands
-        autonomousCommand = new FourCargoAuto(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
+//        autonomousCommand = new FourCargoAuto(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
+        autonomousCommand = new FourBallAuto(swerve, shooter, conveyor, intake, hood, flap, photonVisionModule);
         configureDefaultCommands();
         if (Robot.debug) {
             startFireLog();
@@ -108,6 +113,7 @@ public class RobotContainer {
                 )
         );
         helicopter.setDefaultCommand(new JoystickPowerHelicopter(helicopter, () -> -Xbox.controller.getLeftY()));
+        shooter.setDefaultCommand(new ReachVelocity(shooter));
     }
 
     private void configureButtonBindings() {
@@ -118,7 +124,8 @@ public class RobotContainer {
                     () -> 0)).whenInactive(() -> shooting = false);
             Xbox.x.whenPressed(intake::toggleRetractor);
 //            Xbox.x.whileHeld(()->shooter.setVelocity(3600));
-            Xbox.y.whenPressed(new RunCommand(() -> shooter.setVelocity(3530.0), shooter).withInterrupt(Xbox.rt::get));
+//            Xbox.y.whenPressed(new RunCommand(() -> shooter.setVelocity(3530.0), shooter).withInterrupt(Xbox.rt::get));
+            Xbox.y.whenPressed(new InstantCommand(() -> warmUpShooting = !warmUpShooting));
             Xbox.a.whileHeld(() -> playWithoutVision = true).whenReleased(() -> playWithoutVision = false);
 
             Xbox.leftPov.whileActiveOnce(new InstantCommand(hood::toggle));
@@ -128,7 +135,7 @@ public class RobotContainer {
             Xbox.rt.whileActiveContinuous(new BackAndShootCargo(
                     shooter, hood, conveyor, flap,
                     () -> 0)).whenInactive(() -> shooting = false);
-            Xbox.lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, 0.7, () -> Utils.map(MathUtil.clamp(Math.hypot(swerve.getChassisSpeeds().vxMetersPerSecond, swerve.getChassisSpeeds().vyMetersPerSecond), 0, 4), 0, 4, 0.4, 0.25)));
+            Xbox.lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, 0.7, () -> Utils.map(MathUtil.clamp(Math.hypot(swerve.getChassisSpeeds().vxMetersPerSecond, swerve.getChassisSpeeds().vyMetersPerSecond), 0, 4), 0, 4, 0.25, 0.1)));
 //            Xbox.lt.whileActiveContinuous(new SmartIndexing(shooter, conveyor, intake, flap, () -> Utils.map(MathUtil.clamp(Math.hypot(swerve.getChassisSpeeds().vxMetersPerSecond, swerve.getChassisSpeeds().vyMetersPerSecond), 0, 4), 0, 4, 0.7, 0.4)));
 //            Xbox.lt.whileActiveContinuous(new ParallelCommandGroup(
 //                    new InstantCommand(flap::blockShooter),
@@ -170,8 +177,7 @@ public class RobotContainer {
 //         return new TestColorSensor(conveyor, intake, ledSubsystem);
 //        return new RunAllBits(swerve, shooter, conveyor, intake, flap, hood);
 //             return new TestShooterVelocity(shooter, ledSubsystem);
-        return new FourBallAuto(swerve, shooter, conveyor, intake, hood, flap, photonVisionModule);
-        //   return autonomousCommand;
+        return autonomousCommand;
     }
 
     /**

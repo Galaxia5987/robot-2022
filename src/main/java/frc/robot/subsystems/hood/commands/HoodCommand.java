@@ -24,7 +24,7 @@ public class HoodCommand extends CommandBase {
             mode = RobotContainer.hardCodedDistance < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD ? Hood.Mode.ShortDistance : Hood.Mode.LongDistance;
         } else {
             if (RobotContainer.cachedHasTarget) {
-                mode = RobotContainer.cachedDistance < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD ? Hood.Mode.ShortDistance : Hood.Mode.LongDistance;
+                mode = RobotContainer.cachedDistanceForHood < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD ? Hood.Mode.ShortDistance : Hood.Mode.LongDistance;
             } else {
                 mode = RobotContainer.odometryCachedSetpoint < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD ? Hood.Mode.ShortDistance : Hood.Mode.LongDistance;
             }
