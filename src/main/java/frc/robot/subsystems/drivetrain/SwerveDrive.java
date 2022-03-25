@@ -290,17 +290,19 @@ public class SwerveDrive extends SubsystemBase {
      * Terminates the modules from moving.
      */
     public void terminate() {
-        for (SwerveModule module : modules) {
+       for (SwerveModule module : modules) {
             module.stopDriveMotor();
             module.stopAngleMotor();
         }
+
+//        lock();
     }
 
     public void lock() {
         modules[0].setAngle(Rotation2d.fromDegrees(45));
         modules[1].setAngle(Rotation2d.fromDegrees(-45));
         modules[3].setAngle(Rotation2d.fromDegrees(45));
-        modules[1].setAngle(Rotation2d.fromDegrees(-45));
+        modules[2].setAngle(Rotation2d.fromDegrees(-45));
     }
 
     /**
