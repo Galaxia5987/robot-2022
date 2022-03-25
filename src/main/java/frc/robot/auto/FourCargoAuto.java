@@ -1,12 +1,15 @@
 package frc.robot.auto;
 
+import com.pathplanner.lib.PathPlanner;
 import edu.wpi.first.wpilibj2.command.*;
+import frc.robot.Constants;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.commands.Shoot;
 import frc.robot.utils.PhotonVisionModule;
 
 public class FourCargoAuto extends SaarIsAutonomous {
@@ -30,9 +33,19 @@ public class FourCargoAuto extends SaarIsAutonomous {
                 new RunCommand(() -> shooter.setVelocity(3400), shooter)
         ));
 
-        addCommands(followPathAndPickup("p3 - Going to middle tarmac(9.4.2)"));
 
+        var path = PathPlanner.loadPath("p3 - Going to middle tarmac(9.4.2)", Constants.Autonomous.MAX_VEL, Constants.Autonomous.MAX_ACCEL);
 
-        addCommands(shootAndAdjust(3));
+        addCommands(new ParallelRaceGroup(
+                        followPath("p3 - Going to middle tarmac(9.4.2)"),
+                        pickup(10),
+                        new RunCommand(() -> shooter.setVelocity(
+                                Shoot.getSetpointVelocity(
+                                        path.getEndState().poseMeters.relativeTo(Constants.Vision.HUB_POSE).getTranslation().getNorm()
+                                )
+                        ), shooter)
+                )
+        );
+        addCommands(shootAndAdjust(10));
     }
 }

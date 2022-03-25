@@ -79,8 +79,7 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
     protected CommandBase shootAndAdjust(double timeout) {
         Supplier<Pose2d> swervePose = swerveDrive::getPose;
         Supplier<Transform2d> poseRelativeToTarget = () -> Constants.Vision.HUB_POSE.minus(swervePose.get());
-        DoubleSupplier distanceFromTarget = () -> visionModule.getDistance(Constants.Vision.CAMERA_HEIGHT, Constants.Vision.TARGET_HEIGHT_FROM_GROUND);
-        DoubleSupplier conveyorPower = Constants.Conveyor.DEFAULT_POWER::get;
+        DoubleSupplier distanceFromTarget = visionModule::getDistance;
         DoubleSupplier yaw = () -> visionModule.getYaw().orElse(Robot.getAngle().minus(new Rotation2d(
                         Math.atan2(
                                 poseRelativeToTarget.get().getY(),
@@ -91,15 +90,16 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
 
         return new SequentialCommandGroup(
                 new AdjustToTargetOnCommand(swerveDrive, yaw, visionModule::hasTargets).withTimeout(0.3),
-                new ParallelRaceGroup(new BackAndShootCargo(
-                        shooter,
-                        hood,
-                        conveyor,
-                        flap,
-                        distanceFromTarget)
-                        .withTimeout(timeout),
+                new ParallelRaceGroup(
+                        new BackAndShootCargo(
+                                shooter,
+                                hood,
+                                conveyor,
+                                flap,
+                                distanceFromTarget
+                        ).withTimeout(timeout),
                         new IntakeCargo(intake, Constants.Intake.DEFAULT_POWER::get),
-                        new AdjustToTargetOnCommand(swerveDrive, () -> visionModule.getYaw().orElse(0), visionModule::hasTargets)
+                        new AdjustToTargetOnCommand(swerveDrive, yaw, visionModule::hasTargets)
                 ));
     }
 
