@@ -153,7 +153,7 @@ public final class Constants {
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]
         public static final double RAMP_RATE = 0; // seconds from neutral to max
 
-        public static final int[] ZERO_POSITIONS = {-1664, -12390, -2077, -454}; // fr, fl, rr, rl
+        public static final int[] ZERO_POSITIONS = {-589, -453, -868, -519}; // fr, fl, rr, rl
 
         public static final SwerveModuleConfigBase frConfig = new SwerveModuleConfigBase.Builder(0)
                 .configPorts(DRIVE_MOTOR_FR, ANGLE_MOTOR_FR)
@@ -211,7 +211,7 @@ public final class Constants {
         public static final Color RED = new Color(0.511, 0.346, 0.143);
         public static final Color NONE = new Color(0.31, 0.415, 0.275);
 
-        public static final WebConstant DEFAULT_POWER = WebConstant.of("Conveyor", "Default velocity", 0.9); // [%]
+        public static final WebConstant DEFAULT_POWER = WebConstant.of("Conveyor", "Default velocity", 1); // [%]
     }
 
     public static class Vision { //TODO: change for competition
@@ -219,7 +219,7 @@ public final class Constants {
         public static final int CAM_RESOLUTION_WIDTH = 640; // Width of camera resolution. [pixel]
 
         public static final double CAMERA_HEIGHT = 0.73; // [m]
-        public static final double TARGET_HEIGHT_FROM_GROUND = 2.65; // [m] Pefzener 2.62
+        public static final double TARGET_HEIGHT_FROM_GROUND = 2.62; // [m] Pefzener 2.62
         public static final double BIT_CAMERA_HEIGHT = 1.2; // [m]
         public static final double BIT_TARGET_HEIGHT_FROM_GROUND = 2.1; // [m] Pefzener 2.62
         public static final double CAMERA_PITCH = 36.2; // Pitch of the vision. [deg]
