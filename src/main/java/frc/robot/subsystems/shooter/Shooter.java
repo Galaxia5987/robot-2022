@@ -106,22 +106,35 @@ public class Shooter extends SubsystemBase {
         auxMotor.stopMotor();
     }
 
+    public void changePID() {
+        if (mainMotor.isVoltageCompensationEnabled()) {
+            mainMotor.enableVoltageCompensation(false);
+            auxMotor.enableVoltageCompensation(false);
+            kP.set(0.75);
+            kI.set(0.00019);
+            kD.set(9);
+            kF.set(0);
+        } else {
+            mainMotor.enableVoltageCompensation(true);
+            auxMotor.enableVoltageCompensation(true);
+            kP.set(0.08);
+            kI.set(0.0000075);
+            kD.set(9);
+            kF.set(0.0465);
+        }
+    }
+
     @Override
     public void periodic() {
         shooterVelocity.append(getVelocity());
         shooterVoltage.append(mainMotor.getMotorOutputVoltage());
         FireLog.log("Shooter-velocity", getVelocity());
-        System.out.println("Shooter'd velocity: "+ getVelocity());
+        System.out.println("Shooter'd velocity: " + getVelocity());
 
         mainMotor.config_kP(0, kP.get());
         mainMotor.config_kI(0, kI.get());
         mainMotor.config_kD(0, kD.get());
         mainMotor.config_kF(0, kF.get());
-/*
-        mainMotor.config_kP(1, 0.01);
-        mainMotor.config_kI(1, 0);
-        mainMotor.config_kD(1, 0);
-        mainMotor.config_kF(1, 0.485);*/
 
     }
 }
