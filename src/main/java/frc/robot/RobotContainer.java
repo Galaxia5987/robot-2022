@@ -5,20 +5,20 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.auto.FiveCargoAuto;
+import frc.robot.auto.FourBallAuto;
 import frc.robot.auto.FourCargoAuto;
 import frc.robot.commandgroups.*;
-import frc.robot.commandgroups.bits.RunAllBits;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
-import frc.robot.subsystems.conveyor.commands.bits.TestColorSensor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.DriveAndAdjustWithVision;
 import frc.robot.subsystems.drivetrain.commands.TurnToAngle;
-import frc.robot.subsystems.drivetrain.commands.testing.DriveForwardBITS;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.helicopter.Helicopter;
 import frc.robot.subsystems.helicopter.commands.JoystickPowerHelicopter;
@@ -27,7 +27,6 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.BackAndShootCargo;
 import frc.robot.subsystems.shooter.commands.Shoot;
-import frc.robot.subsystems.shooter.commands.bits.TestShooterVelocity;
 import frc.robot.utils.LedSubsystem;
 import frc.robot.utils.PhotonVisionModule;
 import frc.robot.utils.Utils;
@@ -169,9 +168,10 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
 //         return new TestColorSensor(conveyor, intake, ledSubsystem);
-        return new RunAllBits(swerve, shooter, conveyor, intake, flap, hood);
+//        return new RunAllBits(swerve, shooter, conveyor, intake, flap, hood);
 //             return new TestShooterVelocity(shooter, ledSubsystem);
-     //   return autonomousCommand;
+        return new FourBallAuto(swerve, shooter, conveyor, intake, hood, flap, photonVisionModule);
+        //   return autonomousCommand;
     }
 
     /**
