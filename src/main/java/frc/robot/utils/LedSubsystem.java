@@ -14,6 +14,7 @@ public class LedSubsystem extends SubsystemBase {
     private AddressableLED led;
     private AddressableLEDBuffer ledBuffer;
     private int current = 0;
+    private boolean colorOn = true;
 
     public LedSubsystem() {
         led = new AddressableLED(6);
@@ -85,10 +86,14 @@ public class LedSubsystem extends SubsystemBase {
 
     public void blink(Color color) {
         if (blinkTimer.hasElapsed(0.1)) {
+            blinkTimer.reset();
+            colorOn = !colorOn;
+        }
+
+        if (colorOn) {
             for (int i = 0; i < ledBuffer.getLength(); i++) {
                 ledBuffer.setLED(i, color);
             }
-            blinkTimer.reset();
         } else {
             for (int i = 0; i < ledBuffer.getLength(); i++) {
                 ledBuffer.setLED(i, Color.kBlack);
