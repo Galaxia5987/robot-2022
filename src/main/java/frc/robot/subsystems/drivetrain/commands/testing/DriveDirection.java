@@ -1,27 +1,29 @@
 package frc.robot.subsystems.drivetrain.commands.testing;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
-public class DriveDirection extends CommandBase {
-    private final SwerveDrive swerveDrive;
+public class DriveDirection extends SequentialCommandGroup {
+
 
     public DriveDirection(SwerveDrive swerveDrive) {
-        this.swerveDrive = swerveDrive;
-    }
+        addCommands(
+                new RunCommand(() -> swerveDrive.setPower(1))
+                        .withTimeout(5),
+                new RunCommand(() -> swerveDrive.setPower(-1))
+                        .withTimeout(5),
+                new RunCommand(() -> swerveDrive.holonomicDrive(0, 1, 0))
+                        .withTimeout(5),
+                new RunCommand(() -> swerveDrive.holonomicDrive(0, -1, 0))
+                        .withTimeout(5)
 
-    @Override
-    public void execute() {
-        swerveDrive.setPower(-1);
-    }
+        );
 
-    @Override
-    public boolean isFinished() {
-        return false;
-    }
-
-    @Override
-    public void end(boolean interrupted) {
 
     }
+
+
 }
