@@ -26,6 +26,7 @@ import frc.robot.subsystems.intake.commands.IntakeCargo;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.BackAndShootCargo;
 import frc.robot.subsystems.shooter.commands.Shoot;
+import frc.robot.subsystems.shooter.commands.WarmUpShooter;
 import frc.robot.utils.PhotonVisionModule;
 import frc.robot.utils.Utils;
 
@@ -181,4 +182,11 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
                 target
         );
     }
+    protected CommandBase WarmUpShooter(){
+        return new warmUpShooter(
+        Shooter
+
+        )
+    }
+
 }
