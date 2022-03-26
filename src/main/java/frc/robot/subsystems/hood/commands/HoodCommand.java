@@ -2,14 +2,12 @@ package frc.robot.subsystems.hood.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.hood.Hood;
 
 public class HoodCommand extends CommandBase {
     private final Hood hood;
     private final Timer timer = new Timer();
-    private Hood.Mode mode = Hood.Mode.ShortDistance;
+    private final Hood.Mode mode = Hood.Mode.ShortDistance;
 
     public HoodCommand(Hood hood) {
         this.hood = hood;

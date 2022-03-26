@@ -10,7 +10,6 @@ import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.UnitModel;
 import frc.robot.utils.Utils;
 import webapp.FireLog;

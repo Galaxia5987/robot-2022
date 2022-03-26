@@ -11,8 +11,8 @@ public class LedSubsystem extends SubsystemBase {
     private final Timer timer = new Timer();
     private final Timer blinkTimer = new Timer();
     private int m_rainbowFirstPixelHue = 0;
-    private AddressableLED led;
-    private AddressableLEDBuffer ledBuffer;
+    private final AddressableLED led;
+    private final AddressableLEDBuffer ledBuffer;
     private int current = 0;
     private boolean colorOn = true;
 

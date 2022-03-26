@@ -1,7 +1,6 @@
 package frc.robot.subsystems.shooter.commands.bits;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.hood.Hood;
@@ -21,7 +20,7 @@ public class TryVelocities extends SequentialCommandGroup {
     private boolean lastButtonRunUnsuccessful;
     private boolean lastButtonRunSuccessful;
     private boolean lastButtonShoot;
-    private boolean addShot = false;
+    private final boolean addShot = false;
     private double shooterVelocity;
 
     public TryVelocities(Conveyor conveyor, Shooter shooter, Hood hood, Flap flap,
