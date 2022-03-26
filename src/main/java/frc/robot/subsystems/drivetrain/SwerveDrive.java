@@ -335,15 +335,20 @@ public class SwerveDrive extends SubsystemBase {
         rotationVelocity.append(speeds.omegaRadiansPerSecond);
 
         if (!RobotContainer.shooting && !DriverStation.isAutonomous()) {
-            RobotContainer.cachedSetpointForShooter = Shoot.getSetpointVelocity(getOdometryDistance());
+            RobotContainer.setpointVelocity = Shoot.getSetpointVelocity(getOdometryDistance());
         }
+
+//        if (RobotContainer.hardCodedVelocity) {
+//            RobotContainer.setpointVelocity = RobotContainer.hardCodedVelocityValue;
+//        }
+
         if (RobotContainer.hasTarget.getAsBoolean() && !RobotContainer.playWithoutVision && !DriverStation.isAutonomous()) {
-            if (Math.abs(RobotContainer.yawSupplierFromVision.getAsDouble()) < 6) {
+            if (Math.abs(RobotContainer.Suppliers.yawSupplier.getAsDouble()) < 6) {
                 var odom = odometry.getPoseMeters().getTranslation();
                 var target = Constants.Vision.HUB_POSE.getTranslation();
                 Translation2d relative = odom.minus(target);
                 double alpha = Math.atan2(relative.getY(), relative.getX());
-                double visionDistance = RobotContainer.distanceSupplierFromVision.getAsDouble();
+                double visionDistance = RobotContainer.Suppliers.distanceSupplier.getAsDouble();
                 Translation2d newTranslation = new Translation2d(Math.cos(alpha) * visionDistance, Math.sin(alpha) * visionDistance);
                 odometry.resetPosition(new Pose2d(target.plus(newTranslation), Robot.getAngle()), Robot.getAngle());
             }

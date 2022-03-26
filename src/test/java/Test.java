@@ -1,4 +1,5 @@
 import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.Constants;
 import frc.robot.subsystems.UnitModel;
 
 import static frc.robot.Constants.Shooter.TICKS_PER_REVOLUTION;
@@ -18,5 +19,11 @@ public class Test {
         Translation2d newTranslation = new Translation2d(Math.cos(alpha) * visionDistance, Math.sin(alpha) * visionDistance);
         System.out.println(target.plus(newTranslation));
 
+    }
+
+    @org.junit.Test
+    public void informal() {
+        var translation = new Translation2d(4.92, 1.78);
+        System.out.println(Constants.Vision.HUB_POSE.getTranslation().minus(translation).getNorm());
     }
 }

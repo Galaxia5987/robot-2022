@@ -128,7 +128,6 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
         FireLog.log("my Shooter velocity", getVelocity());
-        FireLog.log("my Shooter setpoint", RobotContainer.cachedSetpointForShooter);
         shooterVelocity.append(getVelocity());
         shooterVoltage.append(mainMotor.getMotorOutputVoltage());
         FireLog.log("Shooter-velocity", getVelocity());

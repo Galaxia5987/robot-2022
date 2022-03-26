@@ -17,16 +17,5 @@ public class QuickReleaseBackAndShootCargo extends SequentialCommandGroup {
                                          Conveyor conveyor,
                                          Flap flap,
                                          DoubleSupplier distanceFromTarget) {
-        addCommands(new InstantCommand(() -> RobotContainer.cachedSetpointForShooter = RobotContainer.setpointSupplierForShooterFromVision.getAsDouble()));
-        addCommands(new InstantCommand(() -> RobotContainer.cachedDistanceForHood = RobotContainer.distanceSupplierFromVision.getAsDouble()));
-        addCommands(new InstantCommand(() -> RobotContainer.odometryCachedSetpoint = RobotContainer.odometrySetpointSupplier.getAsDouble()));
-        addCommands(new InstantCommand(() -> RobotContainer.odometryCachedDistance = RobotContainer.odometryDistanceSupplier.getAsDouble()));
-        addCommands(new InstantCommand(() -> RobotContainer.cachedHasTarget = !RobotContainer.playWithoutVision && RobotContainer.hasTarget.getAsBoolean()));
-        addCommands(new InstantCommand(() -> RobotContainer.shooting = true));
-
-        addCommands(new Convey(conveyor, -0.25).withTimeout(0.075),
-                new QuickReleaseShootCargo(shooter, hood, conveyor, flap, distanceFromTarget));
-
-
     }
 }

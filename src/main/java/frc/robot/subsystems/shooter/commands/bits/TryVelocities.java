@@ -2,7 +2,6 @@ package frc.robot.subsystems.shooter.commands.bits;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.commandgroups.ShootCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.hood.Hood;
@@ -36,9 +35,9 @@ public class TryVelocities extends SequentialCommandGroup {
         this.hood = hood;
         this.flap = flap;
         this.distanceFromTarget = distanceFromTarget;
-        addCommandsForNextVelocity();
+//        addCommandsForNextVelocity();
     }
-
+/*
     @Override
     public void execute() {
         super.execute();
@@ -86,5 +85,5 @@ public class TryVelocities extends SequentialCommandGroup {
                     }
                 })
         );
-    }
+    }*/
 }
