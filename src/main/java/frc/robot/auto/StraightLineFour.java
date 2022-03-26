@@ -32,11 +32,7 @@ public class StraightLineFour extends SaarIsAutonomous {
         );
 
         addCommands(
-                followPath("Four- go to terminal")
-        );
-
-        addCommands(
-                followPathAndPickup("Four- pickup from terminal")
+                followPathAndPickup("Four- go to terminal")
         );
 
         addCommands(
@@ -50,7 +46,7 @@ public class StraightLineFour extends SaarIsAutonomous {
                 ));
 
         addCommands(
-                shootAndAdjust(3)
+                shootAndAdjust(5)
         );
 
     }
