@@ -9,7 +9,7 @@ import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public class OdometryAdjust extends CommandBase {
     private final SwerveDrive swerveDrive;
-    private final PIDController adjustController = new PIDController(Constants.SwerveDrive.ADJUST_CONTROLLER_KP.get(), 0, 0) {{
+    private final PIDController adjustController = new PIDController(8, 0, 0) {{
         enableContinuousInput(-Math.PI, Math.PI);
         setTolerance(Constants.SwerveDrive.ADJUST_CONTROLLER_TOLERANCE);
     }};
@@ -18,21 +18,21 @@ public class OdometryAdjust extends CommandBase {
 
     public OdometryAdjust(SwerveDrive swerveDrive) {
         this.swerveDrive = swerveDrive;
-        target = Robot.getAngle();
+        target = new Rotation2d();
         addRequirements(swerveDrive);
     }
 
     @Override
     public void initialize() {
-        var robotAngle = Robot.getAngle();
         var robotPose = swerveDrive.getPose().getTranslation();
         var hubPose = Constants.Vision.HUB_POSE.getTranslation();
         var poseRelativeToTarget = hubPose.minus(robotPose);
-        target = robotAngle.plus(new Rotation2d(
+        var value = new Rotation2d(
                 Math.atan2(
                         poseRelativeToTarget.getY(),
                         poseRelativeToTarget.getX()
-                )));
+                ));
+        target = value;
     }
 
     @Override

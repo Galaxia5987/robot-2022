@@ -107,7 +107,7 @@ public class RobotContainer {
     private void configureButtonBindings() {
 
         { // Xbox controller button bindings.
-            Xbox.lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, 0.7, () -> Utils.map(MathUtil.clamp(Math.hypot(swerve.getChassisSpeeds().vxMetersPerSecond, swerve.getChassisSpeeds().vyMetersPerSecond), 0, 4), 0, 4, 0.25, 0.1)));
+            Xbox.lt.whileActiveContinuous(new PickUpCargo(conveyor, flap, intake, 0.7, () -> Utils.map(MathUtil.clamp(Math.hypot(swerve.getChassisSpeeds().vxMetersPerSecond, swerve.getChassisSpeeds().vyMetersPerSecond), 0, 4), 0, 4, 0.4, 0.25)));
 
             Xbox.lb.whileHeld(new Outtake(intake, conveyor, flap, shooter, hood, () -> false));
             Xbox.rb.whileHeld(new Convey(conveyor, -Constants.Conveyor.SHOOT_POWER));
@@ -133,12 +133,15 @@ public class RobotContainer {
                 thetaMultiplier = 1.5 * speedMultiplier;
             });
 
-            Joysticks.rightTrigger.whileHeld(new OneButtonAdjustAndShoot(swerve, conveyor, flap, hood)).whenReleased(
+            Joysticks.rightTrigger.whileActiveOnce(new OneButtonAdjustAndShoot(swerve, conveyor, flap, hood)).whenInactive(
                     () -> {
                         shooting = false;
                         ledSubsystem.setCurrentLedMode(LedSubsystem.LedMode.STATIC);
                     }
             );
+//            Joysticks.rightTrigger.whileActiveOnce(
+//                    new OdometryAdjust(swerve)
+//            );
 
             Joysticks.leftTwo.whenPressed((Runnable) Robot::resetAngle);
             Joysticks.rightTwo.whileHeld(new TurnToAngle(swerve, Rotation2d::new));

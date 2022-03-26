@@ -6,12 +6,16 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.commandgroups.PickUpCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.ConveyCargo;
+import frc.robot.subsystems.conveyor.commands.OldConveyNoWait;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.AdjustToTargetOnCommand;
 import frc.robot.subsystems.drivetrain.commands.TurnToAngle;
@@ -68,8 +72,8 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
     protected CommandBase followPathAndPickup(String path) {
         return new ParallelRaceGroup(
                 followPath(path),
-                pickup(10),
-                new RunCommand(() -> shooter.setVelocity(3400), shooter)
+                pickup(10)
+//                new RunCommand(() -> shooter.setVelocity(3400), shooter)
         );
     }
 
@@ -123,7 +127,7 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
                 flap,
                 intake,
                 Constants.Conveyor.DEFAULT_POWER.get(),
-                () -> Utils.map(MathUtil.clamp(Math.hypot(swerveDrive.getChassisSpeeds().vxMetersPerSecond, swerveDrive.getChassisSpeeds().vyMetersPerSecond), 0, 4), 0, 4, 0.3, 0.2)
+                () -> Utils.map(MathUtil.clamp(Math.hypot(swerveDrive.getChassisSpeeds().vxMetersPerSecond, swerveDrive.getChassisSpeeds().vyMetersPerSecond), 0, 4), 0, 4, 0.4, 0.25)
         ).withTimeout(timeout);
     }
 
@@ -142,6 +146,10 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
 
     protected CommandBase confirmShooting() {
         return new ConveyCargo(conveyor);
+    }
+
+    protected CommandBase confirmShootingSlower() {
+        return new OldConveyNoWait(conveyor, () -> !conveyor.isPreFlapBeamConnected());
     }
 
 
