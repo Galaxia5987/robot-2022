@@ -24,7 +24,7 @@ public class StraightLineFour extends SaarIsAutonomous {
 
         addCommands(new ParallelRaceGroup(
                 followPath("Four- first shooting position"),
-                warmup(3400)
+                reachVelocityByDistance(3.5)
         ));
 
         addCommands(
@@ -41,7 +41,7 @@ public class StraightLineFour extends SaarIsAutonomous {
 
         addCommands(
                 new ParallelRaceGroup(
-                        warmup(3400),
+                        reachVelocityByDistance(3.5),
                         followPath("Four- second shooting position")
                 ));
 
