@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
+import frc.robot.utils.LedSubsystem;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -96,11 +97,13 @@ public class DriveAndAdjustWithVision extends HolonomicDrive {
                                     poseRelativeToTarget.getY(),
                                     poseRelativeToTarget.getX()
                             ));
+                    LedSubsystem.currentLedMode = LedSubsystem.LedMode.ODOMETRY_ADJUST;
                 } else {
                     if (sampleYawTimer.hasElapsed(Constants.SwerveDrive.SAMPLE_YAW_PERIOD)) {
                         target = Robot.getAngle().minus(Rotation2d.fromDegrees(yawSupplier.getAsDouble()));
                         sampleYawTimer.reset();
                     }
+                    LedSubsystem.currentLedMode = LedSubsystem.LedMode.VISION_ADJUST;
                 }
                 rotation = adjustController.calculate(Robot.getAngle().getRadians(), target.getRadians());
             }

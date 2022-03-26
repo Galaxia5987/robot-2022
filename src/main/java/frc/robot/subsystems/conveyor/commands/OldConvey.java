@@ -39,7 +39,8 @@ public class OldConvey extends CommandBase {
     @Override
     public void execute() {
         if (wait) {
-            if (Math.abs(RobotContainer.setpointVelocity - RobotContainer.Suppliers.shooterVelocity.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get()) {
+            double setpoint = RobotContainer.hardCodedVelocity ? RobotContainer.hardCodedVelocityValue : RobotContainer.setpointVelocity;
+            if (Math.abs(setpoint - RobotContainer.Suppliers.shooterVelocity.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get()) {
                 wait = false;
             }
         } else {

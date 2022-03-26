@@ -13,7 +13,7 @@ import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.commands.Shoot;
+import frc.robot.utils.LedSubsystem;
 import frc.robot.utils.PhotonVisionModule;
 
 public class FiveCargoAuto extends SaarIsAutonomous {
@@ -24,21 +24,39 @@ public class FiveCargoAuto extends SaarIsAutonomous {
      */
     public FiveCargoAuto(Shooter shooter, SwerveDrive swerveDrive, Conveyor conveyor, Intake intake, Hood hood, Flap flap, PhotonVisionModule visionModule) {
         super(swerveDrive, shooter, conveyor, intake, hood, flap, visionModule, "FiveCargoAutoPart1");
-        addCommands(reachVelocityByDistance(2.16));
-        addCommands(new WaitUntilCommand(() -> Math.abs(shooter.getVelocity() - Shoot.getSetpointVelocity(2.16)) < Constants.Shooter.SHOOTER_VELOCITY_DEADBAND.get()));
-        confirmShooting().withTimeout(0.6);
+        addRequirements(shooter);
+        addCommands(reachVelocity(3350, 1));
+        addCommands(new WaitUntilCommand(() -> Math.abs(shooter.getVelocity() - 3350) < Constants.Shooter.SHOOTER_VELOCITY_DEADBAND.get()));
+        addCommands(new InstantCommand(flap::allowShooting));
+        new InstantCommand(() -> LedSubsystem.currentLedMode = LedSubsystem.LedMode.SHOOTING);
+        addCommands(confirmShooting().withTimeout(0.6));
+        new InstantCommand(() -> LedSubsystem.currentLedMode = LedSubsystem.LedMode.STATIC);
+        addCommands(reachVelocityByDistance(3.85));
         addCommands(followPathAndPickup("FiveCargoAutoPart1"));
+        new InstantCommand(() -> LedSubsystem.currentLedMode = LedSubsystem.LedMode.ODOMETRY_ADJUST);
         addCommands(new ParallelDeadlineGroup(
                 turnToAngle(() -> Rotation2d.fromDegrees(40.15)),
                 new Convey(conveyor, -0.25).withTimeout(0.075)
         ));
+        new InstantCommand(() -> LedSubsystem.currentLedMode = LedSubsystem.LedMode.VISION_ADJUST);
         addCommands(new AdjustToTargetOnCommand(swerveDrive, () -> visionModule.getYaw().orElse(0), visionModule::hasTargets).withTimeout(0.3));
-        addCommands(confirmShooting().withTimeout(2));
-        addCommands(reachVelocityByDistance(3.89));
+        addCommands(new InstantCommand(flap::allowShooting));
+        new InstantCommand(() -> LedSubsystem.currentLedMode = LedSubsystem.LedMode.SHOOTING);
+        addCommands(confirmShooting().withTimeout(1.6));
+        new InstantCommand(() -> LedSubsystem.currentLedMode = LedSubsystem.LedMode.STATIC);
+        addCommands(reachVelocityByDistance(5.6));
         addCommands(followPathAndPickup("FiveCargoAutoPart2"));
         addCommands(followPathAndPickup("FiveCargoAutoPart3"));
         addCommands(new InstantCommand(swerveDrive::terminate));
-        addCommands(new AdjustToTargetOnCommand(swerveDrive, () -> visionModule.getYaw().orElse(0), visionModule::hasTargets).withTimeout(0.3));
+        new InstantCommand(() -> LedSubsystem.currentLedMode = LedSubsystem.LedMode.VISION_ADJUST);
+        addCommands(new ParallelDeadlineGroup(
+                new AdjustToTargetOnCommand(swerveDrive, () -> visionModule.getYaw().orElse(0), visionModule::hasTargets).withTimeout(0.3),
+                new Convey(conveyor, -0.25).withTimeout(0.075)
+
+        ));
+        addCommands(new InstantCommand(flap::allowShooting));
+        new InstantCommand(() -> LedSubsystem.currentLedMode = LedSubsystem.LedMode.SHOOTING);
         addCommands(confirmShooting());
+        new InstantCommand(() -> LedSubsystem.currentLedMode = LedSubsystem.LedMode.STATIC);
     }
 }

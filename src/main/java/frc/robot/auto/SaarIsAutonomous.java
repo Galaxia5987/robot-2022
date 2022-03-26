@@ -144,6 +144,12 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
                 new InstantCommand(() -> hood.setSolenoid(distance < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD ? Hood.Mode.ShortDistance : Hood.Mode.LongDistance)));
     }
 
+    protected CommandBase reachVelocity(double velocity, double distance) {
+        return new SequentialCommandGroup(
+                new InstantCommand(() -> shooter.setVelocity(velocity)),
+                new InstantCommand(() -> hood.setSolenoid(distance < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD ? Hood.Mode.ShortDistance : Hood.Mode.LongDistance)));
+    }
+
     protected CommandBase confirmShooting() {
         return new ConveyCargo(conveyor);
     }

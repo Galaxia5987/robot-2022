@@ -16,7 +16,11 @@ public class ReachVelocity extends CommandBase {
     @Override
     public void execute() {
         if (RobotContainer.warmUpShooting) {
-            shooter.setVelocity(RobotContainer.setpointVelocity);
+            if (RobotContainer.hardCodedVelocity) {
+                shooter.setVelocity(RobotContainer.hardCodedVelocityValue);
+            } else {
+                shooter.setVelocity(RobotContainer.setpointVelocity);
+            }
         } else {
             shooter.setPower(0);
         }
