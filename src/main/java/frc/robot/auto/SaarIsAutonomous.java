@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.commandgroups.PickUpCargo;
-import frc.robot.commandgroups.QuickReleaseBackAndShootCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.ConveyCargo;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
@@ -114,25 +113,6 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
                         distanceFromTarget)
                         .withTimeout(timeout),
                         new IntakeCargo(intake, Constants.Intake.DEFAULT_POWER::get)
-                ));
-    }
-
-
-    protected CommandBase quickReleaseBackShootAndAdjust(double timeout) {
-        DoubleSupplier distanceFromTarget = visionModule::getDistance;
-        DoubleSupplier conveyorPower = Constants.Conveyor.DEFAULT_POWER::get;
-
-        return new SequentialCommandGroup(
-                new AdjustToTargetOnCommand(swerveDrive, () -> visionModule.getYaw().orElse(0), visionModule::hasTargets).withTimeout(0.1),
-                new ParallelRaceGroup(new QuickReleaseBackAndShootCargo(
-                        shooter,
-                        hood,
-                        conveyor,
-                        flap,
-                        distanceFromTarget)
-                        .withTimeout(timeout),
-                        new IntakeCargo(intake, Constants.Intake.DEFAULT_POWER::get),
-                        new AdjustToTargetOnCommand(swerveDrive, () -> visionModule.getYaw().orElse(0), visionModule::hasTargets)
                 ));
     }
 
