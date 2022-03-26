@@ -73,8 +73,7 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
         return new ParallelRaceGroup(
                 followPath(path),
                 pickup(10),
-                new RunCommand(() -> shooter.setVelocity(3400), shooter)
-        );
+                warmUp(3400));
     }
 
     protected CommandBase shootAndAdjust(double timeout) {
@@ -182,4 +181,11 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
                 target
         );
     }
+
+    protected CommandBase warmUp(double velocity) {
+        return new RunCommand(
+                () -> shooter.setVelocity(velocity), shooter
+        );
+    }
+
 }
