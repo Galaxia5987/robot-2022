@@ -134,7 +134,10 @@ public class RobotContainer {
             });
 
             Joysticks.rightTrigger.whileHeld(new OneButtonAdjustAndShoot(swerve, conveyor, flap, hood)).whenReleased(
-                    () -> shooting = false
+                    () -> {
+                        shooting = false;
+                        ledSubsystem.setCurrentLedMode(LedSubsystem.LedMode.STATIC);
+                    }
             );
 
             Joysticks.leftTwo.whenPressed((Runnable) Robot::resetAngle);
