@@ -36,7 +36,7 @@ public class VisionAdjust extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return Math.abs(Robot.getAngle().minus(target).getDegrees()) < 1.5;
+        return Math.abs(Robot.getAngle().minus(target).getDegrees()) < Constants.SwerveDrive.VISION_ADJUST_FINISHED_CONDITION;
     }
 
     @Override

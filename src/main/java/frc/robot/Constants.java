@@ -79,10 +79,10 @@ public final class Constants {
         public static final WebConstant ADJUST_CONTROLLER_KP = WebConstant.of("Swerve", "kp_heading", 12.5);
         public static final WebConstant ADJUST_CONTROLLER_KI = WebConstant.of("Swerve", "KI_heading", 0);
         public static final WebConstant ADJUST_CONTROLLER_KD = WebConstant.of("Swerve", "Kd_heading", 0.1);
-
+        public static final double ODOMETRY_ADJUST_FINISHED_CONDITION = 2; // [deg]
+        public static final double VISION_ADJUST_FINISHED_CONDITION = 1.5; // [deg]
         private static final double Rx = SwerveDrive.ROBOT_LENGTH / 2; // [m]
         private static final double Ry = SwerveDrive.ROBOT_WIDTH / 2; // [m]
-
         // Axis systems
         public static final Translation2d[] SWERVE_POSITIONS = new Translation2d[]{
                 new Translation2d(Rx, -Ry),
@@ -90,6 +90,8 @@ public final class Constants {
                 new Translation2d(-Rx, -Ry),
                 new Translation2d(-Rx, Ry)
         };
+
+
     }
 
     public static class Shooter {
@@ -105,7 +107,7 @@ public final class Constants {
         public static final WebConstant kI = WebConstant.of("Shooter", "kI", 0.0000075);
         public static final WebConstant kD = WebConstant.of("Shooter", "kD", 9);
         public static final WebConstant kF = WebConstant.of("Shooter", "kf", 0.0465);
-//        public static final WebConstant kP = WebConstant.of("Shooter", "kP", 0.03);
+        //        public static final WebConstant kP = WebConstant.of("Shooter", "kP", 0.03);
 //        public static final WebConstant kI = WebConstant.of("Shooter", "kI", 0.00);
 //        public static final WebConstant kD = WebConstant.of("Shooter", "kD", 0);
 //        public static final WebConstant kF = WebConstant.of("Shooter", "kf", 0.0475);

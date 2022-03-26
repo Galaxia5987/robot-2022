@@ -43,7 +43,7 @@ public class OdometryAdjust extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return Math.abs(Robot.getAngle().minus(target).getDegrees()) < 2;
+        return Math.abs(Robot.getAngle().minus(target).getDegrees()) < Constants.SwerveDrive.ODOMETRY_ADJUST_FINISHED_CONDITION;
     }
 
     @Override
