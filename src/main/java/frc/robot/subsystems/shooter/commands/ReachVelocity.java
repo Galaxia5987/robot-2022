@@ -20,12 +20,20 @@ public class ReachVelocity extends CommandBase {
             if (RobotContainer.hardCodedVelocity) {
                 shooter.setVelocity(RobotContainer.hardCodedVelocityValue);
             } else {
-                if (RobotContainer.hasTarget.getAsBoolean() && !RobotContainer.playWithoutVision && !DriverStation.isAutonomous()) {
-                    if (Math.abs(RobotContainer.Suppliers.yawSupplier.getAsDouble()) < 10) {
-                        shooter.setVelocity(RobotContainer.setpointVelocity - 100);
+                if (RobotContainer.smartWarmUp) {
+                    if (RobotContainer.hasTarget.getAsBoolean() && !RobotContainer.playWithoutVision && !DriverStation.isAutonomous()) {
+                        if (Math.abs(RobotContainer.Suppliers.yawSupplier.getAsDouble()) < 10) { // with vision
+                            shooter.setVelocity(RobotContainer.setpointVelocity);
+                        }
+                    } else { // with odometry
+                        shooter.setVelocity(RobotContainer.setpointVelocity - 300);
                     }
                 } else {
-                    shooter.setVelocity(RobotContainer.setpointVelocity);
+                    if (RobotContainer.shooting) {
+                        shooter.setVelocity(RobotContainer.setpointVelocity);
+                    } else {
+                        shooter.setVelocity(3530);
+                    }
                 }
             }
         } else {

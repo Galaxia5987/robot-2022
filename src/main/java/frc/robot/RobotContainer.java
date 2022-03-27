@@ -37,6 +37,7 @@ public class RobotContainer {
     public static boolean overrideConveyor = false;
     public static boolean playWithoutVision = false;
     public static boolean hardCodedVelocity = false;
+    public static boolean smartWarmUp = false;
     public static double hardCodedDistance = 3.35;
     public static double hardCodedVelocityValue = Shoot.getSetpointVelocity(hardCodedDistance);
     public static boolean shooting = false; // If this is true, don't change the setpoint of the shooter during teleop
