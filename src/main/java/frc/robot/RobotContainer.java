@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.auto.FiveCargoAuto;
-import frc.robot.auto.FourBallAuto;
 import frc.robot.commandgroups.*;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
@@ -35,6 +34,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class RobotContainer {
+    public static boolean overrideConveyor = false;
     public static boolean playWithoutVision = false;
     public static boolean hardCodedVelocity = false;
     public static double hardCodedDistance = 3.35;
@@ -119,6 +119,7 @@ public class RobotContainer {
             Xbox.x.whenPressed(intake::toggleRetractor);
             Xbox.y.whenPressed(new InstantCommand(() -> warmUpShooting = !warmUpShooting));
             Xbox.a.whileHeld(() -> playWithoutVision = true).whenReleased(() -> playWithoutVision = false);
+            Xbox.b.whileHeld(() -> overrideConveyor = true).whenReleased(() -> overrideConveyor = false);
 
             Xbox.leftPov.whileActiveOnce(new InstantCommand(hood::toggle));
             Xbox.downPov.whileActiveOnce(new LowGoalShot(shooter, flap, hood));
@@ -138,7 +139,6 @@ public class RobotContainer {
 
         { // Joystick button bindings.
 
-            Joysticks.rightTrigger.whenInactive(() -> LedSubsystem.currentLedMode = LedSubsystem.LedMode.STATIC);
             Joysticks.leftTrigger.whileHeld(() -> {
                 speedMultiplier = 0.5;
                 thetaMultiplier = 1.5 * speedMultiplier;

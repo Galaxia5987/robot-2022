@@ -38,36 +38,40 @@ public class OldConvey extends CommandBase {
 
     @Override
     public void execute() {
-        if (wait) {
-            double setpoint = RobotContainer.hardCodedVelocity ? RobotContainer.hardCodedVelocityValue : RobotContainer.setpointVelocity;
-            if (Math.abs(setpoint - RobotContainer.Suppliers.shooterVelocity.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get()) {
-                wait = false;
-            }
+        if (RobotContainer.overrideConveyor) {
+            conveyor.setPower(Constants.Conveyor.SHOOT_POWER);
         } else {
-            if (getBallToPreFlap) {
-                conveyor.setPower(Constants.Conveyor.SHOOT_POWER);
-            } else {
-                conveyor.setPower(0);
-            }
-
-            if (preFlapSupplier.getAsBoolean()) {
-                if (!last) {
-                    last = true;
-                    getBallToPreFlap = false;
-                    timer.start();
-                    timer.reset();
-                    delayTimer.start();
-                    delayTimer.reset();
+            if (wait) {
+                double setpoint = RobotContainer.hardCodedVelocity ? RobotContainer.hardCodedVelocityValue : RobotContainer.setpointVelocity;
+                if (Math.abs(setpoint - RobotContainer.Suppliers.shooterVelocity.getAsDouble()) < SHOOTER_VELOCITY_DEADBAND.get()) {
+                    wait = false;
                 }
             } else {
-                last = false;
-                getBallToPreFlap = true;
-            }
+                if (getBallToPreFlap) {
+                    conveyor.setPower(Constants.Conveyor.SHOOT_POWER);
+                } else {
+                    conveyor.setPower(0);
+                }
 
-            if (timer.hasElapsed(0.3)) {
-                getBallToPreFlap = true;
-                timer.reset();
-                timer.stop();
+                if (preFlapSupplier.getAsBoolean()) {
+                    if (!last) {
+                        last = true;
+                        getBallToPreFlap = false;
+                        timer.start();
+                        timer.reset();
+                        delayTimer.start();
+                        delayTimer.reset();
+                    }
+                } else {
+                    last = false;
+                    getBallToPreFlap = true;
+                }
+
+                if (timer.hasElapsed(0.3)) {
+                    getBallToPreFlap = true;
+                    timer.reset();
+                    timer.stop();
+                }
             }
         }
     }

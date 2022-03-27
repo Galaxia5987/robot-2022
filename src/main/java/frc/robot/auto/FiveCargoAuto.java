@@ -31,7 +31,7 @@ public class FiveCargoAuto extends SaarIsAutonomous {
         new InstantCommand(() -> LedSubsystem.currentLedMode = LedSubsystem.LedMode.SHOOTING);
         addCommands(confirmShooting().withTimeout(0.6));
         new InstantCommand(() -> LedSubsystem.currentLedMode = LedSubsystem.LedMode.STATIC);
-        addCommands(reachVelocityByDistance(3.85));
+        addCommands(reachVelocityByDistance(3.78));
         addCommands(followPathAndPickup("FiveCargoAutoPart1"));
         new InstantCommand(() -> LedSubsystem.currentLedMode = LedSubsystem.LedMode.ODOMETRY_ADJUST);
         addCommands(new ParallelDeadlineGroup(
@@ -44,13 +44,13 @@ public class FiveCargoAuto extends SaarIsAutonomous {
         new InstantCommand(() -> LedSubsystem.currentLedMode = LedSubsystem.LedMode.SHOOTING);
         addCommands(confirmShooting().withTimeout(1.6));
         new InstantCommand(() -> LedSubsystem.currentLedMode = LedSubsystem.LedMode.STATIC);
-        addCommands(reachVelocityByDistance(5.6));
+        addCommands(reachVelocityByDistance(5.8));
         addCommands(followPathAndPickup("FiveCargoAutoPart2"));
         addCommands(followPathAndPickup("FiveCargoAutoPart3"));
         addCommands(new InstantCommand(swerveDrive::terminate));
         new InstantCommand(() -> LedSubsystem.currentLedMode = LedSubsystem.LedMode.VISION_ADJUST);
         addCommands(new ParallelDeadlineGroup(
-                new AdjustToTargetOnCommand(swerveDrive, () -> visionModule.getYaw().orElse(0), visionModule::hasTargets).withTimeout(0.3),
+                new AdjustToTargetOnCommand(swerveDrive, () -> visionModule.getYaw().orElse(0), visionModule::hasTargets).withTimeout(0.33),
                 new Convey(conveyor, -0.25).withTimeout(0.075)
 
         ));
