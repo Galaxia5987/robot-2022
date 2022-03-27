@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.auto.FiveCargoAuto;
+import frc.robot.auto.FromTarmacTo56Ball;
 import frc.robot.commandgroups.*;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.commands.Convey;
@@ -68,7 +69,8 @@ public class RobotContainer {
         hasTarget = photonVisionModule::hasTargets;
 
         // autonomousCommand = null;
-        autonomousCommand = new FiveCargoAuto(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
+//        autonomousCommand = new FiveCargoAuto(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
+        autonomousCommand = new FromTarmacTo56Ball(swerve,shooter, conveyor, intake, hood, flap, photonVisionModule);
 //        autonomousCommand = new TaxiFrom(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
         // Configure the button bindings and default commands
 //        autonomousCommand = new FourCargoAuto(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);

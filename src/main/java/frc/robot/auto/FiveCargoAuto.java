@@ -44,7 +44,7 @@ public class FiveCargoAuto extends SaarIsAutonomous {
         new InstantCommand(() -> LedSubsystem.currentLedMode = LedSubsystem.LedMode.SHOOTING);
         addCommands(confirmShooting().withTimeout(1.6));
         new InstantCommand(() -> LedSubsystem.currentLedMode = LedSubsystem.LedMode.STATIC);
-        addCommands(reachVelocityByDistance(5.8));
+        addCommands(reachVelocityByDistance(6));
         addCommands(followPathAndPickup("FiveCargoAutoPart2"));
         addCommands(followPathAndPickup("FiveCargoAutoPart3"));
         addCommands(new InstantCommand(swerveDrive::terminate));

@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -133,6 +134,8 @@ public class Shooter extends SubsystemBase {
         } else {
             FireLog.log("my shooter setpoint", RobotContainer.setpointVelocity);
         }
+        SmartDashboard.putString("speed_state", Math.abs(getVelocity() - RobotContainer.setpointVelocity) <= 50 ? "green" : Math.abs(getVelocity() - RobotContainer.setpointVelocity) <= 100 ? "yellow" : "red");
+
         shooterVelocity.append(getVelocity());
         shooterVoltage.append(mainMotor.getMotorOutputVoltage());
 //        FireLog.log("Shooter-velocity", getVelocity());

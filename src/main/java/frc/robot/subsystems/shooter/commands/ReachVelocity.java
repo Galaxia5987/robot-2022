@@ -1,6 +1,7 @@
 package frc.robot.subsystems.shooter.commands;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.shooter.Shooter;
@@ -19,6 +20,7 @@ public class ReachVelocity extends CommandBase {
         if (RobotContainer.warmUpShooting) {
             if (RobotContainer.hardCodedVelocity) {
                 shooter.setVelocity(RobotContainer.hardCodedVelocityValue);
+                SmartDashboard.putString("speed_state", Math.abs(shooter.getVelocity() - RobotContainer.hardCodedVelocityValue) <= 50 ? "green" : Math.abs(shooter.getVelocity() - RobotContainer.hardCodedVelocityValue) <= 100 ? "yellow" : "red");
             } else {
                 if (RobotContainer.smartWarmUp) {
                     if (RobotContainer.hasTarget.getAsBoolean() && !RobotContainer.playWithoutVision && !DriverStation.isAutonomous()) {
