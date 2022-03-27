@@ -2,10 +2,6 @@ package frc.robot.commandgroups.bits;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.Constants;
-import frc.robot.commandgroups.PickUpCargo;
-import frc.robot.commandgroups.ShootCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.hood.Hood;
@@ -24,14 +20,6 @@ public class TestBallFlow extends SequentialCommandGroup {
         this.intake = intake;
         this.shooter = shooter;
         this.conveyor = conveyor;
-        ShootCargo shootCargo = new ShootCargo(shooter, hood, conveyor, flap, Constants.Conveyor.DEFAULT_POWER::get);
-        PickUpCargo pickUpCargo = new PickUpCargo(conveyor, flap, intake, Constants.Conveyor.DEFAULT_POWER.get(), () -> 0.5);
-
-        addCommands(
-                pickUpCargo.withInterrupt(pickUpCargoIsFinished),
-                new WaitCommand(5),
-                shootCargo.withInterrupt(shootCargoIsFinished)
-        );
     }
 
     @Override

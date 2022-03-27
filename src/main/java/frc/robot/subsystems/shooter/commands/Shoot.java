@@ -1,14 +1,10 @@
 package frc.robot.subsystems.shooter.commands;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.shooter.Shooter;
-import webapp.FireLog;
 
 import java.util.HashMap;
 import java.util.OptionalDouble;
@@ -73,7 +69,7 @@ public class Shoot extends CommandBase {
         double t = (distance - prevMeasuredDistance) / (nextMeasuredDistance - prevMeasuredDistance);
         return (1 - t) * y1 + t * y2;
     }
-
+/*
     @Override
     public void initialize() {
         RobotContainer.ledSubsystem.setNeutralMode(false);
@@ -85,7 +81,7 @@ public class Shoot extends CommandBase {
         if (power.isEmpty()) {
             if (RobotContainer.hardCodedVelocity) {
 //                shooter.setVelocity(RobotContainer.hardCodedVelocityValue);
-                SmartDashboard.putString("speed_state", Math.abs(RobotContainer.cachedSetpointForShooter - shooter.getVelocity()) <= 30 ? "green" : Math.abs(RobotContainer.cachedSetpointForShooter - shooter.getVelocity()) <= 100 ? "yellow" : "red");
+//                SmartDashboard.putString("speed_state", Math.abs(RobotContainer.cachedSetpointForShooter - shooter.getVelocity()) <= 30 ? "green" : Math.abs(RobotContainer.cachedSetpointForShooter - shooter.getVelocity()) <= 100 ? "yellow" : "red");
             } else {
                 if (RobotContainer.cachedHasTarget) {
 //                    shooter.setVelocity(RobotContainer.cachedSetpointForShooter);
@@ -133,5 +129,5 @@ public class Shoot extends CommandBase {
         RobotContainer.ledSubsystem.setNeutralMode(true);
         RobotContainer.ledSubsystem.setPercent(0);
         SmartDashboard.putString("speed_state", "red");
-    }
+    }*/
 }

@@ -13,9 +13,9 @@ import static frc.robot.Constants.Conveyor.*;
 public class ColorSensor {
     private final ColorSensorV3 sensor;
     private final ColorMatch colorMatch = new ColorMatch();
+    private final DeadbandProximity proximity;
     private DriverStation.Alliance lastSeenColor = DriverStation.Alliance.Invalid;
     private DriverStation.Alliance currentColor = DriverStation.Alliance.Invalid;
-    private final DeadbandProximity proximity;
 
     public ColorSensor(I2C.Port colorSensorPort) {
         this.sensor = new ColorSensorV3(colorSensorPort);

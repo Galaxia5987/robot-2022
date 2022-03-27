@@ -18,9 +18,9 @@ public class SmartIndexing extends CommandBase {
     private final Intake intake;
     private final Flap flap;
     private final DoubleSupplier intakePower;
+    private final Timer timer = new Timer();
     private boolean outtakingShooter = false;
     private boolean outtakingIntake = false;
-    private final Timer timer = new Timer();
 
     public SmartIndexing(Shooter shooter, Conveyor conveyor, Intake intake, Flap flap, DoubleSupplier intakePower) {
         this.shooter = shooter;

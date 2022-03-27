@@ -60,8 +60,8 @@ public class DriveAndAdjustWithVision extends HolonomicDrive {
         if (magnitude == 0) current = 0;
         current += magnitude / 5;
         if (current > magnitude) current = magnitude;
-        forward = Math.cos(alpha) * current;
-        strafe = Math.sin(alpha) * current;
+        forward = Math.cos(alpha) * magnitude;
+        strafe = Math.sin(alpha) * magnitude;
         double rotation = speeds.omegaRadiansPerSecond;
 
         if (rotation != 0) {
@@ -96,11 +96,13 @@ public class DriveAndAdjustWithVision extends HolonomicDrive {
                                     poseRelativeToTarget.getY(),
                                     poseRelativeToTarget.getX()
                             ));
+//                    LedSubsystem.currentLedMode = LedSubsystem.LedMode.ODOMETRY_ADJUST;
                 } else {
                     if (sampleYawTimer.hasElapsed(Constants.SwerveDrive.SAMPLE_YAW_PERIOD)) {
                         target = Robot.getAngle().minus(Rotation2d.fromDegrees(yawSupplier.getAsDouble()));
                         sampleYawTimer.reset();
                     }
+//                    LedSubsystem.currentLedMode = LedSubsystem.LedMode.VISION_ADJUST;
                 }
                 rotation = adjustController.calculate(Robot.getAngle().getRadians(), target.getRadians());
             }
@@ -133,7 +135,7 @@ public class DriveAndAdjustWithVision extends HolonomicDrive {
                     }
 
                 } else {
-                    swerveDrive.defaultHolonomicDrive(forward, strafe, rotation * (1 + (current / VELOCITY_MULTIPLIER) / Constants.SwerveDrive.ROTATIONAL_ADDITION_RESTRAINT));
+                    swerveDrive.defaultHolonomicDrive(forward, strafe, rotation * (1 + (magnitude / VELOCITY_MULTIPLIER) / Constants.SwerveDrive.ROTATIONAL_ADDITION_RESTRAINT));
                     setpoint = Robot.getAngle();
                 }
             }

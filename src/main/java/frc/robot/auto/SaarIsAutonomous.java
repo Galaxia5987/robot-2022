@@ -6,22 +6,22 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.Robot;
-import frc.robot.RobotContainer;
 import frc.robot.commandgroups.PickUpCargo;
-import frc.robot.commandgroups.QuickReleaseBackAndShootCargo;
 import frc.robot.subsystems.conveyor.Conveyor;
-import frc.robot.subsystems.conveyor.commands.Convey;
-import frc.robot.subsystems.conveyor.commands.ConveyToShooter;
+import frc.robot.subsystems.conveyor.commands.ConveyCargo;
+import frc.robot.subsystems.conveyor.commands.OldConveyNoWait;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.AdjustToTargetOnCommand;
 import frc.robot.subsystems.drivetrain.commands.TurnToAngle;
 import frc.robot.subsystems.drivetrain.commands.auto.FollowPath;
 import frc.robot.subsystems.flap.Flap;
 import frc.robot.subsystems.hood.Hood;
-import frc.robot.subsystems.hood.commands.HoodCommand;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.commands.IntakeCargo;
 import frc.robot.subsystems.shooter.Shooter;
@@ -72,8 +72,8 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
     protected CommandBase followPathAndPickup(String path) {
         return new ParallelRaceGroup(
                 followPath(path),
-                pickup(10),
-                new RunCommand(() -> shooter.setVelocity(3400), shooter)
+                pickup(10)
+//                new RunCommand(() -> shooter.setVelocity(3400), shooter)
         );
     }
 
@@ -121,58 +121,13 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
     }
 
 
-    protected CommandBase quickReleaseBackShootAndAdjust(double timeout) {
-        DoubleSupplier distanceFromTarget = visionModule::getDistance;
-        DoubleSupplier conveyorPower = Constants.Conveyor.DEFAULT_POWER::get;
-
-        return new SequentialCommandGroup(
-                new AdjustToTargetOnCommand(swerveDrive, () -> visionModule.getYaw().orElse(0), visionModule::hasTargets).withTimeout(0.1),
-                new ParallelRaceGroup(new QuickReleaseBackAndShootCargo(
-                        shooter,
-                        hood,
-                        conveyor,
-                        flap,
-                        distanceFromTarget)
-                        .withTimeout(timeout),
-                        new IntakeCargo(intake, Constants.Intake.DEFAULT_POWER::get),
-                        new AdjustToTargetOnCommand(swerveDrive, () -> visionModule.getYaw().orElse(0), visionModule::hasTargets)
-                ));
-    }
-
-
-    protected CommandBase shoot3(double timeout) {
-        DoubleSupplier distanceFromTarget = visionModule::getDistance;
-
-        return new SequentialCommandGroup(
-                new InstantCommand(() -> RobotContainer.cachedSetpointForShooter = RobotContainer.setpointSupplierForShooterFromVision.getAsDouble()),
-                new InstantCommand(() -> RobotContainer.cachedDistanceForHood = RobotContainer.distanceSupplierFromVision.getAsDouble()),
-                new InstantCommand(() -> RobotContainer.odometryCachedSetpoint = RobotContainer.odometrySetpointSupplier.getAsDouble()),
-                new InstantCommand(() -> RobotContainer.odometryCachedDistance = RobotContainer.odometryDistanceSupplier.getAsDouble()),
-                new InstantCommand(() -> RobotContainer.cachedHasTarget = !RobotContainer.playWithoutVision && RobotContainer.hasTarget.getAsBoolean()),
-                new InstantCommand(() -> RobotContainer.shooting = true),
-                new InstantCommand(flap::allowShooting),
-                new InstantCommand(() -> shooter.setVelocity(Shoot.getSetpointVelocity(distanceFromTarget.getAsDouble()))),
-                new WaitUntilCommand(() -> Math.abs(shooter.getVelocity() - (RobotContainer.cachedSetpointForShooter)) <= Constants.Shooter.SHOOTER_VELOCITY_DEADBAND.get()),
-                new IntakeCargo(intake, Constants.Intake.DEFAULT_POWER::get),
-                new Convey(conveyor, Constants.Conveyor.SHOOT_POWER),
-                new HoodCommand(hood)
-        );
-    }
-
-    protected CommandBase shoot4(double timeout) {
-        return new SequentialCommandGroup(
-                new ConveyToShooter(conveyor, () -> !conveyor.isPreFlapBeamConnected(), shooter::getVelocity)
-        );
-    }
-
-
     protected CommandBase pickup(double timeout) {
         return new PickUpCargo(
                 conveyor,
                 flap,
                 intake,
                 Constants.Conveyor.DEFAULT_POWER.get(),
-                () -> Utils.map(MathUtil.clamp(Math.hypot(swerveDrive.getChassisSpeeds().vxMetersPerSecond, swerveDrive.getChassisSpeeds().vyMetersPerSecond), 0, 4), 0, 4, 0.3, 0.2)
+                () -> Utils.map(MathUtil.clamp(Math.hypot(swerveDrive.getChassisSpeeds().vxMetersPerSecond, swerveDrive.getChassisSpeeds().vyMetersPerSecond), 0, 4), 0, 4, 0.4, 0.25)
         ).withTimeout(timeout);
     }
 
@@ -182,4 +137,26 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
                 target
         );
     }
+
+    protected CommandBase reachVelocityByDistance(double distance) {
+        return new SequentialCommandGroup(
+                new InstantCommand(() -> shooter.setVelocity(Shoot.getSetpointVelocity(distance))),
+                new InstantCommand(() -> hood.setSolenoid(distance < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD ? Hood.Mode.ShortDistance : Hood.Mode.LongDistance)));
+    }
+
+    protected CommandBase reachVelocity(double velocity, double distance) {
+        return new SequentialCommandGroup(
+                new InstantCommand(() -> shooter.setVelocity(velocity)),
+                new InstantCommand(() -> hood.setSolenoid(distance < Constants.Hood.DISTANCE_FROM_TARGET_THRESHOLD ? Hood.Mode.ShortDistance : Hood.Mode.LongDistance)));
+    }
+
+    protected CommandBase confirmShooting() {
+        return new ConveyCargo(conveyor);
+    }
+
+    protected CommandBase confirmShootingSlower() {
+        return new OldConveyNoWait(conveyor, () -> !conveyor.isPreFlapBeamConnected());
+    }
+
+
 }

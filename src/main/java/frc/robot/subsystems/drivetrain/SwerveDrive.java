@@ -33,6 +33,7 @@ public class SwerveDrive extends SubsystemBase {
     private final SwerveModule[] modules = new SwerveModule[4];
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(Constants.SwerveDrive.SWERVE_POSITIONS);
     private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, new Rotation2d());
+    private final SwerveDriveOdometry odometryForDistance = new SwerveDriveOdometry(kinematics, new Rotation2d());
 
     private final ProfiledPIDController headingController = new ProfiledPIDController(
             Constants.SwerveDrive.HEADING_KP,
@@ -244,6 +245,10 @@ public class SwerveDrive extends SubsystemBase {
         return odometry.getPoseMeters();
     }
 
+    public Pose2d getDistanceOdometryPose() {
+        return odometryForDistance.getPoseMeters();
+    }
+
     /**
      * Resets the odometry.
      */
@@ -258,6 +263,11 @@ public class SwerveDrive extends SubsystemBase {
      */
     public void resetOdometry(Pose2d pose, Rotation2d angle) {
         odometry.resetPosition(new Pose2d(pose.getTranslation(), angle), angle);
+    }
+
+
+    public void resetDistanceOdometry(Pose2d pose, Rotation2d angle) {
+        odometryForDistance.resetPosition(new Pose2d(pose.getTranslation(), angle), angle);
     }
 
     /**
@@ -315,12 +325,18 @@ public class SwerveDrive extends SubsystemBase {
      * @return distance from hub. [m]
      */
     public double getOdometryDistance() {
-        return Constants.Vision.HUB_POSE.getTranslation().minus(getPose().getTranslation()).getNorm();
+        return Constants.Vision.HUB_POSE.getTranslation().minus(getDistanceOdometryPose().getTranslation()).getNorm();
     }
 
     @Override
     public void periodic() {
         odometry.updateWithTime(
+                Timer.getFPGATimestamp(),
+                Robot.getAngle(),
+                getStates()
+        );
+
+        odometryForDistance.updateWithTime(
                 Timer.getFPGATimestamp(),
                 Robot.getAngle(),
                 getStates()
@@ -335,22 +351,27 @@ public class SwerveDrive extends SubsystemBase {
         rotationVelocity.append(speeds.omegaRadiansPerSecond);
 
         if (!RobotContainer.shooting && !DriverStation.isAutonomous()) {
-            RobotContainer.cachedSetpointForShooter = Shoot.getSetpointVelocity(getOdometryDistance());
+            RobotContainer.setpointVelocity = Shoot.getSetpointVelocity(getOdometryDistance());
         }
+
+//        if (RobotContainer.hardCodedVelocity) {
+//            RobotContainer.setpointVelocity = RobotContainer.hardCodedVelocityValue;
+//        }
+
         if (RobotContainer.hasTarget.getAsBoolean() && !RobotContainer.playWithoutVision && !DriverStation.isAutonomous()) {
-            if (Math.abs(RobotContainer.yawSupplierFromVision.getAsDouble()) < 6) {
-                var odom = odometry.getPoseMeters().getTranslation();
+            if (Math.abs(RobotContainer.Suppliers.yawSupplier.getAsDouble()) < 10) {
+                var odom = odometryForDistance.getPoseMeters().getTranslation();
                 var target = Constants.Vision.HUB_POSE.getTranslation();
                 Translation2d relative = odom.minus(target);
                 double alpha = Math.atan2(relative.getY(), relative.getX());
-                double visionDistance = RobotContainer.distanceSupplierFromVision.getAsDouble();
+                double visionDistance = RobotContainer.Suppliers.distanceSupplier.getAsDouble();
                 Translation2d newTranslation = new Translation2d(Math.cos(alpha) * visionDistance, Math.sin(alpha) * visionDistance);
-                odometry.resetPosition(new Pose2d(target.plus(newTranslation), Robot.getAngle()), Robot.getAngle());
+                odometryForDistance.resetPosition(new Pose2d(target.plus(newTranslation), Robot.getAngle()), Robot.getAngle());
             }
         }
 
-        System.out.println("Saar's distance: " + getOdometryDistance());
-        System.out.println("hasTargetttt: " + RobotContainer.hasTarget.getAsBoolean());
+//        System.out.println("Saar's distance: " + getOdometryDistance());
+//        System.out.println("hasTargetttt: " + RobotContainer.hasTarget.getAsBoolean());
         FireLog.log("distance", getOdometryDistance() * 1000);
     }
 

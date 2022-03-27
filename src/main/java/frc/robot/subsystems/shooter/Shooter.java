@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -128,11 +129,17 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
         FireLog.log("my Shooter velocity", getVelocity());
-        FireLog.log("my Shooter setpoint", RobotContainer.cachedSetpointForShooter);
+        if (RobotContainer.hardCodedVelocity) {
+            FireLog.log("my shooter setpoint", RobotContainer.hardCodedVelocityValue);
+        } else {
+            FireLog.log("my shooter setpoint", RobotContainer.setpointVelocity);
+        }
+        SmartDashboard.putString("speed_state", Math.abs(getVelocity() - RobotContainer.setpointVelocity) <= 50 ? "green" : Math.abs(getVelocity() - RobotContainer.setpointVelocity) <= 100 ? "yellow" : "red");
+
         shooterVelocity.append(getVelocity());
         shooterVoltage.append(mainMotor.getMotorOutputVoltage());
-        FireLog.log("Shooter-velocity", getVelocity());
-        System.out.println("Shooter'd velocity: " + getVelocity());
+//        FireLog.log("Shooter-velocity", getVelocity());
+//        System.out.println("Shooter'd velocity: " + getVelocity());
 
         mainMotor.config_kP(0, kP.get());
         mainMotor.config_kI(0, kI.get());

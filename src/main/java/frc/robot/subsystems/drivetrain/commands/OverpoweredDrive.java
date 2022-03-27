@@ -47,8 +47,8 @@ public class OverpoweredDrive extends HolonomicDrive {
         if (magnitude == 0) current = 0;
         current += magnitude / 5;
         if (current > magnitude) current = magnitude;
-        forward = Math.cos(alpha) * current;
-        strafe = Math.sin(alpha) * current;
+        forward = Math.cos(alpha) * magnitude;
+        strafe = Math.sin(alpha) * magnitude;
         double rotation = speeds.omegaRadiansPerSecond;
 
         if (rotation != 0) {
@@ -99,7 +99,7 @@ public class OverpoweredDrive extends HolonomicDrive {
                     }
 
                 } else {
-                    swerveDrive.defaultHolonomicDrive(forward, strafe, rotation * (1 + (current / VELOCITY_MULTIPLIER) / Constants.SwerveDrive.ROTATIONAL_ADDITION_RESTRAINT));
+                    swerveDrive.defaultHolonomicDrive(forward, strafe, rotation * (1 + (magnitude / VELOCITY_MULTIPLIER) / Constants.SwerveDrive.ROTATIONAL_ADDITION_RESTRAINT));
                     setpoint = Robot.getAngle();
                 }
             }
