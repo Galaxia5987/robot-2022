@@ -29,7 +29,7 @@ public class FiveCargoAuto extends SaarIsAutonomous {
 
         addCommands(new InstantCommand(() -> shooter.setVelocity(3600.0)));
 
-        addCommands(followPathAndPickup("FiveCargoAutoPart1"));
+        addCommands(followPathAndPickup("FiveCargoAutoPart1", false));
 
         addCommands(turnToAngle(() -> Rotation2d.fromDegrees(40.15)));
 
@@ -38,9 +38,9 @@ public class FiveCargoAuto extends SaarIsAutonomous {
 
         addCommands(new InstantCommand(() -> shooter.setVelocity(3800.0)));
 
-        addCommands(followPathAndPickup("FiveCargoAutoPart2"));
+        addCommands(followPathAndPickup("FiveCargoAutoPart2", false));
 
-        addCommands(followPathAndPickup("FiveCargoAutoPart3"));
+        addCommands(followPathAndPickup("FiveCargoAutoPart3", false));
 
         addCommands(new InstantCommand(swerveDrive::terminate));
 

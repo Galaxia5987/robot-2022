@@ -6,10 +6,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
@@ -71,12 +68,21 @@ public class SaarIsAutonomous extends SequentialCommandGroup {
                 swerveDrive);
     }
 
-    protected CommandBase followPathAndPickup(String path) {
+    protected CommandBase followPathAndPickup(String path, boolean warmup) {
         return new ParallelRaceGroup(
                 followPath(path),
-                pickup(10)
-//                new RunCommand(() -> shooter.setVelocity(3400), shooter)
+                pickup(10),
+                new ConditionalCommand(
+                        new RunCommand(() -> shooter.setVelocity(3400), shooter),
+                        new RunCommand(() -> {
+                        }),
+                        () -> warmup
+                )
         );
+    }
+
+    protected CommandBase followPathAndPickup(String path) {
+        return followPathAndPickup(path, true);
     }
 
     protected CommandBase shootAndAdjust(double timeout) {
