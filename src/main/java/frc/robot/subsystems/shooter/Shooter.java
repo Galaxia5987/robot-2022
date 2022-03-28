@@ -10,6 +10,7 @@ import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.UnitModel;
 import frc.robot.utils.Utils;
 import webapp.FireLog;
@@ -128,8 +129,8 @@ public class Shooter extends SubsystemBase {
     public void periodic() {
         shooterVelocity.append(getVelocity());
         shooterVoltage.append(mainMotor.getMotorOutputVoltage());
-        FireLog.log("Shooter-velocity", getVelocity());
-        System.out.println("Shooter'd velocity: " + getVelocity());
+//        FireLog.log("Shooter-velocity", getVelocity());
+//        System.out.println("Shooter'd velocity: " + getVelocity());
 
         mainMotor.config_kP(0, kP.get());
         mainMotor.config_kI(0, kI.get());

@@ -29,6 +29,7 @@ public class SwerveDrive extends SubsystemBase {
     private final SwerveModule[] modules = new SwerveModule[4];
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(Constants.SwerveDrive.SWERVE_POSITIONS);
     private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, new Rotation2d());
+    private final SwerveDriveOdometry odometryForDistance = new SwerveDriveOdometry(kinematics, new Rotation2d());
 
     private final ProfiledPIDController headingController = new ProfiledPIDController(
             Constants.SwerveDrive.HEADING_KP,
@@ -240,6 +241,10 @@ public class SwerveDrive extends SubsystemBase {
         return odometry.getPoseMeters();
     }
 
+    public Pose2d getDistanceOdometryPose() {
+        return odometryForDistance.getPoseMeters();
+    }
+
     /**
      * Resets the odometry.
      */
@@ -254,6 +259,11 @@ public class SwerveDrive extends SubsystemBase {
      */
     public void resetOdometry(Pose2d pose, Rotation2d angle) {
         odometry.resetPosition(new Pose2d(pose.getTranslation(), angle), angle);
+    }
+
+
+    public void resetDistanceOdometry(Pose2d pose, Rotation2d angle) {
+        odometryForDistance.resetPosition(new Pose2d(pose.getTranslation(), angle), angle);
     }
 
     /**
@@ -311,12 +321,18 @@ public class SwerveDrive extends SubsystemBase {
      * @return distance from hub. [m]
      */
     public double getOdometryDistance() {
-        return Constants.Vision.HUB_POSE.getTranslation().minus(getPose().getTranslation()).getNorm();
+        return Constants.Vision.HUB_POSE.getTranslation().minus(getDistanceOdometryPose().getTranslation()).getNorm();
     }
 
     @Override
     public void periodic() {
         odometry.updateWithTime(
+                Timer.getFPGATimestamp(),
+                Robot.getAngle(),
+                getStates()
+        );
+
+        odometryForDistance.updateWithTime(
                 Timer.getFPGATimestamp(),
                 Robot.getAngle(),
                 getStates()
