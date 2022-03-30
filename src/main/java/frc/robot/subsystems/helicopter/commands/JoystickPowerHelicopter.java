@@ -20,7 +20,7 @@ public class JoystickPowerHelicopter extends CommandBase {
 
     @Override
     public void execute() {
-        System.out.println(joystickOutput.getAsDouble());
+//        System.out.println(joystickOutput.getAsDouble());
         double flyFly = Utils.conventionalDeadband(joystickOutput.getAsDouble(), Constants.Helicopter.JOYSTICK_DEADBAND);
         helicopter.vroomVroom(flyFly);
     }

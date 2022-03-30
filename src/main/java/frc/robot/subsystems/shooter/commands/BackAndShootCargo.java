@@ -37,4 +37,11 @@ public class BackAndShootCargo extends SequentialCommandGroup {
 
 
     }
+
+
+    @Override
+    public void end(boolean interrupted) {
+        super.end(interrupted);
+        RobotContainer.hasWarmup = false;
+    }
 }
