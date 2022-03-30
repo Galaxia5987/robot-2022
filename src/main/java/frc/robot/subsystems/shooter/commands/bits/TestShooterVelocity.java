@@ -13,6 +13,7 @@ public class TestShooterVelocity extends SequentialCommandGroup {
 
     public TestShooterVelocity(Shooter shooter, LedSubsystem ledSubsystem) {
 
+        addRequirements(shooter);
         addCommands(
                 new ParallelRaceGroup(
                         new RunCommand(

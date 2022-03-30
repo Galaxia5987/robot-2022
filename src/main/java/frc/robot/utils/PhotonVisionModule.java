@@ -157,7 +157,7 @@ public class PhotonVisionModule extends SubsystemBase {
         double yaw = getYaw().orElse(100);
         SmartDashboard.putString("aim_state", Math.abs(yaw) <= 5 ? "green" : Math.abs(yaw) <= 13 ? "yellow" : "red");
         FireLog.log("filtered_distance", getDistance());
-        System.out.println("target: " + hasTargets());
+//        System.out.println("target: " + hasTargets());
     }
 
     @Override

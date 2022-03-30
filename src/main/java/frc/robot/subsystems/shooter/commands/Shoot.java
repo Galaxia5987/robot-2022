@@ -84,14 +84,14 @@ public class Shoot extends CommandBase {
         if (power.isEmpty()) {
             if (RobotContainer.hardCodedVelocity) {
                 shooter.setVelocity(RobotContainer.hardCodedVelocityValue);
-                SmartDashboard.putString("speed_state", Math.abs(RobotContainer.cachedSetpoint - shooter.getVelocity()) <= 30 ? "green" : Math.abs(RobotContainer.cachedSetpoint - shooter.getVelocity()) <= 100 ? "yellow" : "red");
+                SmartDashboard.putString("speed_state", Math.abs(RobotContainer.cachedSetpoint - shooter.getVelocity()) <= Constants.Shooter.SHOOTER_VELOCITY_DEADBAND.get() ? "green" : "red");
             } else {
                 if (RobotContainer.cachedHasTarget) {
                     shooter.setVelocity(RobotContainer.cachedSetpoint);
-                    SmartDashboard.putString("speed_state", Math.abs(RobotContainer.cachedSetpoint - shooter.getVelocity()) <= 30 ? "green" : Math.abs(RobotContainer.cachedSetpoint - shooter.getVelocity()) <= 100 ? "yellow" : "red");
+                    SmartDashboard.putString("speed_state", Math.abs(RobotContainer.cachedSetpoint - shooter.getVelocity()) <= Constants.Shooter.SHOOTER_VELOCITY_DEADBAND.get() ? "green" : "red");
                 } else {
                     shooter.setVelocity(RobotContainer.odometryCachedSetpoint);
-                    SmartDashboard.putString("speed_state", Math.abs(RobotContainer.odometryCachedSetpoint - shooter.getVelocity()) <= 30 ? "green" : Math.abs(RobotContainer.odometryCachedSetpoint - shooter.getVelocity()) <= 100 ? "yellow" : "red");
+                    SmartDashboard.putString("speed_state", Math.abs(RobotContainer.odometryCachedSetpoint - shooter.getVelocity()) <= Constants.Shooter.SHOOTER_VELOCITY_DEADBAND.get() ? "green" : "red");
                 }
             }
         } else {
