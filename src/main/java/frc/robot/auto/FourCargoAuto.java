@@ -21,7 +21,7 @@ public class FourCargoAuto extends SaarIsAutonomous {
 
         addCommands(followPathAndPickup("p2 - Taxi from low right tarmac and pickup low cargo(7.1)"));
 
-        addCommands(shootAndAdjust(2));
+        addCommands(shootAndAdjust(2.3));
 
         addCommands(new ParallelRaceGroup(
                 followPath("p3 - Going to terminal(9.3)"),

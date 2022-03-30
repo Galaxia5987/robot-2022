@@ -1,5 +1,6 @@
 package frc.robot.auto;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
@@ -24,7 +25,7 @@ public class StraightLineFour extends SaarIsAutonomous {
 
         addCommands(new ParallelRaceGroup(
                 followPath("Four- first shooting position"),
-                warmup(3400)
+                new InstantCommand(() -> shooter.setVelocity(3400.0))
         ));
 
         addCommands(
@@ -41,7 +42,7 @@ public class StraightLineFour extends SaarIsAutonomous {
 
         addCommands(
                 new ParallelRaceGroup(
-                        warmup(3400),
+                        new InstantCommand(() -> shooter.setVelocity(3400.0)),
                         followPath("Four- second shooting position")
                 ));
 

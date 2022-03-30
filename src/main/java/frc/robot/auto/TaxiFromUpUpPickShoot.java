@@ -16,6 +16,8 @@ public class TaxiFromUpUpPickShoot extends SaarIsAutonomous {
 
         addCommands(followPathAndPickup("p1 - Taxi from up up to up cargo and pickup up cargo(5.1)"));
 
-        addCommands(shootAndAdjust(3));
+        addCommands(shootAndAdjust(4));
+
+        addCommands(followPath("Finals Part 2"));
     }
 }
