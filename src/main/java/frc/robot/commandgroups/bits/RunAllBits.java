@@ -20,6 +20,8 @@ public class RunAllBits extends SequentialCommandGroup {
                       Flap flap,
                       Hood hood,
                       Command... waitFor) {
+
+        addRequirements(shooter);
         addCommands(
                 new CheckSolenoids(hood, flap, intake)
                         .raceWith(new RunCommand(() -> System.out.println("Checking solenoids")))

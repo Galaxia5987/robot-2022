@@ -5,12 +5,17 @@
 package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.cscore.MjpegServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.valuetuner.NetworkTableConstant;
+
+import java.util.Arrays;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -77,9 +82,10 @@ public class Robot extends TimedRobot {
             NetworkTableConstant.initializeAllConstants();
         }
         m_robotContainer = new RobotContainer();
-//        UsbCamera usbCamera = new UsbCamera("USB Camera 0", 0);
-//        MjpegServer mjpegServer1 = new MjpegServer("serve_USB Camera 0", 1181);
-//        mjpegServer1.setSource(usbCamera);
+        UsbCamera usbCamera = new UsbCamera("USB Camera 0", 0);
+        MjpegServer mjpegServer1 = new MjpegServer("serve_USB Camera 0", 1181);
+        mjpegServer1.setSource(usbCamera);
+        PortForwarder.add(1181, "localhost", 1181);
     }
 
     /**

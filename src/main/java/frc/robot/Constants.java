@@ -153,7 +153,8 @@ public final class Constants {
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]
         public static final double RAMP_RATE = 0; // seconds from neutral to max
 
-        public static final int[] ZERO_POSITIONS = {-589, -453, -868, -519}; // fr, fl, rr, rl
+        // -1612, -840, 1189, 1562
+        public static final int[] ZERO_POSITIONS = {-602, 2184, 157, -1481}; // fr, fl, rr, rl
 
         public static final SwerveModuleConfigBase frConfig = new SwerveModuleConfigBase.Builder(0)
                 .configPorts(DRIVE_MOTOR_FR, ANGLE_MOTOR_FR)

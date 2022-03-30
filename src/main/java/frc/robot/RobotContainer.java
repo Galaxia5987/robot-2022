@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -12,6 +13,8 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.auto.FourCargoAuto;
+import frc.robot.auto.TaxiFromLowLeftPickShoot;
+import frc.robot.auto.TaxiFromUpUpPickShoot;
 import frc.robot.commandgroups.*;
 import frc.robot.commandgroups.bits.RunAllBits;
 import frc.robot.subsystems.conveyor.Conveyor;
@@ -27,6 +30,7 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.commands.BackAndShootCargo;
 import frc.robot.subsystems.shooter.commands.Shoot;
+import frc.robot.subsystems.shooter.commands.bits.TestShooterVelocity;
 import frc.robot.utils.LedSubsystem;
 import frc.robot.utils.PhotonVisionModule;
 import frc.robot.utils.Utils;
@@ -67,6 +71,7 @@ public class RobotContainer {
     private final CommandBase autonomousCommand;
     private double speedMultiplier = 1;
     private double thetaMultiplier = 1.5;
+    public static boolean hasWarmup = false;
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -82,9 +87,9 @@ public class RobotContainer {
 
         // autonomousCommand = null;
 //        autonomousCommand = new FiveCargoAuto(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
-//        autonomousCommand = new TaxiFrom(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
+       autonomousCommand = new TaxiFromUpUpPickShoot(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
+//        autonomousCommand = new FourCargoAuto(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
         // Configure the button bindings and default commands
-        autonomousCommand = new FourCargoAuto(shooter, swerve, conveyor, intake, hood, flap, photonVisionModule);
         configureDefaultCommands();
         if (Robot.debug) {
             startFireLog();
@@ -108,6 +113,10 @@ public class RobotContainer {
                 )
         );
         helicopter.setDefaultCommand(new JoystickPowerHelicopter(helicopter, () -> -Xbox.controller.getLeftY()));
+        shooter.setDefaultCommand(new RunCommand(() -> {
+            shooter.setVelocity(hasWarmup ? 3600 : 0);
+            SmartDashboard.putString("speed_state", Utils.conventionalDeadband(3600 - shooter.getVelocity(), Constants.Shooter.SHOOTER_VELOCITY_DEADBAND.get()) == 0 ? "yellow" : "red");
+        }, shooter));
     }
 
     private void configureButtonBindings() {
@@ -118,7 +127,7 @@ public class RobotContainer {
                     () -> 0)).whenInactive(() -> shooting = false);
             Xbox.x.whenPressed(intake::toggleRetractor);
 //            Xbox.x.whileHeld(()->shooter.setVelocity(3600));
-            Xbox.y.whenPressed(new RunCommand(() -> shooter.setVelocity(3530.0), shooter).withInterrupt(Xbox.rt::get));
+            Xbox.y.whenPressed(new InstantCommand(() -> hasWarmup = !hasWarmup, shooter).withInterrupt(Xbox.rt::get));
             Xbox.a.whileHeld(() -> playWithoutVision = true).whenReleased(() -> playWithoutVision = false);
 
             Xbox.leftPov.whileActiveOnce(new InstantCommand(hood::toggle));
@@ -168,9 +177,9 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
 //         return new TestColorSensor(conveyor, intake, ledSubsystem);
-//        return new RunAllBits(swerve, shooter, conveyor, intake, flap, hood);
 //             return new TestShooterVelocity(shooter, ledSubsystem);
-           return autonomousCommand;
+ //     return new RunAllBits(swerve, shooter, conveyor, intake, flap, hood);
+          return autonomousCommand;
     }
 
     /**
