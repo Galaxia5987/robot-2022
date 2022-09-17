@@ -57,4 +57,26 @@ public class GalacticTalonFX extends TalonFX {
             DriverStation.reportError(errorMessage, true);
         }
     }
+
+    /**
+     * Gets the selected sensor position (in converted units).
+     *
+     * @return Position of selected sensor (in converted units).
+     */
+    @Override
+    public double getSelectedSensorPosition() {
+        return unitsCoefficient * super.getSelectedSensorPosition();
+    }
+
+    /**
+     * Gets the selected sensor position (in converted units).
+     *
+     * @param pidIdx 0 for Primary closed-loop. 1 for auxiliary closed-loop.
+     *               See Phoenix-Documentation for how to interpret.
+     * @return Position of selected sensor (in converted units).
+     */
+    @Override
+    public double getSelectedSensorPosition(int pidIdx) {
+        return unitsCoefficient * super.getSelectedSensorPosition(pidIdx);
+    }
 }
