@@ -44,7 +44,8 @@ public class GalacticTalonFX extends TalonFX {
      *
      * @param deviceNumber     device number (ID) to assign to the Talon FX
      * @param configuration    configuration for the Talon FX
-     * @param canBus           Name of the CANbus; can be a SocketCAN interface (on Linux), or a CANivore device name or serial number
+     * @param canBus           Name of the CANbus; can be a SocketCAN interface (on Linux),
+     *                         or a CANivore device name or serial number
      * @param unitsCoefficient units ratio coefficient, e.g, to convert internal velocity units to m/s
      */
     public GalacticTalonFX(int deviceNumber, TalonFXConfiguration configuration, double unitsCoefficient, String canBus) {
