@@ -17,6 +17,18 @@ public class GalacticTalonFX extends TalonFX {
      * <p>
      * Reports configuration errors to the Driver Station.
      *
+     * @param deviceNumber  device number (ID) to assign to the Talon FX
+     * @param configuration configuration for the Talon FX
+     */
+    public GalacticTalonFX(int deviceNumber, TalonFXConfiguration configuration) {
+        this(deviceNumber, configuration, 1, "");
+    }
+
+    /**
+     * Instantiates a Talon FX.
+     * <p>
+     * Reports configuration errors to the Driver Station.
+     *
      * @param deviceNumber     device number (ID) to assign to the Talon FX
      * @param configuration    configuration for the Talon FX
      * @param unitsCoefficient units ratio coefficient, e.g, to convert internal velocity units to m/s
