@@ -17,6 +17,18 @@ public class GalacticTalonFX extends TalonFX {
      *
      * @param deviceNumber  device number (ID) to assign to the Talon FX
      * @param configuration configuration for the Talon FX
+     */
+    public GalacticTalonFX(int deviceNumber, TalonFXConfiguration configuration) {
+        this(deviceNumber, configuration, "");
+    }
+
+    /**
+     * Instantiates a Talon FX.
+     * <p>
+     * Reports configuration errors to the Driver Station.
+     *
+     * @param deviceNumber  device number (ID) to assign to the Talon FX
+     * @param configuration configuration for the Talon FX
      * @param canBus        Name of the CANbus; can be a SocketCAN interface (on Linux), or a CANivore device name or serial number
      */
     public GalacticTalonFX(int deviceNumber, TalonFXConfiguration configuration, String canBus) {
